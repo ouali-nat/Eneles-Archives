@@ -283,93 +283,88 @@
     });
   })();
 
-  // ---------- LOGO DU SITE (modifiable depuis l'admin, sans redéploiement) ----------
-  // Source unique du logo. Le même objet R2 est utilisé par le site, le favicon,
-  // l'icône Apple et le manifeste PWA. Les éléments Google restent sur une URL stable ;
-  // seul le logo visible dans l'interface peut utiliser une version de cache.
+  // ---------- LOGO DU SITE (configuration partagée entre tous les visiteurs) ----------
   (function(){
     const LOGO_CLE = 'site-logo-auraster';
-    const LOGO_VERSION_KEY = 'aurore_logo_version';
-    const LOGO_MIME_KEY = 'aurore_logo_mime';
+    const LOGO_SETTING_KEY = 'site_logo';
     const LOGO_MIME_DEFAULT = 'image/png';
-    const LOGO_URL_BASE = `${R2_PUBLIC_URL}/${LOGO_CLE}`;
+    const LOGO_URL_BASE = R2_PUBLIC_URL + '/' + LOGO_CLE;
+    const LOGO_TYPES = ['image/png','image/jpeg','image/webp','image/gif','image/avif','image/bmp','image/svg+xml'];
 
-    function logoUrl(version) {
-      return version
-        ? `${LOGO_URL_BASE}?v=${encodeURIComponent(version)}`
-        : LOGO_URL_BASE;
-    }
-
-    function appliquerLogoDansConteneur(conteneur, url) {
-      if (!conteneur) return;
-      const img = new Image();
-      img.decoding = 'async';
-      img.loading = 'eager';
-      img.onload = () => {
-        conteneur.replaceChildren(img);
-        img.alt = 'Aurore — Section Archives';
-      };
-      img.onerror = () => {
-        /*
-         * Ne vide jamais le logo déjà affiché à cause d'un échec réseau
-         * ponctuel. On réessaie une seule fois sur l'URL R2 stable.
-         */
-        if (url !== LOGO_URL_BASE) {
-          const secours = new Image();
-          secours.decoding = 'async';
-          secours.onload = () => {
-            conteneur.replaceChildren(secours);
-            secours.alt = 'Aurore — Section Archives';
-          };
-          secours.src = LOGO_URL_BASE;
-        }
-      };
-      img.src = url;
-    }
-
-    function mettreAJourLiensLogo(url, mimeType) {
-      // Le type MIME suit le fichier réellement téléversé (notamment SVG).
+    function appliquerLogo(url, mimeType) {
       const type = mimeType || LOGO_MIME_DEFAULT;
-      const manifest = document.querySelector('link[rel="manifest"]');
-      if (manifest) manifest.href = `manifest.json?v=${encodeURIComponent(Date.now())}`;
-      document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach(link => {
-        link.href = url;
-        link.type = type;
-        if (link.rel === 'icon' && type === 'image/svg+xml') link.sizes = 'any';
-      });
-      document.querySelector('meta[property="og:image"]')?.setAttribute('content', url);
-      document.querySelector('meta[property="og:image:type"]')?.setAttribute('content', type);
-      document.querySelector('meta[name="twitter:image"]')?.setAttribute('content', url);
-      const preload = document.querySelector('link[rel="preload"][as="image"]');
-      if (preload) preload.href = url;
-      // Le JSON-LD initial conserve l'URL R2 stable, sans paramètre de cache.
-    }
-
-    function chargerLogoSite(versionForcee, mimeForce) {
-      let version = versionForcee;
-      let mimeType = mimeForce;
-      try {
-        if (!version) version = localStorage.getItem(LOGO_VERSION_KEY) || '';
-        if (!mimeType) mimeType = localStorage.getItem(LOGO_MIME_KEY) || LOGO_MIME_DEFAULT;
-      } catch(e) {}
-      mimeType = mimeType || LOGO_MIME_DEFAULT;
-      const url = logoUrl(String(version || ''));
-      try {
-        sessionStorage.setItem('aurore_logo_url', url);
-        localStorage.setItem(LOGO_VERSION_KEY, version || '');
-        localStorage.setItem(LOGO_MIME_KEY, mimeType);
-      } catch(e) {}
-
+      const version = Date.now();
+      const urlVersionnee = url + (url.includes('?') ? '&' : '?') + 'v=' + version;
       const cibles = [
         document.getElementById('brandLogo'),
         document.getElementById('adminLogoPreview'),
         document.getElementById('accessBrandLogo')
       ];
-      cibles.forEach(c => appliquerLogoDansConteneur(c, url));
-      mettreAJourLiensLogo(url, mimeType);
+      cibles.forEach(conteneur => {
+        if (!conteneur) return;
+        const img = new Image();
+        img.decoding = 'async';
+        img.loading = 'eager';
+        img.onload = () => {
+          img.alt = 'Eneles — Archives';
+          conteneur.replaceChildren(img);
+        };
+        img.onerror = () => console.warn('[Logo] Image inaccessible :', url);
+        img.src = urlVersionnee;
+      });
+
+      const manifest = document.querySelector('link[rel="manifest"]');
+      if (manifest) manifest.href = 'manifest.json?v=' + version;
+      document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach(link => {
+        link.href = urlVersionnee;
+        link.type = type;
+        if (link.rel === 'icon' && type === 'image/svg+xml') link.sizes = 'any';
+      });
+      document.querySelector('meta[property="og:image"]')?.setAttribute('content', urlVersionnee);
+      document.querySelector('meta[property="og:image:type"]')?.setAttribute('content', type);
+      document.querySelector('meta[name="twitter:image"]')?.setAttribute('content', urlVersionnee);
+      const preload = document.querySelector('link[rel="preload"][as="image"]');
+      if (preload) preload.href = urlVersionnee;
+      try {
+        sessionStorage.setItem('aurore_logo_url', urlVersionnee);
+        localStorage.setItem('aurore_logo_mime', type);
+      } catch(e) {}
     }
-    window.chargerLogoSite = chargerLogoSite;
-    window.AURORE_LOGO_URL = () => logoUrl(Date.now());
+
+    async function chargerLogoPartage() {
+      try {
+        const res = await fetch(
+          SUPABASE_URL + '/rest/v1/aurore_admin_interface_settings?select=setting_value&setting_key=eq.' + encodeURIComponent(LOGO_SETTING_KEY),
+          { headers: { 'apikey': SUPABASE_ANON_KEY }, cache: 'no-store' }
+        );
+        if (!res.ok) throw new Error('Lecture de la configuration du logo : HTTP ' + res.status);
+        const rows = await res.json();
+        const cfg = rows?.[0]?.setting_value;
+        if (cfg?.url && typeof cfg.url === 'string') {
+          appliquerLogo(cfg.url, LOGO_TYPES.includes(cfg.mimeType) ? cfg.mimeType : LOGO_MIME_DEFAULT);
+        } else {
+          appliquerLogo(LOGO_URL_BASE, LOGO_MIME_DEFAULT);
+        }
+      } catch(e) {
+        console.warn('[Logo] Configuration partagée indisponible, logo par défaut conservé.', e);
+        appliquerLogo(LOGO_URL_BASE, LOGO_MIME_DEFAULT);
+      }
+    }
+
+    function verifierImage(url) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(true);
+        image.onerror = () => reject(new Error('Le fichier envoyé ne peut pas être affiché depuis le stockage public.'));
+        image.src = url + '?verification=' + Date.now();
+      });
+    }
+
+    window.chargerLogoSite = chargerLogoPartage;
+    window.AURORE_LOGO_URL = () => {
+      try { return sessionStorage.getItem('aurore_logo_url') || LOGO_URL_BASE; }
+      catch(e) { return LOGO_URL_BASE; }
+    };
 
     document.getElementById('adminLogoSave')?.addEventListener('click', async () => {
       const fileInput = document.getElementById('adminLogoFile');
@@ -377,41 +372,69 @@
       const btn = document.getElementById('adminLogoSave');
       const fichier = fileInput?.files?.[0];
       if (msg) { msg.className = 'form-msg'; msg.style.display = ''; }
-      if (!fichier) { if(msg){ msg.textContent = "Choisis d'abord une image."; msg.className = 'form-msg err'; } return; }
+      if (!fichier) {
+        if (msg) { msg.textContent = "Choisis d'abord une image."; msg.className = 'form-msg err'; }
+        return;
+      }
       const extension = (fichier.name.split('.').pop() || '').toLowerCase();
       const typesParExtension = {
         png:'image/png', jpg:'image/jpeg', jpeg:'image/jpeg', webp:'image/webp',
         gif:'image/gif', avif:'image/avif', bmp:'image/bmp', svg:'image/svg+xml'
       };
-      const typesAutorises = ['image/png','image/jpeg','image/webp','image/gif','image/avif','image/bmp','image/svg+xml'];
-      const typeFichier = typesAutorises.includes(fichier.type)
-        ? fichier.type
-        : (typesParExtension[extension] || fichier.type || '');
-      if (!typesAutorises.includes(typeFichier)) {
-        if(msg){ msg.textContent = "Format non pris en charge. Utilise PNG, JPG, WEBP, GIF, AVIF, BMP ou SVG."; msg.className = 'form-msg err'; } return;
+      const typeFichier = LOGO_TYPES.includes(fichier.type) ? fichier.type : (typesParExtension[extension] || '');
+      if (!LOGO_TYPES.includes(typeFichier)) {
+        if (msg) { msg.textContent = "Format non pris en charge. Utilise PNG, JPG, WEBP, GIF, AVIF, BMP ou SVG."; msg.className = 'form-msg err'; }
+        return;
       }
       if (fichier.size > 5 * 1024 * 1024) {
-        if(msg){ msg.textContent = "Image trop lourde (5 Mo maximum pour le logo)."; msg.className = 'form-msg err'; } return;
+        if (msg) { msg.textContent = "Image trop lourde (5 Mo maximum pour le logo)."; msg.className = 'form-msg err'; }
+        return;
+      }
+      if (!session || session.role !== 'admin') {
+        if (msg) { msg.textContent = "Cette action est réservée aux administrateurs."; msg.className = 'form-msg err'; }
+        return;
       }
       if (btn) { btn.disabled = true; btn.textContent = 'Envoi en cours…'; }
       try {
-        const res = await fetch(`${R2_WORKER_URL}/${LOGO_CLE}`, {
+        const nomFichier = 'site-logo-' + Date.now() + '-' + Math.random().toString(36).slice(2,8) + '.' + extension;
+        const url = R2_PUBLIC_URL + '/' + nomFichier;
+        const upload = await fetch(R2_WORKER_URL + '/' + nomFichier, {
           method: 'PUT',
           headers: { 'Content-Type': typeFichier },
           body: fichier,
           cache: 'no-store'
         });
-        if (!res.ok) throw new Error('Statut ' + res.status);
-        // Nouvelle version persistée : tous les composants du site utilisent
-        // immédiatement la nouvelle URL sans conserver l'ancienne image.
-        const nouvelleVersion = `${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
-        chargerLogoSite(nouvelleVersion, typeFichier);
-        // Force la mise à jour du SW/PWA quand le navigateur le permet.
+        const uploadBody = await upload.text().catch(() => '');
+        if (!upload.ok) throw new Error('Envoi R2 refusé (HTTP ' + upload.status + '). ' + uploadBody);
+
+        await verifierImage(url);
+
+        const config = { url, mimeType: typeFichier, updatedAt: new Date().toISOString() };
+        const save = await fetch(SUPABASE_URL + '/rest/v1/aurore_admin_interface_settings?on_conflict=setting_key', {
+          method: 'POST',
+          headers: { ...headersAdmin(), 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates,return=representation' },
+          body: JSON.stringify({
+            setting_key: LOGO_SETTING_KEY,
+            setting_value: config,
+            updated_at: config.updatedAt
+          })
+        });
+        const saveBody = await save.text().catch(() => '');
+        if (!save.ok) throw new Error('Le fichier est envoyé mais sa configuration commune n’a pas été enregistrée (HTTP ' + save.status + '). ' + saveBody);
+
+        appliquerLogo(url, typeFichier);
         try { await navigator.serviceWorker?.ready?.then(reg => reg.update()); } catch(e) {}
         if (fileInput) fileInput.value = '';
-        if (msg) { msg.textContent = 'Logo mis à jour avec succès — site, favicon et prochaine installation PWA utilisent désormais le nouveau logo.'; msg.className = 'form-msg ok'; }
+        if (msg) {
+          msg.textContent = 'Logo changé et vérifié. Il est maintenant enregistré pour tous les visiteurs.';
+          msg.className = 'form-msg ok';
+        }
       } catch (err) {
-        if (msg) { msg.textContent = "Le logo n’a pas pu être envoyé pour le moment. Veuillez réessayer."; msg.className = 'form-msg err'; }
+        console.error('[Logo] Échec de mise à jour :', err);
+        if (msg) {
+          msg.textContent = err?.message || "Le logo n’a pas pu être activé. L’ancien logo est conservé.";
+          msg.className = 'form-msg err';
+        }
       } finally {
         if (btn) { btn.disabled = false; btn.textContent = 'Mettre à jour le logo'; }
       }
@@ -419,16 +442,34 @@
 
     document.getElementById('adminLogoReset')?.addEventListener('click', async () => {
       const msg = document.getElementById('adminLogoMsg');
+      const btn = document.getElementById('adminLogoReset');
+      if (!session || session.role !== 'admin') {
+        if (msg) { msg.textContent = "Cette action est réservée aux administrateurs."; msg.className = 'form-msg err'; }
+        return;
+      }
+      if (btn) btn.disabled = true;
       try {
-        const res = await fetch(`${R2_WORKER_URL}/${LOGO_CLE}`, { method: 'DELETE', cache: 'no-store' });
-        if (!res.ok) throw new Error('Statut ' + res.status);
-        try { localStorage.removeItem(LOGO_MIME_KEY); } catch(e) {}
-        chargerLogoSite(`${Date.now()}-reset`, LOGO_MIME_DEFAULT);
-        if (msg) { msg.textContent = "Logo retiré — aucun ancien logo local ne sera réutilisé automatiquement."; msg.className = 'form-msg ok'; }
+        const updatedAt = new Date().toISOString();
+        const res = await fetch(SUPABASE_URL + '/rest/v1/aurore_admin_interface_settings?on_conflict=setting_key', {
+          method: 'POST',
+          headers: { ...headersAdmin(), 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+          body: JSON.stringify({
+            setting_key: LOGO_SETTING_KEY,
+            setting_value: { url: LOGO_URL_BASE, mimeType: LOGO_MIME_DEFAULT, updatedAt },
+            updated_at: updatedAt
+          })
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status + ' — ' + await res.text());
+        appliquerLogo(LOGO_URL_BASE, LOGO_MIME_DEFAULT);
+        if (msg) { msg.textContent = 'Logo d’origine réactivé pour tous les visiteurs.'; msg.className = 'form-msg ok'; }
       } catch (err) {
-        if (msg) { msg.textContent = "Impossible de retirer le logo automatiquement. Envoie un nouveau logo pour le remplacer."; msg.className = 'form-msg err'; }
+        if (msg) { msg.textContent = "Impossible de rétablir le logo d’origine : " + (err?.message || 'erreur inconnue'); msg.className = 'form-msg err'; }
+      } finally {
+        if (btn) btn.disabled = false;
       }
     });
+
+    chargerLogoPartage();
   })();
 
   // ---------- INITIALISATION ----------
