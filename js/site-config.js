@@ -351,6 +351,26 @@
       }
     }
 
+    // Détecte le vrai format à partir de la signature binaire, pas du nom
+    // choisi par Android (un SVG peut par exemple arriver sous l'extension .png).
+    async function detecterTypeImage(fichier) {
+      const head = new Uint8Array(await fichier.slice(0, 4096).arrayBuffer());
+      const ascii = (debut, fin) => Array.from(head.slice(debut, fin), b => String.fromCharCode(b)).join('');
+      const commencePar = (...octets) => octets.every((b, i) => head[i] === b);
+
+      if (commencePar(0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A)) return 'image/png';
+      if (commencePar(0xFF, 0xD8, 0xFF)) return 'image/jpeg';
+      if (ascii(0, 6) === 'GIF87a' || ascii(0, 6) === 'GIF89a') return 'image/gif';
+      if (ascii(0, 4) === 'RIFF' && ascii(8, 12) === 'WEBP') return 'image/webp';
+      if (ascii(0, 2) === 'BM') return 'image/bmp';
+      if (ascii(4, 8) === 'ftyp' && /avif|avis/.test(ascii(8, 32))) return 'image/avif';
+
+      const texte = new TextDecoder('utf-8').decode(head).replace(/^\uFEFF/, '').trimStart();
+      if (!texte.includes('\0') && /<svg(?:\s|>)/i.test(texte)) return 'image/svg+xml';
+
+      throw new Error("Le contenu du fichier n'est pas une image PNG, JPG, WEBP, GIF, AVIF, BMP ou SVG reconnue. Vérifie le fichier sélectionné.");
+    }
+
     function verifierImage(url) {
       return new Promise((resolve, reject) => {
         const image = new Image();
@@ -376,13 +396,26 @@
         if (msg) { msg.textContent = "Choisis d'abord une image."; msg.className = 'form-msg err'; }
         return;
       }
-      const extension = (fichier.name.split('.').pop() || '').toLowerCase();
-      const typesParExtension = {
-        png:'image/png', jpg:'image/jpeg', jpeg:'image/jpeg', webp:'image/webp',
-        gif:'image/gif', avif:'image/avif', bmp:'image/bmp', svg:'image/svg+xml'
+      if (fichier.size <= 0) {
+        if (msg) { msg.textContent = "Le fichier sélectionné est vide."; msg.className = 'form-msg err'; }
+        return;
+      }
+      let typeFichier;
+      try {
+        typeFichier = await detecterTypeImage(fichier);
+      } catch (erreurFormat) {
+        if (msg) { msg.textContent = erreurFormat.message; msg.className = 'form-msg err'; }
+        return;
+      }
+      const extensionsParType = {
+        'image/png':'png', 'image/jpeg':'jpg', 'image/webp':'webp',
+        'image/gif':'gif', 'image/avif':'avif', 'image/bmp':'bmp',
+        'image/svg+xml':'svg'
       };
-      const typeFichier = LOGO_TYPES.includes(fichier.type) ? fichier.type : (typesParExtension[extension] || '');
-      if (!LOGO_TYPES.includes(typeFichier)) {
+      // L'extension envoyée à R2 suit le contenu réel : un SVG nommé .png
+      // est donc stocké en .svg avec Content-Type: image/svg+xml.
+      const extension = extensionsParType[typeFichier];
+      if (!LOGO_TYPES.includes(typeFichier) || !extension) {
         if (msg) { msg.textContent = "Format non pris en charge. Utilise PNG, JPG, WEBP, GIF, AVIF, BMP ou SVG."; msg.className = 'form-msg err'; }
         return;
       }
