@@ -307,6 +307,10 @@
         img.loading = 'eager';
         img.onload = () => {
           img.alt = 'Eneles — Archives';
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.display = 'block';
+          img.style.objectFit = 'contain';
           conteneur.replaceChildren(img);
         };
         img.onerror = () => console.warn('[Logo] Image inaccessible :', url);
@@ -371,13 +375,36 @@
       throw new Error("Le contenu du fichier n'est pas une image PNG, JPG, WEBP, GIF, AVIF, BMP ou SVG reconnue. Vérifie le fichier sélectionné.");
     }
 
-    function verifierImage(url) {
-      return new Promise((resolve, reject) => {
-        const image = new Image();
-        image.onload = () => resolve(true);
-        image.onerror = () => reject(new Error('Le fichier envoyé ne peut pas être affiché depuis le stockage public.'));
-        image.src = url + '?verification=' + Date.now();
+    async function verifierImage(url, typeAttendu) {
+      const reponse = await fetch(url + '?verification=' + Date.now(), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store'
       });
+      if (!reponse.ok) {
+        throw new Error('Le fichier est envoyé, mais sa lecture publique échoue (HTTP ' + reponse.status + ').');
+      }
+      const typeRecu = (reponse.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
+      if (typeRecu && typeRecu !== typeAttendu) {
+        throw new Error('Le stockage renvoie le type ' + typeRecu + ' au lieu de ' + typeAttendu + '.');
+      }
+      const blob = await reponse.blob();
+      if (!blob.size) throw new Error('Le stockage public renvoie un fichier vide (0 octet).');
+      const image = new Image();
+      const temporaire = URL.createObjectURL(blob);
+      try {
+        image.src = temporaire;
+        if (typeof image.decode === 'function') await image.decode();
+        else await new Promise((resolve, reject) => {
+          image.onload = resolve;
+          image.onerror = () => reject(new Error('Le navigateur ne sait pas décoder cette image.'));
+        });
+      } catch (_) {
+        throw new Error('Le fichier est bien récupéré depuis R2, mais le navigateur ne peut pas décoder son image.');
+      } finally {
+        URL.revokeObjectURL(temporaire);
+      }
+      return true;
     }
 
     window.chargerLogoSite = chargerLogoPartage;
@@ -431,16 +458,22 @@
       try {
         const nomFichier = 'site-logo-' + Date.now() + '-' + Math.random().toString(36).slice(2,8) + '.' + extension;
         const url = R2_PUBLIC_URL + '/' + nomFichier;
+        // Lire le fichier une seule fois et envoyer explicitement ses octets.
+        // Certains sélecteurs Android exposent un File dont le flux direct est instable.
+        const octets = await fichier.arrayBuffer();
+        if (!octets || octets.byteLength !== fichier.size || octets.byteLength === 0) {
+          throw new Error('Le fichier sélectionné est vide ou n’a pas pu être lu correctement sur cet appareil.');
+        }
         const upload = await fetch(R2_WORKER_URL + '/' + nomFichier, {
           method: 'PUT',
           headers: { 'Content-Type': typeFichier },
-          body: fichier,
+          body: octets,
           cache: 'no-store'
         });
         const uploadBody = await upload.text().catch(() => '');
         if (!upload.ok) throw new Error('Envoi R2 refusé (HTTP ' + upload.status + '). ' + uploadBody);
 
-        await verifierImage(url);
+        await verifierImage(url, typeFichier);
 
         const config = { url, mimeType: typeFichier, updatedAt: new Date().toISOString() };
         const save = await fetch(SUPABASE_URL + '/rest/v1/aurore_admin_interface_settings?on_conflict=setting_key', {
