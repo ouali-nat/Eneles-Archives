@@ -437,15 +437,16 @@
         return;
       }
       if (btn) { btn.disabled = true; btn.textContent = 'Envoi en cours…'; }
+      let etape = 'lecture du fichier sur le téléphone';
       try {
         const nomFichier = 'site-logo-' + Date.now() + '-' + Math.random().toString(36).slice(2,8) + '.' + extension;
         const url = R2_PUBLIC_URL + '/' + nomFichier;
         // Lire le fichier une seule fois et envoyer explicitement ses octets.
-        // Certains sélecteurs Android exposent un File dont le flux direct est instable.
         const octets = await fichier.arrayBuffer();
         if (!octets || octets.byteLength !== fichier.size || octets.byteLength === 0) {
           throw new Error('Le fichier sélectionné est vide ou n’a pas pu être lu correctement sur cet appareil.');
         }
+        etape = 'envoi vers Cloudflare R2';
         const upload = await fetch(R2_WORKER_URL + '/' + nomFichier, {
           method: 'PUT',
           headers: { 'Content-Type': typeFichier },
@@ -455,9 +456,11 @@
         const uploadBody = await upload.text().catch(() => '');
         if (!upload.ok) throw new Error('Envoi R2 refusé (HTTP ' + upload.status + '). ' + uploadBody);
 
+        etape = 'vérification de l’image publique';
         await verifierImage(url);
 
         const config = { url, mimeType: typeFichier, updatedAt: new Date().toISOString() };
+        etape = 'enregistrement du logo actif dans Supabase';
         const save = await fetch(SUPABASE_URL + '/rest/v1/aurore_admin_interface_settings?on_conflict=setting_key', {
           method: 'POST',
           headers: { ...headersAdmin(), 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates,return=representation' },
@@ -478,9 +481,12 @@
           msg.className = 'form-msg ok';
         }
       } catch (err) {
-        console.error('[Logo] Échec de mise à jour :', err);
+        console.error('[Logo] Échec pendant ' + etape + ' :', err);
         if (msg) {
-          msg.textContent = err?.message || "Le logo n’a pas pu être activé. L’ancien logo est conservé.";
+          const detail = err?.message || 'erreur réseau inconnue';
+          msg.textContent = detail === 'Failed to fetch'
+            ? 'Connexion impossible pendant ' + etape + '. Vérifie la connexion Internet puis réessaie.'
+            : detail;
           msg.className = 'form-msg err';
         }
       } finally {
