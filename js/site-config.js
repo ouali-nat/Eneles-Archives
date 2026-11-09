@@ -337,34 +337,51 @@
       const preload = document.querySelector('link[rel="preload"][as="image"]');
       if (preload) preload.href = urlVersionnee;
       try {
+        // Le dernier logo valide survit aux actualisations et aux redémarrages.
         sessionStorage.setItem('aurore_logo_url', urlVersionnee);
+        localStorage.setItem('aurore_logo_url', url);
         localStorage.setItem('aurore_logo_mime', type);
       } catch(e) {}
       window.dispatchEvent(new CustomEvent('eneles:logo-updated', { detail: { url: urlVersionnee, mimeType: type } }));
     }
 
+    let logoLoadPromise = null;
     async function chargerLogoPartage() {
-      try {
-        const res = await fetch(
-          SUPABASE_URL + '/rest/v1/aurore_admin_interface_settings?select=setting_value&setting_key=eq.' + encodeURIComponent(LOGO_SETTING_KEY),
-          { headers: { 'apikey': SUPABASE_ANON_KEY }, cache: 'no-store' }
-        );
-        if (!res.ok) throw new Error('Lecture de la configuration du logo : HTTP ' + res.status);
-        const rows = await res.json();
-        const cfg = rows?.[0]?.setting_value;
-        if (cfg?.url && typeof cfg.url === 'string') {
-          appliquerLogo(cfg.url, LOGO_TYPES.includes(cfg.mimeType) ? cfg.mimeType : LOGO_MIME_DEFAULT);
-        } else {
-          appliquerLogo(LOGO_URL_BASE, LOGO_MIME_DEFAULT);
+      // Une seule lecture distante à la fois : aucune réponse tardive ne peut
+      // écraser un logo valide avec le logo de secours.
+      if (logoLoadPromise) return logoLoadPromise;
+      logoLoadPromise = (async () => {
+        let dernierLogoValide = '';
+        let dernierMimeValide = LOGO_MIME_DEFAULT;
+        try {
+          dernierLogoValide = localStorage.getItem('aurore_logo_url') || '';
+          dernierMimeValide = localStorage.getItem('aurore_logo_mime') || LOGO_MIME_DEFAULT;
+        } catch (_) {}
+        if (dernierLogoValide && /^https:\/\//i.test(dernierLogoValide)) {
+          appliquerLogo(dernierLogoValide, LOGO_TYPES.includes(dernierMimeValide) ? dernierMimeValide : LOGO_MIME_DEFAULT);
         }
-      } catch(e) {
-        console.warn('[Logo] Configuration partagée indisponible, logo par défaut conservé.', e);
-        appliquerLogo(LOGO_URL_BASE, LOGO_MIME_DEFAULT);
-      }
+        try {
+          const res = await fetch(
+            SUPABASE_URL + '/rest/v1/aurore_admin_interface_settings?select=setting_value&setting_key=eq.' + encodeURIComponent(LOGO_SETTING_KEY),
+            { headers: { 'apikey': SUPABASE_ANON_KEY }, cache: 'no-store' }
+          );
+          if (!res.ok) throw new Error('Lecture de la configuration du logo : HTTP ' + res.status);
+          const rows = await res.json();
+          const cfg = rows?.[0]?.setting_value;
+          if (cfg?.url && typeof cfg.url === 'string') {
+            appliquerLogo(cfg.url, LOGO_TYPES.includes(cfg.mimeType) ? cfg.mimeType : LOGO_MIME_DEFAULT);
+          } else if (!dernierLogoValide) {
+            appliquerLogo(LOGO_URL_BASE, LOGO_MIME_DEFAULT);
+          }
+        } catch(e) {
+          console.warn('[Logo] Configuration partagée temporairement indisponible ; dernier logo valide conservé.', e);
+          if (!dernierLogoValide) appliquerLogo(LOGO_URL_BASE, LOGO_MIME_DEFAULT);
+        }
+      })();
+      try { await logoLoadPromise; }
+      finally { logoLoadPromise = null; }
     }
 
-    // Détecte le vrai format à partir de la signature binaire, pas du nom
-    // choisi par Android (un SVG peut par exemple arriver sous l'extension .png).
     async function detecterTypeImage(fichier) {
       const head = new Uint8Array(await fichier.slice(0, 4096).arrayBuffer());
       const ascii = (debut, fin) => Array.from(head.slice(debut, fin), b => String.fromCharCode(b)).join('');
@@ -427,7 +444,7 @@
 
     window.chargerLogoSite = chargerLogoPartage;
     window.AURORE_LOGO_URL = () => {
-      try { return sessionStorage.getItem('aurore_logo_url') || LOGO_URL_BASE; }
+      try { return localStorage.getItem('aurore_logo_url') || sessionStorage.getItem('aurore_logo_url') || LOGO_URL_BASE; }
       catch(e) { return LOGO_URL_BASE; }
     };
 
@@ -579,7 +596,6 @@
   rendrePresentation();
   rendreAccueil();
   majFilAriane();
-  chargerLogoSite();
 
   const VIDEO_TABLE='Videos';
   async function chargerVideosAccueil(){
