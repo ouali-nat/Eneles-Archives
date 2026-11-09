@@ -290,6 +290,8 @@
   (function(){
     const LOGO_CLE = 'site-logo-auraster';
     const LOGO_VERSION_KEY = 'aurore_logo_version';
+    const LOGO_MIME_KEY = 'aurore_logo_mime';
+    const LOGO_MIME_DEFAULT = 'image/png';
     const LOGO_URL_BASE = `${R2_PUBLIC_URL}/${LOGO_CLE}`;
 
     function logoUrl(version) {
@@ -325,31 +327,38 @@
       img.src = url;
     }
 
-    function mettreAJourLiensLogo(url) {
-      // Une seule source R2 pour le logo du site, le favicon et l'icône Apple.
-      // Le manifeste PWA pointe lui aussi vers le même objet R2.
+    function mettreAJourLiensLogo(url, mimeType) {
+      // Le type MIME suit le fichier réellement téléversé (notamment SVG).
+      const type = mimeType || LOGO_MIME_DEFAULT;
       const manifest = document.querySelector('link[rel="manifest"]');
       if (manifest) manifest.href = `manifest.json?v=${encodeURIComponent(Date.now())}`;
       document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach(link => {
         link.href = url;
+        link.type = type;
+        if (link.rel === 'icon' && type === 'image/svg+xml') link.sizes = 'any';
       });
       document.querySelector('meta[property="og:image"]')?.setAttribute('content', url);
+      document.querySelector('meta[property="og:image:type"]')?.setAttribute('content', type);
       document.querySelector('meta[name="twitter:image"]')?.setAttribute('content', url);
       const preload = document.querySelector('link[rel="preload"][as="image"]');
       if (preload) preload.href = url;
-      const orgLogo = document.querySelector('script[type="application/ld+json"]');
-      // Le JSON-LD initial contient déjà la même URL R2 sans version ;
-      // Google récupérera donc toujours la source officielle du logo.
+      // Le JSON-LD initial conserve l'URL R2 stable, sans paramètre de cache.
     }
 
-    function chargerLogoSite(versionForcee) {
+    function chargerLogoSite(versionForcee, mimeForce) {
       let version = versionForcee;
-      if (!version) {
-        try { version = localStorage.getItem(LOGO_VERSION_KEY) || ''; } catch(e) {}
-      }
+      let mimeType = mimeForce;
+      try {
+        if (!version) version = localStorage.getItem(LOGO_VERSION_KEY) || '';
+        if (!mimeType) mimeType = localStorage.getItem(LOGO_MIME_KEY) || LOGO_MIME_DEFAULT;
+      } catch(e) {}
+      mimeType = mimeType || LOGO_MIME_DEFAULT;
       const url = logoUrl(String(version || ''));
-      try { sessionStorage.setItem('aurore_logo_url', url); } catch(e) {}
-      try { localStorage.setItem(LOGO_VERSION_KEY, version); } catch(e) {}
+      try {
+        sessionStorage.setItem('aurore_logo_url', url);
+        localStorage.setItem(LOGO_VERSION_KEY, version || '');
+        localStorage.setItem(LOGO_MIME_KEY, mimeType);
+      } catch(e) {}
 
       const cibles = [
         document.getElementById('brandLogo'),
@@ -357,7 +366,7 @@
         document.getElementById('accessBrandLogo')
       ];
       cibles.forEach(c => appliquerLogoDansConteneur(c, url));
-      mettreAJourLiensLogo(url);
+      mettreAJourLiensLogo(url, mimeType);
     }
     window.chargerLogoSite = chargerLogoSite;
     window.AURORE_LOGO_URL = () => logoUrl(Date.now());
@@ -369,8 +378,15 @@
       const fichier = fileInput?.files?.[0];
       if (msg) { msg.className = 'form-msg'; msg.style.display = ''; }
       if (!fichier) { if(msg){ msg.textContent = "Choisis d'abord une image."; msg.className = 'form-msg err'; } return; }
-      if (!['image/png','image/jpeg','image/webp','image/gif'].includes(fichier.type)) {
-        if(msg){ msg.textContent = "Format non pris en charge (PNG, JPG, WEBP ou GIF uniquement)."; msg.className = 'form-msg err'; } return;
+      const extension = (fichier.name.split('.').pop() || '').toLowerCase();
+      const typesParExtension = {
+        png:'image/png', jpg:'image/jpeg', jpeg:'image/jpeg', webp:'image/webp',
+        gif:'image/gif', avif:'image/avif', bmp:'image/bmp', svg:'image/svg+xml'
+      };
+      const typeFichier = fichier.type || typesParExtension[extension] || '';
+      const typesAutorises = ['image/png','image/jpeg','image/webp','image/gif','image/avif','image/bmp','image/svg+xml'];
+      if (!typesAutorises.includes(typeFichier)) {
+        if(msg){ msg.textContent = "Format non pris en charge. Utilise PNG, JPG, WEBP, GIF, AVIF, BMP ou SVG."; msg.className = 'form-msg err'; } return;
       }
       if (fichier.size > 5 * 1024 * 1024) {
         if(msg){ msg.textContent = "Image trop lourde (5 Mo maximum pour le logo)."; msg.className = 'form-msg err'; } return;
@@ -379,7 +395,7 @@
       try {
         const res = await fetch(`${R2_WORKER_URL}/${LOGO_CLE}`, {
           method: 'PUT',
-          headers: { 'Content-Type': fichier.type },
+          headers: { 'Content-Type': typeFichier },
           body: fichier,
           cache: 'no-store'
         });
@@ -387,7 +403,7 @@
         // Nouvelle version persistée : tous les composants du site utilisent
         // immédiatement la nouvelle URL sans conserver l'ancienne image.
         const nouvelleVersion = `${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
-        chargerLogoSite(nouvelleVersion);
+        chargerLogoSite(nouvelleVersion, typeFichier);
         // Force la mise à jour du SW/PWA quand le navigateur le permet.
         try { await navigator.serviceWorker?.ready?.then(reg => reg.update()); } catch(e) {}
         if (fileInput) fileInput.value = '';
@@ -404,7 +420,8 @@
       try {
         const res = await fetch(`${R2_WORKER_URL}/${LOGO_CLE}`, { method: 'DELETE', cache: 'no-store' });
         if (!res.ok) throw new Error('Statut ' + res.status);
-        chargerLogoSite(`${Date.now()}-reset`);
+        try { localStorage.removeItem(LOGO_MIME_KEY); } catch(e) {}
+        chargerLogoSite(`${Date.now()}-reset`, LOGO_MIME_DEFAULT);
         if (msg) { msg.textContent = "Logo retiré — aucun ancien logo local ne sera réutilisé automatiquement."; msg.className = 'form-msg ok'; }
       } catch (err) {
         if (msg) { msg.textContent = "Impossible de retirer le logo automatiquement. Envoie un nouveau logo pour le remplacer."; msg.className = 'form-msg err'; }
