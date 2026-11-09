@@ -40,3 +40,19 @@
   background-position: center, center !important;
   background-repeat: no-repeat !important;
 }
+
+/* Priorité supérieure aux anciens correctifs qui forçaient cover ou un zoom. */
+body>header #brandLogo>img,
+#screen-aurore-ia .aurore-ia-mark>img,
+#screen-aurore-ia .aurore-ia-welcome-mark>img,
+#screen-aurore-ia .aurore-ia-msg-avatar>img,
+#screen-aurore-ia .aurore-ia-history-item-avatar>img,
+.access-logo>img,
+.aurore-verify-logo>img {
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+  padding: 4px !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
