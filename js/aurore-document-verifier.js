@@ -40,11 +40,25 @@
   layer.className = "aurore-verify-layer";
   layer.innerHTML = `
     <div class="aurore-verify-shell"><section class="aurore-verify-card aurore-verify-loading">
-      <header class="aurore-verify-top"><div class="aurore-verify-logo"><img src="https://pub-0433751d08eb49fcafb7355ef0bf42ab.r2.dev/site-logo-auraster" alt="Aurore"></div><div><div class="aurore-verify-kicker">Section Archives</div><div class="aurore-verify-brand">Vérification publique</div></div></header>
+      <header class="aurore-verify-top"><div class="aurore-verify-logo"><img class="aurore-verify-logo-image" src="https://pub-0433751d08eb49fcafb7355ef0bf42ab.r2.dev/site-logo-auraster" alt="Eneles"></div><div><div class="aurore-verify-kicker">Section Archives</div><div class="aurore-verify-brand">Vérification publique</div></div></header>
       <div class="aurore-verify-body"><div class="aurore-verify-state">Vérification en cours…</div><h1 class="aurore-verify-title">Contrôle de l’édition Aurore</h1><p class="aurore-verify-message">Aurore vérifie la publication publique et l’intégrité du fichier associé à cette référence.</p></div>
       <footer class="aurore-verify-foot"><span>AURORA · Référence #${generatedId}</span><span>© Aurore — Section Archives</span></footer>
     </section></div>`;
   document.body.appendChild(layer);
+  const logoVerifier = layer.querySelector('.aurore-verify-logo-image');
+  function actualiserLogoVerification(url) {
+    if (logoVerifier && typeof url === 'string' && /^https:\/\//i.test(url)) {
+      logoVerifier.src = url;
+      logoVerifier.style.objectFit = 'contain';
+    }
+  }
+  try {
+    const savedLogo = sessionStorage.getItem('aurore_logo_url');
+    if (savedLogo) actualiserLogoVerification(savedLogo);
+    else if (typeof window.AURORE_LOGO_URL === 'function') actualiserLogoVerification(window.AURORE_LOGO_URL());
+  } catch (_) {}
+  window.addEventListener('eneles:logo-updated', event => actualiserLogoVerification(event.detail?.url));
+
   const card = layer.querySelector(".aurore-verify-card");
   const body = layer.querySelector(".aurore-verify-body");
   function esc(value) { const d=document.createElement("div"); d.textContent=String(value==null?"":value); return d.innerHTML; }

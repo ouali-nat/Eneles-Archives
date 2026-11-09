@@ -1,0 +1,42 @@
+/* Eneles — rendu unifié du logo sur les différents espaces.
+   Le logo conserve ses proportions : aucun recadrage ni étirement. */
+:is(#brandLogo, #adminLogoPreview, #accessBrandLogo, #auroreIAMark,
+    .aurore-ia-mark, .aurore-ia-welcome-mark, .aurore-ia-history-item-avatar,
+    .aurore-ia-msg-avatar, .aurore-verify-logo) {
+  overflow: hidden !important;
+  display: grid !important;
+  place-items: center !important;
+}
+:is(#brandLogo, #adminLogoPreview, #accessBrandLogo, #auroreIAMark,
+    .aurore-ia-mark, .aurore-ia-welcome-mark, .aurore-ia-history-item-avatar,
+    .aurore-ia-msg-avatar, .aurore-verify-logo) > img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  padding: 4px !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+  border-radius: inherit !important;
+  box-sizing: border-box !important;
+}
+/* Emplacements qui utilisaient directement l'ancienne URL R2 en CSS. */
+#screen-aurore-ia .aurore-ia-welcome-mark {
+  background-image: var(--eneles-logo-image, none),
+    linear-gradient(145deg, var(--ia-accent), var(--ia-accent-2) 60%, var(--ia-accent-3)) !important;
+  background-size: contain, cover !important;
+  background-position: center, center !important;
+  background-repeat: no-repeat !important;
+}
+.welcome-fusion-surface {
+  background-image: var(--eneles-logo-image, none),
+    linear-gradient(140deg, #fff, color-mix(in srgb, var(--theme-secondary, #C084FC) 14%, #fff)) !important;
+  background-size: contain, cover !important;
+  background-position: center, center !important;
+  background-repeat: no-repeat !important;
+}

@@ -295,11 +295,14 @@
       const type = mimeType || LOGO_MIME_DEFAULT;
       const version = Date.now();
       const urlVersionnee = url + (url.includes('?') ? '&' : '?') + 'v=' + version;
-      const cibles = [
-        document.getElementById('brandLogo'),
-        document.getElementById('adminLogoPreview'),
-        document.getElementById('accessBrandLogo')
-      ];
+      // Source commune pour les images HTML et les logos en arrière-plan.
+      // Le paramètre de version évite les anciennes copies mises en cache.
+      document.documentElement.style.setProperty('--eneles-logo-image', 'url("' + urlVersionnee.replace(/"/g, '%22') + '")');
+      const cibles = Array.from(document.querySelectorAll(
+        '#brandLogo, #adminLogoPreview, #accessBrandLogo, #auroreIAMark, ' +
+        '.aurore-ia-mark, .aurore-ia-welcome-mark, .aurore-ia-history-item-avatar, ' +
+        '.aurore-ia-msg-avatar, .aurore-verify-logo'
+      ));
       cibles.forEach(conteneur => {
         if (!conteneur) return;
         const img = new Image();
@@ -311,7 +314,11 @@
           img.style.height = '100%';
           img.style.display = 'block';
           img.style.objectFit = 'contain';
+          img.style.objectPosition = 'center';
+          img.style.transform = 'none';
+          img.style.padding = '0';
           conteneur.replaceChildren(img);
+          conteneur.dataset.enelesLogoUrl = urlVersionnee;
         };
         img.onerror = () => console.warn('[Logo] Image inaccessible :', url);
         img.src = urlVersionnee;
@@ -333,6 +340,7 @@
         sessionStorage.setItem('aurore_logo_url', urlVersionnee);
         localStorage.setItem('aurore_logo_mime', type);
       } catch(e) {}
+      window.dispatchEvent(new CustomEvent('eneles:logo-updated', { detail: { url: urlVersionnee, mimeType: type } }));
     }
 
     async function chargerLogoPartage() {
@@ -373,6 +381,34 @@
       if (!texte.includes('\0') && /<svg(?:\s|>)/i.test(texte)) return 'image/svg+xml';
 
       throw new Error("Le contenu du fichier n'est pas une image PNG, JPG, WEBP, GIF, AVIF, BMP ou SVG reconnue. Vérifie le fichier sélectionné.");
+    }
+
+    // Génère une copie PNG carrée destinée aux moteurs PDF (pdf-lib ne lit pas SVG).
+    async function creerLogoPdfPng(fichier) {
+      const objectUrl = URL.createObjectURL(fichier);
+      try {
+        const image = new Image();
+        image.src = objectUrl;
+        await new Promise((resolve, reject) => {
+          image.onload = resolve;
+          image.onerror = () => reject(new Error('Impossible de préparer la version du logo pour les documents PDF.'));
+        });
+        const canvas = document.createElement('canvas');
+        canvas.width = 512; canvas.height = 512;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('Le navigateur ne peut pas préparer la version PDF du logo.');
+        const ratio = Math.min(480 / image.naturalWidth, 480 / image.naturalHeight);
+        const width = Math.max(1, Math.round(image.naturalWidth * ratio));
+        const height = Math.max(1, Math.round(image.naturalHeight * ratio));
+        ctx.clearRect(0, 0, 512, 512);
+        ctx.drawImage(image, Math.round((512-width)/2), Math.round((512-height)/2), width, height);
+        const blob = await new Promise((resolve, reject) => canvas.toBlob(
+          value => value ? resolve(value) : reject(new Error('La version PNG du logo PDF n’a pas pu être créée.')),
+          'image/png'
+        ));
+        if (!blob || !blob.size) throw new Error('La version PNG du logo PDF est vide.');
+        return blob;
+      } finally { URL.revokeObjectURL(objectUrl); }
     }
 
     function verifierImage(url) {
@@ -459,7 +495,20 @@
         etape = 'vérification de l’image publique';
         await verifierImage(url);
 
-        const config = { url, mimeType: typeFichier, updatedAt: new Date().toISOString() };
+        etape = 'préparation du logo pour les documents PDF';
+        const pdfBlob = await creerLogoPdfPng(fichier);
+        const pdfNom = nomFichier.replace(/\.[^.]+$/, '') + '-pdf.png';
+        const pdfUrl = R2_PUBLIC_URL + '/' + pdfNom;
+        etape = 'envoi de la version PDF vers Cloudflare R2';
+        const pdfUpload = await fetch(R2_WORKER_URL + '/' + pdfNom, {
+          method: 'PUT', headers: { 'Content-Type': 'image/png' }, body: pdfBlob, cache: 'no-store'
+        });
+        const pdfUploadBody = await pdfUpload.text().catch(() => '');
+        if (!pdfUpload.ok) throw new Error('La version PDF du logo n’a pas pu être stockée (HTTP ' + pdfUpload.status + '). ' + pdfUploadBody);
+        etape = 'vérification de la version PDF publique';
+        await verifierImage(pdfUrl);
+
+        const config = { url, mimeType: typeFichier, pdfUrl, pdfMimeType: 'image/png', updatedAt: new Date().toISOString() };
         etape = 'enregistrement du logo actif dans Supabase';
         const save = await fetch(SUPABASE_URL + '/rest/v1/aurore_admin_interface_settings?on_conflict=setting_key', {
           method: 'POST',
