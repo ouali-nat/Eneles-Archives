@@ -383,8 +383,10 @@
         png:'image/png', jpg:'image/jpeg', jpeg:'image/jpeg', webp:'image/webp',
         gif:'image/gif', avif:'image/avif', bmp:'image/bmp', svg:'image/svg+xml'
       };
-      const typeFichier = fichier.type || typesParExtension[extension] || '';
       const typesAutorises = ['image/png','image/jpeg','image/webp','image/gif','image/avif','image/bmp','image/svg+xml'];
+      const typeFichier = typesAutorises.includes(fichier.type)
+        ? fichier.type
+        : (typesParExtension[extension] || fichier.type || '');
       if (!typesAutorises.includes(typeFichier)) {
         if(msg){ msg.textContent = "Format non pris en charge. Utilise PNG, JPG, WEBP, GIF, AVIF, BMP ou SVG."; msg.className = 'form-msg err'; } return;
       }
