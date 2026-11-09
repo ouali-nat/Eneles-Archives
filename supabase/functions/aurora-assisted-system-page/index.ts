@@ -16,11 +16,22 @@ const clamp=(n:number)=>Math.max(0,Math.min(100,n));
 const hex=(v:any)=>{const h=String(v??"").trim().toUpperCase();return /^#[0-9A-F]{6}$/.test(h)?h:"#6D28D9"};
 const mix=(h:string,a:number)=>{const s=hex(h).slice(1),c=[0,2,4].map(i=>parseInt(s.slice(i,i+2),16)),q=c.map(x=>Math.round(x+(255-x)*a));return "#"+q.map(x=>x.toString(16).padStart(2,"0")).join("")};
 const rgbh=(h:string)=>{const s=hex(h).slice(1);return rgb(parseInt(s.slice(0,2),16)/255,parseInt(s.slice(2,4),16)/255,parseInt(s.slice(4,6),16)/255)};
-const FONT_CACHE=new Map<string,Promise<Uint8Array>>();let LOGO_CACHE:Promise<Uint8Array>|null=null;
+const FONT_CACHE=new Map<string,Promise<Uint8Array>>();let LOGO_CACHE:Promise<Uint8Array>|null=null;let LOGO_CACHE_URL='';
 async function bytes(url:string){const r=await fetch(url);if(!r.ok)throw new Error("Ressource indisponible : HTTP "+r.status);return new Uint8Array(await r.arrayBuffer())}
 async function fbytes(k:string,urls:any){const cacheKey=k+"|"+urls[k];const x=FONT_CACHE.get(cacheKey);if(x)return x;const p=bytes(urls[k]);FONT_CACHE.set(cacheKey,p);return p}
 async function fonts(pdf:any,family:any="current"){const urls=fontUrls(family);const [r,b,s,sb]=await Promise.all([fbytes("regular",urls),fbytes("bold",urls),fbytes("sans",urls),fbytes("sansBold",urls)]);return{regular:await pdf.embedFont(r,{subset:false}),bold:await pdf.embedFont(b,{subset:false}),sans:await pdf.embedFont(s,{subset:false}),sansBold:await pdf.embedFont(sb,{subset:false})}}
-async function logo(pdf:any){if(!LOGO_CACHE)LOGO_CACHE=bytes(LOGO_URL);const b=await LOGO_CACHE;if(b[0]===137&&b[1]===80)return pdf.embedPng(b);if(b[0]===255&&b[1]===216)return pdf.embedJpg(b);throw new Error("Logo Aurore invalide")}
+async function logo(pdf:any){
+  const setting=await admin.from("aurore_admin_interface_settings").select("setting_value").eq("setting_key","site_logo").maybeSingle();
+  const cfg=setting.data?.setting_value||{};
+  const logoUrl=String(cfg.pdfUrl||((cfg.mimeType==="image/png"||cfg.mimeType==="image/jpeg")?cfg.url:"")||"");
+  if(!logoUrl)throw new Error("La version PNG du logo pour les documents PDF n’est pas disponible. Réenregistrez le logo depuis Apparence.");
+  if(LOGO_CACHE_URL!==logoUrl){LOGO_CACHE_URL=logoUrl;LOGO_CACHE=null;}
+  if(!LOGO_CACHE)LOGO_CACHE=bytes(logoUrl);
+  const b=await LOGO_CACHE;
+  if(b[0]===137&&b[1]===80)return pdf.embedPng(b);
+  if(b[0]===255&&b[1]===216)return pdf.embedJpg(b);
+  throw new Error("La version PDF du logo Eneles n’est pas une image PNG/JPEG valide.");
+}
 function wrap(s:string,font:any,size:number,max:number){
   const words=clean(s).split(" ").filter(Boolean),lines:string[]=[];
   let line="";

@@ -33,6 +33,7 @@ const FONT_URLS={
 };
 const FONT_BYTES_CACHE=new Map<string,Promise<Uint8Array>>();
 let LOGO_BYTES_PROMISE:Promise<Uint8Array>|null=null;
+let LOGO_BYTES_URL='';
 
 const H = {
   "Access-Control-Allow-Origin":"*",
@@ -226,10 +227,16 @@ async function embedRaster(pdf:any,bytes:Uint8Array,label:string){
 }
 
 async function fetchLogoBytes(){
-  if(LOGO_BYTES_PROMISE)return LOGO_BYTES_PROMISE;
-  LOGO_BYTES_PROMISE=fetch(LOGO_URL).then(async r=>{
-    if(!r.ok)throw new Error("Logo Aurore indisponible (HTTP "+r.status+").");
-    return new Uint8Array(await r.arrayBuffer());
+  const setting=await admin.from("aurore_admin_interface_settings").select("setting_value").eq("setting_key","site_logo").maybeSingle();
+  const cfg=setting.data?.setting_value||{};
+  const logoUrl=String(cfg.pdfUrl||((cfg.mimeType==="image/png"||cfg.mimeType==="image/jpeg")?cfg.url:"")||"");
+  if(!logoUrl)throw new Error("La version PNG du logo pour les documents PDF n’est pas disponible. Réenregistrez le logo depuis Apparence.");
+  if(LOGO_BYTES_URL!==logoUrl){LOGO_BYTES_URL=logoUrl;LOGO_BYTES_PROMISE=null;}
+  if(!LOGO_BYTES_PROMISE)LOGO_BYTES_PROMISE=fetch(logoUrl,{cache:"no-store"}).then(async r=>{
+    if(!r.ok)throw new Error("Logo Eneles indisponible (HTTP "+r.status+").");
+    const bytes=new Uint8Array(await r.arrayBuffer());
+    if(bytes.length<8)throw new Error("La version PDF du logo Eneles est vide.");
+    return bytes;
   });
   return LOGO_BYTES_PROMISE;
 }

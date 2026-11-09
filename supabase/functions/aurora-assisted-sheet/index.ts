@@ -21,7 +21,7 @@ const rgbh=(h:string)=>{const s=hex(h).slice(1);return rgb(parseInt(s.slice(0,2)
 const GRAY="#E6E6E7",GRAY_IN="#EFEFF0",GRAY_ALT="#E1E1E3",GRAY_EDGE="#97989C",GRAY_SOFT="#C4C5C8",INK="#202126",INK2="#4B4C54",INK3="#6F717B";
 
 // ───────────── Ressources ─────────────
-const FONT_CACHE=new Map<string,Promise<Uint8Array>>();let LOGO_CACHE:Promise<Uint8Array>|null=null;
+const FONT_CACHE=new Map<string,Promise<Uint8Array>>();let LOGO_CACHE:Promise<Uint8Array>|null=null;let LOGO_CACHE_URL='';
 async function bytes(url:string){const r=await fetch(url);if(!r.ok)throw new Error("Ressource indisponible : HTTP "+r.status);return new Uint8Array(await r.arrayBuffer())}
 async function fbytes(k:string){const x=FONT_CACHE.get(k);if(x)return x;const p=bytes(FONT_URLS[k]);FONT_CACHE.set(k,p);p.catch(()=>FONT_CACHE.delete(k));return p}
 async function fonts(pdf:any){
@@ -30,28 +30,17 @@ async function fonts(pdf:any){
   try{f.italic=await pdf.embedFont(await fbytes("italic"),{subset:false})}catch(_){f.italic=f.regular}
   return f;
 }
-async function logo(pdf:any){if(!LOGO_CACHE)LOGO_CACHE=bytes(LOGO_URL);const b=await LOGO_CACHE;if(b[0]===137&&b[1]===80)return pdf.embedPng(b);if(b[0]===255&&b[1]===216)return pdf.embedJpg(b);throw new Error("Logo Aurore invalide")}
-
-// ───────────── Texte ─────────────
-const GREEK:Record<string,string>={α:"alpha",β:"beta",γ:"gamma",δ:"delta",θ:"theta",λ:"lambda",μ:"mu",π:"pi",ρ:"rho",σ:"sigma",φ:"phi",ω:"omega"};
-const REPL:Record<string,string>={"≈":"~","≥":">=","≤":"<=","≠":"!=","∫":"int","′":"'","⁻":"-","¹":"1","−":"-"};
-// Les polices Latin Modern n'ont pas toutes les lettres grecques : repli lisible plutôt qu'un carré vide.
-function fit(font:any,s:string){
-  let set:Set<number>|null=null;try{const a=font.getCharacterSet?.();if(Array.isArray(a)&&a.length)set=new Set(a)}catch(_){}
-  return Array.from(String(s)).map(ch=>{if(!set||set.has(ch.codePointAt(0)!))return ch;return GREEK[ch]||REPL[ch]||"?"}).join("");
-}
-// Unités : « J·mol⁻¹ » ou « J.mol^-1 » deviennent une seule chaîne avec exposants vrais.
-function tidyUnit(u:string){return clean(u).replace(/⁻¹/g,"^-1").replace(/⁻²/g,"^-2").replace(/⁻³/g,"^-3").replace(/²/g,"^2").replace(/³/g,"^3").replace(/(\w)\.(?=[A-Za-z])/g,"$1·")}
-function segs(s:string){
-  const out:{t:string,k:"n"|"sup"|"sub"}[]=[];const re=/\^\{([^}]*)\}|\^(-?\d+)|_\{([^}]*)\}|_([A-Za-z0-9])/g;let i=0,m:RegExpExecArray|null;
-  while((m=re.exec(s))){if(m.index>i)out.push({t:s.slice(i,m.index),k:"n"});if(m[1]!==undefined||m[2]!==undefined)out.push({t:m[1]??m[2],k:"sup"});else out.push({t:m[3]??m[4],k:"sub"});i=re.lastIndex}
-  if(i<s.length)out.push({t:s.slice(i),k:"n"});return out;
-}
-function rw(font:any,s:string,size:number){let w=0;for(const g of segs(fit(font,s)))w+=font.widthOfTextAtSize(g.t,g.k==="n"?size:size*.68);return w}
-function rich(p:any,font:any,x:number,y:number,s:string,size:number,color:string){
-  for(const g of segs(fit(font,s))){const sz=g.k==="n"?size:size*.68,dy=g.k==="sup"?size*.4:g.k==="sub"?-size*.2:0;
-    if(g.t)p.drawText(g.t,{x,y:y+dy,font,size:sz,color:rgbh(color)});x+=font.widthOfTextAtSize(g.t,sz)}
-  return x;
+async function logo(pdf:any){
+  const setting=await admin.from("aurore_admin_interface_settings").select("setting_value").eq("setting_key","site_logo").maybeSingle();
+  const cfg=setting.data?.setting_value||{};
+  const logoUrl=String(cfg.pdfUrl||((cfg.mimeType==="image/png"||cfg.mimeType==="image/jpeg")?cfg.url:"")||"");
+  if(!logoUrl)throw new Error("La version PNG du logo pour les documents PDF n’est pas disponible. Réenregistrez le logo depuis Apparence.");
+  if(LOGO_CACHE_URL!==logoUrl){LOGO_CACHE_URL=logoUrl;LOGO_CACHE=null;}
+  if(!LOGO_CACHE)LOGO_CACHE=bytes(logoUrl);
+  const b=await LOGO_CACHE;
+  if(b[0]===137&&b[1]===80)return pdf.embedPng(b);
+  if(b[0]===255&&b[1]===216)return pdf.embedJpg(b);
+  throw new Error("La version PDF du logo Eneles n’est pas une image PNG/JPEG valide.");
 }
 function wrap(font:any,s:string,size:number,max:number){
   const words=clean(s).split(" ").filter(Boolean),lines:string[]=[];let line="";
