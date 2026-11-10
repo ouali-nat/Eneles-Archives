@@ -37,3 +37,10 @@
 .document-views-badge[data-view-state="loading"],.document-views-badge[data-view-state="error"]{opacity:.72;}
 [data-theme="light"] .document-views-badge{background:#F0FDFA;border-color:#B9E5DD;color:#475569;}
 @media(max-width:640px){.document-views-badge{font-size:.62rem;padding:5px 8px;}}
+
+.document-works-badge{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:max-content;max-width:100%;padding:5px 10px;border:1px solid var(--bordure);border-radius:999px;background:rgba(59,130,246,.07);color:var(--gris);font-family:inherit;font-size:.66rem;font-weight:800;line-height:1;white-space:nowrap;cursor:pointer;transition:background .16s ease,border-color .16s ease,transform .16s ease}
+.document-works-badge svg{width:13px;height:13px;flex:0 0 auto;color:#3978c8}
+.document-works-badge:hover{background:rgba(59,130,246,.13);border-color:rgba(59,130,246,.38)}
+.document-works-badge:active{transform:scale(.97)}
+[data-theme="light"] .document-works-badge{background:#eff6ff;border-color:#c8dcf5;color:#365b86}
+@media(max-width:640px){.document-works-badge{font-size:.62rem;padding:5px 8px}}
