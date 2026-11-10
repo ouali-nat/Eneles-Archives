@@ -348,7 +348,7 @@
     ball.hidden = false;
     $('#etw-tools').hidden = true;
     state.toolsOpen = false;
-    $('#etw-composer').hidden = true;
+    $('#etw-composer').hidden = !work;
     $('#etw-composer-heading').textContent = work ? 'Modifier la contribution' : 'Préparer une contribution';
     $('#etw-publish').textContent = work ? 'Enregistrer les modifications' : 'Publier la contribution';
     $('#etw-draft-title').value = state.draft.title;
