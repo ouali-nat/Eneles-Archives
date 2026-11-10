@@ -37,3 +37,6 @@
 .document-views-badge[data-view-state="loading"],.document-views-badge[data-view-state="error"]{opacity:.72;}
 [data-theme="light"] .document-views-badge{background:#F0FDFA;border-color:#B9E5DD;color:#475569;}
 @media(max-width:640px){.document-views-badge{font-size:.62rem;padding:5px 8px;}}
+
+/* Accès aux travaux collaboratifs, à côté du compteur de vues. */
+.document-works-badge{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:27px;padding:5px 10px;border:1px solid var(--bordure);border-radius:999px;background:rgba(124,58,237,.07);color:var(--violet);font:inherit;font-size:.66rem;font-weight:800;line-height:1;white-space:nowrap;cursor:pointer;transition:background .15s ease,border-color .15s ease,transform .15s ease}.document-works-badge svg{width:13px;height:13px;flex:0 0 auto}.document-works-badge:hover{background:rgba(124,58,237,.13);border-color:var(--violet)}.document-works-badge:focus-visible{outline:2px solid var(--violet);outline-offset:2px}[data-theme="light"] .document-works-badge{background:#F5F0FF;border-color:#D8C9F4;color:#6D28D9}@media(max-width:640px){.document-works-badge{font-size:.62rem;padding:5px 8px}}
