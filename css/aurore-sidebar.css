@@ -149,3 +149,25 @@
   .asb,.asb-item,html.has-asb body{transition:none;}
 }
 @media print{.asb,.asb-toggle,.asb-scrim{display:none!important;}html.has-asb body{padding-left:0!important;}}
+
+/* Espace admin : accès principal + sous-menu séparé par une petite flèche. */
+.asb-admin-entry{width:100%;min-width:0;}
+.asb-admin-row{display:flex;align-items:center;gap:2px;width:100%;min-width:0;}
+.asb-admin-main{flex:1 1 auto;min-width:0;}
+.asb-admin-expand{
+  display:inline-flex;align-items:center;justify-content:center;
+  flex:0 0 30px;width:30px;height:34px;padding:0;
+  border:0;border-radius:10px;background:transparent;color:inherit;
+  opacity:.72;cursor:pointer;transition:background .18s ease,opacity .18s ease;
+}
+.asb-admin-expand:hover{opacity:1;background:color-mix(in srgb,var(--asb-p) 16%,transparent);}
+.asb-admin-expand:focus-visible{outline:2px solid var(--asb-s);outline-offset:1px;}
+.asb-admin-expand svg{width:15px;height:15px;transform:rotate(90deg);transition:transform .2s ease;}
+.asb-admin-expand[aria-expanded="true"] svg{transform:rotate(270deg);}
+.asb-admin-submenu{display:flex;flex-direction:column;gap:2px;padding:3px 0 7px 34px;}
+.asb-admin-submenu[hidden]{display:none!important;}
+.asb-admin-submenu .asb-sub{min-height:30px;padding:6px 8px;font-size:.78rem;}
+.asb-admin-submenu .asb-sub-dot{width:6px;height:6px;border-radius:50%;}
+html.asb-collapsed .asb-admin-expand,
+html.asb-collapsed .asb-admin-submenu{display:none!important;}
+.asb-admin-main .asb-arrow{display:none!important;}

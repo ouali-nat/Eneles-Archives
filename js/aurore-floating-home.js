@@ -3,7 +3,7 @@
   if(!document.getElementById('auroreSidebarJs')){
     var s=document.createElement('script');
     s.id='auroreSidebarJs';
-    s.src='js/aurore-sidebar.js?v=20261015-security-menu1';
+    s.src='js/aurore-sidebar.js?v=20261110-admin-sidebar-dropdown1';
     document.head.appendChild(s);
   }
 }catch(e){}})();

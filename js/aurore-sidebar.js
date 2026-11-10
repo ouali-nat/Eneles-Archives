@@ -133,6 +133,94 @@
     return b;
   }
 
+  function ouvrirCategorieAdmin(tabKey) {
+    function trouverOnglet() {
+      var tabs = document.querySelectorAll('#adminCategoryGrid .admin-category-card[data-tab]');
+      for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].dataset.tab === tabKey && !tabs[i].hidden) return tabs[i];
+      }
+      return null;
+    }
+    var screen = $('screen-admin');
+    var panel = $('adminPanel');
+    if (screen && screen.classList.contains('active') && panel && getComputedStyle(panel).display !== 'none') {
+      var direct = trouverOnglet();
+      if (direct) direct.click();
+      return;
+    }
+    var adminButton = $('btnAdmin');
+    if (!adminButton) return;
+    adminButton.click();
+    var essais = 0;
+    (function attendreOuverture() {
+      var cible = trouverOnglet();
+      var ecranPret = screen && screen.classList.contains('active') && panel && getComputedStyle(panel).display !== 'none';
+      if (ecranPret && cible) { cible.click(); return; }
+      if (++essais < 60) setTimeout(attendreOuverture, 100);
+    })();
+  }
+
+  function construireEntreeAdmin(it) {
+    var wrap = document.createElement('div');
+    wrap.className = 'asb-admin-entry';
+    var row = document.createElement('div');
+    row.className = 'asb-admin-row';
+    var main = buildItem(it);
+    main.classList.add('asb-admin-main');
+    var expand = document.createElement('button');
+    expand.type = 'button';
+    expand.className = 'asb-admin-expand';
+    expand.setAttribute('aria-label', 'Afficher les espaces administrateur');
+    expand.setAttribute('aria-expanded', 'false');
+    expand.setAttribute('aria-controls', 'asbAdminSubmenu');
+    expand.innerHTML = svg('chevron', 16);
+    var submenu = document.createElement('div');
+    submenu.className = 'asb-admin-submenu';
+    submenu.id = 'asbAdminSubmenu';
+    submenu.hidden = true;
+    expand.addEventListener('click', function () {
+      var ouvrir = submenu.hidden;
+      if (ouvrir) actualiserSousMenuAdmin(submenu);
+      submenu.hidden = !ouvrir;
+      expand.setAttribute('aria-expanded', ouvrir ? 'true' : 'false');
+      expand.setAttribute('aria-label', ouvrir ? 'Masquer les espaces administrateur' : 'Afficher les espaces administrateur');
+    });
+    row.appendChild(main);
+    row.appendChild(expand);
+    wrap.appendChild(row);
+    wrap.appendChild(submenu);
+    return wrap;
+  }
+
+  function actualiserSousMenuAdmin(submenu) {
+    if (!submenu) return;
+    var tabs = document.querySelectorAll('#adminCategoryGrid .admin-category-card[data-tab]');
+    submenu.innerHTML = '';
+    Array.prototype.forEach.call(tabs, function (tab) {
+      if (tab.hidden || getComputedStyle(tab).display === 'none') return;
+      var title = tab.querySelector('.admin-category-title');
+      var label = (title ? title.textContent : tab.dataset.tab || '').replace(/\s+/g, ' ').trim();
+      if (!label) return;
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'asb-sub';
+      button.dataset.adminTab = tab.dataset.tab;
+      button.innerHTML = '<span class="asb-sub-dot" aria-hidden="true"></span><span class="asb-label">' + esc(label) + '</span>';
+      button.addEventListener('click', function () {
+        ouvrirCategorieAdmin(button.dataset.adminTab);
+        markActive('admin');
+        closeOnMobile();
+      });
+      submenu.appendChild(button);
+    });
+    if (!submenu.childElementCount) {
+      var empty = document.createElement('p');
+      empty.className = 'asb-empty';
+      empty.textContent = 'Aucun espace disponible.';
+      submenu.appendChild(empty);
+    }
+  }
+
   function acc(id, title, icon, open) {
     return '<details class="asb-acc" id="' + id + '"' + (open ? ' open' : '') + '><summary><span class="asb-ico">' + svg(icon) + '</span><span class="asb-label">' + title + '</span><span class="asb-caret">' + svg('chevron', 16) + '</span></summary><div class="asb-acc-body" id="' + id + 'Body"></div></details>';
   }
@@ -178,7 +266,7 @@
     var gMain = nav.querySelector('[data-group="main"]');
     var gMore = nav.querySelector('[data-group="more"]');
     MENU.forEach(function (it) { gMain.appendChild(buildItem(it)); });
-    MORE.forEach(function (it) { gMore.appendChild(buildItem(it)); });
+    MORE.forEach(function (it) { gMore.appendChild(it.id === 'admin' ? construireEntreeAdmin(it) : buildItem(it)); });
 
     try { buildLook(); } catch (e) { if (window.console) console.warn('[sidebar] apparence', e); }
     try { buildFloat(); } catch (e) { if (window.console) console.warn('[sidebar] flottants', e); }
@@ -424,6 +512,7 @@
       if (it.admin && !adm) show = false;
       if (it.target && !$(it.target)) show = false;
       b.hidden = !show;
+      if (it.id === 'admin') { var entry = b.closest('.asb-admin-entry'); if (entry) entry.hidden = !show; }
     });
     $('asbSections').hidden = !on;
 

@@ -49,7 +49,12 @@
   // ---------- TAILLE DES DOCUMENTS ----------
   const TAILLES_DOCUMENTS_CACHE = new Map();
   const TAILLES_DOCUMENTS_PROMESSES = new Map();
-  function tailleBadgeMarkup(url){if(!url)return '';return `<span class="document-size-badge" data-document-size data-size-url="${encodeURIComponent(String(url))}" data-size-state="loading" title="Taille du fichier"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg><span data-size-label>Calcul de la taille…</span></span>`;}
+  function tailleBadgeMarkup(url, documentId, isPublished){
+    const id=Number(documentId);
+    const sizeMarkup=url?`<span class="document-size-badge" data-document-size data-size-url="${encodeURIComponent(String(url))}" data-size-state="loading" title="Taille du fichier"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg><span data-size-label>Calcul de la taille…</span></span>`:'';
+    const viewsMarkup=isPublished===true&&Number.isSafeInteger(id)&&id>0?`<span class="document-views-badge" data-document-views data-document-id="${id}" data-view-state="loading" title="Nombre de vues"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg><span data-view-label>Chargement des vues…</span></span>`:'';
+    return sizeMarkup||viewsMarkup?`<div class="document-meta-badges">${sizeMarkup}${viewsMarkup}</div>`:'';
+  }
   async function obtenirTailleDocument(url){
     const key=String(url||'');
     if(!key)return 0;
@@ -74,10 +79,60 @@
     TAILLES_DOCUMENTS_PROMESSES.set(key,promise);
     try{return await promise}finally{TAILLES_DOCUMENTS_PROMESSES.delete(key)}
   }
-  async function actualiserTaillesDocumentsDans(container=document){const nodes=container.querySelectorAll?container.querySelectorAll('[data-document-size]:not([data-size-done])'):[];for(const el of nodes){el.dataset.sizeDone='1';const label=el.querySelector('[data-size-label]');const encoded=el.getAttribute('data-size-url')||'';let url='';try{url=decodeURIComponent(encoded)}catch(e){url=encoded}if(!url){if(label)label.textContent='Taille indisponible';el.dataset.sizeState='error';continue}const taille=await obtenirTailleDocument(url);if(taille>0){if(label)label.textContent=formaterTailleTelechargement(taille);el.dataset.sizeState='ready';el.title='Taille du fichier : '+formaterTailleTelechargement(taille)}else{if(label)label.textContent='Taille indisponible';el.dataset.sizeState='error'}}}
-  const OBSERVATEUR_TAILLES_DOCUMENTS=new MutationObserver(mutations=>{for(const m of mutations)m.addedNodes.forEach(node=>{if(node.nodeType===1&&(node.matches?.('[data-document-size]')||node.querySelector?.('[data-document-size]')))actualiserTaillesDocumentsDans(node)})});
+  async function actualiserTaillesDocumentsDans(container=document){actualiserVuesDocumentsDans(container);const nodes=container.querySelectorAll?container.querySelectorAll('[data-document-size]:not([data-size-done])'):[];for(const el of nodes){el.dataset.sizeDone='1';const label=el.querySelector('[data-size-label]');const encoded=el.getAttribute('data-size-url')||'';let url='';try{url=decodeURIComponent(encoded)}catch(e){url=encoded}if(!url){if(label)label.textContent='Taille indisponible';el.dataset.sizeState='error';continue}const taille=await obtenirTailleDocument(url);if(taille>0){if(label)label.textContent=formaterTailleTelechargement(taille);el.dataset.sizeState='ready';el.title='Taille du fichier : '+formaterTailleTelechargement(taille)}else{if(label)label.textContent='Taille indisponible';el.dataset.sizeState='error'}}}
+  const VUES_DOCUMENTS_EN_ATTENTE=new Map();
+  let VUES_DOCUMENTS_BATCH_PROGRAMME=false;
+  function programmerChargementVuesDocuments(){
+    if(VUES_DOCUMENTS_BATCH_PROGRAMME)return;
+    VUES_DOCUMENTS_BATCH_PROGRAMME=true;
+    queueMicrotask(traiterVuesDocumentsEnAttente);
+  }
+  function actualiserVuesDocumentsDans(container=document){
+    const nodes=[];
+    if(container.matches?.('[data-document-views]:not([data-view-done])'))nodes.push(container);
+    if(container.querySelectorAll)nodes.push(...container.querySelectorAll('[data-document-views]:not([data-view-done])'));
+    nodes.forEach(el=>{
+      el.dataset.viewDone='1';
+      const id=Number(el.dataset.documentId);
+      if(!Number.isSafeInteger(id)||id<=0){el.dataset.viewState='error';const label=el.querySelector('[data-view-label]');if(label)label.textContent='Vues indisponibles';return;}
+      if(!VUES_DOCUMENTS_EN_ATTENTE.has(id))VUES_DOCUMENTS_EN_ATTENTE.set(id,[]);
+      VUES_DOCUMENTS_EN_ATTENTE.get(id).push(el);
+    });
+    if(nodes.length)programmerChargementVuesDocuments();
+  }
+  async function traiterVuesDocumentsEnAttente(){
+    VUES_DOCUMENTS_BATCH_PROGRAMME=false;
+    const entrees=Array.from(VUES_DOCUMENTS_EN_ATTENTE.entries());
+    VUES_DOCUMENTS_EN_ATTENTE.clear();
+    for(let i=0;i<entrees.length;i+=100){
+      const lot=entrees.slice(i,i+100);
+      try{
+        const response=await fetch(`${SUPABASE_URL}/rest/v1/rpc/compter_vues_documents`,{
+          method:'POST',headers:{...HEADERS,'Content-Type':'application/json'},body:JSON.stringify({p_document_ids:lot.map(([id])=>id)})
+        });
+        if(!response.ok)throw new Error('HTTP '+response.status);
+        const rows=await response.json();
+        const compteurs=new Map((Array.isArray(rows)?rows:[]).map(row=>[Number(row.document_id),Math.max(0,Number(row.vues)||0)]));
+        lot.forEach(([id,elements])=>{
+          const vues=compteurs.get(id)||0;
+          elements.forEach(el=>{
+            const label=el.querySelector('[data-view-label]');
+            if(label)label.textContent=vues.toLocaleString('fr-FR')+' '+(vues===1?'vue':'vues');
+            el.dataset.viewState='ready';
+            el.title=vues+' '+(vues===1?'vue enregistrée':'vues enregistrées');
+          });
+        });
+      }catch(error){
+        lot.forEach(([,elements])=>elements.forEach(el=>{const label=el.querySelector('[data-view-label]');if(label)label.textContent='Vues indisponibles';el.dataset.viewState='error';}));
+        console.warn('[Vues documents] chargement impossible',error);
+      }
+    }
+    if(VUES_DOCUMENTS_EN_ATTENTE.size)programmerChargementVuesDocuments();
+  }
+  const OBSERVATEUR_TAILLES_DOCUMENTS=new MutationObserver(mutations=>{for(const m of mutations)m.addedNodes.forEach(node=>{if(node.nodeType===1){if(node.matches?.('[data-document-size]')||node.querySelector?.('[data-document-size]'))actualiserTaillesDocumentsDans(node);if(node.matches?.('[data-document-views]')||node.querySelector?.('[data-document-views]'))actualiserVuesDocumentsDans(node);}})});
   if(document.body)OBSERVATEUR_TAILLES_DOCUMENTS.observe(document.body,{childList:true,subtree:true});
   window.auroreActualiserTaillesDocumentsDans=actualiserTaillesDocumentsDans;
+  window.auroreActualiserVuesDocumentsDans=actualiserVuesDocumentsDans;
 
   // ---------- COUVERTURES DE LIVRES : PREMIÈRE PAGE DU PDF ----------
   // La couverture d'un livre est TOUJOURS la première page de son PDF, SAUF
@@ -1055,7 +1110,7 @@
         '<div class="titre" title="' + echapperHtmlPub(titreDocument) + '">' + echapperHtmlPub(titreDocument) + '</div>' +
         '<div class="meta">Déposé par ' + (doc.Auteur || 'anonyme') + (telechargementOk ? '' : ' · Lecture seule') + '</div>' +
         (contexte ? '<div class="doc-context">' + echapperHtmlPub(contexte) + '</div>' : '') +
-        tailleBadgeMarkup(doc.Fichier_url) + '</div></div>' +
+        tailleBadgeMarkup(doc.Fichier_url, doc.id, doc.Publie === true) + '</div></div>' +
         boutonOuvrirCarteDocumentMarkup() + boutonPlusCarteDocumentMarkup() + panneauActionsCarteDocumentMarkup(telechargementOk);
       brancherActionsCarteDocument(row, doc);
       actualiserEtatActionsDocument(row, doc);
@@ -1121,7 +1176,7 @@
         '<div class="titre" title="' + echapperHtmlPub(titreDocument) + '">' + echapperHtmlPub(titreDocument) + '</div>' +
         '<div class="meta">Déposé par ' + (doc.Auteur || 'Aurore') + (telechargementOk ? '' : ' · Lecture seule') + '</div>' +
         (contexte ? '<div class="doc-context">' + contexte + '</div>' : '') +
-        tailleBadgeMarkup(doc.Fichier_url) + '</div></div>' +
+        tailleBadgeMarkup(doc.Fichier_url, doc.id, doc.Publie === true) + '</div></div>' +
         boutonOuvrirCarteDocumentMarkup() + boutonPlusCarteDocumentMarkup() + panneauActionsCarteDocumentMarkup(telechargementOk);
       brancherActionsCarteDocument(row, doc);
       actualiserEtatActionsDocument(row, doc);
@@ -1183,7 +1238,7 @@
             '<div class="titre" title="' + echapperHtmlPub(titreDocument) + '">' + echapperHtmlPub(titreDocument) + '</div>' +
             '<div class="meta">Déposé par ' + (doc.Auteur || 'anonyme') + (telechargementOk ? '' : ' · Lecture seule') + '</div>' +
             (contexte ? '<div class="doc-context">' + contexte + '</div>' : '') +
-            tailleBadgeMarkup(doc.Fichier_url) +
+            tailleBadgeMarkup(doc.Fichier_url, doc.id, doc.Publie === true) +
           '</div>' +
         '</div>' +
         boutonOuvrirCarteDocumentMarkup() +
@@ -1574,7 +1629,7 @@
             <div class="titre" title="${echapperHtmlPub(titreDocument)}">${echapperHtmlPub(titreDocument)}</div>
             <div class="meta">Déposé par ${echapperHtmlPub(doc.Auteur||'anonyme')}${telechargementOk?'':' · Lecture seule'}</div>
             ${contexte?`<div class="doc-context">${echapperHtmlPub(contexte)}</div>`:''}
-            ${tailleBadgeMarkup(doc.Fichier_url)}
+            ${tailleBadgeMarkup(doc.Fichier_url, doc.id, doc.Publie === true)}
           </div>
         </div>
         ${boutonOuvrirCarteDocumentMarkup()}

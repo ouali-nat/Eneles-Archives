@@ -460,7 +460,7 @@
         // Secours : la visionneuse native peut afficher directement le fichier
         // sans recopier tout le document dans la mémoire JavaScript.
         diagLog('→ PDF.js/Range indisponible : ouverture native directe du PDF.');
-        if (afficherVisionneuseNativePDF(doc.Fichier_url)) return;
+        if (afficherVisionneuseNativePDF(doc.Fichier_url)) { enregistrerVueDocument(doc); return; }
         throw derniereErreur || new Error('Impossible d’ouvrir le flux PDF.');
       }
 
@@ -482,6 +482,7 @@
       // Première page : priorité absolue, sans attendre les autres.
       await rendrePagePDF(1,true);
       if (jeton !== PDF_JETON_OUVERTURE) return;
+      enregistrerVueDocument(doc);
       mettreAJourProgressionLecteurPDF(undefined,'Préparation en cours',{speedText:pdf.numPages>1?'Vous pouvez continuer votre lecture pendant la préparation du document.':'Document prêt à lire'});
 
       // Deuxième page et pages voisines : démarrage immédiat mais non bloquant.
@@ -507,6 +508,7 @@
       // le lecteur natif du navigateur peut souvent afficher directement l’URL R2
       // sans exposer les octets au JavaScript. Cela évite de bloquer les gros PDF.
       if (afficherVisionneuseNativePDF(doc.Fichier_url)) {
+        enregistrerVueDocument(doc);
         diagLog('→ Secours visionneuse PDF native activé : affichage direct du fichier.');
       } else {
         afficherErreurLecteur(message, telechargementOk, doc.Fichier_url);
@@ -709,6 +711,32 @@
         })
       });
     } catch (e) { console.warn('[Visites anonymes] enregistrement impossible', e); }
+  }
+
+  // Une vue est comptée lorsque le document est réellement ouvert dans le lecteur.
+  // La RPC applique une déduplication courte par visiteur et par document.
+  async function enregistrerVueDocument(doc) {
+    if (!doc || doc.Publie !== true) return;
+    const documentId = Number(doc.id);
+    if (!Number.isSafeInteger(documentId) || documentId <= 0) return;
+    try {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/enregistrer_visite_anonyme`, {
+        method: 'POST',
+        headers: { ...HEADERS, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          p_contexte: 'vue_document:' + documentId,
+          p_document_titre: (doc && doc.Titre) || null,
+          p_visitor_id: idVisiteurAnonyme(),
+          p_user_agent: null
+        })
+      });
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const badges = document.querySelectorAll('[data-document-views][data-document-id="' + documentId + '"]');
+      badges.forEach(el => { delete el.dataset.viewDone; el.dataset.viewState = 'loading'; const label = el.querySelector('[data-view-label]'); if (label) label.textContent = 'Actualisation des vues…'; });
+      if (typeof window.auroreActualiserVuesDocumentsDans === 'function') window.auroreActualiserVuesDocumentsDans(document);
+    } catch (e) {
+      console.warn('[Vues documents] enregistrement impossible', e);
+    }
   }
 
   // Bloque le téléchargement pour un visiteur non connecté et ouvre la même

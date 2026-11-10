@@ -421,13 +421,14 @@
     list.innerHTML='';
     if(!arr.length){list.innerHTML='<div class="personal-empty">Aucun document enregistré pour plus tard. Utilisez « ＋ Plus tard » sur un document du site.</div>';return;}
     arr.forEach(d=>{
+      const docPlusTard={id:d.id,Titre:d.titre,Auteur:d.auteur,Fichier_url:d.url,'Catégorie':d.categorie,Niveau:d.niveau,'Matière':d.matiere,Genre:d.genre,Publie:true};
       const row=document.createElement('article');row.className='personal-book';
-      row.innerHTML=`<div class="personal-book-main"><div class="personal-book-title">${escapeTextePersonnel(d.titre)}</div><div class="personal-book-meta">Document enregistré pour plus tard${d.niveau?' · '+escapeTextePersonnel(d.niveau):''}</div>${tailleBadgeMarkup(d.url)}</div></div><div class="personal-doc-actions"><button type="button" class="personal-action" data-lire-tard>Voir</button><button type="button" class="personal-action" data-telecharger-tard>Télécharger maintenant</button><button type="button" class="personal-action doc-action-folder" data-case-later>▣ Case</button><button type="button" class="personal-action" data-remove-later>Retirer</button></div>`;
-      appliquerPresentationDocumentAurore(row,{id:d.id,Titre:d.titre,Auteur:d.auteur,Fichier_url:d.url,'Catégorie':d.categorie,Niveau:d.niveau,'Matière':d.matiere,Genre:d.genre});
-      row.querySelector('[data-lire-tard]')?.addEventListener('click',()=>ouvrirLecteurPDF({id:d.id,Titre:d.titre,Auteur:d.auteur,Fichier_url:d.url,'Catégorie':d.categorie,Niveau:d.niveau,'Matière':d.matiere,Genre:d.genre}));
-      row.querySelector('[data-telecharger-tard]')?.addEventListener('click',()=>telechargerDocumentAvecProgression({id:d.id,Titre:d.titre,Auteur:d.auteur,Fichier_url:d.url,'Catégorie':d.categorie,Niveau:d.niveau,'Matière':d.matiere,Genre:d.genre}));
-      row.querySelector('[data-case-later]')?.addEventListener('click',()=>window.ouvrirChoixCaseDocument?.({id:d.id,Titre:d.titre,Auteur:d.auteur,Fichier_url:d.url,'Catégorie':d.categorie,Niveau:d.niveau,'Matière':d.matiere,Genre:d.genre}));
-      row.querySelector('[data-remove-later]')?.addEventListener('click',()=>ajouterDocumentPlusTard({id:d.id,Titre:d.titre,Auteur:d.auteur,Fichier_url:d.url,'Catégorie':d.categorie,Niveau:d.niveau,'Matière':d.matiere,Genre:d.genre},null));
+      row.innerHTML=`<div class="personal-book-main"><div class="personal-book-title">${escapeTextePersonnel(d.titre)}</div><div class="personal-book-meta">Document enregistré pour plus tard${d.niveau?' · '+escapeTextePersonnel(d.niveau):''}</div>${tailleBadgeMarkup(d.url, d.id, true)}</div></div><div class="personal-doc-actions"><button type="button" class="personal-action" data-lire-tard>Voir</button><button type="button" class="personal-action" data-telecharger-tard>Télécharger maintenant</button><button type="button" class="personal-action doc-action-folder" data-case-later>▣ Case</button><button type="button" class="personal-action" data-remove-later>Retirer</button></div>`;
+      appliquerPresentationDocumentAurore(row,docPlusTard);
+      row.querySelector('[data-lire-tard]')?.addEventListener('click',()=>ouvrirLecteurPDF(docPlusTard));
+      row.querySelector('[data-telecharger-tard]')?.addEventListener('click',()=>telechargerDocumentAvecProgression(docPlusTard));
+      row.querySelector('[data-case-later]')?.addEventListener('click',()=>window.ouvrirChoixCaseDocument?.(docPlusTard));
+      row.querySelector('[data-remove-later]')?.addEventListener('click',()=>ajouterDocumentPlusTard(docPlusTard,null));
       list.appendChild(row);
     });
   }

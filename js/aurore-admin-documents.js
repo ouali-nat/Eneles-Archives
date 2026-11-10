@@ -94,7 +94,7 @@
               Déposé par ${doc.Auteur || 'anonyme'}<br>
               <span style="color:var(--gris);">${ligneCompteDeposant(deposant)}</span>
             </div>
-            ${tailleBadgeMarkup(doc.Fichier_url)}
+            ${tailleBadgeMarkup(doc.Fichier_url, doc.id, doc.Publie === true)}
             <button type="button" class="admin-btn ghost js-open-pdf-in-site">Ouvrir le PDF dans Aurore</button>
             <button type="button" class="doc-more-btn admin-document-more" data-document-more="1" aria-label="Options de partage" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"></circle><circle cx="12" cy="12" r="1.8"></circle><circle cx="12" cy="19" r="1.8"></circle></svg></button>
             <div class="admin-actions">
@@ -441,7 +441,7 @@
               Déposé par ${doc.Auteur || 'anonyme'} · <span class="dl-status">${telechargementOk ? 'Lecture + téléchargement' : 'Lecture seule'}</span><br>
               <span style="color:var(--gris);">${ligneCompteDeposant(deposant)}</span>
             </div>
-            ${tailleBadgeMarkup(doc.Fichier_url)}
+            ${tailleBadgeMarkup(doc.Fichier_url, doc.id, doc.Publie === true)}
             <div class="admin-published-location-actions">
               <button type="button" class="admin-btn ghost js-view-public-location" title="Voir où ce document apparaît sur le site public" aria-label="Voir l’emplacement public de ce document"><span aria-hidden="true">◉</span> Voir l’emplacement</button>
               <button type="button" class="admin-btn ghost js-open-pdf-in-site">Ouvrir le PDF dans Aurore</button>

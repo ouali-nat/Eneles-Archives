@@ -59,7 +59,7 @@
               alert("Ce signalement ne contient pas d'identifiant de document. Le document associé ne peut pas être ouvert automatiquement.");
               return;
             }
-            const dres = await fetch(`${SUPABASE_URL}/rest/v1/Document?id=eq.${encodeURIComponent(r.document_id)}&select=id,Fichier_url,Titre,Telechargement_autorise`, { headers: HEADERS });
+            const dres = await fetch(`${SUPABASE_URL}/rest/v1/Document?id=eq.${encodeURIComponent(r.document_id)}&select=id,Fichier_url,Titre,Telechargement_autorise,Publie`, { headers: HEADERS });
             if (!dres.ok) throw new Error('HTTP ' + dres.status);
             const ddata = await dres.json();
             // Reste à l'intérieur d'Aurore : ouverture via le lecteur PDF
@@ -69,7 +69,8 @@
                 id: ddata[0].id,
                 Titre: ddata[0].Titre || r.document_titre || 'Document',
                 Fichier_url: ddata[0].Fichier_url,
-                Telechargement_autorise: ddata[0].Telechargement_autorise
+                Telechargement_autorise: ddata[0].Telechargement_autorise,
+                Publie: ddata[0].Publie === true
               });
             } else {
               alert("Le document associé est introuvable (peut-être déjà retiré).");
@@ -119,6 +120,6 @@
   // Bloc « Dépôts externes » de l'administration (module séparé).
   (function () {
     var s = document.createElement('script');
-    s.src = 'js/aurore-admin-depots-externes.js?v=20261101-location-remove-single-handler1';
+    s.src = 'js/aurore-admin-depots-externes.js?v=20261110-document-views1';
     document.head.appendChild(s);
   })();

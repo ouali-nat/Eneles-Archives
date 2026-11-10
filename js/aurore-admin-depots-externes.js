@@ -218,7 +218,7 @@
     const infoDeposant = group.aurore ? 'Origine : production Aurore' :
       group.deposants.length > 1 ? group.deposants.length + ' comptes déposants associés' :
       (typeof ligneCompteDeposant === 'function' ? ligneCompteDeposant(deposant) : 'Compte du déposant : information non disponible');
-    const taille = typeof tailleBadgeMarkup === 'function' ? tailleBadgeMarkup(doc.Fichier_url) : '';
+    const taille = typeof tailleBadgeMarkup === 'function' ? tailleBadgeMarkup(doc.Fichier_url, doc.id, doc.Publie === true) : '';
     const statut = group.pendingCount && group.publishedCount
       ? group.pendingCount + ' en attente · ' + group.publishedCount + ' publié(s)'
       : group.pendingCount ? group.pendingCount + ' en attente' : group.publishedCount + ' publié(s)';
