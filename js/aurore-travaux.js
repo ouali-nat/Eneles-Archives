@@ -744,6 +744,11 @@
       button.dataset.documentId = String(id);
       button.title = 'Consulter les travaux associés';
       button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5z"/><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20"/><path d="M8 7h8M8 10.5h6"/></svg><span>Travaux</span>';
+      button.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        openWorks(Number(button.dataset.documentId));
+      });
       view.insertAdjacentElement('afterend', button);
     });
   }
