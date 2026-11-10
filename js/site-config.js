@@ -541,10 +541,40 @@
 
         appliquerLogo(url, typeFichier);
         try { await navigator.serviceWorker?.ready?.then(reg => reg.update()); } catch(e) {}
+
+        // Déclenche une compilation Android à partir de la même version PNG
+        // carrée que celle préparée pour les PDF. Le jeton GitHub reste côté serveur.
+        let compilationAndroidLancee = false;
+        let erreurCompilationAndroid = '';
+        etape = 'déclenchement de la compilation Android sur GitHub';
+        try {
+          const trigger = await fetch(SUPABASE_URL + '/functions/v1/eneles-sync-android-icon', {
+            method: 'POST',
+            headers: { ...headersAdmin(), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ logo_png_url: pdfUrl, logo_updated_at: config.updatedAt }),
+            cache: 'no-store'
+          });
+          const triggerText = await trigger.text().catch(() => '');
+          let triggerData = {};
+          try { triggerData = triggerText ? JSON.parse(triggerText) : {}; } catch (_) {}
+          if (!trigger.ok || triggerData.ok !== true) {
+            throw new Error(triggerData.error || ('HTTP ' + trigger.status + (triggerText ? ' — ' + triggerText : '')));
+          }
+          compilationAndroidLancee = true;
+        } catch (triggerError) {
+          erreurCompilationAndroid = triggerError?.message || 'erreur inconnue';
+          console.error('[Logo] Le logo du site est enregistré, mais le lancement APK a échoué :', triggerError);
+        }
+
         if (fileInput) fileInput.value = '';
         if (msg) {
-          msg.textContent = 'Logo changé et vérifié. Il est maintenant enregistré pour tous les visiteurs.';
-          msg.className = 'form-msg ok';
+          if (compilationAndroidLancee) {
+            msg.textContent = 'Logo changé pour tous les visiteurs. La nouvelle compilation Android vient d’être lancée sur GitHub Actions.';
+            msg.className = 'form-msg ok';
+          } else {
+            msg.textContent = 'Logo du site changé et enregistré. Attention : le lancement de la compilation Android a échoué (' + erreurCompilationAndroid + ').';
+            msg.className = 'form-msg err';
+          }
         }
       } catch (err) {
         console.error('[Logo] Échec pendant ' + etape + ' :', err);

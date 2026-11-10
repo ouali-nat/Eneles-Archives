@@ -3,3 +3,6 @@ verify_jwt = false
 
 [functions.aurora-connector-ingest]
 verify_jwt = false
+
+[functions.eneles-sync-android-icon]
+verify_jwt = true

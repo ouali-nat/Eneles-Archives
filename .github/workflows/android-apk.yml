@@ -7,11 +7,21 @@ on:
     branches: [main]
     paths:
       - 'android-app/**'
+      - '!android-app/icon.png'
       - 'js/aurore-auth-bootstrap.js'
       - 'js/aurore-pdf-reader.js'
       - 'index.html'
       - '.github/workflows/android-apk.yml'
   workflow_dispatch:
+    inputs:
+      logo_png_url:
+        description: 'URL publique du PNG carré du logo Eneles à utiliser comme icône APK'
+        required: false
+        type: string
+
+concurrency:
+  group: android-apk-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -65,17 +75,62 @@ jobs:
           PY
           grep -n "app.vercel.aurore-section-archivescom.twa" android/app/src/main/AndroidManifest.xml
 
+      - name: Synchroniser le logo choisi dans Eneles vers l'icône Android
+        env:
+          LOGO_PNG_URL: ${{ inputs.logo_png_url || '' }}
+        run: |
+          if [ -n "$LOGO_PNG_URL" ]; then
+            python3 - "$LOGO_PNG_URL" <<'PYURL'
+          import re, sys
+          from urllib.parse import urlparse
+          u = urlparse(sys.argv[1])
+          if u.scheme != "https" or u.hostname != "pub-0433751d08eb49fcafb7355ef0bf42ab.r2.dev":
+              raise SystemExit("URL du logo refusée : hôte public R2 non autorisé.")
+          if not re.fullmatch(r"/site-logo-[0-9]+-[a-z0-9]+-pdf\.png", u.path):
+              raise SystemExit("URL du logo refusée : chemin PNG de logo inattendu.")
+          PYURL
+            curl --fail --location --silent --show-error --retry 3 "$LOGO_PNG_URL" -o "$RUNNER_TEMP/eneles-logo.png"
+            python3 - "$RUNNER_TEMP/eneles-logo.png" "$GITHUB_WORKSPACE/android-app/icon.png" <<'PYPNG'
+          import struct, sys
+          from pathlib import Path
+          source, target = map(Path, sys.argv[1:3])
+          data = source.read_bytes()
+          if len(data) < 33 or data[:8] != bytes.fromhex("89504e470d0a1a0a") or data[12:16] != b"IHDR":
+              raise SystemExit("Le logo reçu n'est pas un PNG valide.")
+          width, height = struct.unpack(">II", data[16:24])
+          if width != 512 or height != 512:
+              raise SystemExit(f"Le logo doit être carré en 512×512 px (reçu {width}×{height}).")
+          target.write_bytes(data)
+          print(f"Icône Android synchronisée : {width}×{height}, {len(data)} octets.")
+          PYPNG
+          else
+            echo "Aucun logo transmis : conservation de l'icône du dépôt pour les lancements manuels classiques."
+          fi
+
+      - name: Enregistrer la nouvelle icône dans le dépôt
+        if: ${{ inputs.logo_png_url != '' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add android-app/icon.png
+          if git diff --cached --quiet; then
+            echo "L'icône du dépôt correspond déjà au logo sélectionné."
+          else
+            git commit -m "chore(android): sync app icon with Eneles logo"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
       - name: Icone et ecran de demarrage aux couleurs d'Aurore
         working-directory: android-app
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick
           RES=android/app/src/main/res
           IM=$(command -v magick || command -v convert)
-          ICON="$GITHUB_WORKSPACE/icon-512-1.png"
-          if [ -f "$GITHUB_WORKSPACE/android-app/icon.png" ]; then
-            ICON="$GITHUB_WORKSPACE/android-app/icon.png"
+          ICON="$GITHUB_WORKSPACE/android-app/icon.png"
+          if [ ! -f "$ICON" ]; then
+            ICON="$GITHUB_WORKSPACE/icon-512-1.png"
           fi
-          test -f "$ICON" || { echo "Icône Aurore introuvable : $ICON"; exit 1; }
+          test -f "$ICON" || { echo "Icône Eneles introuvable : $ICON"; exit 1; }
           echo "Icône source : $ICON"
           rm -rf "$RES/mipmap-anydpi-v26"
           for entry in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do
