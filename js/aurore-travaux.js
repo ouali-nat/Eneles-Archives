@@ -74,10 +74,19 @@
   }
   function typeLabel(type) {
     return ({
-      resume: 'Résumé',
+      contribution: 'Contribution',
+      analyse: 'Analyse',
+      commentaire: 'Commentaire',
+      synthese: 'Synthèse',
+      fiche_revision: 'Fiche de révision',
+      etude_texte: 'Étude de texte',
+      explication: 'Explication',
+      exercice_corrige: 'Exercice corrigé',
+      recherche: 'Recherche documentaire',
       dissertation: 'Dissertation',
       lecon: 'Leçon',
       correction: 'Correction',
+      resume: 'Résumé',
       autre: 'Autre travail'
     })[type] || 'Contribution';
   }
@@ -128,7 +137,7 @@
       '<section class="etw-composer" id="etw-composer" hidden>' +
         '<h3 id="etw-composer-heading">Nouvelle contribution</h3>' +
         '<div class="etw-field"><label for="etw-draft-title">Titre de la contribution</label><input id="etw-draft-title" maxlength="180" placeholder="Ex. : Résumé du chapitre 1"></div>' +
-        '<div class="etw-field"><label for="etw-draft-type">Type de travail</label><select id="etw-draft-type"><option value="resume">Résumé</option><option value="dissertation">Dissertation</option><option value="lecon">Leçon</option><option value="correction">Correction</option><option value="autre">Autre</option></select></div>' +
+        '<div class="etw-field"><label for="etw-draft-type">Type de travail</label><select id="etw-draft-type"><option value="contribution">Contribution générale</option><option value="analyse">Analyse</option><option value="commentaire">Commentaire</option><option value="synthese">Synthèse</option><option value="fiche_revision">Fiche de révision</option><option value="etude_texte">Étude de texte</option><option value="explication">Explication</option><option value="exercice_corrige">Exercice corrigé</option><option value="recherche">Recherche documentaire</option><option value="dissertation">Dissertation</option><option value="lecon">Leçon</option><option value="correction">Correction</option><option value="resume">Résumé</option><option value="autre">Autre</option></select></div>' +
         '<div id="etw-block-editor-list"></div>' +
         '<div id="etw-editor-message" class="etw-meta" aria-live="polite"></div>' +
         '<div class="etw-composer-actions"><button type="button" class="etw-secondary" id="etw-cancel-edit">Annuler</button><button type="button" class="etw-primary" id="etw-publish">Publier la contribution</button></div>' +
@@ -328,12 +337,20 @@
         url: block.url || '',
         file: null
       }))
-    } : { title: '', type: 'resume', blocks: [] };
-    $('#etw-float-ball').hidden = false;
+    } : { title: '', type: 'contribution', blocks: [] };
+    const ball = $('#etw-float-ball');
+    ball.style.left = '50%';
+    ball.style.top = '50%';
+    ball.style.right = 'auto';
+    ball.style.bottom = 'auto';
+    ball.style.transform = 'translate(-50%, -50%)';
+    $('#etw-composer').hidden = true;
+    ball.hidden = false;
     $('#etw-tools').hidden = true;
     state.toolsOpen = false;
     $('#etw-composer').hidden = true;
     $('#etw-composer-heading').textContent = work ? 'Modifier la contribution' : 'Préparer une contribution';
+    $('#etw-publish').textContent = work ? 'Enregistrer les modifications' : 'Publier la contribution';
     $('#etw-draft-title').value = state.draft.title;
     $('#etw-draft-type').value = state.draft.type;
     drawComposerBlocks();
@@ -433,6 +450,7 @@
     const type = $('#etw-draft-type').value || 'autre';
     if (title.length < 3) { alert('Ajoute un titre d’au moins 3 caractères.'); return; }
     const button = $('#etw-publish');
+    const isEditing = Boolean(state.editingWork);
     const message = $('#etw-editor-message');
     button.disabled = true;
     button.textContent = 'Publication…';
@@ -494,7 +512,7 @@
       alert(error.message || 'La publication a échoué.');
     } finally {
       button.disabled = false;
-      button.textContent = 'Publier la contribution';
+      button.textContent = isEditing ? 'Enregistrer les modifications' : 'Publier la contribution';
     }
   }
 
@@ -557,9 +575,9 @@
         card.appendChild(create('strong', '', 'Version ' + version.numero));
         card.appendChild(create('div', 'etw-meta', formatDate(version.created_at)));
         card.appendChild(create('div', 'etw-meta', version.titre || 'Sans titre'));
-        const allowed = (currentUserId() === work.auteur_id && work.statut === 'publie') || isModerator();
+        const allowed = isModerator();
         if (allowed) {
-          const restore = create('button', 'etw-small-btn', 'Restaurer cette version');
+          const restore = create('button', 'etw-small-btn', 'Créer une nouvelle version depuis celle-ci');
           restore.type = 'button';
           restore.addEventListener('click', () => restoreVersion(work, version));
           card.appendChild(restore);
@@ -572,7 +590,11 @@
     }
   }
   async function restoreVersion(work, version) {
-    if (!confirm('Restaurer la version ' + version.numero + ' ? Une nouvelle version sera créée ; l’historique précédent sera conservé.')) return;
+    if (!isModerator()) {
+      alert('Seuls les modérateurs peuvent rétablir un contenu antérieur. Les lecteurs et contributeurs ne peuvent pas remplacer la version commune.');
+      return;
+    }
+    if (!confirm('Créer une nouvelle version à partir de la version ' + version.numero + ' ? La version actuelle restera dans l’historique.')) return;
     try {
       const result = await rest('travaux?id=eq.' + work.id, {
         method: 'PATCH',
@@ -615,6 +637,7 @@
     const top = Math.min(maxY, Math.max(8, state.ballStartY + dy));
     ball.style.left = left + 'px';
     ball.style.top = top + 'px';
+    ball.style.transform = 'none';
     ball.style.right = 'auto';
     ball.style.bottom = 'auto';
   }
