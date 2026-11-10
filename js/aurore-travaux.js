@@ -6,6 +6,7 @@
   const state = {
     documentId: 0,
     document: null,
+    isSectionOwner: false,
     works: [],
     workById: new Map(),
     highlightedWorkId: 0,
@@ -123,8 +124,9 @@
       '<main class="etw-stage" id="etw-stage">' +
         '<div class="etw-content">' +
           '<section class="etw-context"><span class="etw-kicker">Espace collaboratif</span><h1 id="etw-doc-title">Travaux sur le document</h1><p id="etw-doc-subtitle"></p></section>' +
-          '<div class="etw-intro">Cet espace permet aux lecteurs d’enrichir le document avec des résumés, des leçons, des dissertations, des corrections et des explications complémentaires. Chaque publication est visible immédiatement et conserve son historique.</div>' +
-          '<section><div class="etw-section-head"><h2>Contributions publiées</h2><span class="etw-count" id="etw-count"></span></div><div class="etw-work-list" id="etw-work-list"><div class="etw-state">Chargement des contributions…</div></div></section>' +
+          '<div class="etw-intro">Un espace de travail collectif pour compléter ce document : analyses, explications, fiches, exercices corrigés et autres contributions. Chaque modification publiée conserve son historique.</div>' +
+          '<section class="etw-owner-panel" id="etw-owner-panel" hidden><div class="etw-owner-head"><div><span class="etw-owner-kicker">ESPACE PROPRIÉTAIRE</span><h2>Gestion de votre section</h2><p>Modérez les contributions et traitez les signalements liés à votre document.</p></div><span class="etw-owner-count" id="etw-owner-report-count">0 signalement</span></div><div id="etw-owner-reports"><div class="etw-state">Chargement de votre espace de gestion…</div></div></section>' +
+          '<section class="etw-contributions"><div class="etw-section-head"><h2>Contributions</h2><span class="etw-count" id="etw-count"></span></div><div class="etw-work-list" id="etw-work-list"><div class="etw-state">Chargement des contributions…</div></div></section>' +
         '</div>' +
       '</main>' +
       '<button type="button" class="etw-float-ball" id="etw-float-ball" aria-label="Outils d’édition" hidden>+</button>' +
@@ -213,6 +215,8 @@
       if (action === 'report') openReport(id);
       if (action === 'edit') enterEdit(work);
       if (action === 'history') openHistory(work);
+      if (action === 'hide') moderateWork(id, true);
+      if (action === 'unhide') moderateWork(id, false);
     });
     const ball = $('#etw-float-ball', root);
     ball.addEventListener('pointerdown', startBallDrag);
@@ -234,7 +238,19 @@
       $('#etw-doc-title').textContent = 'Travaux sur le document';
       $('#etw-doc-mini').textContent = state.document.Titre || 'Document';
       $('#etw-doc-subtitle').textContent = [state.document.Titre, state.document.Niveau, state.document.Classe].filter(Boolean).join(' · ');
+      state.isSectionOwner = false;
+      if (currentUserId()) {
+        try {
+          const ownership = await rest('Depots_deposants?select=id&document_id=eq.' + state.documentId + '&user_id=eq.' + encodeURIComponent(currentUserId()), { method: 'GET', cache: 'no-store' });
+          state.isSectionOwner = Array.isArray(ownership) && ownership.length > 0;
+        } catch (ownershipError) {
+          console.warn('[Travaux] vérification du propriétaire de section:', ownershipError);
+        }
+      }
+      const ownerPanel = $('#etw-owner-panel');
+      if (ownerPanel) ownerPanel.hidden = !state.isSectionOwner;
       await loadWorks();
+      if (state.isSectionOwner) await loadOwnerReports();
     } catch (error) {
       $('#etw-work-list').innerHTML = '';
       $('#etw-work-list').appendChild(create('div', 'etw-state', error.message || 'Impossible d’ouvrir cet espace.'));
@@ -306,6 +322,13 @@
         const edit = create('button', 'etw-small-btn', 'Modifier');
         edit.type = 'button'; edit.dataset.workAction = 'edit'; edit.dataset.workId = work.id;
         actions.appendChild(edit);
+      }
+      if (state.isSectionOwner || isModerator()) {
+        const moderate = create('button', 'etw-small-btn' + (work.statut === 'publie' ? ' danger' : ''), work.statut === 'masque' ? 'Rétablir' : 'Masquer');
+        moderate.type = 'button';
+        moderate.dataset.workAction = work.statut === 'masque' ? 'unhide' : 'hide';
+        moderate.dataset.workId = work.id;
+        actions.appendChild(moderate);
       }
       const history = create('button', 'etw-small-btn', 'Historique');
       history.type = 'button'; history.dataset.workAction = 'history'; history.dataset.workId = work.id;
@@ -645,6 +668,76 @@
     state.dragActive = false;
   }
 
+  async function loadOwnerReports() {
+    const panel = $('#etw-owner-panel');
+    const list = $('#etw-owner-reports');
+    const count = $('#etw-owner-report-count');
+    if (!panel || !list || !state.isSectionOwner) return;
+    panel.hidden = false;
+    const ids = state.works.map(work => Number(work.id)).filter(id => Number.isSafeInteger(id) && id > 0);
+    if (!ids.length) {
+      list.innerHTML = '<div class="etw-owner-empty">Aucune contribution à modérer pour le moment. Les signalements apparaîtront ici.</div>';
+      if (count) count.textContent = '0 signalement';
+      return;
+    }
+    list.innerHTML = '<div class="etw-state">Chargement des signalements…</div>';
+    try {
+      const rows = await rest('signalements_travaux?select=id,travail_id,motif,details,statut,created_at&travail_id=in.(' + ids.join(',') + ')&statut=neq.traite&order=created_at.desc', { method: 'GET', cache: 'no-store' });
+      const reports = Array.isArray(rows) ? rows : [];
+      if (count) count.textContent = reports.length + (reports.length === 1 ? ' signalement' : ' signalements');
+      list.innerHTML = '';
+      if (!reports.length) {
+        list.innerHTML = '<div class="etw-owner-empty">Aucun signalement en attente. Votre section est à jour.</div>';
+        return;
+      }
+      reports.forEach(report => {
+        const work = state.workById.get(Number(report.travail_id));
+        if (!work) return;
+        const card = create('article', 'etw-owner-report');
+        const top = create('div', 'etw-owner-report-top');
+        top.appendChild(create('strong', '', work.titre || 'Contribution'));
+        top.appendChild(create('span', 'etw-type', report.statut === 'en_cours' ? 'En cours' : 'À examiner'));
+        card.appendChild(top);
+        card.appendChild(create('p', 'etw-owner-report-meta', 'Motif : ' + report.motif + ' · ' + formatDate(report.created_at)));
+        if (report.details) card.appendChild(create('p', 'etw-owner-report-details', report.details));
+        const actions = create('div', 'etw-owner-report-actions');
+        const visibility = create('button', 'etw-small-btn' + (work.statut === 'publie' ? ' danger' : ''), work.statut === 'masque' ? 'Rétablir la contribution' : 'Masquer la contribution');
+        visibility.type = 'button';
+        visibility.addEventListener('click', () => moderateWork(work.id, work.statut !== 'masque'));
+        actions.appendChild(visibility);
+        if (report.statut === 'nouveau') {
+          const take = create('button', 'etw-small-btn', 'Prendre en charge');
+          take.type = 'button';
+          take.addEventListener('click', () => updateOwnerReport(report.id, 'en_cours'));
+          actions.appendChild(take);
+        }
+        const treat = create('button', 'etw-small-btn', 'Clôturer le signalement');
+        treat.type = 'button';
+        treat.addEventListener('click', () => closeReport(report.id));
+        actions.appendChild(treat);
+        card.appendChild(actions);
+        list.appendChild(card);
+      });
+    } catch (error) {
+      list.innerHTML = '';
+      list.appendChild(create('div', 'etw-state', 'Impossible de charger les signalements de votre section. ' + (error.message || '')));
+    }
+  }
+
+  async function updateOwnerReport(reportId, status) {
+    if (!state.isSectionOwner || !['en_cours', 'traite'].includes(status)) return;
+    try {
+      await rest('signalements_travaux?id=eq.' + Number(reportId), {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify({ statut: status })
+      });
+      await loadOwnerReports();
+    } catch (error) {
+      alert(error.message || 'Impossible de mettre à jour ce signalement.');
+    }
+  }
+
   async function loadAdminReports() {
     const root = $('#adminTravauxReportsRoot');
     if (!root) return;
@@ -712,7 +805,11 @@
         body: JSON.stringify(payload)
       });
       if (!Array.isArray(rows) || !rows.length) throw new Error('Action non autorisée.');
-      await loadAdminReports();
+      if (state.isSectionOwner) {
+        await loadWorks();
+        await loadOwnerReports();
+      }
+      if (isModerator()) await loadAdminReports();
     } catch (error) { alert(error.message || 'La modération a échoué.'); }
   }
   async function closeReport(reportId) {
@@ -723,7 +820,8 @@
         headers: { 'Content-Type': 'application/json', Prefer: 'return=minimal' },
         body: JSON.stringify({ statut: 'traite' })
       });
-      await loadAdminReports();
+      if (state.isSectionOwner) await loadOwnerReports();
+      if (isModerator()) await loadAdminReports();
     } catch (error) { alert(error.message || 'Impossible de clôturer le signalement.'); }
   }
 

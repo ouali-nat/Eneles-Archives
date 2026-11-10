@@ -24,3 +24,104 @@
 .etw-history-card{margin-top:10px;padding:13px;border:1px solid var(--bordure,rgba(100,100,120,.18));border-radius:12px}.etw-admin-report-card{margin:10px 0;padding:14px;border:1px solid var(--bordure,rgba(100,100,120,.18));border-radius:13px;background:var(--papier,#fff)}.etw-admin-report-card .meta{margin-top:5px;color:var(--gris,#777487);font-size:.75rem}.etw-admin-report-actions .danger{color:#b42318}
 .etw-root button:focus-visible{outline:2px solid var(--violet,#7c3aed);outline-offset:2px}
 @media(max-width:600px){.etw-topbar{min-height:58px;padding:8px 12px}.etw-content{width:calc(100% - 24px);padding-top:22px}.etw-work-card{padding:14px}.etw-work-card-head{flex-direction:column;gap:8px}.etw-composer{inset:64px 8px 8px;padding:14px}.etw-section-head{align-items:flex-start}.etw-tool-grid{grid-template-columns:1fr 1fr}}
+
+
+/* Refonte Material — espace Travaux Eneles, clair/sombre et mobile-first. */
+.etw-root{
+  --etw-bg:var(--fond,#f5f5fa);
+  --etw-panel:var(--papier,#fff);
+  --etw-soft:color-mix(in srgb,var(--violet,#7352a8) 6%,var(--papier,#fff));
+  --etw-text:var(--encre,#252334);
+  --etw-muted:var(--gris,#777487);
+  --etw-line:var(--bordure,rgba(70,60,95,.13));
+  background:var(--etw-bg);
+  color:var(--etw-text);
+  font-family:inherit;
+}
+.etw-root.is-open{animation:etw-open .18s ease-out both}
+@keyframes etw-open{from{opacity:.88}to{opacity:1}}
+.etw-topbar{
+  min-height:68px;height:68px;padding:0 clamp(14px,3vw,34px);
+  background:color-mix(in srgb,var(--etw-panel) 94%,transparent);
+  border-bottom:1px solid var(--etw-line);box-shadow:0 2px 12px rgba(24,20,40,.035);
+  backdrop-filter:blur(18px);
+}
+.etw-icon{border:0;border-radius:13px;background:var(--etw-soft);color:var(--etw-text);font-size:19px;transition:background .16s ease,transform .16s ease}
+.etw-icon:hover{background:color-mix(in srgb,var(--violet,#7352a8) 13%,var(--etw-panel));transform:translateY(-1px)}
+#etw-back{order:-1}
+.etw-top-title strong{font-size:.94rem;letter-spacing:-.015em}
+.etw-top-title span{font-size:.72rem}
+.etw-stage{padding:clamp(22px,4vw,42px) 18px calc(120px + env(safe-area-inset-bottom))}
+.etw-content{width:min(960px,100%)}
+.etw-context{border:0;margin:0 0 20px;padding:0}
+.etw-kicker{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;background:var(--etw-soft);color:var(--violet,#7352a8);font-size:.65rem;letter-spacing:.07em}
+.etw-context h1{font-size:clamp(1.55rem,4.4vw,2.35rem);letter-spacing:-.035em;margin:12px 0 7px}
+.etw-context p{font-size:.82rem}
+.etw-intro{margin:0 0 22px;padding:15px 17px;border-radius:15px;border:1px solid var(--etw-line);background:var(--etw-panel);color:var(--etw-muted);font-size:.82rem;line-height:1.65;box-shadow:0 3px 12px rgba(24,20,40,.025)}
+.etw-contributions{margin-top:23px}
+.etw-section-head{margin:0 0 13px;align-items:center}
+.etw-section-head h2{font-size:1.04rem;letter-spacing:-.02em}
+.etw-count{padding:5px 9px;border-radius:999px;background:var(--etw-soft);font-size:.68rem;font-weight:750}
+.etw-work-list{gap:12px}
+.etw-work-card{padding:18px;border-radius:16px;border:1px solid var(--etw-line);background:var(--etw-panel);box-shadow:0 4px 18px rgba(28,24,45,.035);transition:border-color .16s ease,box-shadow .16s ease}
+.etw-work-card:hover{border-color:color-mix(in srgb,var(--violet,#7352a8) 30%,var(--etw-line));box-shadow:0 7px 22px rgba(28,24,45,.055)}
+.etw-work-card h3{font-size:.98rem;letter-spacing:-.015em}
+.etw-meta{font-size:.7rem}
+.etw-type{padding:5px 9px;background:var(--etw-soft);color:var(--violet,#7352a8);font-size:.65rem}
+.etw-work-blocks{font-size:.87rem;line-height:1.75;gap:11px}
+.etw-work-actions{margin-top:14px;padding-top:12px;gap:7px}
+.etw-small-btn{min-height:34px;padding:7px 11px;border-radius:10px;background:var(--etw-panel);border-color:var(--etw-line);font-size:.7rem;font-weight:750;transition:background .15s ease,border-color .15s ease}
+.etw-small-btn:hover{background:var(--etw-soft);border-color:color-mix(in srgb,var(--violet,#7352a8) 35%,var(--etw-line))}
+.etw-small-btn.danger{color:#b42336;border-color:rgba(180,35,54,.2);background:rgba(180,35,54,.035)}
+.etw-empty,.etw-state{padding:26px 18px;border:1px dashed var(--etw-line);border-radius:15px;background:var(--etw-panel);font-size:.81rem}
+.etw-menu{top:60px;left:clamp(14px,3vw,34px);border-radius:14px;border-color:var(--etw-line);background:var(--etw-panel);box-shadow:0 14px 38px rgba(18,18,35,.16);padding:6px}
+.etw-menu button{font-size:.78rem;padding:11px;border-radius:9px}
+.etw-float-ball{width:56px;height:56px;background:var(--violet,#7352a8);box-shadow:0 8px 25px color-mix(in srgb,var(--violet,#7352a8) 32%,transparent);font-size:27px}
+.etw-tools,.etw-composer{border:1px solid var(--etw-line);background:var(--etw-panel);color:var(--etw-text);box-shadow:0 16px 48px rgba(18,18,35,.18);backdrop-filter:blur(16px)}
+.etw-tools{border-radius:17px}
+.etw-tools h3,.etw-composer h3{font-size:.93rem;letter-spacing:-.015em}
+.etw-tools button{border-color:var(--etw-line);border-radius:11px;background:var(--etw-panel);font-size:.72rem}
+.etw-tools button:hover{background:var(--etw-soft);border-color:color-mix(in srgb,var(--violet,#7352a8) 35%,var(--etw-line))}
+.etw-composer{border-radius:18px}
+.etw-field label{color:var(--etw-muted);font-size:.7rem}
+.etw-field input,.etw-field select,.etw-field textarea,.etw-block-editor input,.etw-block-editor textarea{border-color:var(--etw-line);border-radius:11px;background:var(--etw-bg);color:var(--etw-text);font-size:.82rem}
+.etw-field input:focus,.etw-field select:focus,.etw-field textarea:focus,.etw-block-editor input:focus,.etw-block-editor textarea:focus{outline:0;border-color:var(--violet,#7352a8);box-shadow:0 0 0 3px color-mix(in srgb,var(--violet,#7352a8) 13%,transparent)}
+.etw-primary{background:var(--violet,#7352a8)!important;border-radius:11px;padding:10px 15px;font-size:.76rem}
+.etw-primary:hover{filter:brightness(1.06)}
+.etw-secondary{border-color:var(--etw-line)!important;border-radius:11px;font-size:.76rem}
+.etw-dialog{border:1px solid var(--etw-line);border-radius:18px}
+.etw-history{background:var(--etw-bg)}
+.etw-history-row{border-color:var(--etw-line);border-radius:13px;background:var(--etw-panel)}
+.etw-admin-report-card{border-color:var(--etw-line);border-radius:14px;background:var(--etw-panel)}
+.etw-owner-panel{margin:0 0 24px;padding:18px;border:1px solid color-mix(in srgb,var(--violet,#7352a8) 20%,var(--etw-line));border-radius:17px;background:color-mix(in srgb,var(--violet,#7352a8) 4%,var(--etw-panel));box-shadow:0 5px 20px rgba(28,24,45,.035)}
+.etw-owner-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px}
+.etw-owner-kicker{display:inline-block;color:var(--violet,#7352a8);font-size:.62rem;font-weight:850;letter-spacing:.1em}
+.etw-owner-head h2{margin:5px 0;font-size:1.04rem;letter-spacing:-.02em}
+.etw-owner-head p{margin:0;color:var(--etw-muted);font-size:.76rem;line-height:1.5}
+.etw-owner-count{flex:0 0 auto;padding:6px 9px;border-radius:999px;background:var(--etw-panel);border:1px solid var(--etw-line);font-size:.67rem;font-weight:800}
+.etw-owner-empty{padding:14px;border:1px dashed var(--etw-line);border-radius:12px;color:var(--etw-muted);background:var(--etw-panel);font-size:.76rem;line-height:1.5}
+.etw-owner-report{margin-top:9px;padding:13px;border:1px solid var(--etw-line);border-radius:13px;background:var(--etw-panel)}
+.etw-owner-report-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.etw-owner-report-top strong{font-size:.8rem}
+.etw-owner-report-meta{margin:7px 0 0;color:var(--etw-muted);font-size:.69rem}
+.etw-owner-report-details{margin:7px 0 0;font-size:.75rem;line-height:1.5;overflow-wrap:anywhere}
+.etw-owner-report-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.personal-works-action{border-color:color-mix(in srgb,var(--violet,#7352a8) 25%,var(--bordure))!important;color:var(--violet,#7352a8)!important;background:color-mix(in srgb,var(--violet,#7352a8) 6%,var(--papier))!important}
+.personal-works-action:hover{background:color-mix(in srgb,var(--violet,#7352a8) 12%,var(--papier))!important}
+[data-theme="dark"] .etw-root,[data-theme="dark"] .etw-history{--etw-bg:#11131b;--etw-panel:#1a1d28;--etw-soft:#29243a;--etw-text:#f0edf7;--etw-muted:#aaa5b8;--etw-line:rgba(210,200,235,.14)}
+[data-theme="dark"] .etw-owner-panel{background:rgba(150,115,210,.08)}
+@media(max-width:640px){
+ .etw-topbar{height:60px;min-height:60px;padding:0 12px;gap:8px}
+ .etw-stage{padding:20px 12px calc(112px + env(safe-area-inset-bottom))}
+ .etw-context h1{font-size:1.55rem}
+ .etw-owner-panel{padding:14px}
+ .etw-owner-head{flex-direction:column;gap:9px}
+ .etw-owner-count{align-self:flex-start}
+ .etw-work-card{padding:14px}
+ .etw-work-card-head{gap:8px}
+ .etw-work-actions{gap:6px}
+ .etw-small-btn{padding:7px 9px;font-size:.67rem}
+ .etw-composer{width:calc(100vw - 16px);bottom:calc(8px + env(safe-area-inset-bottom));max-height:82dvh;padding:13px}
+ .etw-float-ball{right:14px;bottom:calc(16px + env(safe-area-inset-bottom))}
+ .etw-tools{right:10px;bottom:calc(82px + env(safe-area-inset-bottom));width:calc(100vw - 20px)}
+}
