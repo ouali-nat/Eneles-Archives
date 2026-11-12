@@ -298,15 +298,17 @@
     list.innerHTML = '';
     $('#etw-count').textContent = state.works.length + (state.works.length === 1 ? ' contribution' : ' contributions');
     if (!state.works.length) {
-      list.appendChild(create('div', 'etw-empty', 'Aucune contribution pour le moment. Tu peux ouvrir le menu en haut de la page et passer en édition pour commencer.'));
+      list.appendChild(create('div', 'etw-empty', '✨ Aucune contribution pour le moment. Ouvre le menu en haut de la page et passe en édition pour lancer la collaboration sur ce document !'));
       return;
     }
     state.works.forEach(work => {
       const card = create('article', 'etw-work-card' + (work.statut === 'masque' ? ' is-masked' : ''));
       const header = create('div', 'etw-work-card-head');
-      const titleWrap = create('div');
+      const avatar = create('span', 'etw-avatar', (String(work.auteur_nom || 'C').trim().charAt(0) || 'C').toUpperCase());
+      const titleWrap = create('div', 'etw-work-card-titles');
       titleWrap.appendChild(create('h3', '', work.titre));
       titleWrap.appendChild(create('div', 'etw-meta', (work.auteur_nom || 'Contributeur') + ' · ' + formatDate(work.created_at)));
+      header.appendChild(avatar);
       header.appendChild(titleWrap);
       header.appendChild(create('span', 'etw-type', typeLabel(work.type)));
       card.appendChild(header);
