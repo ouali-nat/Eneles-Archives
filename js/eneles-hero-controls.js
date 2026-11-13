@@ -24,9 +24,9 @@
   }
   trigger.id = "enelesHeroMenuTrigger";
   trigger.classList.add("eneles-hero-menu-trigger");
-  trigger.textContent = "•••";
-  trigger.setAttribute("aria-label", "Options de l’accueil");
-  trigger.setAttribute("title", "Options de l’accueil");
+  trigger.textContent = "⋯";
+  trigger.setAttribute("aria-label", "Réglages de l’accueil");
+  trigger.setAttribute("title", "Réglages de l’accueil");
   trigger.setAttribute("aria-haspopup", "dialog");
   trigger.setAttribute("aria-expanded", "false");
 
@@ -35,28 +35,38 @@
   hero.parentNode.insertBefore(shell, hero);
   shell.appendChild(hero);
 
-  var menu = document.createElement("div");
+  // Fond modal et feuille de réglages : deux éléments séparés pour gérer le clic extérieur.
+  var backdrop = document.createElement("div");
+  backdrop.className = "eneles-hero-sheet-backdrop";
+  backdrop.hidden = true;
+  backdrop.setAttribute("aria-hidden", "true");
+  document.body.appendChild(backdrop);
+
+  var menu = document.createElement("section");
   menu.className = "eneles-hero-options-menu";
   menu.id = "enelesHeroOptionsMenu";
   menu.setAttribute("role", "dialog");
-  menu.setAttribute("aria-label", "Réglages de l’accueil");
+  menu.setAttribute("aria-modal", "true");
+  menu.setAttribute("aria-labelledby", "enelesHeroSheetTitle");
   menu.hidden = true;
   menu.innerHTML =
-    '<div class="eneles-hero-menu-head">' +
-      '<span class="eneles-hero-menu-mark" aria-hidden="true">E</span>' +
-      '<span class="eneles-hero-menu-heading"><strong>Réglages de l’accueil</strong><small>Personnalisez votre espace</small></span>' +
-      '<button type="button" class="eneles-hero-menu-close" data-hero-close aria-label="Fermer">×</button>' +
-    '</div>' +
+    '<div class="eneles-hero-sheet-handle" aria-hidden="true"></div>' +
+    '<div class="eneles-hero-menu-head"><strong id="enelesHeroSheetTitle">Réglages de l’accueil</strong></div>' +
     '<button type="button" class="eneles-hero-option" data-hero-action="visibility">' +
-      '<span class="eneles-hero-option-icon" aria-hidden="true">◉</span>' +
-      '<span class="eneles-hero-option-copy"><strong class="eneles-hero-option-title">Masquer l’accueil</strong><small>Afficher ou masquer le bloc d’accueil</small></span>' +
+      '<span class="eneles-hero-option-copy"><strong class="eneles-hero-option-title">Masquer l’accueil</strong></span>' +
+      '<span class="eneles-hero-option-arrow" aria-hidden="true">›</span>' +
     '</button>' +
     '<button type="button" class="eneles-hero-option" data-hero-action="resize">' +
-      '<span class="eneles-hero-option-icon resize-icon" aria-hidden="true">⤢</span>' +
-      '<span class="eneles-hero-option-copy"><strong class="eneles-hero-option-title">Redimensionner l’accueil</strong><small>Ajuster la largeur et la hauteur avec les poignées</small></span>' +
+      '<span class="eneles-hero-option-copy"><strong>Redimensionner l’accueil</strong></span>' +
+      '<span class="eneles-hero-option-arrow" aria-hidden="true">›</span>' +
     '</button>';
   document.body.appendChild(menu);
   trigger.setAttribute("aria-controls", menu.id);
+
+  // En iframe, les couches restent positionnées dans le document intégré.
+  var isEmbedded = window.top !== window.self;
+  var sheetPointerStartY = null;
+  var sheetCloseTimer = null;
 
   var toolbar = document.createElement("div");
   toolbar.className = "eneles-hero-resize-toolbar";
@@ -149,25 +159,71 @@
   };
   window.enelesIsHeroVisible = function () { return !hidden; };
 
-  function closeMenu() {
-    menu.hidden = true;
+  function closeMenu(returnFocus) {
+    if (menu.hidden) return;
+    if (sheetCloseTimer) window.clearTimeout(sheetCloseTimer);
+    menu.classList.remove("is-visible");
+    backdrop.classList.remove("is-visible");
+    document.body.classList.remove("eneles-hero-sheet-open");
     trigger.setAttribute("aria-expanded", "false");
     trigger.classList.remove("is-open");
+    if (returnFocus !== false) trigger.focus({ preventScroll: true });
+    // Laisser la transition de 250 ms se terminer avant de retirer les couches.
+    var delay = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 250;
+    sheetCloseTimer = window.setTimeout(function () {
+      menu.hidden = true;
+      backdrop.hidden = true;
+      sheetCloseTimer = null;
+    }, delay);
   }
   function openMenu() {
+    if (sheetCloseTimer) { window.clearTimeout(sheetCloseTimer); sheetCloseTimer = null; }
+    backdrop.hidden = false;
     menu.hidden = false;
-    menu.style.setProperty("position", "fixed", "important");
-    menu.style.setProperty("top", "0px", "important");
-    menu.style.setProperty("left", "0px", "important");
-    menu.style.setProperty("right", "auto", "important");
-    var anchor = trigger.getBoundingClientRect();
-    var menuRect = menu.getBoundingClientRect();
-    var left = clamp(anchor.right - menuRect.width, 12, window.innerWidth - menuRect.width - 12);
-    var top = clamp(anchor.bottom + 8, 12, window.innerHeight - menuRect.height - 12);
-    menu.style.setProperty("left", left + "px", "important");
-    menu.style.setProperty("top", top + "px", "important");
+    document.body.classList.add("eneles-hero-sheet-open");
+    // Le positionnement fixed suit la fenêtre ; absolute est réservé aux iframes.
+    menu.style.position = isEmbedded ? "absolute" : "fixed";
+    backdrop.style.position = isEmbedded ? "absolute" : "fixed";
+    if (isEmbedded) positionEmbeddedSheet();
+    requestAnimationFrame(function () {
+      menu.classList.add("is-visible");
+      backdrop.classList.add("is-visible");
+    });
     trigger.setAttribute("aria-expanded", "true");
     trigger.classList.add("is-open");
+    var first = menu.querySelector('button:not(:disabled)');
+    if (first) first.focus({ preventScroll: true });
+  }
+  function positionEmbeddedSheet() {
+    if (!isEmbedded || menu.hidden) return;
+    // Dans une iframe, les couches absolues sont alignées sur la fenêtre visible.
+    backdrop.style.top = window.scrollY + "px";
+    backdrop.style.left = "0px";
+    backdrop.style.width = "100%";
+    backdrop.style.height = window.innerHeight + "px";
+    menu.style.setProperty("top", (window.scrollY + window.innerHeight - menu.offsetHeight) + "px", "important");
+    menu.style.bottom = "auto";
+    menu.style.left = "0px";
+    menu.style.width = "100%";
+  }
+  function trapSheetFocus(event) {
+    if (event.key !== "Tab" || menu.hidden) return;
+    var focusable = Array.prototype.slice.call(menu.querySelectorAll('button:not(:disabled),[href],input:not(:disabled),[tabindex]:not([tabindex="-1"])'));
+    if (!focusable.length) { event.preventDefault(); menu.focus(); return; }
+    var first = focusable[0], last = focusable[focusable.length - 1];
+    if (!menu.contains(document.activeElement)) { event.preventDefault(); first.focus(); }
+    else if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  }
+  function beginSheetSwipe(event) {
+    if (event.pointerType === "mouse") return;
+    sheetPointerStartY = event.clientY;
+  }
+  function endSheetSwipe(event) {
+    if (sheetPointerStartY === null) return;
+    var distance = event.clientY - sheetPointerStartY;
+    sheetPointerStartY = null;
+    if (distance > 65) closeMenu();
   }
   function setVisibility() {
     hero.hidden = hidden;
@@ -263,10 +319,9 @@
 
   trigger.addEventListener("click", function (event) {
     event.stopPropagation();
-    if (menu.hidden) openMenu(); else closeMenu();
+    if (menu.hidden || sheetCloseTimer) openMenu(); else closeMenu();
   });
   menu.addEventListener("click", function (event) {
-    if (event.target.closest("[data-hero-close]")) { closeMenu(); return; }
     var action = event.target.closest("[data-hero-action]");
     if (!action || action.disabled) return;
     if (action.dataset.heroAction === "visibility") {
@@ -288,17 +343,19 @@
   window.addEventListener("pointerup", endDrag);
   window.addEventListener("pointercancel", endDrag);
   window.addEventListener("scroll", positionHandles, true);
-  document.addEventListener("pointerdown", function (event) {
-    if (!controlRow.contains(event.target) && !menu.contains(event.target) &&
-        !toolbar.contains(event.target) && !handles.contains(event.target)) closeMenu();
-  });
+  window.addEventListener("scroll", positionEmbeddedSheet, { passive: true });
+  backdrop.addEventListener("click", function () { closeMenu(); });
+  menu.addEventListener("pointerdown", beginSheetSwipe);
+  menu.addEventListener("pointerup", endSheetSwipe);
+  menu.addEventListener("pointercancel", function () { sheetPointerStartY = null; });
   document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
-      closeMenu();
-      if (resizing) stopResize();
-    }
+    if (!menu.hidden) {
+      if (event.key === "Escape") { event.preventDefault(); closeMenu(); return; }
+      trapSheetFocus(event);
+    } else if (event.key === "Escape" && resizing) stopResize();
   });
   window.addEventListener("resize", function () {
+    positionEmbeddedSheet();
     if (resizing) { positionHandles(); return; }
     if (!customSize || !saved) return;
     // Recalcule la taille depuis ses proportions mémorisées, sans écraser
@@ -376,6 +433,32 @@
     ".eneles-hero-resize-handle.handle-sw{bottom:-16px!important;left:-16px!important;width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;cursor:nesw-resize!important}",
     "@media(max-width:640px){.eneles-hero-resize-handle{border-width:3px!important;box-shadow:0 3px 14px rgba(0,0,0,.42)!important}.eneles-hero-options-menu{width:min(330px,calc(100vw - 24px))!important}}"
   ].join("\n");
+  style.textContent += [
+    ".eneles-hero-menu-trigger{width:36px!important;min-width:36px!important;height:36px!important;min-height:36px!important;padding:0!important;border:1px solid var(--bordure,rgba(255,255,255,.22))!important;border-radius:50%!important;background:transparent!important;color:var(--encre,var(--text,#eee))!important;box-shadow:none!important;font-size:23px!important;font-weight:400!important;letter-spacing:0!important;line-height:1!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}",
+    "html body #screen-home .eneles-hero-menu-trigger{width:36px!important;min-width:36px!important;height:36px!important;min-height:36px!important;border-radius:50%!important;background:transparent!important;color:var(--encre,var(--text,#eee))!important;border:1px solid var(--bordure,rgba(255,255,255,.22))!important;box-shadow:none!important}",
+    ".eneles-hero-menu-trigger:hover,.eneles-hero-menu-trigger.is-open{transform:none!important;box-shadow:none!important}",
+    ".eneles-hero-sheet-backdrop{position:fixed;inset:0;z-index:2147482998;background:rgba(0,0,0,.58);opacity:0;transition:opacity 250ms ease}",
+    ".eneles-hero-sheet-backdrop.is-visible{opacity:1}",
+    ".eneles-hero-options-menu{position:fixed!important;top:auto!important;right:0!important;bottom:0!important;left:0!important;z-index:2147482999!important;display:block!important;width:100%!important;max-width:none!important;max-height:min(70vh,520px)!important;overflow:auto!important;overscroll-behavior:contain!important;padding:10px 16px calc(16px + env(safe-area-inset-bottom,0px))!important;margin:0!important;border:0!important;border-top:1px solid var(--bordure,rgba(255,255,255,.2))!important;border-radius:16px 16px 0 0!important;background:var(--surface,var(--papier,#17171d))!important;color:var(--text,var(--encre,#f4f2f8))!important;box-shadow:0 -12px 36px rgba(0,0,0,.24)!important;transform:translateY(100%)!important;opacity:1!important;transition:transform 250ms ease!important;backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important}",
+    ".eneles-hero-options-menu.is-visible{transform:translateY(0)!important}",
+    ".eneles-hero-options-menu[hidden],.eneles-hero-sheet-backdrop[hidden]{display:none!important}",
+    ".eneles-hero-sheet-handle{width:36px;height:4px;margin:0 auto 12px;border-radius:99px;background:var(--text-muted,rgba(150,150,160,.65))}",
+    ".eneles-hero-menu-head{display:block!important;margin:0!important;padding:0 4px 8px!important;border:0!important}",
+    ".eneles-hero-menu-head strong{font-size:15px!important;font-weight:500!important;letter-spacing:0!important}",
+    ".eneles-hero-option{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;width:100%!important;min-height:48px!important;padding:0 4px!important;margin:0!important;border:0!important;border-bottom:1px solid var(--bordure,rgba(255,255,255,.12))!important;border-radius:0!important;background:transparent!important;color:inherit!important;text-align:left!important;font:inherit!important;cursor:pointer!important}",
+    ".eneles-hero-option:last-child{border-bottom:0!important}",
+    ".eneles-hero-option-copy{display:block!important;flex:1!important;min-width:0!important;text-align:left!important}",
+    ".eneles-hero-option-copy strong{font-size:14px!important;font-weight:500!important}",
+    ".eneles-hero-option-arrow{flex:0 0 auto!important;font-size:25px!important;line-height:1!important;opacity:.65!important}",
+    ".eneles-hero-option:hover,.eneles-hero-option:focus-visible{background:color-mix(in srgb,var(--theme-primary,var(--accent,#7c3aed)) 9%,transparent)!important;outline-offset:-2px!important}",
+    ".eneles-hero-options-menu[hidden]{display:none!important}",
+    ".eneles-hero-sheet-open{overscroll-behavior:none}",
+    "@media(prefers-reduced-motion:reduce){.eneles-hero-options-menu,.eneles-hero-sheet-backdrop{transition:none!important}}",
+    "@media(max-width:380px){.eneles-hero-options-menu{padding-left:14px!important;padding-right:14px!important}}",
+  ].join("\n");
+  if (isEmbedded) {
+    style.textContent += "\n.eneles-hero-sheet-backdrop{position:absolute;inset:0}.eneles-hero-options-menu{position:absolute!important;bottom:auto!important}";
+  }
   document.head.appendChild(style);
   // Les styles de l'en-tête sont parfois chargés tardivement par un autre
   // script. Replacer ce correctif après leur chargement pour garder la main.
