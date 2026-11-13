@@ -2,7 +2,7 @@
   "name": "aurore-android",
   "version": "1.0.0",
   "private": true,
-  "description": "Application Android Aurore (Capacitor) : WebView qui charge le site Aurore",
+  "description": "Application Android Eneles (Capacitor) : WebView qui charge le site Eneles",
   "dependencies": {
     "@capacitor/android": "^6.2.0",
     "@capacitor/app": "^6.0.0",

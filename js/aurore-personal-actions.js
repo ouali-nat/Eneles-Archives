@@ -453,15 +453,22 @@
   const CLE_BIOMETRIE_NATIVE='aurore_biometrie_native_';
   const biometrieNativeConfiguree=()=>{try{return !!(userKey()&&localStorage.getItem(CLE_BIOMETRIE_NATIVE+userKey())==='1');}catch(_){return false;}};
   const plateformeNative=()=>!!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==='function'&&window.Capacitor.isNativePlatform());
-  async function obtenirPluginBiometrieNative(){
-    if(!plateformeNative())return null;
-    if(window.AuroreBiometricAuth?.authenticate)return window.AuroreBiometricAuth;
-    // Le site est chargé depuis le serveur distant dans la WebView Capacitor.
-    // Charger le proxy JS du plugin permet au pont natif déjà compilé de le résoudre.
-    const module=await import('https://esm.sh/@aparajita/capacitor-biometric-auth@8.0.2?bundle');
-    if(!module?.BiometricAuth)throw new Error('Le pont biométrique natif est absent de cette version de l’application.');
-    window.AuroreBiometricAuth=module.BiometricAuth;
-    return window.AuroreBiometricAuth;
+  let pluginBiometrieNativePromise=null;
+  function obtenirPluginBiometrieNative(){
+    if(!plateformeNative())return Promise.resolve(null);
+    if(window.AuroreBiometricAuth?.authenticate)return Promise.resolve(window.AuroreBiometricAuth);
+    // Une seule importation est partagée entre le préchargement et les actions.
+    // Le chargement commence dès que le pont Android apparaît, pas au premier clic.
+    if(!pluginBiometrieNativePromise){
+      pluginBiometrieNativePromise=import('https://esm.sh/@aparajita/capacitor-biometric-auth@8.0.2?bundle')
+        .then(module=>{
+          if(!module?.BiometricAuth)throw new Error('Le pont biométrique natif est absent de cette version de l’application.');
+          window.AuroreBiometricAuth=module.BiometricAuth;
+          return window.AuroreBiometricAuth;
+        })
+        .catch(error=>{pluginBiometrieNativePromise=null;throw error;});
+    }
+    return pluginBiometrieNativePromise;
   }
   function biometrieDisponible(){return plateformeNative()||!!(window.isSecureContext&&navigator.credentials&&window.PublicKeyCredential&&navigator.credentials.create&&navigator.credentials.get);}
   function bytesVersBase64Url(bytes){let b='';new Uint8Array(bytes).forEach(x=>b+=String.fromCharCode(x));return btoa(b).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
@@ -606,7 +613,7 @@
       if(!ok){afficherMessageCode('Code incorrect. Vous pouvez réessayer ou utiliser « Code oublié ? Réinitialiser ».','err');return;}
       const options={...espaceOptions};closeCode();
       if(options.biometricEnroll){await enregistrerBiometrie();return;}
-      if(options.biometricDisable){try{localStorage.removeItem(cleBiometrie());}catch(_){}actualiserBoutonsBiometrie();actualiserGestionBiometrieProfil();alert('Déverrouillage biométrique désactivé.');return;}
+      if(options.biometricDisable){try{localStorage.removeItem(cleBiometrie());localStorage.removeItem(CLE_BIOMETRIE_NATIVE+userKey());}catch(_){}actualiserBoutonsBiometrie();actualiserGestionBiometrieProfil();alert('Déverrouillage biométrique désactivé.');return;}
       ouvrirEspaceInterne(options);
     }catch(e){afficherMessageCode('Impossible de vérifier le code.','err');}
   }
@@ -695,6 +702,23 @@
     btn.setAttribute('aria-label',active?'Gérer le déverrouillage biométrique':'Activer le déverrouillage biométrique');
   }
   actualiserGestionBiometrieProfil();
+
+  // Le pont Capacitor peut être injecté légèrement après les scripts distants.
+  // On actualise rapidement l’interface et on précharge le proxy natif dès son arrivée.
+  let tentativesPontBiometrie=0;
+  const verifierPontBiometrie=()=>{
+    actualiserBoutonsBiometrie();
+    actualiserGestionBiometrieProfil();
+    if(plateformeNative()){
+      clearInterval(attentePontBiometrie);
+      obtenirPluginBiometrieNative().catch(e=>console.warn('[Eneles] préchargement biométrique natif:',e));
+    }else if(++tentativesPontBiometrie>=40){
+      clearInterval(attentePontBiometrie);
+    }
+  };
+  const attentePontBiometrie=setInterval(verifierPontBiometrie,150);
+  window.addEventListener('deviceready',verifierPontBiometrie,{once:true});
+  window.addEventListener('load',verifierPontBiometrie,{once:true});
 
   // --- Correctif espace personnel (favoris / plus tard / téléchargements) ---
   // Le script principal (hors de cette IIFE) appelle favoris(), plusTard(),

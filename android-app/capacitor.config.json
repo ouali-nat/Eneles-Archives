@@ -1,17 +1,17 @@
 {
   "appId": "app.vercel.aurore_section_archivescom.twa",
-  "appName": "Aurore",
+  "appName": "Eneles",
   "webDir": "www",
   "server": {
-    "url": "https://aurore-section-archivescom.vercel.app",
+    "url": "https://eneles-archives-ouali1.vercel.app",
     "cleartext": false,
     "allowNavigation": [
-      "aurore-section-archivescom.vercel.app",
-      "aurore-section-archives.com",
+      "eneles-archives-ouali1.vercel.app",
       "*.supabase.co",
       "lsnb-upload.oualikevin9.workers.dev",
       "pub-0433751d08eb49fcafb7355ef0bf42ab.r2.dev",
-      "cdnjs.cloudflare.com"
+      "cdnjs.cloudflare.com",
+      "esm.sh"
     ]
   },
   "android": {

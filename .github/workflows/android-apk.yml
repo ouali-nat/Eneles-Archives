@@ -9,6 +9,7 @@ on:
       - 'android-app/**'
       - '!android-app/icon.png'
       - 'js/aurore-auth-bootstrap.js'
+      - 'js/aurore-personal-actions.js'
       - 'js/aurore-pdf-reader.js'
       - 'index.html'
       - '.github/workflows/android-apk.yml'
