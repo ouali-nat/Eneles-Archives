@@ -213,12 +213,12 @@
         failures = 0;
         try { window.sessionStorage.removeItem(storageKey); } catch (_) {}
         clearPairFromUrl();
-        notice("Aurore Archives est connectée. Tu peux revenir à la conversation pour continuer.", false);
+        notice("Eneles Archives est connectée. Tu peux revenir à la conversation pour continuer.", false);
         if (timer) clearInterval(timer);
         return;
       }
 
-      notice(result.error || "Connexion impossible. Reviens à la conversation et vérifie la session Aurore ID.", true);
+      notice(result.error || "Connexion impossible. Reviens à la conversation et vérifie la session Eneles ID.", true);
       if (response.status === 410) {
         finished = true;
         try { window.sessionStorage.removeItem(storageKey); } catch (_) {}

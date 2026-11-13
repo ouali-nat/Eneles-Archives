@@ -21,7 +21,7 @@ if(typeof window.adminInventoryFetch!=='function')window.adminInventoryFetch=asy
       return adminInventoryFetch(url,options,retry,networkAttempt+1);
     }
     const endpoint=String(url||'').replace(/^https?:\/\/[^/]+/,'');
-    throw new Error('Connexion réseau Aurore indisponible pendant la requête '+endpoint+'. '+message);
+    throw new Error('Connexion réseau Eneles indisponible pendant la requête '+endpoint+'. '+message);
   }
   if((response.status===401||response.status===403)&&retry&&typeof assurerClientAuthGoogle==='function'){
     try{
@@ -40,7 +40,7 @@ if(typeof window.adminInventoryFetch!=='function')window.adminInventoryFetch=asy
         }catch(error){
           const message=String(error?.message||error||'');
           const endpoint=String(url||'').replace(/^https?:\/\/[^/]+/,'');
-          throw new Error('Connexion réseau Aurore indisponible après renouvellement de session pendant la requête '+endpoint+'. '+message);
+          throw new Error('Connexion réseau Eneles indisponible après renouvellement de session pendant la requête '+endpoint+'. '+message);
         }
       }
     }catch(_){}
@@ -61,7 +61,7 @@ async function chooseRegenerationTheme(defaultColor,mode='regeneration'){
     if(!modal){
       modal=document.createElement('div');
       modal.id='cfThemeModal';
-      modal.innerHTML='<div class="cf-theme-modal-backdrop"></div><section class="cf-theme-modal-card" role="dialog" aria-modal="true" aria-labelledby="cfThemeModalTitle"><div class="cf-theme-modal-kicker">Identité Aurore</div><h3 id="cfThemeModalTitle">Choisir la couleur du nouveau PDF</h3><p class="cf-theme-modal-description">Les couleurs proposées reprennent les 45 thèmes officiels du site Aurore. La couleur choisie restera associée à cette version.</p><div class="cf-theme-modal-picker"><input id="cfThemeModalInput" type="color" aria-label="Couleur dominante du PDF"><div><strong id="cfThemeModalValue"></strong><span>Couleur dominante</span></div></div><div class="cf-theme-swatches" aria-label="Couleurs proposées"></div><div class="cf-theme-modal-actions"><button type="button" class="admin-btn ghost" id="cfThemeModalCancel">Annuler</button><button type="button" class="admin-btn primary" id="cfThemeModalApply">Régénérer avec cette couleur</button></div></section></div>';
+      modal.innerHTML='<div class="cf-theme-modal-backdrop"></div><section class="cf-theme-modal-card" role="dialog" aria-modal="true" aria-labelledby="cfThemeModalTitle"><div class="cf-theme-modal-kicker">Identité Eneles</div><h3 id="cfThemeModalTitle">Choisir la couleur du nouveau PDF</h3><p class="cf-theme-modal-description">Les couleurs proposées reprennent les 45 thèmes officiels du site Eneles. La couleur choisie restera associée à cette version.</p><div class="cf-theme-modal-picker"><input id="cfThemeModalInput" type="color" aria-label="Couleur dominante du PDF"><div><strong id="cfThemeModalValue"></strong><span>Couleur dominante</span></div></div><div class="cf-theme-swatches" aria-label="Couleurs proposées"></div><div class="cf-theme-modal-actions"><button type="button" class="admin-btn ghost" id="cfThemeModalCancel">Annuler</button><button type="button" class="admin-btn primary" id="cfThemeModalApply">Régénérer avec cette couleur</button></div></section></div>';
       document.body.appendChild(modal);
       const style=document.createElement('style');
       style.id='cfThemeModalStyles';
@@ -1172,7 +1172,7 @@ async function renderPdfPageByPageFromBrowser(id,accessToken,b){
   const stage=document.getElementById('cfPdfProductionStage');if(stage)stage.textContent='Tous les fragments sont prêts côté serveur. Seul le PDF global fusionné sera ajouté à Content Factory.';
   const merge=document.getElementById('cfPdfMergeAll');if(merge){merge.disabled=false;merge.onclick=async()=>{
     merge.disabled=true;merge.textContent='Fusion en cours…';setProgress(96,'Fusion de toutes les pages PDF…');
-    try{const mr=await fetch(SUPABASE_URL+'/functions/v1/aurora-content-pdf-merge',{method:'POST',headers:h,body:JSON.stringify({generated_document_id:Number(id),page_paths:paths})});const mt=await mr.text();let md={};try{md=mt?JSON.parse(mt):{}}catch(_){md={error:mt}};if(!mr.ok||!md?.ok)throw new Error(md?.error||('Fusionneur HTTP '+mr.status));setProgress(100,'PDF final fusionné.');if(stage)stage.textContent='PDF final fusionné et enregistré dans Aurore.';merge.textContent='PDF finalisé';await charger();alert('Toutes les pages ont été fusionnées. Le PDF final est prêt.')}catch(e){merge.disabled=false;merge.textContent='Fusionner sur le serveur';alert('La fusion n’a pas pu être effectuée. '+(e.message||e))}}
+    try{const mr=await fetch(SUPABASE_URL+'/functions/v1/aurora-content-pdf-merge',{method:'POST',headers:h,body:JSON.stringify({generated_document_id:Number(id),page_paths:paths})});const mt=await mr.text();let md={};try{md=mt?JSON.parse(mt):{}}catch(_){md={error:mt}};if(!mr.ok||!md?.ok)throw new Error(md?.error||('Fusionneur HTTP '+mr.status));setProgress(100,'PDF final fusionné.');if(stage)stage.textContent='PDF final fusionné et enregistré dans Eneles.';merge.textContent='PDF finalisé';await charger();alert('Toutes les pages ont été fusionnées. Le PDF final est prêt.')}catch(e){merge.disabled=false;merge.textContent='Fusionner sur le serveur';alert('La fusion n’a pas pu être effectuée. '+(e.message||e))}}
   };
   return {pages:paths.length,paths};
 }
@@ -1384,7 +1384,7 @@ async function cancelPdfGeneration(id){
   window.__aurorePdfCancelRequested=window.__aurorePdfCancelRequested||new Set();
   const numericId=Number(id), selector='[data-cf-cancel="'+CSS.escape(String(numericId))+'"]';
   const keep=()=>document.querySelectorAll(selector).forEach(b=>{b.disabled=true;b.textContent='Annulation demandée…';b.dataset.cancelState='requested';b.setAttribute('aria-busy','true')});
-  if(!confirm('Annuler la génération PDF de ce document ?\\n\\nLa demande sera transmise à Aurore. Le bouton restera visible jusqu’à la fin réelle de la génération.'))return false;
+  if(!confirm('Annuler la génération PDF de ce document ?\\n\\nLa demande sera transmise à Eneles. Le bouton restera visible jusqu’à la fin réelle de la génération.'))return false;
   keep();
   try{
     window.__aurorePdfCancelRequested.add(numericId);
@@ -1641,7 +1641,7 @@ async function openPlacementForm(id){
     modal.innerHTML=
       '<div class="cf-place-backdrop" data-cf-place-close></div>'+
       '<section class="cf-place-dialog" role="dialog" aria-modal="true" aria-labelledby="cfPlacementTitle">'+
-        '<div class="cf-place-kicker">Publication éditoriale · Aurore</div>'+
+        '<div class="cf-place-kicker">Publication éditoriale · Eneles</div>'+
         '<h3 id="cfPlacementTitle">Publier dans la bibliothèque pédagogique</h3>'+
         '<p class="cf-place-lead">Classe le document avec le même parcours que dans Éditorial GPT · Section A. Le PDF produit et son titre sont conservés.</p>'+
         '<form id="cfPlacementForm">'+
@@ -1656,7 +1656,7 @@ async function openPlacementForm(id){
           '</section>'+
           '<section class="cf-place-form-section" aria-label="Le parcours scolaire">'+
             '<div class="cf-place-step-heading"><span class="cf-place-step-num">02</span><div><strong>Le parcours scolaire</strong><small>Choisis le niveau, le parcours/emplacement puis la matière.</small></div></div>'+
-            '<p class="cf-place-section-help">Les valeurs viennent du catalogue pédagogique Aurore. La matière proposée dépend du parcours final sélectionné.</p>'+
+            '<p class="cf-place-section-help">Les valeurs viennent du catalogue pédagogique Eneles. La matière proposée dépend du parcours final sélectionné.</p>'+
             '<div class="cf-place-school-grid">'+
               '<div class="cf-place-level-controls">'+
                 '<label class="cf-place-field"><span>Niveau</span><select id="cfPlaceLevel" data-native-select="true"><option value="">Choisir un niveau…</option></select></label>'+
@@ -1854,7 +1854,7 @@ async function openPlacementForm(id){
           p_notes:[sourceReference?.value?'Source pédagogique : '+String(sourceReference.value).trim():'',String(modal.querySelector('#cfPlaceNotes')?.value||'').trim()].filter(Boolean).join('\n\n')||null
         });
         close();await charger();
-        alert('Publication validée dans '+targets.length+' emplacement'+(targets.length>1?'s':'')+'. Les documents Aurore existants aux mêmes emplacements sont remplacés sans doublon.');
+        alert('Publication validée dans '+targets.length+' emplacement'+(targets.length>1?'s':'')+'. Les documents Eneles existants aux mêmes emplacements sont remplacés sans doublon.');
       }catch(error){
         submit.removeAttribute('aria-busy');updateCurrentPathState();
         alert('Publication impossible. '+String(error?.message||error));
@@ -1862,7 +1862,7 @@ async function openPlacementForm(id){
     });
   }catch(error){modal?.remove();throw error;}
 }
-async function publishDoc(id){if(!confirm('Publier ce document dans la bibliothèque publique Aurore ?\n\nCette action crée un document publié à partir du PDF validé.'))return;const n=prompt('Note de publication (facultatif) :','');if(n===null)return;try{await rpc('aurora_publish_generated_document',{p_generated_document_id:Number(id),p_notes:n||null});await charger();alert('Document publié dans la bibliothèque Aurore.')}catch(e){alert('Publication impossible. '+(e.message||e))}}
+async function publishDoc(id){if(!confirm('Publier ce document dans la bibliothèque publique Eneles ?\n\nCette action crée un document publié à partir du PDF validé.'))return;const n=prompt('Note de publication (facultatif) :','');if(n===null)return;try{await rpc('aurora_publish_generated_document',{p_generated_document_id:Number(id),p_notes:n||null});await charger();alert('Document publié dans la bibliothèque Eneles.')}catch(e){alert('Publication impossible. '+(e.message||e))}}
 function apply(){
   const q=(document.getElementById('adminSearchContentFactory')?.value||'').trim().toLowerCase(),
         st=document.getElementById('adminFilterContentFactory')?.value||'',
@@ -1892,7 +1892,7 @@ function apply(){
         ?'<button type="button" class="admin-btn primary" data-cf-confirm-job="'+esc(x.job_id)+'">Choisir la couleur et lancer la production</button>'
         :'';
       return `<article class="cf-admin-card cf-admin-card-large cf-admin-editorial-request" data-content-job-id="${esc(x.job_id)}" style="--cf-document-theme:${esc(theme)}">
-        <div class="cf-admin-icon cf-admin-icon-large"><img src="./icon-192-1.png" alt="Aurore"></div>
+        <div class="cf-admin-icon cf-admin-icon-large"><img src="./icon-192-1.png" alt="Eneles"></div>
         <div class="cf-admin-body">
           <div class="cf-admin-kicker">Demande éditoriale</div>
           <div class="cf-admin-title">${esc(x.title||'Nouvelle demande')}</div>
@@ -1935,7 +1935,7 @@ function apply(){
     const origin=m.origin||m.source||m.producer||'';
     const actionBusy=active||cancelRequested;
     return `<article class="cf-admin-card cf-admin-card-large" data-generated-document-id="${esc(x.id)}" style="--cf-document-theme:${esc(theme)}">
-      <div class="cf-admin-icon cf-admin-icon-large"><img src="./icon-192-1.png" alt="Aurore"></div>
+      <div class="cf-admin-icon cf-admin-icon-large"><img src="./icon-192-1.png" alt="Eneles"></div>
       <div class="cf-admin-body">
         <div class="cf-admin-kicker">${assistedFinal?'PDF global · Édition assistée':'Document IA'}</div>
         <div class="cf-admin-title">${esc(x.title||'Sans titre')}</div>

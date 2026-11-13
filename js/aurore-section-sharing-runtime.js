@@ -85,10 +85,10 @@
 
   function handleShareClick(shareUrl,sectionName){
     return async function(){
-      const title='Section partagée · '+(sectionName||'Aurore');
+      const title='Section partagée · '+(sectionName||'Eneles');
       if(navigator.share){
         try{
-          await navigator.share({title,text:'Une sélection de documents organisée dans Aurore.',url:shareUrl});
+          await navigator.share({title,text:'Une sélection de documents organisée dans Eneles.',url:shareUrl});
           return;
         }catch(e){
           // Annulation ou échec du partage natif : on retombe sur la copie du lien,
@@ -118,7 +118,7 @@
         <div class="aurore-shared-section-banner">
           <span class="kicker">SECTION PARTAGÉE</span>
           <h1>${esc(section.name||'Section')}</h1>
-          <p>Une sélection de documents organisée dans Aurore.</p>
+          <p>Une sélection de documents organisée dans Eneles.</p>
           <div class="assp-badges">
             <span class="assp-badge">Lecture seule</span>
             <span class="assp-badge">${docs.length} document${docs.length!==1?'s':''}</span>
@@ -131,7 +131,7 @@
           <button type="button" class="assp-share-btn" id="asspShareBtn">Partager cette section</button>
         </div>
         <div id="auroreSharedDocumentList" class="aurore-shared-section-list"></div>
-        <p class="assp-footer">Partagé via Aurore</p>
+        <p class="assp-footer">Partagé via Eneles</p>
       </div>`;
 
     const holder=document.getElementById('auroreSharedDocumentList');

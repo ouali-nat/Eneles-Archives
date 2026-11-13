@@ -13,7 +13,7 @@
   function cachedPreviewBuffer(url){const hit=previewPdfCache.get(url);if(!hit)return null;previewPdfCache.delete(url);previewPdfCache.set(url,hit);return hit;}
   function rememberPreviewBuffer(url,buffer){previewPdfCache.delete(url);previewPdfCache.set(url,buffer);while(previewPdfCache.size>PREVIEW_CACHE_MAX)previewPdfCache.delete(previewPdfCache.keys().next().value);}
   const THEME_COLORS=[
-    {value:'#6D28D9',label:'Violet Aurore'},
+    {value:'#6D28D9',label:'Violet Eneles'},
     {value:'#2563EB',label:'Bleu'},
     {value:'#DC2626',label:'Rouge'},
     {value:'#15803D',label:'Vert'},
@@ -117,7 +117,7 @@
       id:start?'system-start':'system-end',
       role,type:role,locked:true,
       content:start
-        ? {title:courseTitle,subtitle:'Bibliothèque numérique d’Aurore',author:'',institution:'',show_date:true}
+        ? {title:courseTitle,subtitle:'Bibliothèque numérique d’Eneles',author:'',institution:'',show_date:true}
         : {title:'Fin du document',subtitle:'Merci d’avoir consulté ce cours.',contact:'',show_qr:false},
       generation:{status:'system',page_number:start?1:null,page_path:null,page_url:null,updated_at:null,error:null},
       created_at:new Date().toISOString()
@@ -127,7 +127,7 @@
     if(!course||typeof course!=='object')return course;
     course.document_pages=course.document_pages&&typeof course.document_pages==='object'?course.document_pages:{};
     course.document_pages.cover=course.document_pages.cover&&typeof course.document_pages.cover==='object'
-      ?course.document_pages.cover:{enabled:true,title:String(course.title||'Nouveau document'),subtitle:'Bibliothèque numérique d’Aurore',author:'',institution:'',show_date:true};
+      ?course.document_pages.cover:{enabled:true,title:String(course.title||'Nouveau document'),subtitle:'Bibliothèque numérique d’Eneles',author:'',institution:'',show_date:true};
     course.document_pages.toc=course.document_pages.toc&&typeof course.document_pages.toc==='object'
       ?course.document_pages.toc:{enabled:true,title:'Sommaire',subtitle:'Organisation du document',entries:[]};
     course.document_pages.toc.enabled=true;
@@ -282,7 +282,7 @@
     return {id,title:String(title||'Nouveau cours').trim()||'Nouveau cours',status:'editing',
       metadata:{schema:'aurore-assisted-course-v5',editor:'edition_assistee',origin:'assisted_editor'},
       document_pages:{
-        cover:{enabled:true,title:String(title||'Nouveau cours'),subtitle:'Bibliothèque numérique d’Aurore',author:'',institution:'',show_date:true},
+        cover:{enabled:true,title:String(title||'Nouveau cours'),subtitle:'Bibliothèque numérique d’Eneles',author:'',institution:'',show_date:true},
         toc:{enabled:true,title:'Sommaire',subtitle:'Organisation du document',entries:[]},
         end:{enabled:true,title:'Fin du document',subtitle:'Merci d’avoir consulté ce cours.',contact:'',show_qr:false}
       },
@@ -1895,16 +1895,16 @@
     const startPage=b.role===START_ROLE;
     const page=startPage?1:pageNumberFor(b);
     const title=startPage?'Première page · couverture':'Dernière page · mentions, crédits et vérification';
-    const subtitle=startPage?'Présentation canonique du document Aurore':'Dernière page canonique de la production Aurore';
+    const subtitle=startPage?'Présentation canonique du document Eneles':'Dernière page canonique de la production Eneles';
     const summary=startPage
-      ? '<strong>Document pédagogique</strong><span>'+esc(state.course.title||'Nouveau cours')+'</span><span>Logo Aurore · identité visuelle officielle · format A4</span>'
+      ? '<strong>Document pédagogique</strong><span>'+esc(state.course.title||'Nouveau cours')+'</span><span>Logo Eneles · identité visuelle officielle · format A4</span>'
       : '<strong>Mentions · crédits · vérification</strong><span>Identité de l’édition · QR de vérification · droits & réutilisation</span><span>Page générée par le même renderer que le document final.</span>';
     return '<article class="ae-block ae-system-block" data-block="'+esc(b.id)+'">'+
       '<header class="ae-block-head"><div><span class="ae-block-number">'+String(page).padStart(2,'0')+'</span><strong>'+esc(title)+'</strong><small>'+esc(subtitle)+' · système</small></div><span class="ae-block-state ok">Prévisualisable</span></header>'+
       '<div class="ae-system-content">'+summary+'</div>'+
       '<div class="ae-canonical-preview-progress" data-canonical-preview-role="'+esc(b.role)+'">'+canonicalPreviewProgressMarkup(b.role,startPage?'Aperçu automatique de la couverture':'Aperçu automatique de la page finale')+'</div>'+
       '<div class="ae-block-toolbar"><button class="admin-btn ghost" data-regenerate-page="'+esc(b.id)+'">↻ Régénérer la page</button><button class="admin-btn ghost" data-preview-block="'+esc(b.id)+'">Prévisualiser</button><button class="admin-btn ghost" data-json-system="'+esc(b.id)+'">JSON</button></div>'+
-      '<div class="ae-block-result"><span>Aperçu = fragment PDF réellement produit indépendamment par le renderer rapide Aurore.</span></div>'+
+      '<div class="ae-block-result"><span>Aperçu = fragment PDF réellement produit indépendamment par le renderer rapide Eneles.</span></div>'+
       '</article>';
   }
 
@@ -3098,7 +3098,7 @@
     setStatus('Construction de l’aperçu GeoGebra…');
     try{
       const exportPNG=window.auroraGeoGebraRenderer?.exportPNG;
-      if(typeof exportPNG!=='function')throw new Error('Le moteur GeoGebra n’est pas chargé. Recharge Aurore puis réessaie.');
+      if(typeof exportPNG!=='function')throw new Error('Le moteur GeoGebra n’est pas chargé. Recharge Eneles puis réessaie.');
       const pngBase64=await exportPNG(clone(b.content?.json||{}));
       const image=document.getElementById(imageId);
       if(!image)return;
@@ -3120,7 +3120,7 @@
     if(isSystemBlock(b)){
       const kind=systemPageKey(b.role),canvasId='aeSystemPreview_'+kind+'_'+String(b.id).replace(/[^a-zA-Z0-9_-]/g,'_'),loadingId=canvasId+'_loading';
       const title=systemPageLabel(kind);
-      const body='<div class="ae-page-preview"><div class="ae-page-preview-meta"><strong>'+esc(title)+'</strong><span>PDF indépendant · renderer rapide Aurore · fragment d’une seule page</span></div>'+canonicalPreviewProgressMarkup(kind,title)+'<div class="ae-page-preview-canvas-wrap"><div id="'+loadingId+'" class="ae-preview-loading">Préparation de la page indépendante…</div><canvas id="'+canvasId+'" class="ae-page-preview-canvas" aria-label="'+esc(title)+'"></canvas></div><div class="ae-page-preview-actions"><button class="admin-btn primary" id="aeCloseCanonicalPreview">Fermer</button></div></div>';
+      const body='<div class="ae-page-preview"><div class="ae-page-preview-meta"><strong>'+esc(title)+'</strong><span>PDF indépendant · renderer rapide Eneles · fragment d’une seule page</span></div>'+canonicalPreviewProgressMarkup(kind,title)+'<div class="ae-page-preview-canvas-wrap"><div id="'+loadingId+'" class="ae-preview-loading">Préparation de la page indépendante…</div><canvas id="'+canvasId+'" class="ae-page-preview-canvas" aria-label="'+esc(title)+'"></canvas></div><div class="ae-page-preview-actions"><button class="admin-btn primary" id="aeCloseCanonicalPreview">Fermer</button></div></div>';
       openBlockModal(title,body);
       document.getElementById('aeCloseCanonicalPreview')?.addEventListener('click',()=>document.getElementById('aeModalHost').innerHTML='');
       setStatus('Génération indépendante de la page système…');
@@ -3161,7 +3161,7 @@
   async function previewToc(){
     ensureDocumentPages(state.course);rebuildTocEntries();
     const canvasId='aeIndependentTocPreview',loadingId=canvasId+'_loading';
-    const body='<div class="ae-page-preview"><div class="ae-page-preview-meta"><strong>Page 2 · Sommaire</strong><span>PDF indépendant · renderer rapide Aurore · fragment d’une seule page</span></div>'+canonicalPreviewProgressMarkup('toc','Génération du sommaire')+'<div class="ae-page-preview-canvas-wrap"><div id="'+loadingId+'" class="ae-preview-loading">Préparation du sommaire indépendant…</div><canvas id="'+canvasId+'" class="ae-page-preview-canvas" aria-label="Prévisualisation exacte du sommaire"></canvas></div><div class="ae-page-preview-actions"><button class="admin-btn primary" id="aeCloseCanonicalTocPreview">Fermer</button></div></div>';
+    const body='<div class="ae-page-preview"><div class="ae-page-preview-meta"><strong>Page 2 · Sommaire</strong><span>PDF indépendant · renderer rapide Eneles · fragment d’une seule page</span></div>'+canonicalPreviewProgressMarkup('toc','Génération du sommaire')+'<div class="ae-page-preview-canvas-wrap"><div id="'+loadingId+'" class="ae-preview-loading">Préparation du sommaire indépendant…</div><canvas id="'+canvasId+'" class="ae-page-preview-canvas" aria-label="Prévisualisation exacte du sommaire"></canvas></div><div class="ae-page-preview-actions"><button class="admin-btn primary" id="aeCloseCanonicalTocPreview">Fermer</button></div></div>';
     openBlockModal('Prévisualisation exacte du sommaire',body);
     document.getElementById('aeCloseCanonicalTocPreview')?.addEventListener('click',()=>document.getElementById('aeModalHost').innerHTML='');
     setStatus('Génération indépendante du sommaire…');
@@ -3369,7 +3369,7 @@
       }
       if(currentRow&&String(currentRow.updated_at||'')!==knownVersion){
         saveLocalCourseDraft(course,knownVersion,state.serverSnapshots[courseId]||null);
-        setStatus('Conflit de sauvegarde détecté : ce cours a été modifié ailleurs, notamment par le connecteur Aurore. Aucune ancienne version n’a été écrite. Le brouillon local est conservé sur cet appareil ; actualise la liste et rouvre le cours.');
+        setStatus('Conflit de sauvegarde détecté : ce cours a été modifié ailleurs, notamment par le connecteur Eneles. Aucune ancienne version n’a été écrite. Le brouillon local est conservé sur cet appareil ; actualise la liste et rouvre le cours.');
         return false;
       }
       if(!currentRow&&knownVersion!==null){

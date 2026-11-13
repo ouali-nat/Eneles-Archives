@@ -15,7 +15,7 @@ function init(){
  grid.appendChild(card);
  const panel=document.createElement('div');
  panel.className='admin-tab-panel';panel.dataset.panel='aurora-request';panel.id='admin-tab-aurora-request';
- panel.innerHTML='<div class="aurora-request-head"><div><span class="admin-overview-kicker">Aurore · édition</span><h3>Espace éditorial ChatGPT</h3></div></div><div id="auroraRequestFormHost"></div>';
+ panel.innerHTML='<div class="aurora-request-head"><div><span class="admin-overview-kicker">Eneles · édition</span><h3>Espace éditorial ChatGPT</h3></div></div><div id="auroraRequestFormHost"></div>';
  cf.parentNode.insertBefore(panel,cf);
  function show(target){
    const detail=document.getElementById('adminDetail');

@@ -43,7 +43,7 @@
         });
       } else {
         const status = auroreResult.status === 'fulfilled' ? auroreResult.value.status : auroreResult.reason;
-        throw new Error("Lecture des documents Aurore impossible" + (status ? " (" + status + ")" : ""));
+        throw new Error("Lecture des documents Eneles impossible" + (status ? " (" + status + ")" : ""));
       }
 
       const totalAttente = (data?.length || 0) + (dataAurore?.length || 0);
@@ -95,7 +95,7 @@
               <span style="color:var(--gris);">${ligneCompteDeposant(deposant)}</span>
             </div>
             ${tailleBadgeMarkup(doc.Fichier_url, doc.id, doc.Publie === true)}
-            <button type="button" class="admin-btn ghost js-open-pdf-in-site">Ouvrir le PDF dans Aurore</button>
+            <button type="button" class="admin-btn ghost js-open-pdf-in-site">Ouvrir le PDF dans Eneles</button>
             <button type="button" class="doc-more-btn admin-document-more" data-document-more="1" aria-label="Options de partage" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"></circle><circle cx="12" cy="12" r="1.8"></circle><circle cx="12" cy="19" r="1.8"></circle></svg></button>
             <div class="admin-actions">
               <button class="admin-btn valider">Valider</button>
@@ -160,22 +160,22 @@
         card.dataset.adminLevel = String(niveau);
         card.dataset.adminClass = String(classe);
         card.dataset.adminSubject = String(matiere);
-        card.dataset.adminCategory = 'Aurore — Content Factory';
-        card.dataset.adminAuthor = 'Aurore';
-        card.dataset.adminSearch = [doc.title, niveau, classe, matiere, 'Aurore', 'Content Factory', statutLabel].filter(Boolean).join(' ');
+        card.dataset.adminCategory = 'Eneles — Content Factory';
+        card.dataset.adminAuthor = 'Eneles';
+        card.dataset.adminSearch = [doc.title, niveau, classe, matiere, 'Eneles', 'Content Factory', statutLabel].filter(Boolean).join(' ');
         card.dataset.adminSortValue = String(doc.id ?? '0');
         card.style.animationDelay = ((data || []).length + i) * 0.04 + 's';
         card.innerHTML = `
           <div class="admin-card-icon">✦</div>
           <div class="admin-card-body">
-            <div class="titre">${doc.title || 'Document Aurore sans titre'}</div>
+            <div class="titre">${doc.title || 'Document Eneles sans titre'}</div>
             <div class="meta">
               <b>${niveau}</b> · ${classe} · ${matiere}<br>
-              <strong>Aurore — Content Factory</strong> · Auteur : Aurore<br>
+              <strong>Eneles — Content Factory</strong> · Auteur : Eneles<br>
               <span style="color:var(--gris);">${statutLabel}</span>
             </div>
             ${pdfUrl
-              ? '<button type="button" class="admin-btn ghost js-open-aurora-pdf">Ouvrir le PDF dans Aurore</button>'
+              ? '<button type="button" class="admin-btn ghost js-open-aurora-pdf">Ouvrir le PDF dans Eneles</button>'
               : '<div class="admin-empty" style="margin:.6rem 0 0;">Le PDF est encore en préparation. Le document reste visible ici pour le contrôle du circuit.</div>'}
             <div class="admin-actions">
               ${activeProduction
@@ -231,7 +231,7 @@
           if (!pdfUrl) return;
           const cible = {
             id: doc.id,
-            Titre: doc.title || 'Document Aurore',
+            Titre: doc.title || 'Document Eneles',
             Fichier_url: pdfUrl,
             Telechargement_autorise: false
           };
@@ -278,7 +278,7 @@
         niveaux:(data || []).map(d=>d.Niveau).concat((dataAurore || []).map(d=>d.level)),
         classes:(data || []).map(d=>d.Classe).concat((dataAurore || []).map(d=>d.class_name)),
         matieres:(data || []).map(d=>d['Matière'] || d.Genre).concat((dataAurore || []).map(d=>d.subject || d.matiere)),
-        categories:(data || []).map(d=>d['Catégorie']).concat((dataAurore || []).map(()=>'Aurore — Content Factory'))
+        categories:(data || []).map(d=>d['Catégorie']).concat((dataAurore || []).map(()=>'Eneles — Content Factory'))
       });
     } catch (err) {
       console.error('[ADMIN][ATTENTE] Échec du chargement des documents en attente :', err);
@@ -444,7 +444,7 @@
             ${tailleBadgeMarkup(doc.Fichier_url, doc.id, doc.Publie === true)}
             <div class="admin-published-location-actions">
               <button type="button" class="admin-btn ghost js-view-public-location" title="Voir où ce document apparaît sur le site public" aria-label="Voir l’emplacement public de ce document"><span aria-hidden="true">◉</span> Voir l’emplacement</button>
-              <button type="button" class="admin-btn ghost js-open-pdf-in-site">Ouvrir le PDF dans Aurore</button>
+              <button type="button" class="admin-btn ghost js-open-pdf-in-site">Ouvrir le PDF dans Eneles</button>
             </div>
             <button type="button" class="doc-more-btn admin-document-more" data-document-more="1" aria-label="Options de partage" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"></circle><circle cx="12" cy="12" r="1.8"></circle><circle cx="12" cy="19" r="1.8"></circle></svg></button>
             <div class="admin-actions">
@@ -710,7 +710,7 @@
       docs.forEach(doc=>{
         const item=document.createElement('div');
         item.className='admin-duplicate-item';
-        item.innerHTML=`<div class="admin-duplicate-item-main"><strong>${echapperHtmlPub(doc.Titre||'Sans titre')}</strong><span>${echapperHtmlPub([doc.Niveau,doc.Classe,doc['Matière']||doc.Genre].filter(Boolean).join(' · ')||'Informations non renseignées')}</span><small>${echapperHtmlPub(nomFichierExactDepuisUrl(doc.Fichier_url))}</small></div><div class="admin-duplicate-item-actions"><button type="button" class="admin-btn ghost js-open-pdf-in-site">Ouvrir dans Aurore</button><button type="button" class="admin-btn refuser" data-duplicate-delete="1">Exclure du site</button></div>`;
+        item.innerHTML=`<div class="admin-duplicate-item-main"><strong>${echapperHtmlPub(doc.Titre||'Sans titre')}</strong><span>${echapperHtmlPub([doc.Niveau,doc.Classe,doc['Matière']||doc.Genre].filter(Boolean).join(' · ')||'Informations non renseignées')}</span><small>${echapperHtmlPub(nomFichierExactDepuisUrl(doc.Fichier_url))}</small></div><div class="admin-duplicate-item-actions"><button type="button" class="admin-btn ghost js-open-pdf-in-site">Ouvrir dans Eneles</button><button type="button" class="admin-btn refuser" data-duplicate-delete="1">Exclure du site</button></div>`;
         item.querySelector('[data-duplicate-delete="1"]').addEventListener('click',()=>exclureDoublonAdmin(doc.id,doc.Titre,wrap));
         item.querySelector('.js-open-pdf-in-site')?.addEventListener('click',()=>{
           const cible={...doc,id:doc.id,Titre:doc.Titre||'Document',Fichier_url:doc.Fichier_url,Telechargement_autorise:doc.Telechargement_autorise!==false};

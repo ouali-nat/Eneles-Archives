@@ -48,7 +48,7 @@
   const authWait=document.getElementById('auroreAuthWait');
   const authWaitText=document.getElementById('auroreAuthWaitText');
   let auroreAuthWaitSafetyTimer=null;
-  function afficherVeuillezPatienter(texte='Aurore prépare votre espace…'){
+  function afficherVeuillezPatienter(texte='Eneles prépare votre espace…'){
     if(authWaitText)authWaitText.textContent=texte;
     if(authWait){
       authWait.classList.add('show');
@@ -75,11 +75,11 @@
           idBtn.disabled=false;
           idBtn.removeAttribute('aria-busy');
           const label=idBtn.querySelector('strong');
-          if(label)label.textContent='Continuer avec Aurore ID';
+          if(label)label.textContent='Continuer avec Eneles ID';
         }
         const m=document.getElementById('accessMessage');
         if(m){
-          m.textContent='La connexion n’a pas abouti. Votre compte et vos données n’ont pas été modifiés. Réessayez ou choisissez Aurore ID.';
+          m.textContent='La connexion n’a pas abouti. Votre compte et vos données n’ont pas été modifiés. Réessayez ou choisissez Eneles ID.';
           m.className='access-message err';
           m.style.display='block';
         }
@@ -204,29 +204,29 @@
     enregistrerSortieVisiteur();
     try{localStorage.removeItem('aurore_visitor_mode');}catch(_){}
     if(auroreId.classList.contains('is-loading')) return;
-    afficherVeuillezPatienter('Connexion sécurisée avec Aurore ID…');
+    afficherVeuillezPatienter('Connexion sécurisée avec Eneles ID…');
     if(accessMessage){
-      accessMessage.textContent='Veuillez patienter — connexion sécurisée avec Aurore ID en cours…';
+      accessMessage.textContent='Veuillez patienter — connexion sécurisée avec Eneles ID en cours…';
       accessMessage.className='access-message ok';
       accessMessage.style.display='block';
     }
     auroreId.classList.add('is-loading');
     const strong=auroreId.querySelector('strong');
-    if(strong)strong.textContent='Connexion à Aurore ID…';
+    if(strong)strong.textContent='Connexion à Eneles ID…';
     try{
       if(typeof demarrerConnexionAuroreID==='function') await demarrerConnexionAuroreID();
-      else throw new Error('Le moteur de connexion Aurore ID n’est pas chargé.');
+      else throw new Error('Le moteur de connexion Eneles ID n’est pas chargé.');
     }catch(err){
       console.error('[Aurore ID OAuth]',err);
       if(accessMessage){
-        accessMessage.textContent='Impossible de démarrer la connexion Aurore ID. Réessayez dans un instant.';
+        accessMessage.textContent='Impossible de démarrer la connexion Eneles ID. Réessayez dans un instant.';
         accessMessage.className='access-message err';
         accessMessage.style.display='block';
       }
       cacherVeuillezPatienter();
     }finally{
       auroreId.classList.remove('is-loading');
-      if(strong)strong.textContent='Continuer avec Aurore ID';
+      if(strong)strong.textContent='Continuer avec Eneles ID';
     }
   });
   try{if(localStorage.getItem('aurore_visitor_mode')==='1') demarrerSuiviVisiteur();}catch(e){}
@@ -275,7 +275,7 @@
     btn.disabled=true; btn.textContent='Connexion en cours…';
     // Affiche le bloc d'attente avant toute opération réseau. Le navigateur
     // dispose ainsi d'un cycle de rendu pour l'afficher même si Supabase répond lentement.
-    afficherVeuillezPatienter('Connexion à Aurore en cours…');
+    afficherVeuillezPatienter('Connexion à Eneles en cours…');
     await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
     try{
       const r=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`,{method:'POST',headers:{'apikey':SUPABASE_ANON_KEY,'Content-Type':'application/json'},body:JSON.stringify({email,password})});

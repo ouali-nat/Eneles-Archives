@@ -41,8 +41,8 @@
   layer.innerHTML = `
     <div class="aurore-verify-shell"><section class="aurore-verify-card aurore-verify-loading">
       <header class="aurore-verify-top"><div class="aurore-verify-logo"><img class="aurore-verify-logo-image" src="https://pub-0433751d08eb49fcafb7355ef0bf42ab.r2.dev/site-logo-auraster" alt="Eneles"></div><div><div class="aurore-verify-kicker">Section Archives</div><div class="aurore-verify-brand">Vérification publique</div></div></header>
-      <div class="aurore-verify-body"><div class="aurore-verify-state">Vérification en cours…</div><h1 class="aurore-verify-title">Contrôle de l’édition Aurore</h1><p class="aurore-verify-message">Aurore vérifie la publication publique et l’intégrité du fichier associé à cette référence.</p></div>
-      <footer class="aurore-verify-foot"><span>AURORA · Référence #${generatedId}</span><span>© Aurore — Section Archives</span></footer>
+      <div class="aurore-verify-body"><div class="aurore-verify-state">Vérification en cours…</div><h1 class="aurore-verify-title">Contrôle de l’édition Eneles</h1><p class="aurore-verify-message">Eneles vérifie la publication publique et l’intégrité du fichier associé à cette référence.</p></div>
+      <footer class="aurore-verify-foot"><span>AURORA · Référence #${generatedId}</span><span>© Eneles — Archives</span></footer>
     </section></div>`;
   document.body.appendChild(layer);
   const logoVerifier = layer.querySelector('.aurore-verify-logo-image');
@@ -70,20 +70,20 @@
       const d = result.document || {}; const path = Array.isArray(result.publication && result.publication.path) ? result.publication.path : [];
       body.innerHTML = `
         <div class="aurore-verify-state">✓ Document publié et vérifié</div>
-        <h1 class="aurore-verify-title">${esc(d.title || "Document Aurore")}</h1>
+        <h1 class="aurore-verify-title">${esc(d.title || "Document Eneles")}</h1>
         <p class="aurore-verify-message">Cette édition est présente dans la bibliothèque publique Aurore et son fichier PDF répond au contrôle d’intégrité.</p>
         <div class="aurore-verify-location"><div class="aurore-verify-label">Lieu exact de publication</div><div class="aurore-verify-crumbs">${path.map(function(x,i){return (i?'<span class="separator"></span>':'')+'<span>'+esc(x)+'</span>';}).join("")}</div></div>
         <div class="aurore-verify-meta">${d.id?'<span>Document public #'+esc(d.id)+'</span>':''}${d.version?'<span>Version '+esc(d.version)+'</span>':''}${d.subject?'<span>'+esc(d.subject)+'</span>':''}</div>
-        <div class="aurore-verify-actions"><a class="aurore-verify-primary" href="${esc(result.publication.url)}">Ouvrir le document</a><button type="button" class="aurore-verify-secondary" data-back>Retour à Aurore</button></div>`;
+        <div class="aurore-verify-actions"><a class="aurore-verify-primary" href="${esc(result.publication.url)}">Ouvrir le document</a><button type="button" class="aurore-verify-secondary" data-back>Retour à Eneles</button></div>`;
     } else if (status === "unpublished") {
       card.classList.add("aurore-verify-unpublished"); const d = result.document || {};
       const publishUrl = "/?aurore_publish_generated_document=" + encodeURIComponent(generatedId);
       body.innerHTML = `
         <div class="aurore-verify-state">• Document non publié</div>
-        <h1 class="aurore-verify-title">${esc(d.title || "Édition Aurore")}</h1>
+        <h1 class="aurore-verify-title">${esc(d.title || "Édition Eneles")}</h1>
         <p class="aurore-verify-message">Cette édition existe dans le système éditorial Aurore, mais elle n’est pas encore disponible dans la bibliothèque publique. Son lien de publication est disponible pour l’administration.</p>
         <div class="aurore-verify-meta">${d.version?'<span>Version '+esc(d.version)+'</span>':''}<span>Référence AUR #${esc(generatedId)}</span></div>
-        <div class="aurore-verify-actions"><a class="aurore-verify-primary" href="${esc(publishUrl)}">Ouvrir la publication</a><button type="button" class="aurore-verify-secondary" data-back>Retour à Aurore</button></div>`;
+        <div class="aurore-verify-actions"><a class="aurore-verify-primary" href="${esc(publishUrl)}">Ouvrir la publication</a><button type="button" class="aurore-verify-secondary" data-back>Retour à Eneles</button></div>`;
     } else if (status === "corrupt") {
       card.classList.add("aurore-verify-error"); const d = result.document || {};
       body.innerHTML = `
@@ -91,10 +91,10 @@
         <h1 class="aurore-verify-title">Le fichier publié ne passe pas le contrôle</h1>
         <p class="aurore-verify-message">${esc(result.message || "Aurore a détecté un problème avec le fichier associé à cette édition.")}</p>
         <div class="aurore-verify-meta"><span>Document public #${esc(d.id || "")}</span><span>Référence AUR #${esc(generatedId)}</span></div>
-        <div class="aurore-verify-actions"><button type="button" class="aurore-verify-secondary" data-back>Retour à Aurore</button></div>`;
+        <div class="aurore-verify-actions"><button type="button" class="aurore-verify-secondary" data-back>Retour à Eneles</button></div>`;
     } else {
       card.classList.add("aurore-verify-error");
-      body.innerHTML = `<div class="aurore-verify-state">! Vérification indisponible</div><h1 class="aurore-verify-title">Aurore ne peut pas confirmer cette édition</h1><p class="aurore-verify-message">${esc(result.message || "Le service de vérification est temporairement indisponible.")}</p><div class="aurore-verify-meta"><span>Référence AUR #${esc(generatedId)}</span></div><div class="aurore-verify-actions"><button type="button" class="aurore-verify-secondary" data-back>Retour à Aurore</button></div>`;
+      body.innerHTML = `<div class="aurore-verify-state">! Vérification indisponible</div><h1 class="aurore-verify-title">Eneles ne peut pas confirmer cette édition</h1><p class="aurore-verify-message">${esc(result.message || "Le service de vérification est temporairement indisponible.")}</p><div class="aurore-verify-meta"><span>Référence AUR #${esc(generatedId)}</span></div><div class="aurore-verify-actions"><button type="button" class="aurore-verify-secondary" data-back>Retour à Eneles</button></div>`;
     }
     layer.querySelectorAll("[data-back]").forEach(function(btn){btn.addEventListener("click",back);});
   }

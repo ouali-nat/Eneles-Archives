@@ -237,7 +237,7 @@
         if (genreObjet && typeof allerDocumentsLivre === 'function') {
           await allerDocumentsLivre(genreObjet);
         } else {
-          document.getElementById('docsTitle').textContent = genre ? `Livres et romans — ${genre}` : 'Livres et romans';
+          document.getElementById('docsTitle').textContent = genre ? `Bibliothèque — ${genre}` : 'Bibliothèque';
           const q = `${encodeURIComponent('Catégorie')}=eq.${encodeURIComponent('Livres')}&Publie=eq.true` + (genre ? `&Genre=eq.${encodeURIComponent(genre)}` : '');
           const r = await fetch(`${SUPABASE_URL}/rest/v1/Document?select=*&${q}`, {headers:HEADERS});
           const data = r.ok ? await r.json() : [doc];
@@ -532,7 +532,7 @@
   // ---------- PRÉSENTATION ADMINISTRABLE ----------
   const PRESENTATION_ADMIN_DEFAULT = {
     title: PRESENTATION_UNIFIEE?.titre || 'Une bibliothèque pensée pour tous',
-    text: PRESENTATION_UNIFIEE?.texte || 'Aurore — Section Archives rassemble les ressources éducatives dans un espace clair, collaboratif et accessible.'
+    text: PRESENTATION_UNIFIEE?.texte || 'Eneles rassemble les ressources éducatives dans un espace clair, collaboratif et accessible.'
   };
   function echapperPresentationTexte(value){
     const div=document.createElement('div');div.textContent=String(value||'');return div.innerHTML;

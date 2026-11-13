@@ -18,7 +18,7 @@ async function adminFetch(url,options={}){
 function normalise(j){
  const m=metadataOf(j),d=m.aurore_design&&typeof m.aurore_design==='object'?m.aurore_design:{};
  const pRaw=Number(m.generation_progress??m.lualatex_progress??m.pdf_progress);
- return {id:Number(j.id),title:clean(j.title,'Document Aurore sans titre'),level:clean(j.level,'Niveau non précisé'),className:clean(j.class_name,'—'),subject:clean(j.subject,'Matière non précisée'),type:clean(j.document_type,'Document'),created:j.created_at,updated:j.updated_at,status:statusOf(j),generatedDocumentId:j.generated_document_id,theme:themeColor((m.theme_color_source==='admin'&&m.admin_theme_color)||d.theme_color||m.theme_color),metadata:m,error:clean(j.error_message),progress:Number.isFinite(pRaw)?Math.max(0,Math.min(100,pRaw)):null,stage:clean(m.generation_stage||m.lualatex_stage||m.generation_status||m.lualatex_status),search:[j.title,j.level,j.class_name,j.subject,j.document_type,j.id].filter(Boolean).join(' ').toLocaleLowerCase('fr')};
+ return {id:Number(j.id),title:clean(j.title,'Document Eneles sans titre'),level:clean(j.level,'Niveau non précisé'),className:clean(j.class_name,'—'),subject:clean(j.subject,'Matière non précisée'),type:clean(j.document_type,'Document'),created:j.created_at,updated:j.updated_at,status:statusOf(j),generatedDocumentId:j.generated_document_id,theme:themeColor((m.theme_color_source==='admin'&&m.admin_theme_color)||d.theme_color||m.theme_color),metadata:m,error:clean(j.error_message),progress:Number.isFinite(pRaw)?Math.max(0,Math.min(100,pRaw)):null,stage:clean(m.generation_stage||m.lualatex_stage||m.generation_status||m.lualatex_status),search:[j.title,j.level,j.class_name,j.subject,j.document_type,j.id].filter(Boolean).join(' ').toLocaleLowerCase('fr')};
 }
 function applyFilters(){
  const q=STATE.query.trim().toLocaleLowerCase('fr');
@@ -35,14 +35,14 @@ function populate(id,values,label){
  if([...e.options].some(o=>o.value===old))e.value=old;
 }
 function progress(j){
- if(j.progress!=null)return '<div class="admin-pending-v2-progress"><div class="admin-pending-v2-progress-head"><strong>Progression réelle</strong><span>'+j.progress+'%</span></div><div class="admin-pending-v2-progress-track"><i style="width:'+j.progress+'%"></i></div><small>'+esc(j.stage||'Production Aurore')+'</small></div>';
+ if(j.progress!=null)return '<div class="admin-pending-v2-progress"><div class="admin-pending-v2-progress-head"><strong>Progression réelle</strong><span>'+j.progress+'%</span></div><div class="admin-pending-v2-progress-track"><i style="width:'+j.progress+'%"></i></div><small>'+esc(j.stage||'Production Eneles')+'</small></div>';
  const s=statusOf(j);
  const label=s==='processing'?'Génération en cours':s==='review'?'Contenu éditorial prêt — lancement manuel':'En attente de prise en charge';
  return '<div class="admin-pending-v2-progress is-indeterminate"><div class="admin-pending-v2-progress-head"><strong>Progression de production</strong><span>'+esc(label)+'</span></div><div class="admin-pending-v2-progress-track"><i></i></div><small>Le moteur publiera le pourcentage réel dès qu’une progression chiffrée est disponible.</small></div>';
 }
 async function chooseTheme(j){
  const chooser=window.auroreContentFactoryChooseTheme;
- if(typeof chooser!=='function')throw new Error('Sélecteur de couleur Aurore indisponible.');
+ if(typeof chooser!=='function')throw new Error('Sélecteur de couleur Eneles indisponible.');
  const color=await chooser(j.theme,'generation');
  if(!color)return false;
  const m=metadataOf(j),d=m.aurore_design&&typeof m.aurore_design==='object'?m.aurore_design:{},c=themeColor(color);
@@ -81,7 +81,7 @@ async function launch(j){
 async function deleteJob(j){
  const s=statusOf(j);
  if(s==='processing'){alert('Une génération est en cours. Utilise « Annuler la génération » pour arrêter proprement la production.');return}
- if(!confirm((j.generatedDocumentId?'Retirer définitivement le document généré #'+j.generatedDocumentId:'Supprimer définitivement la demande Aurore #'+j.id)+' ?\n\nLe document sera retiré du sas et ne sera plus proposé à la production.'))return;
+ if(!confirm((j.generatedDocumentId?'Retirer définitivement le document généré #'+j.generatedDocumentId:'Supprimer définitivement la demande Eneles #'+j.id)+' ?\n\nLe document sera retiré du sas et ne sera plus proposé à la production.'))return;
  if(j.generatedDocumentId){
    const r=await adminFetch(SUPABASE_URL+'/rest/v1/rpc/aurora_archive_generated_document',{
      method:'POST',
@@ -102,7 +102,7 @@ async function deleteJob(j){
 async function cancelJob(j){
  const s=statusOf(j);
  if(!['queued','processing'].includes(s))return;
- if(!confirm('Annuler la production du job Aurore #'+j.id+' ?\n\nLa production sera arrêtée, mais la demande et son contenu seront conservés. Elle restera disponible pour être relancée plus tard. Annuler ne supprime pas le document.'))return;
+ if(!confirm('Annuler la production du job Eneles #'+j.id+' ?\n\nLa production sera arrêtée, mais la demande et son contenu seront conservés. Elle restera disponible pour être relancée plus tard. Annuler ne supprime pas le document.'))return;
  try{
   const r=await adminFetch(SUPABASE_URL+'/rest/v1/rpc/aurora_cancel_content_job',{
    method:'POST',
@@ -134,14 +134,14 @@ function render(){
  setText('adminPendingV2Processing',STATE.jobs.filter(j=>statusOf(j)==='processing').length);
  setText('adminPendingV2Queued',STATE.jobs.filter(j=>statusOf(j)==='queued').length);
  setText('adminPendingV2Visible',STATE.filtered.length);
- if(!STATE.filtered.length){list.innerHTML='<div class="admin-pending-v2-empty"><strong>Aucun document Aurore dans le sas.</strong><span>Le sas ne contient que les demandes Content Factory encore sans document PDF associé.</span></div>';return}
+ if(!STATE.filtered.length){list.innerHTML='<div class="admin-pending-v2-empty"><strong>Aucun document Eneles dans le sas.</strong><span>Le sas ne contient que les demandes Content Factory encore sans document PDF associé.</span></div>';return}
  list.innerHTML=STATE.filtered.map(j=>{
    const s=statusOf(j),stalePdf=!!j.metadata?._pending_stale_pdf,label=s==='processing'?'Génération en cours':s==='queued'?'En file d’attente':s==='review'?(j.generatedDocumentId?(stalePdf?'Édition modifiée — ancien PDF à régénérer':'Édition D terminée — PDF à lancer'):'Contenu éditorial prêt — PDF à lancer'):'Brouillon';
    return '<article class="admin-pending-v2-card" data-pending-job-id="'+j.id+'" style="--pending-theme:'+esc(j.theme)+'"><div class="admin-pending-v2-card-accent"></div><div class="admin-pending-v2-card-main">'+
-   '<div class="admin-pending-v2-card-head"><div><span class="admin-pending-v2-source">Aurore — Content Factory</span><h3 class="admin-pending-v2-title">'+esc(j.title)+'</h3></div><span class="admin-pending-v2-id">Job #'+j.id+'</span></div>'+
+   '<div class="admin-pending-v2-card-head"><div><span class="admin-pending-v2-source">Eneles — Content Factory</span><h3 class="admin-pending-v2-title">'+esc(j.title)+'</h3></div><span class="admin-pending-v2-id">Job #'+j.id+'</span></div>'+
    progress(j)+
    '<div class="admin-pending-v2-grid"><div><b>Date</b><span>'+esc(fmt(j.created))+'</span></div><div><b>Classe</b><span>'+esc(j.className)+'</span></div><div><b>Niveau</b><span>'+esc(j.level)+'</span></div><div><b>Matière</b><span>'+esc(j.subject)+'</span></div><div><b>Type</b><span>'+esc(j.type)+'</span></div><div><b>État</b><span data-pending-state>'+esc(label)+'</span></div></div>'+
-   '<div class="admin-pending-v2-classification">Matière : '+esc(j.subject)+' · Niveau : '+esc(j.level)+' · Classe : '+esc(j.className)+' · Origine : Aurore</div>'+
+   '<div class="admin-pending-v2-classification">Matière : '+esc(j.subject)+' · Niveau : '+esc(j.level)+' · Classe : '+esc(j.className)+' · Origine : Eneles</div>'+
    '<div class="admin-pending-v2-status"><strong data-pending-status>'+esc(label)+'</strong> · '+(stalePdf?'ancien PDF conservé comme historique — régénération manuelle disponible':'PDF pas encore associé')+'</div>'+
    '<div class="admin-pending-v2-theme"><span style="background:'+esc(j.theme)+'"></span><div><b>Couleur du document</b><small>'+esc(j.theme)+' · modifiable avant lancement</small></div></div>'+
    (j.error?'<div class="admin-pending-v2-error">'+esc(j.error)+'</div>':'')+
@@ -202,12 +202,12 @@ async function ensurePendingAdminSession(){
 async function chargerDocumentsEnAttenteAdminV2(){
  const list=document.getElementById('adminPendingV2List');if(!list)return;
  if(!await ensurePendingAdminSession()){
-  list.innerHTML='<div class="admin-pending-v2-error"><strong>Session administrateur à renouveler.</strong><br>Reconnecte-toi à Aurore pour charger les données privées du sas.</div>';
+  list.innerHTML='<div class="admin-pending-v2-error"><strong>Session administrateur à renouveler.</strong><br>Reconnecte-toi à Eneles pour charger les données privées du sas.</div>';
   return;
  }
  const initialLoad=!STATE.loaded;
  if(initialLoad){
-  list.innerHTML='<div class="admin-pending-v2-empty"><strong>Chargement du sas Aurore…</strong><span>Lecture exclusive des demandes sans document PDF associé.</span></div>';
+  list.innerHTML='<div class="admin-pending-v2-empty"><strong>Chargement du sas Eneles…</strong><span>Lecture exclusive des demandes sans document PDF associé.</span></div>';
  }
  STATE.refreshing=true;
  try{
@@ -274,13 +274,13 @@ async function chargerDocumentsEnAttenteAdminV2(){
   STATE.loaded=true;
   populate('adminPendingV2Level',STATE.jobs.map(j=>j.level),'Tous les niveaux');
   populate('adminPendingV2Subject',STATE.jobs.map(j=>j.subject),'Toutes les matières');
-  const note=document.getElementById('adminPendingV2Note');if(note)note.textContent='Sas Aurore uniquement : demandes et éditions D terminées qui attendent encore leur production PDF. Dès qu’un PDF existe, le document quitte ce sas.';
+  const note=document.getElementById('adminPendingV2Note');if(note)note.textContent='Sas Eneles uniquement : demandes et éditions D terminées qui attendent encore leur production PDF. Dès qu’un PDF existe, le document quitte ce sas.';
   if(initialLoad || changed) render();
  }catch(e){
   console.error('[ADMIN][AURORE PENDING] chargement',e);
   if(!STATE.loaded){
    STATE.jobs=[];STATE.filtered=[];
-   list.innerHTML='<div class="admin-pending-v2-error"><strong>Impossible de charger le sas Aurore.</strong><br>'+esc(e?.message||e)+'</div>';
+   list.innerHTML='<div class="admin-pending-v2-error"><strong>Impossible de charger le sas Eneles.</strong><br>'+esc(e?.message||e)+'</div>';
    setText('adminPendingV2Total',0);setText('adminPendingV2Processing',0);setText('adminPendingV2Queued',0);setText('adminPendingV2Visible',0);
   }else{
    console.warn('[ADMIN][AURORE PENDING] rafraîchissement conservé à l’écran',e);

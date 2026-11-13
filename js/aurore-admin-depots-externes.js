@@ -129,9 +129,9 @@
     root.id = 'externalDepositManager';
     root.className = 'external-deposit-manager';
     root.innerHTML = `
-      <div class="dx-manager-head"><div><span class="dx-kicker">Administration · Catalogue documentaire</span><h3>Documents Aurore et communauté</h3><p>Chaque fichier apparaît une seule fois. Ses différents emplacements sont gérés séparément.</p></div><span class="dx-manager-state" id="dxRefreshState">Synchronisé</span></div>
+      <div class="dx-manager-head"><div><span class="dx-kicker">Administration · Catalogue documentaire</span><h3>Documents Eneles et communauté</h3><p>Chaque fichier apparaît une seule fois. Ses différents emplacements sont gérés séparément.</p></div><span class="dx-manager-state" id="dxRefreshState">Synchronisé</span></div>
       <div class="dx-manager-toolbar"><label class="dx-search"><span aria-hidden="true">⌕</span><input id="dxSearch" type="search" placeholder="Rechercher un titre, déposant, niveau ou matière…" autocomplete="off"></label><select id="dxStatusFilter" aria-label="Filtrer les documents"><option value="all">Tous les statuts</option><option value="pending">En attente</option><option value="published">Publiés</option><option value="multi">Plusieurs emplacements</option></select></div>
-      <div class="dx-manager-stats"><div><strong id="dxStatFiles">0</strong><span>Fichiers</span></div><div><strong id="dxStatAurore">0</strong><span>Documents Aurore</span></div><div><strong id="dxStatCommunity">0</strong><span>Documents communauté</span></div><div><strong id="dxStatLocations">0</strong><span>Emplacements</span></div><div><strong id="dxStatPending">0</strong><span>En attente</span></div></div>`;
+      <div class="dx-manager-stats"><div><strong id="dxStatFiles">0</strong><span>Fichiers</span></div><div><strong id="dxStatAurore">0</strong><span>Documents Eneles</span></div><div><strong id="dxStatCommunity">0</strong><span>Documents communauté</span></div><div><strong id="dxStatLocations">0</strong><span>Emplacements</span></div><div><strong id="dxStatPending">0</strong><span>En attente</span></div></div>`;
     list.insertAdjacentElement('beforebegin', root);
     root.querySelector('#dxSearch').addEventListener('input', e => { state.query = normalize(e.target.value); render(); });
     root.querySelector('#dxStatusFilter').addEventListener('change', e => { state.status = e.target.value; render(); });
@@ -215,7 +215,7 @@
   function creerCarte(group) {
     const doc = group.primary || {};
     const deposant = getDeposant(group);
-    const infoDeposant = group.aurore ? 'Origine : production Aurore' :
+    const infoDeposant = group.aurore ? 'Origine : production Eneles' :
       group.deposants.length > 1 ? group.deposants.length + ' comptes déposants associés' :
       (typeof ligneCompteDeposant === 'function' ? ligneCompteDeposant(deposant) : 'Compte du déposant : information non disponible');
     const taille = typeof tailleBadgeMarkup === 'function' ? tailleBadgeMarkup(doc.Fichier_url, doc.id, doc.Publie === true) : '';
@@ -240,15 +240,15 @@
       <button type="button" class="dx-menu-toggle" data-dx-menu-toggle aria-label="Ouvrir les options du document" aria-expanded="false"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"></circle><circle cx="12" cy="12" r="1.8"></circle><circle cx="12" cy="19" r="1.8"></circle></svg></button>
       <div class="admin-card-icon">${icon}</div>
       <div class="admin-card-body">
-        <span class="dx-origin ${group.aurore ? 'aurore' : 'community'}">${group.aurore ? 'DOCUMENT AURORE' : 'DOCUMENT DE LA COMMUNAUTÉ'}</span>
+        <span class="dx-origin ${group.aurore ? 'aurore' : 'community'}">${group.aurore ? 'DOCUMENT ENELES' : 'DOCUMENT DE LA COMMUNAUTÉ'}</span>
         <div class="titre">${esc(doc.Titre || 'Document sans titre')}</div>
         <div class="meta">${esc(doc.Niveau || 'Niveau non précisé')}${doc.Classe ? ' · ' + esc(doc.Classe) : ''} · ${esc(doc['Catégorie'] || 'Non classé')} · ${esc(doc['Matière'] || doc.Genre || 'Matière non précisée')}<br>
-          ${group.aurore ? 'Production Aurore' : 'Déposé par ' + esc(doc.Auteur || deposant?.nom || 'Anonyme')}<br>
+          ${group.aurore ? 'Production Eneles' : 'Déposé par ' + esc(doc.Auteur || deposant?.nom || 'Anonyme')}<br>
           <span style="color:var(--gris);">${esc(infoDeposant)}</span>
         </div>
         <div class="dx-state-line"><span class="dx-state-pill">${group.locations.length} emplacement(s)</span><span class="dx-state-pill">${group.docs.length} entrée(s) catalogue</span><span class="dx-state-pill">${esc(statut)}</span>${group.duplicateRows ? '<span class="dx-state-pill">'+group.duplicateRows+' répétition(s) de ligne</span>' : ''}</div>
         ${taille}
-        <div class="dx-main-actions"><button type="button" class="admin-btn ghost" data-dx-open-pdf>Ouvrir le PDF dans Aurore</button><button type="button" class="admin-btn primary" data-dx-locations>Voir les emplacements (${group.locations.length})</button></div>
+        <div class="dx-main-actions"><button type="button" class="admin-btn ghost" data-dx-open-pdf>Ouvrir le PDF dans Eneles</button><button type="button" class="admin-btn primary" data-dx-locations>Voir les emplacements (${group.locations.length})</button></div>
       </div>
       <div class="dx-menu" role="menu" aria-label="Fonctionnalités du document">
         <button type="button" data-dx-menu-action="locations">Voir les emplacements</button>
@@ -304,7 +304,7 @@
       } else cards.forEach(card => wrap.appendChild(card));
       list.appendChild(wrap);
     };
-    section('Documents Aurore', aurore, 'aurore');
+    section('Documents Eneles', aurore, 'aurore');
     section('Documents de la communauté', community, 'community');
     const badge = root.querySelector('#dxRefreshState');
     if (badge) badge.textContent = 'Synchronisé · ' + new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
@@ -357,9 +357,9 @@
       const stateLabel = pending && published ? pending+' en attente · '+published+' publié(s)' : pending ? 'En attente de validation' : 'Publié';
       const ids = loc.rows.map(docId).join(',');
       const primary = loc.latest || loc.rows[0];
-      const deposantLine = group.aurore ? 'Production Aurore' : loc.deposants.length > 1 ? loc.deposants.length + ' comptes déposants associés' : (typeof ligneCompteDeposant === 'function' ? ligneCompteDeposant(loc.deposants[0] || null) : 'Compte déposant non disponible');
+      const deposantLine = group.aurore ? 'Production Eneles' : loc.deposants.length > 1 ? loc.deposants.length + ' comptes déposants associés' : (typeof ligneCompteDeposant === 'function' ? ligneCompteDeposant(loc.deposants[0] || null) : 'Compte déposant non disponible');
       return `<article class="dx-location-row"><div class="dx-location-title">${index+1}. ${esc(loc.label)}</div><span class="dx-status-tag">${esc(stateLabel)}</span><div class="dx-location-meta">${loc.rows.length} enregistrement(s) pour cet emplacement · ID ${esc(ids)}<br>${esc(deposantLine)}</div><div class="dx-location-actions">
-        ${published ? '<button type="button" class="admin-btn ghost" data-dx-location-action="view" data-document-id="'+esc(docId(primary))+'">Voir dans Aurore</button>' : ''}
+        ${published ? '<button type="button" class="admin-btn ghost" data-dx-location-action="view" data-document-id="'+esc(docId(primary))+'">Voir dans Eneles</button>' : ''}
         ${pending ? '<button type="button" class="admin-btn primary" data-dx-location-action="publish" data-group-token="'+esc(token)+'" data-location-key="'+esc(loc.key)+'">Valider cet emplacement</button>' : ''}
         ${published ? '<button type="button" class="admin-btn ghost" data-dx-location-action="download" data-group-token="'+esc(token)+'" data-location-key="'+esc(loc.key)+'">'+(loc.rows.every(d=>d.Telechargement_autorise===false)?'Autoriser le téléchargement':'Passer en lecture seule')+'</button>' : ''}
         <button type="button" class="admin-btn refuser" data-dx-location-action="remove" data-group-token="'+esc(token)+'" data-location-key="'+esc(loc.key)+'">Retirer cet emplacement</button>
@@ -420,7 +420,7 @@
         if(!Array.isArray(deleted)||!deleted.some(row=>docId(row)===id))throw new Error('Le serveur n’a pas confirmé la suppression de l’entrée '+id+'. Vérifie les droits administrateur/RLS.');
       }
       if(location.pending.length===location.rows.length && group.locations.length===1 && typeof notifierDeposant==='function')for(const deposant of (location.deposants||[])){
-        if(deposant?.user_id)await notifierDeposant(deposant,{titreDocument:group.primary?.Titre,statut:'refuse',message:'Votre document « '+(group.primary?.Titre||'sans titre')+' » n’a pas été retenu dans le catalogue Aurore.'});
+        if(deposant?.user_id)await notifierDeposant(deposant,{titreDocument:group.primary?.Titre,statut:'refuse',message:'Votre document « '+(group.primary?.Titre||'sans titre')+' » n’a pas été retenu dans le catalogue Eneles.'});
       }
       fermerModal(); await charger();
     } catch(error) {
@@ -448,7 +448,7 @@
       if(!Array.isArray(updated)||updated.length!==ids.length)throw new Error('La validation de cet emplacement n’a pas été confirmée.');
       const depositors=location.deposants||[];
       if(typeof notifierDeposant==='function')for(const deposant of depositors){
-        if(deposant?.user_id)await notifierDeposant(deposant,{titreDocument:found.group.primary?.Titre,statut:'valide',message:'Votre document « '+(found.group.primary?.Titre||'sans titre')+' » a été validé et publié dans cet emplacement Aurore.'});
+        if(deposant?.user_id)await notifierDeposant(deposant,{titreDocument:found.group.primary?.Titre,statut:'valide',message:'Votre document « '+(found.group.primary?.Titre||'sans titre')+' » a été validé et publié dans cet emplacement Eneles.'});
       }
       fermerModal();await charger();
     } catch(error) { alert('Validation de cet emplacement impossible. '+String(error?.message||error)); }
@@ -472,7 +472,7 @@
   async function charger() {
     const list=document.getElementById('adminList'); if(!list||enCours)return;
     enCours=true;state.loading=true;
-    list.innerHTML='<p class="admin-empty">Chargement des documents Aurore et de la communauté…</p>';
+    list.innerHTML='<p class="admin-empty">Chargement des documents Eneles et de la communauté…</p>';
     const stateEl=document.getElementById('dxRefreshState');if(stateEl)stateEl.textContent='Synchronisation…';
     try {
       const rows=await lireTousLesDocuments();
@@ -486,7 +486,7 @@
       if(typeof actualiserResumeDepotsAttente==='function')actualiserResumeDepotsAttente(pending);
       outils({niveaux:pending.map(d=>d.Niveau),classes:pending.map(d=>d.Classe),matieres:pending.map(d=>d['Matière']||d.Genre),categories:pending.map(d=>d['Catégorie'])});
       ensureManager(list);render();
-      if(!groups.length)list.innerHTML='<p class="admin-empty">Aucun document Aurore ou communautaire dans le catalogue.</p>';
+      if(!groups.length)list.innerHTML='<p class="admin-empty">Aucun document Eneles ou communautaire dans le catalogue.</p>';
     } catch(error) {
       console.error('[DÉPÔTS EXTERNES] chargement',error);
       list.innerHTML='<p class="admin-empty">Impossible de charger les documents pour le moment. '+esc(error?.message||error)+'</p>';
@@ -518,13 +518,13 @@
     if(!grille||!modele||!panneau||grille.querySelector('.admin-tab[data-tab="'+TAB+'"]'))return;
     carte=document.createElement('button');
     carte.type='button';carte.className='admin-tab admin-category-card';carte.dataset.tab=TAB;carte.dataset.accent='ambre';carte.setAttribute('role','tab');
-    carte.innerHTML='<span aria-hidden="true" class="admin-category-icon"><svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="20"><path d="M3 7h18M5 7v13h14V7M9 7V4h6v3M9 11h6M9 15h6"></path></svg></span><span class="admin-category-title">Dépôts externes</span><span class="admin-category-desc">Documents Aurore et contributions de la communauté</span><span class="tab-count" id="'+ID_COMPTEUR+'">0</span>';
+    carte.innerHTML='<span aria-hidden="true" class="admin-category-icon"><svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="20"><path d="M3 7h18M5 7v13h14V7M9 7V4h6v3M9 11h6M9 15h6"></path></svg></span><span class="admin-category-title">Dépôts externes</span><span class="admin-category-desc">Documents Eneles et contributions de la communauté</span><span class="tab-count" id="'+ID_COMPTEUR+'">0</span>';
     modele.insertAdjacentElement('afterend',carte);carte.addEventListener('click',ouvrir);
-    panneau.setAttribute('aria-label','Dépôts externes · documents Aurore et communauté');
+    panneau.setAttribute('aria-label','Dépôts externes · documents Eneles et communauté');
     const vue=panneau.querySelector('.admin-pending-overview');
-    if(vue)vue.setAttribute('aria-label','Vue d’ensemble des documents Aurore et de la communauté');
+    if(vue)vue.setAttribute('aria-label','Vue d’ensemble des documents Eneles et de la communauté');
     const titre=panneau.querySelector('.admin-pending-overview-head h3');if(titre)titre.textContent='Dépôts externes';
-    const texte=panneau.querySelector('.admin-pending-overview-head p');if(texte)texte.textContent='Documents de la plateforme Aurore et dépôts de la communauté, regroupés par fichier et organisés par emplacement.';
+    const texte=panneau.querySelector('.admin-pending-overview-head p');if(texte)texte.textContent='Documents de la plateforme Eneles et dépôts de la communauté, regroupés par fichier et organisés par emplacement.';
     const desc=panneau.querySelector(':scope > .admin-panel-desc');if(desc)desc.textContent='Ouvre les options de chaque document avec le menu à trois points. Consulte ses emplacements et retire une seule destination sans toucher aux autres.';
     const actualiser=document.getElementById('adminRefreshAttente');
     if(actualiser)actualiser.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();charger();},true);

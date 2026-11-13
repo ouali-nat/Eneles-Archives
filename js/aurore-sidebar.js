@@ -53,7 +53,7 @@
     { id: 'profile', label: 'Mon profil', icon: 'user', target: 'btnOuvrirProfil', auth: true },
     { id: 'security', label: 'Code et empreinte', icon: 'shield', run: function () {
       if (typeof window.ouvrirGestionProtectionEspace === 'function') window.ouvrirGestionProtectionEspace();
-      else if (window.confirm('La protection de l’espace n’est pas encore chargée. Recharger Aurore maintenant ?')) window.location.reload();
+      else if (window.confirm('La protection de l’espace n’est pas encore chargée. Recharger Eneles maintenant ?')) window.location.reload();
     }, auth: true },
     { id: 'admin', label: 'Espace admin', icon: 'shield', target: 'btnAdmin', admin: true },
     { id: 'logout', label: 'Déconnexion', icon: 'logout', target: 'btnDeconnexion', auth: true }
@@ -244,7 +244,7 @@
         '<div class="asb-sep"></div><div class="asb-group" data-group="more"></div>' +
       '</div>' +
       '<div class="asb-sep"></div>' +
-      '<div class="asb-user" id="asbUser" hidden><span class="asb-avatar" id="asbAvatar"></span><span class="asb-user-text"><strong id="asbName"></strong><small>Compte Aurore</small></span></div>';
+      '<div class="asb-user" id="asbUser" hidden><span class="asb-avatar" id="asbAvatar"></span><span class="asb-user-text"><strong id="asbName"></strong><small>Compte Eneles</small></span></div>';
 
     scrim = document.createElement('div');
     scrim.className = 'asb-scrim';

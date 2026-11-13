@@ -56,10 +56,10 @@
     const data = await blobToBase64(await res.blob());
     const safeName = filename.replace(/[\\\/:*?"<>|]+/g, '_');
 
-    let written, where = 'Documents/Aurore';
+    let written, where = 'Documents/Eneles';
     try{
       written = await P.Filesystem.writeFile({
-        path: 'Aurore/' + safeName, data: data, directory: 'DOCUMENTS', recursive: true
+        path: 'Eneles/' + safeName, data: data, directory: 'DOCUMENTS', recursive: true
       });
     }catch(e){
       where = 'cache';
@@ -68,7 +68,7 @@
       });
     }
 
-    toast(where === 'cache' ? 'PDF prêt : choisissez où l’enregistrer' : 'PDF enregistré dans Documents/Aurore');
+    toast(where === 'cache' ? 'PDF prêt : choisissez où l’enregistrer' : 'PDF enregistré dans Documents/Eneles');
 
     if(P.Share && typeof P.Share.share === 'function'){
       try{

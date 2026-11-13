@@ -40,7 +40,7 @@
     const rappel=document.createElement("div");
     rappel.id="aurore-zoom-hint";
     rappel.className="aurore-zoom-hint";
-    rappel.innerHTML="<strong>Affichage trop grand ?</strong><span>Réduisez le zoom avec − pour mieux adapter Aurore à votre écran.</span>";
+    rappel.innerHTML="<strong>Affichage trop grand ?</strong><span>Réduisez le zoom avec − pour mieux adapter Eneles à votre écran.</span>";
     document.body.appendChild(rappel);
     setTimeout(function(){ rappel.classList.add("is-hidden"); setTimeout(function(){ rappel.remove(); },400); },7000);
   }

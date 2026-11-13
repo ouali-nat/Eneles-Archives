@@ -643,7 +643,7 @@
       percent.textContent='100%';
       bar.style.width='100%';
       box.classList.add('is-success');
-      detailEl.textContent=detail || 'Votre document a été enregistré avec succès dans les téléchargements de votre téléphone. Vous pouvez continuer à utiliser Aurore.';
+      detailEl.textContent=detail || 'Votre document a été enregistré avec succès dans les téléchargements de votre téléphone. Vous pouvez continuer à utiliser Eneles.';
       TELECHARGEMENT_TOAST_TIMER=setTimeout(()=>{box.style.display='none';},5000);
     } else if(etat==='annule') {
       title.textContent='Téléchargement annulé';
@@ -787,10 +787,10 @@
     if (!donnees) throw new Error('Le PDF à enregistrer est vide.');
 
     let fichier;
-    let emplacement = 'Documents/Aurore';
+    let emplacement = 'Documents/Eneles';
     try {
       fichier = await P.Filesystem.writeFile({
-        path: 'Aurore/' + nomSecurise,
+        path: 'Eneles/' + nomSecurise,
         data: donnees,
         directory: 'DOCUMENTS',
         recursive: true
@@ -811,7 +811,7 @@
       try {
         await P.Share.share({
           title: nomSecurise,
-          text: 'PDF téléchargé depuis Aurore.',
+          text: 'PDF téléchargé depuis Eneles.',
           dialogTitle: 'Enregistrer ou partager le PDF',
           files: [fichier.uri]
         });

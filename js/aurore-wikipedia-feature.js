@@ -471,7 +471,7 @@
     const creditsImages = images.filter(i=>i.lienCommons).map(i=>`<a href="${esc(i.lienCommons)}" target="_blank" rel="noopener noreferrer">${esc(i.nomFichier)}</a>`).join(' · ');
     const sourcesHtml = `<div class="wiki-block wiki-sources-block">
         <span class="wiki-block-kicker">Sources</span>
-        <p>Le contenu de cette page provient de Wikipédia et Wikimedia Commons, disponibles sous licence Creative Commons BY-SA. Aurore n'est pas l'auteur de ce contenu et se contente de le présenter de façon plus lisible.</p>
+        <p>Le contenu de cette page provient de Wikipédia et Wikimedia Commons, disponibles sous licence Creative Commons BY-SA. Eneles n'est pas l'auteur de ce contenu et se contente de le présenter de façon plus lisible.</p>
         <div class="wiki-source-link-row"><a href="${esc(urlOriginal)}" target="_blank" rel="noopener noreferrer">Voir l'article original sur Wikipédia</a></div>
         ${creditsImages ? `<div class="wiki-credits-list">Crédits images (Wikimedia Commons) : ${creditsImages}</div>` : ''}
       </div>`;

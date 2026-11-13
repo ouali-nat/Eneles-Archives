@@ -140,7 +140,7 @@
       },
       svg:{fontCache:'global'}
     });
-    return '<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Aurore PDF Lab</title>'+
+    return '<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Eneles PDF Lab</title>'+
       '<style>body{font-family:Arial,"Noto Sans",sans-serif;color:#17221b;font-size:11pt;line-height:1.5;margin:18mm}p{margin:0 0 4mm}.formula{text-align:center;margin:5mm 0}</style>'+
       '<script>window.__AURORE_MATHJAX_STATUS="loading";window.MathJax='+mathJaxConfig+';</script>'+
       '<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script></head><body>'+
@@ -424,7 +424,7 @@
     const canRevision=['review','approved'].includes(x.status)&&!!x.pdf_url&&!d.proc&&!d.wait&&!d.m.lualatex_cancel_requested&&!cancelBusy;
     const cells=[
       ['Date',qDate(x.created_at)],['Classe',x.class_name||'—'],['Niveau',x.level||'—'],['Matière',x.matiere||x.subject||'—'],
-      ['Type',x.document_type||'—'],['Version',x.version||'—'],['Origine',m.origin||m.source||m.producer||'Aurore'],['Statut',d.statusLabel]
+      ['Type',x.document_type||'—'],['Version',x.version||'—'],['Origine',m.origin||m.source||m.producer||'Eneles'],['Statut',d.statusLabel]
     ];
     const actions=[];
     if(x.pdf_url)actions.push('<a class="admin-btn ghost" href="'+qEsc(x.pdf_url)+'" target="_blank" rel="noopener">Ouvrir le PDF actuel</a>');
@@ -438,7 +438,7 @@
     const cls=d.proc?'is-processing ':d.wait?'is-queued ':d.done?'is-completed ':d.fail?'is-failed ':'';
     return '<article class="aurore-pdf-prod-card '+cls+'" style="--prod-theme:'+qEsc(theme)+'" data-production-id="'+qEsc(x.id)+'">'+
       '<div class="aurore-pdf-prod-accent"></div><div class="aurore-pdf-prod-body">'+
-      '<div class="aurore-pdf-prod-card-top"><div><span class="aurore-pdf-prod-source">Aurore · Content Factory</span><h4 class="aurore-pdf-prod-title">'+qEsc(x.title||'Document pédagogique')+'</h4></div><span class="aurore-pdf-prod-id">Document #'+qEsc(x.id)+(x.job_id?' · Job #'+qEsc(x.job_id):'')+'</span></div>'+
+      '<div class="aurore-pdf-prod-card-top"><div><span class="aurore-pdf-prod-source">Eneles · Content Factory</span><h4 class="aurore-pdf-prod-title">'+qEsc(x.title||'Document pédagogique')+'</h4></div><span class="aurore-pdf-prod-id">Document #'+qEsc(x.id)+(x.job_id?' · Job #'+qEsc(x.job_id):'')+'</span></div>'+
       '<div class="aurore-pdf-prod-status-line"><span class="aurore-pdf-prod-status '+(d.proc?'status-processing':d.wait?'status-queued':d.done?'status-completed':d.fail?'status-failed':'status-review')+'">'+qEsc(d.statusLabel)+'</span><span class="aurore-pdf-prod-time" data-prod-time>'+qEsc(d.timeLine)+'</span></div>'+
       '<div class="aurore-pdf-prod-stage" data-prod-stage>'+qEsc(d.stage)+'</div>'+
       '<div class="aurore-pdf-prod-progress"><div class="aurore-pdf-prod-bar"><i data-prod-bar style="width:'+d.p+'%"></i></div><span data-prod-percent>'+d.p+'%</span></div>'+

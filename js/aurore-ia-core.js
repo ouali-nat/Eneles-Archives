@@ -117,7 +117,7 @@
       if(/TIMEOUT_AURORA_SESSION/i.test(e?.message||''))throw new Error('La connexion à Eneles met trop de temps à répondre. Vérifie ta connexion internet et réessaie.');
       throw e;
     }
-    if(!sessionData?.session)throw new Error('Connectez-vous à Aurore pour utiliser Eneles.');
+    if(!sessionData?.session)throw new Error('Connectez-vous à Eneles pour continuer.');
     const contexteRecent=messagesActuels.slice(-8).map(m=>({role:m.role==='assistant'?'assistant':'user',text:String(m.text||'').slice(0,3000)}));
     /* Mode Gemini unique : toutes les demandes passent désormais par
        le moteur Gemini. Le routeur Eneles et les moteurs spécialisés séparés
@@ -140,7 +140,7 @@
       try{
         accessToken=sessionData?.session?.access_token||'';
       }catch(_){}
-      if(!accessToken)throw new Error('Session Eneles absente. Reconnectez-vous à Aurore.');
+      if(!accessToken)throw new Error('Session Eneles absente. Reconnectez-vous à Eneles.');
 
       const controller=new AbortController();
       const timer=setTimeout(()=>controller.abort(),70000);
@@ -741,7 +741,7 @@
   function selectTool(tool,btn){
     activeTool=tool||'assistant';
     document.querySelectorAll('.aurore-ia-tool').forEach(x=>x.classList.toggle('active',x.dataset.iaTool===activeTool));
-    const prompts={documents:'Trouve dans les Archives Aurore : ',wikipedia:'Cherche sur Wikipédia : ',web:'Recherche sur le Web : '};
+    const prompts={documents:'Trouve dans les Archives Eneles : ',wikipedia:'Cherche sur Wikipédia : ',web:'Recherche sur le Web : '};
     if(prompts[activeTool]&&!input.value.trim()){input.value=prompts[activeTool];autoGrow();updateSendState();}
     input.focus();
   }

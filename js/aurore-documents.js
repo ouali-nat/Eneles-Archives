@@ -572,7 +572,7 @@
 
   function obtenirTextePartageDocument(doc) {
     const titre = obtenirTitreDocument(doc);
-    return `${titre}\nConsultez ce document sur Aurore — Section Archives.`;
+    return `${titre}\nConsultez ce document sur Eneles — Archives.`;
   }
 
   async function partagerDocument(doc) {
@@ -1174,7 +1174,7 @@
       row.innerHTML =
         '<div class="info"><div class="icon-wrap">' + ICONS.file + '</div><div class="doc-main-info">' +
         '<div class="titre" title="' + echapperHtmlPub(titreDocument) + '">' + echapperHtmlPub(titreDocument) + '</div>' +
-        '<div class="meta">Déposé par ' + (doc.Auteur || 'Aurore') + (telechargementOk ? '' : ' · Lecture seule') + '</div>' +
+        '<div class="meta">Déposé par ' + (doc.Auteur || 'Eneles') + (telechargementOk ? '' : ' · Lecture seule') + '</div>' +
         (contexte ? '<div class="doc-context">' + contexte + '</div>' : '') +
         tailleBadgeMarkup(doc.Fichier_url, doc.id, doc.Publie === true) + '</div></div>' +
         boutonOuvrirCarteDocumentMarkup() + boutonPlusCarteDocumentMarkup() + panneauActionsCarteDocumentMarkup(telechargementOk);
@@ -1269,7 +1269,7 @@
 
     const auroreSection = document.createElement('section');
     auroreSection.className = 'aurore-origin-group aurore-origin-group-aurore';
-    auroreSection.innerHTML = '<div class="aurore-origin-group-head"><div><span class="aurore-origin-kicker">Bibliothèque pédagogique</span><h3>Documents Aurore</h3><p>Ressources produites et publiées par Aurore, regroupées par usage.</p></div><span class="aurore-origin-count">' + auroreDocs.length + '</span></div>';
+    auroreSection.innerHTML = '<div class="aurore-origin-group-head"><div><span class="aurore-origin-kicker">Bibliothèque pédagogique</span><h3>Documents Eneles</h3><p>Ressources produites et publiées par Eneles, regroupées par usage.</p></div><span class="aurore-origin-count">' + auroreDocs.length + '</span></div>';
 
     const overview = document.createElement('div');
     overview.className = 'aurore-resource-overview';
@@ -1286,7 +1286,7 @@
       const panel = document.createElement('section');
       panel.className = 'aurore-resource-panel';
       panel.dataset.resourceType = type.key;
-      panel.innerHTML = '<div class="aurore-resource-panel-head"><div class="aurore-resource-panel-head-main"><span class="aurore-resource-panel-kicker">Aurore</span><h4>' + type.title + '</h4><p>' + type.desc + '</p></div><div style="display:flex;align-items:center;gap:8px"><span class="aurore-resource-count">' + items.length + '</span><button type="button" class="aurore-resource-more" aria-label="Voir tous les ' + type.title.toLowerCase() + '">Voir plus</button></div></div>';
+      panel.innerHTML = '<div class="aurore-resource-panel-head"><div class="aurore-resource-panel-head-main"><span class="aurore-resource-panel-kicker">Eneles</span><h4>' + type.title + '</h4><p>' + type.desc + '</p></div><div style="display:flex;align-items:center;gap:8px"><span class="aurore-resource-count">' + items.length + '</span><button type="button" class="aurore-resource-more" aria-label="Voir tous les ' + type.title.toLowerCase() + '">Voir plus</button></div></div>';
       panel.querySelector('.aurore-resource-more')?.addEventListener('click', () => ouvrirVueRessourceAurore(type.key, type.title));
 
       const windowBox = document.createElement('div');
@@ -1481,7 +1481,7 @@
   async function allerDocumentsLivre(genre) {
     // Les couvertures sont actives uniquement ici, dans l'emplacement Romans.
     COUVERTURES_PREMIERE_PAGE_ACTIVES = true;
-    document.getElementById('docsTitle').textContent = `Livres et romans — ${genre.nom}`;
+    document.getElementById('docsTitle').textContent = `Bibliothèque — ${genre.nom}`;
     document.querySelector('#screen-docs .back-btn').setAttribute('data-back', 'livres');
     afficherEcran('screen-docs');
 
