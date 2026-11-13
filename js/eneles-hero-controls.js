@@ -367,6 +367,8 @@
   style.id = "eneles-hero-controls-styles";
   style.textContent = [
     ".eneles-hero-resize-shell{position:relative;display:block;width:100%;max-width:none;min-width:0;margin-inline:auto;box-sizing:border-box;transform:translate(0,0)}",
+    // Quand l’accueil est masqué, son conteneur libère aussi sa hauteur et ses marges.
+    ".eneles-hero-resize-shell.is-hidden{display:none!important;width:0!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important}",
     ".eneles-archives-hero-shell{width:calc(100% + clamp(0px,8vw,120px))}",
     ".eneles-memory-hero-shell{width:calc(100% - 4mm)}",
     ".eneles-hero-controls{position:relative!important;display:flex!important;justify-content:flex-end!important;align-items:center!important;gap:8px!important;width:100%!important;min-width:0!important;margin:0 0 8px!important;padding:0!important;z-index:30!important}",
