@@ -23,3 +23,42 @@
 .aurore-section-share-modal{position:fixed;inset:0;z-index:14000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(8,7,13,.68);backdrop-filter:blur(9px)}.aurore-section-share-modal.show{display:flex}.aurore-section-share-card{position:relative;width:min(560px,100%);max-height:min(760px,92vh);overflow:auto;padding:26px;border:1px solid var(--bordure);border-radius:24px;background:var(--papier);color:var(--encre);box-shadow:0 30px 90px rgba(0,0,0,.35)}.aurore-section-share-close{position:absolute;right:15px;top:15px;width:34px;height:34px;border:1px solid var(--bordure);border-radius:10px;background:var(--fond);color:var(--gris);font-size:1.2rem;cursor:pointer}.aurore-section-share-card h2{margin:6px 42px 7px 0;font-size:1.3rem;letter-spacing:-.025em}.aurore-section-share-card>p{margin:0 0 18px;color:var(--gris);font-size:.76rem;line-height:1.55}.aurore-section-share-loading,.aurore-section-share-error{padding:14px;border:1px solid var(--bordure);border-radius:14px;color:var(--gris);font-size:.75rem}.aurore-section-share-success{display:flex;flex-direction:column;gap:8px}.aurore-share-check{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:rgba(34,197,94,.12);color:#16a34a;font-weight:900}.aurore-section-share-success>strong{font-size:.86rem}.aurore-section-share-success>span{color:var(--gris);font-size:.7rem;line-height:1.45}.aurore-section-share-link{display:flex;gap:7px;margin-top:5px}.aurore-section-share-link input{min-width:0;flex:1;padding:11px;border:1px solid var(--bordure);border-radius:11px;background:var(--fond);color:var(--encre);font:inherit;font-size:.68rem}.aurore-section-share-link button,.aurore-section-share-actions button{border:1px solid var(--violet);border-radius:11px;padding:10px 12px;background:var(--violet);color:#fff;font:inherit;font-size:.7rem;font-weight:850;cursor:pointer}.aurore-section-share-options{display:grid;gap:7px;margin-top:8px;padding:12px;border:1px solid var(--bordure);border-radius:13px;background:var(--fond)}.aurore-section-share-options label{display:flex;align-items:center;gap:8px;font-size:.72rem}.aurore-section-share-options input{accent-color:var(--violet)}.aurore-section-share-expiry-row{justify-content:space-between!important;padding-top:7px;border-top:1px solid var(--bordure)}.aurore-section-share-expiry-select{border:1px solid var(--bordure);border-radius:8px;padding:4px 7px;font:inherit;font-size:.7rem;background:var(--papier);color:var(--encre)}.aurore-section-share-expiry-info{display:block;margin-top:2px;color:var(--gris);font-size:.66rem}.aurore-section-share-actions{display:flex;gap:7px;justify-content:flex-end;margin-top:18px}.aurore-section-share-actions button.danger{background:transparent;color:var(--rouge);border-color:var(--bordure)}
 .aurore-shared-section-banner{margin-bottom:15px;padding:17px 18px;border:1px solid var(--bordure);border-radius:18px;background:linear-gradient(135deg,rgba(124,58,237,.11),rgba(192,132,252,.045));box-shadow:0 8px 25px rgba(0,0,0,.06)}.aurore-shared-section-banner .kicker{font-size:.62rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--violet)}.aurore-shared-section-banner h2{margin:5px 0 3px;font-size:1.25rem}.aurore-shared-section-banner p{margin:0;color:var(--gris);font-size:.72rem;line-height:1.5}.aurore-shared-section-banner .meta{margin-top:8px;font-size:.65rem;color:var(--gris)}
 @media(max-width:640px){.personal-section-detail-head{align-items:flex-start;flex-direction:column}.personal-section-detail-actions{width:100%}.personal-section-detail-actions button{flex:1}.personal-section-detail-toolbar{align-items:flex-start;flex-direction:column;gap:3px}.aurore-section-share-card{padding:22px 17px}.aurore-section-share-link{flex-direction:column}.aurore-section-share-link button{width:100%}.aurore-section-share-actions{flex-wrap:wrap}.aurore-section-share-actions button{flex:1}}
+
+/* Stockage personnel — quota de 1 Go et fenêtre de détails. */
+.personal-folders-head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.personal-storage-trigger{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:8px 12px;border:1px solid var(--bordure);border-radius:12px;background:var(--papier);color:var(--encre);font:inherit;font-size:.7rem;font-weight:800;cursor:pointer}
+.personal-storage-trigger b{color:var(--violet)}
+.personal-storage-trigger-icon{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:color-mix(in srgb,var(--violet) 10%,var(--papier));color:var(--violet);font-size:1rem}
+.personal-storage-inline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0;padding:12px 14px;border:1px solid var(--bordure);border-radius:13px;background:color-mix(in srgb,var(--violet) 5%,var(--papier));color:var(--encre)}
+.personal-storage-inline>div{min-width:0;display:grid;gap:4px}
+.personal-storage-inline strong{font-size:.72rem}
+.personal-storage-inline small{color:var(--gris);font-size:.66rem;line-height:1.4}
+.personal-storage-inline button{flex:none;padding:7px 10px;border:1px solid var(--bordure);border-radius:9px;background:var(--papier);color:var(--violet);font:inherit;font-size:.68rem;font-weight:800;cursor:pointer}
+.personal-storage-inline.is-over-limit{border-color:var(--rouge);background:color-mix(in srgb,var(--rouge) 6%,var(--papier))}
+.personal-storage-modal{position:fixed;inset:0;z-index:15000;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(8,7,13,.62);backdrop-filter:blur(8px)}
+.personal-storage-modal.show{display:flex}
+.personal-storage-dialog{position:relative;width:min(480px,100%);padding:24px;border:1px solid var(--bordure);border-radius:22px;background:var(--papier);color:var(--encre);box-shadow:0 24px 80px rgba(0,0,0,.28)}
+.personal-storage-close{position:absolute;right:15px;top:15px;width:34px;height:34px;border:1px solid var(--bordure);border-radius:10px;background:var(--fond);color:var(--gris);font-size:1.25rem;cursor:pointer}
+.personal-storage-kicker{font-size:.6rem;font-weight:900;letter-spacing:.14em;color:var(--violet)}
+.personal-storage-dialog h3{margin:5px 42px 6px 0;font-size:1.2rem;letter-spacing:-.025em}
+.personal-storage-lead,.personal-storage-note{color:var(--gris);font-size:.72rem;line-height:1.55}
+.personal-storage-meter{margin:18px 0;padding:15px;border:1px solid var(--bordure);border-radius:15px;background:var(--fond)}
+.personal-storage-meter-head{display:flex;justify-content:space-between;gap:8px;font-size:.7rem}
+.personal-storage-meter-head span{color:var(--violet);font-weight:850}
+.personal-storage-track{height:9px;margin:12px 0;border-radius:99px;background:color-mix(in srgb,var(--gris) 15%,transparent);overflow:hidden}
+.personal-storage-track span{display:block;width:0;height:100%;border-radius:inherit;background:var(--violet);transition:width .2s ease}
+.personal-storage-meter-foot{display:flex;justify-content:space-between;gap:12px}
+.personal-storage-meter-foot>span{display:grid;gap:3px;min-width:0}
+.personal-storage-meter-foot b{font-size:.68rem;overflow-wrap:anywhere}
+.personal-storage-meter-foot small{font-size:.62rem;color:var(--gris)}
+.personal-storage-details{display:grid;gap:9px;padding-top:4px}
+.personal-storage-details>div{display:flex;justify-content:space-between;gap:12px;font-size:.7rem}
+.personal-storage-details span{color:var(--gris)}
+.personal-storage-details strong{text-align:right;font-size:.7rem}
+@media(max-width:520px){.personal-folders-head-actions{width:100%;justify-content:space-between}.personal-storage-dialog{padding:21px 17px}.personal-storage-inline{align-items:flex-start}}
+
+.personal-storage-trigger>span:last-child{display:grid;gap:2px;text-align:left}
+.personal-storage-trigger small{font-size:.6rem;color:var(--gris);font-weight:650}
+.personal-storage-success{display:grid;gap:4px;margin:0 0 12px;padding:12px 14px;border:1px solid color-mix(in srgb,#16a34a 35%,var(--bordure));border-radius:13px;background:color-mix(in srgb,#16a34a 7%,var(--papier));color:var(--encre)}
+.personal-storage-success strong{font-size:.72rem;color:#15803d}
+.personal-storage-success span{font-size:.67rem;line-height:1.45;color:var(--gris)}

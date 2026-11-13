@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const FOLDER_TABLE='cases_personnelles',ASSIGN_TABLE='documents_cases_personnelles',PRIVATE_TABLE='documents_personnels_prives',MAX_FOLDERS=10,PRIVE_TAILLE_MAX=104857600;let folders=[],folderAssignments=[],privateDocs=[],draggedFolderId=null;
+const FOLDER_TABLE='cases_personnelles',ASSIGN_TABLE='documents_cases_personnelles',PRIVATE_TABLE='documents_personnels_prives',MAX_FOLDERS=10,PRIVE_TAILLE_MAX=104857600,STORAGE_LIMIT_BYTES=1000000000;let folders=[],folderAssignments=[],privateDocs=[],draggedFolderId=null;let storageUsageCache=null,storageUsageAt=0,storageUsagePromise=null,storageUsageUserId='';
 const esc=v=>typeof escapeTextePersonnel==='function'?escapeTextePersonnel(v==null?'':String(v)):String(v==null?'':v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const uid=()=>session?.id?String(session.id):'';
 async function api(table,o={}){if(!session?.access_token)throw new Error('SESSION_ABSENTE');const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}${o.query?'?'+o.query:''}`,{method:o.method||'GET',headers:{...headersAdmin(),'Content-Type':'application/json',...(o.headers||{})},body:o.body?JSON.stringify(o.body):undefined,cache:'no-store'});if(!r.ok)throw new Error(`${table} HTTP ${r.status} ${await r.text().catch(()=> '')}`);return r.status===204?'':await r.text();}
@@ -8,6 +8,46 @@ const lk=()=>`aurore_cases_personnelles_${uid()}`,ak=()=>`aurore_cases_documents
 function normF(a){return(Array.isArray(a)?a:[]).filter(x=>x&&x.id!=null).map((x,i)=>({id:String(x.id),name:String(x.name||'Sans nom').trim().slice(0,60)||'Sans nom',parent_id:x.parent_id?String(x.parent_id):null,position:Number.isFinite(+x.position)?+x.position:i})).sort((a,b)=>a.position-b.position)}
 function normA(a){return(Array.isArray(a)?a:[]).filter(x=>x&&x.document_id!=null&&x.case_id!=null).map(x=>({document_id:String(x.document_id),case_id:String(x.case_id)}))}
 function normP(a){return(Array.isArray(a)?a:[]).filter(x=>x&&x.id!=null&&x.case_id!=null).map(x=>({id:String(x.id),case_id:String(x.case_id),titre:String(x.titre||'Document').trim().slice(0,150)||'Document',fichier_url:String(x.fichier_url||''),taille_octets:Number(x.taille_octets)||0,type_fichier:x.type_fichier||null,created_at:x.created_at||null}))}
+
+function formaterOctets(n){const v=Math.max(0,Number(n)||0);return v.toLocaleString('fr-FR')+' octets ('+(v/1000000).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' Mo)';}
+async function actualiserUtilisationStockage(force=false){
+  const currentUid=uid();
+  if(!currentUid){storageUsageCache=null;storageUsageAt=0;storageUsageUserId='';document.querySelectorAll('[data-storage-trigger-remaining]').forEach(el=>el.textContent='Connexion requise');return {documents_count:0,bytes_used:0,storage_limit_bytes:STORAGE_LIMIT_BYTES};}
+  if(storageUsageUserId!==currentUid){storageUsageCache=null;storageUsageAt=0;storageUsageUserId=currentUid;}
+  if(!force&&storageUsageCache&&Date.now()-storageUsageAt<15000)return storageUsageCache;
+  if(storageUsagePromise)return storageUsagePromise;
+  storageUsagePromise=(async()=>{const raw=await api('rpc/aurore_personal_storage_usage',{method:'POST',body:{}});const parsed=raw?JSON.parse(raw):[];const row=Array.isArray(parsed)?(parsed[0]||{}):(parsed||{});
+    storageUsageCache={documents_count:Number(row.documents_count)||0,bytes_used:Number(row.bytes_used)||0,storage_limit_bytes:Number(row.storage_limit_bytes)||STORAGE_LIMIT_BYTES};storageUsageAt=Date.now();actualiserAffichageStockage();return storageUsageCache;
+  })().finally(()=>{storageUsagePromise=null;});return storageUsagePromise;
+}
+function ensureStorageModal(){
+  let modal=document.getElementById('personalStorageModal');if(modal)return modal;
+  modal=document.createElement('div');modal.id='personalStorageModal';modal.className='personal-storage-modal';modal.setAttribute('aria-hidden','true');
+  modal.innerHTML='<section class="personal-storage-dialog" role="dialog" aria-modal="true" aria-labelledby="personalStorageTitle"><button type="button" class="personal-storage-close" aria-label="Fermer">×</button><span class="personal-storage-kicker">ESPACE PERSONNEL</span><h3 id="personalStorageTitle">Votre stockage Eneles</h3><p class="personal-storage-lead">Votre espace de dépôt personnel est limité à 1 Go. Seuls les PDF déposés dans vos cases sont comptabilisés.</p><div class="personal-storage-meter"><div class="personal-storage-meter-head"><strong data-storage-used>Calcul en cours…</strong><span data-storage-percent>—</span></div><div class="personal-storage-track"><span data-storage-bar></span></div><div class="personal-storage-meter-foot"><span><b data-storage-remaining>—</b><small>disponibles</small></span><span><b data-storage-count>—</b><small>PDF déposés</small></span></div></div><div class="personal-storage-details"><div><span>Documents dans vos cases</span><strong data-storage-total-docs>—</strong></div><div><span>Capacité maximale</span><strong>1 Go (1 000 000 000 octets)</strong></div></div><p class="personal-storage-note">Les documents de la bibliothèque publique classés dans vos cases ne consomment pas ce quota.</p></section>';
+  document.body.appendChild(modal);modal.addEventListener('click',e=>{if(e.target===modal)fermerStockageModal();});modal.querySelector('.personal-storage-close').addEventListener('click',fermerStockageModal);return modal;
+}
+function actualiserAffichageStockage(){
+  const usage=storageUsageCache;if(!usage)return;const limit=usage.storage_limit_bytes||STORAGE_LIMIT_BYTES,used=usage.bytes_used||0,remaining=Math.max(0,limit-used),percent=Math.min(100,limit?used/limit*100:0);
+  const set=(sel,val)=>document.querySelectorAll(sel).forEach(el=>{el.textContent=val;});
+  set('[data-storage-used]',formaterOctets(used)+' utilisés');set('[data-storage-remaining]',formaterOctets(remaining));set('[data-storage-count]',String(usage.documents_count));
+  set('[data-storage-total-docs]',String(privateDocs.length+folderAssignments.length));set('[data-storage-trigger-remaining]',formaterOctets(remaining)+' libres');set('[data-storage-trigger-total]',String(privateDocs.length+folderAssignments.length)+' documents');set('[data-storage-percent]',percent.toLocaleString('fr-FR',{maximumFractionDigits:1})+' %');document.querySelectorAll('[data-storage-bar]').forEach(el=>el.style.width=percent+'%');
+  const panel=document.getElementById('pfuStorageSummary');if(panel){const file=panel._selectedFile||null,after=used+(file?Number(file.size)||0:0),left=Math.max(0,limit-after);panel.querySelector('[data-storage-inline-used]').textContent=formaterOctets(used)+' utilisés · '+usage.documents_count+' PDF';panel.querySelector('[data-storage-inline-remaining]').textContent=file?(after>limit?'Ce dépôt dépasserait votre quota de 1 Go.':'Après ce dépôt : '+formaterOctets(left)+' restants.'):'Il vous reste '+formaterOctets(remaining)+'.';panel.classList.toggle('is-over-limit',after>limit);}
+}
+function ouvrirStockageModal(){const modal=ensureStorageModal();modal.classList.add('show');modal.setAttribute('aria-hidden','false');actualiserAffichageStockage();actualiserUtilisationStockage(true).catch(e=>console.warn('[Stockage personnel] actualisation:',e));}
+function fermerStockageModal(){const modal=document.getElementById('personalStorageModal');if(modal){modal.classList.remove('show');modal.setAttribute('aria-hidden','true');}}
+function ensureStorageControls(){const head=document.querySelector('#personalFolders .personal-folders-head');if(!head)return;let actions=head.querySelector('.personal-folders-head-actions');if(!actions){actions=document.createElement('div');actions.className='personal-folders-head-actions';const counter=head.querySelector('.personal-folder-limit');if(counter)actions.appendChild(counter);const btn=document.createElement('button');btn.type='button';btn.className='personal-storage-trigger';btn.innerHTML='<span class="personal-storage-trigger-icon">▤</span><span>Stockage <b data-storage-trigger-remaining>Calcul…</b><small data-storage-trigger-total>— documents</small></span>';btn.addEventListener('click',ouvrirStockageModal);actions.appendChild(btn);head.appendChild(actions);}}
+function afficherConfirmationDepotStockage(){
+  const usage=storageUsageCache;if(!usage)return;
+  const host=document.querySelector('#screen-personal-case .personal-section-detail-head');if(!host)return;
+  document.getElementById('personalStorageDepositNotice')?.remove();
+  const notice=document.createElement('div');notice.id='personalStorageDepositNotice';notice.className='personal-storage-success';
+  notice.innerHTML='<strong>Document déposé</strong><span data-storage-success-summary></span>';
+  const remaining=Math.max(0,(usage.storage_limit_bytes||STORAGE_LIMIT_BYTES)-(usage.bytes_used||0));
+  notice.querySelector('[data-storage-success-summary]').textContent='Espace restant : '+formaterOctets(remaining)+' · '+(privateDocs.length+folderAssignments.length)+' documents dans vos cases · '+usage.documents_count+' PDF comptabilisés.';
+  host.insertAdjacentElement('afterend',notice);
+  setTimeout(()=>notice.remove(),10000);
+}
+function afficherResumeStockageImport(panel){const frame=panel.querySelector('#pfuStorageSummary');if(!frame)return;frame._selectedFile=panel.querySelector('#pfuFichier')?.files?.[0]||null;if(storageUsageCache)actualiserAffichageStockage();else actualiserUtilisationStockage(true).catch(e=>{console.warn('[Stockage personnel] calcul:',e);const a=frame.querySelector('[data-storage-inline-used]');if(a)a.textContent='Calcul du stockage indisponible.';});}
 const pk=()=>`aurore_cases_documents_prives_${uid()}`;
 async function load(){
   if(!uid())return;
@@ -47,7 +87,7 @@ async function load(){
   }catch(e){privateDocs=normP(read(pk(),[]));}
   render();
 }
-function render(){const grid=document.getElementById('personalFolderGrid');if(!grid)return;const roots=folders.filter(x=>!x.parent_id);document.getElementById('personalFolderCount').textContent=String(roots.length);grid.innerHTML='';roots.forEach(f=>{const c=document.createElement('article');c.className='personal-folder';c.draggable=true;c.dataset.folderId=f.id;const n=folderAssignments.filter(a=>a.case_id===f.id).length+privateDocs.filter(x=>x.case_id===f.id).length;c.innerHTML=`<div class="personal-folder-top"><div class="personal-folder-icon">▱</div><button type="button" class="personal-folder-menu" aria-label="Options">⋯</button></div><div class="personal-folder-name" title="${esc(f.name)}">${esc(f.name)}</div><div class="personal-folder-count">${n} document${n>1?'s':''}</div><div class="personal-folder-hint">Glisser pour déplacer</div>`;c.addEventListener('click',e=>{if(!e.target.closest('.personal-folder-menu'))openFolder(f)});c.querySelector('.personal-folder-menu').addEventListener('click',e=>{e.stopPropagation();folderMenu(f)});c.addEventListener('dragstart',()=>{draggedFolderId=f.id;c.classList.add('dragging')});c.addEventListener('dragend',()=>{draggedFolderId=null;c.classList.remove('dragging');grid.querySelectorAll('.drag-over').forEach(x=>x.classList.remove('drag-over'))});c.addEventListener('dragover',e=>{e.preventDefault();if(draggedFolderId!==f.id)c.classList.add('drag-over')});c.addEventListener('dragleave',()=>c.classList.remove('drag-over'));c.addEventListener('drop',e=>{e.preventDefault();c.classList.remove('drag-over');if(draggedFolderId&&draggedFolderId!==f.id)reorder(draggedFolderId,f.id)});grid.appendChild(c)});if(roots.length<MAX_FOLDERS){const b=document.createElement('button');b.type='button';b.className='personal-folder-create';b.innerHTML=`<span class="personal-folder-create-icon">＋</span><strong>Créer une case</strong><span>Encore ${MAX_FOLDERS-roots.length} emplacement${MAX_FOLDERS-roots.length>1?'s':''}</span>`;b.onclick=()=>dialog('create');grid.appendChild(b)}}
+function render(){ensureStorageControls();actualiserAffichageStockage();actualiserUtilisationStockage().catch(e=>console.warn('[Stockage personnel] état:',e));const grid=document.getElementById('personalFolderGrid');if(!grid)return;const roots=folders.filter(x=>!x.parent_id);document.getElementById('personalFolderCount').textContent=String(roots.length);grid.innerHTML='';roots.forEach(f=>{const c=document.createElement('article');c.className='personal-folder';c.draggable=true;c.dataset.folderId=f.id;const n=folderAssignments.filter(a=>a.case_id===f.id).length+privateDocs.filter(x=>x.case_id===f.id).length;c.innerHTML=`<div class="personal-folder-top"><div class="personal-folder-icon">▱</div><button type="button" class="personal-folder-menu" aria-label="Options">⋯</button></div><div class="personal-folder-name" title="${esc(f.name)}">${esc(f.name)}</div><div class="personal-folder-count">${n} document${n>1?'s':''}</div><div class="personal-folder-hint">Glisser pour déplacer</div>`;c.addEventListener('click',e=>{if(!e.target.closest('.personal-folder-menu'))openFolder(f)});c.querySelector('.personal-folder-menu').addEventListener('click',e=>{e.stopPropagation();folderMenu(f)});c.addEventListener('dragstart',()=>{draggedFolderId=f.id;c.classList.add('dragging')});c.addEventListener('dragend',()=>{draggedFolderId=null;c.classList.remove('dragging');grid.querySelectorAll('.drag-over').forEach(x=>x.classList.remove('drag-over'))});c.addEventListener('dragover',e=>{e.preventDefault();if(draggedFolderId!==f.id)c.classList.add('drag-over')});c.addEventListener('dragleave',()=>c.classList.remove('drag-over'));c.addEventListener('drop',e=>{e.preventDefault();c.classList.remove('drag-over');if(draggedFolderId&&draggedFolderId!==f.id)reorder(draggedFolderId,f.id)});grid.appendChild(c)});if(roots.length<MAX_FOLDERS){const b=document.createElement('button');b.type='button';b.className='personal-folder-create';b.innerHTML=`<span class="personal-folder-create-icon">＋</span><strong>Créer une case</strong><span>Encore ${MAX_FOLDERS-roots.length} emplacement${MAX_FOLDERS-roots.length>1?'s':''}</span>`;b.onclick=()=>dialog('create');grid.appendChild(b)}}
 async function createFolder(name,quiet=false,parentId=null){
   const normalizedParent=parentId?String(parentId):null;
   const siblings=folders.filter(f=>(f.parent_id||null)===normalizedParent).sort((a,b)=>a.position-b.position);
@@ -161,52 +201,63 @@ async function recupererDocsDesCases(ids){
   return wanted.map(id=>connus.get(id)||{id});
 }
 
+async function supprimerObjetR2Personnel(fichierUrl){
+  const base=String(R2_PUBLIC_URL||'');const prefix=base.endsWith('/')?base:base+'/';
+  const value=String(fichierUrl||'');
+  if(!prefix||!value.startsWith(prefix))throw new Error('URL_STOCKAGE_PERSONNEL_INVALIDE');
+  const key=value.slice(prefix.length).split('?')[0];
+  if(!key)throw new Error('CLE_STOCKAGE_PERSONNEL_ABSENTE');
+  const route=key.split('/').map(encodeURIComponent).join('/');
+  const response=await fetch(R2_WORKER_URL+'/'+route,{method:'DELETE',headers:{Accept:'application/json'}});
+  const result=await response.json().catch(()=>null);
+  if(!response.ok||(result&&result.ok===false))throw new Error('SUPPRESSION_R2_HTTP_'+response.status);
+  return true;
+}
+
 async function uploaderDocumentPrive(fichier,titre,caseId){
-  if(!session?.id) throw new Error('SESSION_ABSENTE');
-  if(!fichier) throw new Error('FICHIER_MANQUANT');
-  const estPdf=fichier.type==='application/pdf'||/\.pdf$/i.test(fichier.name||'');
-  if(!estPdf) throw new Error('FORMAT_INVALIDE');
-  if(fichier.size>PRIVE_TAILLE_MAX) throw new Error('FICHIER_TROP_LOURD');
-  const nomPropre='perso_'+uid()+'_'+Date.now()+'_'+String(fichier.name||'document.pdf').replace(/[^a-zA-Z0-9._-]/g,'_');
-  const up=await fetch(`${R2_WORKER_URL}/${nomPropre}`,{method:'PUT',headers:{'Content-Type':'application/pdf'},body:fichier});
-  if(!up.ok) throw new Error('STOCKAGE_HTTP_'+up.status);
-  const url=`${R2_PUBLIC_URL}/${nomPropre}`;
+  if(!session?.id)throw new Error('SESSION_ABSENTE');if(!fichier)throw new Error('FICHIER_MANQUANT');
+  const estPdf=fichier.type==='application/pdf'||/\.pdf$/i.test(fichier.name||'');if(!estPdf)throw new Error('FORMAT_INVALIDE');
+  if(fichier.size>PRIVE_TAILLE_MAX)throw new Error('FICHIER_TROP_LOURD');
+  const usage=await actualiserUtilisationStockage(true),remaining=Math.max(0,(usage.storage_limit_bytes||STORAGE_LIMIT_BYTES)-(usage.bytes_used||0));if(fichier.size>remaining)throw new Error('QUOTA_STOCKAGE_DEPASSE');
+  const nomPropre='perso_'+uid()+'_'+Date.now()+'_'+String(fichier.name||'document.pdf').replace(/[^a-zA-Z0-9._-]/g,'_'),url=R2_PUBLIC_URL+'/'+nomPropre;
+  // La base réserve les octets avant l'envoi R2 ; le trigger sérialise les dépôts de chaque compte.
   const raw=await api(PRIVATE_TABLE,{method:'POST',headers:{Prefer:'return=representation'},body:{user_id:uid(),case_id:caseId,titre:String(titre||fichier.name||'Document').trim().slice(0,150),fichier_url:url,taille_octets:fichier.size||0,type_fichier:fichier.type||'application/pdf'}});
-  const rows=raw?JSON.parse(raw):[];
-  if(!rows[0]) throw new Error('ENREGISTREMENT_ECHEC');
-  const doc=normP([rows[0]])[0];
-  privateDocs=[...privateDocs,doc];
-  write(pk(),privateDocs);
-  return doc;
+  const rows=raw?JSON.parse(raw):[];if(!rows[0])throw new Error('ENREGISTREMENT_ECHEC');const created=rows[0];
+  try{const up=await fetch(R2_WORKER_URL+'/'+nomPropre,{method:'PUT',headers:{'Content-Type':'application/pdf'},body:fichier});if(!up.ok)throw new Error('STOCKAGE_HTTP_'+up.status);}
+  catch(error){try{await supprimerObjetR2Personnel(url);}catch(cleanupError){console.warn('[Cases] nettoyage R2 après échec du dépôt:',cleanupError);}try{await api(PRIVATE_TABLE,{method:'DELETE',query:'id=eq.'+encodeURIComponent(created.id)+'&user_id=eq.'+encodeURIComponent(uid()),headers:{Prefer:'return=minimal'}});}catch(cleanupError){console.error('[Cases] libération quota impossible:',cleanupError);}throw error;}
+  const doc=normP([created])[0];privateDocs=[...privateDocs,doc];write(pk(),privateDocs);try{await actualiserUtilisationStockage(true);}catch(statsError){console.warn('[Stockage personnel] actualisation après dépôt:',statsError);storageUsageCache={documents_count:privateDocs.length,bytes_used:privateDocs.reduce((sum,item)=>sum+(Number(item.taille_octets)||0),0),storage_limit_bytes:STORAGE_LIMIT_BYTES};storageUsageAt=Date.now();storageUsageUserId=uid();actualiserAffichageStockage();}return doc;
 }
 async function supprimerDocumentPrive(doc){
-  if(!confirm(`Supprimer définitivement « ${doc.titre} » ? Cette action est irréversible.`))return;
-  const old=privateDocs;
-  privateDocs=privateDocs.filter(x=>x.id!==doc.id);
-  write(pk(),privateDocs);
+  if(!confirm('Supprimer définitivement « '+doc.titre+' » ? Cette action est irréversible.'))return;
   try{
-    await api(PRIVATE_TABLE,{method:'DELETE',query:`id=eq.${encodeURIComponent(doc.id)}&user_id=eq.${encodeURIComponent(uid())}`,headers:{Prefer:'return=minimal'}});
+    // Supprimer l'objet R2 avant la ligne SQL : un échec de stockage ne libère
+    // donc jamais artificiellement de quota. La suppression R2 est idempotente.
+    await supprimerObjetR2Personnel(doc.fichier_url);
+    await api(PRIVATE_TABLE,{method:'DELETE',query:'id=eq.'+encodeURIComponent(doc.id)+'&user_id=eq.'+encodeURIComponent(uid()),headers:{Prefer:'return=minimal'}});
   }catch(e){
-    privateDocs=old;write(pk(),privateDocs);
     console.error('[Cases] suppression document privé',e);
-    alert('Impossible de supprimer ce document pour le moment.');
+    alert('La suppression n’a pas pu être confirmée complètement. L’entrée du document est conservée ; réessayez. Le quota ne sera libéré qu’après confirmation des deux opérations.');
     return;
   }
+  privateDocs=privateDocs.filter(x=>x.id!==doc.id);write(pk(),privateDocs);
   render();
+  await actualiserUtilisationStockage(true).catch(e=>console.warn('[Stockage personnel] après suppression:',e));
   const f=folders.find(x=>x.id===doc.case_id);
-  if(f) await openFolder(f); else closeFolder();
+  if(f)await openFolder(f);else closeFolder();
 }
 function toggleUploadPanel(p,f){
   const panel=p.querySelector('#pfuPanel');if(!panel)return;
   if(!panel.hidden){panel.hidden=true;panel.innerHTML='';return}
   panel.hidden=false;
   const options=folders.map(x=>`<option value="${esc(x.id)}" ${x.id===f.id?'selected':''}>${esc(x.name)}</option>`).join('');
-  panel.innerHTML=`<div class="personal-upload-card"><h4>Ajouter un document</h4><div class="personal-upload-row"><label for="pfuSection">Section</label><select id="pfuSection">${options}</select></div><div class="personal-upload-row"><label for="pfuTitre">Nom du document</label><input type="text" id="pfuTitre" maxlength="150" placeholder="Ex. Cours de mathématiques" autocomplete="off"></div><div class="personal-upload-row"><label for="pfuFichier">Fichier</label><input type="file" id="pfuFichier" accept="application/pdf"></div><small class="personal-upload-note">Format PDF uniquement, 100 Mo maximum. Ce document reste privé, sauf si vous partagez la section (toujours en lecture seule pour vos visiteurs).</small><div class="personal-folder-message" id="pfuMsg"></div><div class="personal-upload-actions"><button type="button" id="pfuCancel">Annuler</button><button type="button" class="primary" id="pfuOk">Déposer</button></div></div>`;
+  panel.innerHTML=`<div class="personal-upload-card"><h4>Ajouter un document</h4><div class="personal-upload-row"><label for="pfuSection">Section</label><select id="pfuSection">${options}</select></div><div class="personal-upload-row"><label for="pfuTitre">Nom du document</label><input type="text" id="pfuTitre" maxlength="150" placeholder="Ex. Cours de mathématiques" autocomplete="off"></div><div class="personal-upload-row"><label for="pfuFichier">Fichier</label><input type="file" id="pfuFichier" accept="application/pdf"></div><small class="personal-upload-note">Format PDF uniquement, 100 Mo maximum par fichier. Votre quota personnel est de 1 Go.</small><div class="personal-storage-inline" id="pfuStorageSummary"><div><strong data-storage-inline-used>Calcul du stockage…</strong><small data-storage-inline-remaining>Vérification de l’espace disponible.</small></div><button type="button" data-storage-details>Détails</button></div><div class="personal-folder-message" id="pfuMsg"></div><div class="personal-upload-actions"><button type="button" id="pfuCancel">Annuler</button><button type="button" class="primary" id="pfuOk">Déposer</button></div></div>`;
   panel.querySelector('#pfuCancel').onclick=()=>{panel.hidden=true;panel.innerHTML=''};
   panel.querySelector('#pfuFichier').addEventListener('change',e=>{
-    const t=panel.querySelector('#pfuTitre');
-    if(t&&!t.value.trim()){const fn=e.target.files[0]?.name||'';t.value=fn.replace(/\.pdf$/i,'')}
+    const t=panel.querySelector('#pfuTitre');if(t&&!t.value.trim()){const fn=e.target.files[0]?.name||'';t.value=fn.replace(/\.pdf$/i,'');}
+    afficherResumeStockageImport(panel);
   });
+  panel.querySelector('[data-storage-details]')?.addEventListener('click',ouvrirStockageModal);
+  afficherResumeStockageImport(panel);
   panel.querySelector('#pfuOk').onclick=async()=>{
     const msg=panel.querySelector('#pfuMsg'),btn=panel.querySelector('#pfuOk');
     const caseId=panel.querySelector('#pfuSection').value;
@@ -226,10 +277,11 @@ function toggleUploadPanel(p,f){
       render();
       const dest=folders.find(x=>x.id===doc.case_id)||f;
       await openFolder(dest);
+      afficherConfirmationDepotStockage();
     }catch(e){
       console.error('[Cases] dépôt personnel',e);
       msg.className='personal-folder-message err';
-      msg.textContent=e&&e.message==='FICHIER_TROP_LOURD'?'Ce fichier dépasse la taille maximale de 100 Mo.':e&&e.message==='FORMAT_INVALIDE'?'Seul le format PDF est accepté.':'Impossible de déposer ce document pour le moment. Réessayez.';
+      msg.textContent=e&&e.message==='FICHIER_TROP_LOURD'?'Ce fichier dépasse la taille maximale de 100 Mo.':e&&e.message==='FORMAT_INVALIDE'?'Seul le format PDF est accepté.':String(e?.message||'').includes('QUOTA_STOCKAGE_DEPASSE')?'Votre quota de 1 Go serait dépassé. Supprimez un document personnel ou choisissez un fichier plus léger.':'Impossible de déposer ce document pour le moment. Réessayez.';
       btn.disabled=false;btn.textContent='Déposer';
     }
   };
@@ -260,6 +312,7 @@ function carteDocumentCase(doc,opt){
     if(opt.prive)panneau.querySelectorAll('[data-favori],[data-plus-tard],[data-case],[data-share-document],[data-share-whatsapp],[data-copy-document-link],[data-signaler]').forEach(b=>b.remove());
   }
   brancherActionsCarteDocument(r,doc);
+  window.auroreAjouterBoutonTravauxDocument?.(r,doc);
   if(!opt.prive){try{if(typeof window.actualiserEtatActionsDocument==='function')window.actualiserEtatActionsDocument(r,doc)}catch(_){}}
   const ajouterAction=(attr,icone,libelle,fn,danger)=>{
     if(!panneau||typeof fn!=='function')return;
@@ -285,20 +338,13 @@ async function openFolder(f){
   p.querySelector('[data-section-share]')?.addEventListener('click',()=>window.aurorePartagerSection?.(f));
   // Délégation sur le conteneur : le bouton reste actif même après un
   // rerendu du contenu de la section personnelle.
-  p.addEventListener('click',e=>{
+  p.dataset.currentFolderId=String(f.id);
+  if(!p.dataset.folderDelegationReady){p.dataset.folderDelegationReady='1';p.addEventListener('click',e=>{
     const subfolderButton=e.target.closest('[data-section-subfolder]');
-    if(subfolderButton){
-      e.preventDefault();
-      e.stopPropagation();
-      dialog('create',null,f);
-      return;
-    }
+    if(subfolderButton){e.preventDefault();e.stopPropagation();const current=folders.find(x=>String(x.id)===String(p.dataset.currentFolderId));if(current)dialog('create',null,current);return;}
     const breadcrumb=e.target.closest('[data-breadcrumb]');
-    if(breadcrumb){
-      const target=folders.find(x=>String(x.id)===String(breadcrumb.dataset.breadcrumb));
-      if(target)openFolder(target);
-    }
-  });
+    if(breadcrumb){const target=folders.find(x=>String(x.id)===String(breadcrumb.dataset.breadcrumb));if(target)openFolder(target);}
+  });}
   p.querySelector('[data-section-close]')?.addEventListener('click',closeFolder);
   p.querySelector('[data-section-upload]')?.addEventListener('click',()=>toggleUploadPanel(p,f));
   if(!dejaOuvert) afficherEcran('screen-personal-case'); else window.scrollTo({top:0,behavior:'smooth'});
@@ -312,12 +358,7 @@ async function openFolder(f){
     subgrid.appendChild(card);
   });
   if(!children.length)subgrid.innerHTML='<div class="personal-subfolder-empty">Aucun sous-dossier. Créez-en un avec « ＋ Sous-dossier ».</div>';
-  p.querySelector('[data-section-share]')?.addEventListener('click',()=>window.aurorePartagerSection?.(f));
-  p.querySelector('[data-section-close]')?.addEventListener('click',closeFolder);
-  p.querySelector('[data-section-upload]')?.addEventListener('click',()=>toggleUploadPanel(p,f));
-  if(!dejaOuvert) afficherEcran('screen-personal-case'); else window.scrollTo({top:0,behavior:'smooth'});
-  const list=p.querySelector('#pfdList');
-  if(!total){
+  const list=p.querySelector('#pfdList');  if(!total){
     list.innerHTML='<div class="doc-empty"><div class="icon-wrap">▱</div><h3>Cette section est vide</h3><p>Utilisez « Case » sur un document pour le ranger ici, ou ajoutez directement un document depuis votre appareil avec « ＋ Ajouter un document ».</p></div>';
   }else{
     list.innerHTML='<div class="personal-empty">Chargement des documents…</div>';
@@ -337,7 +378,7 @@ async function openFolder(f){
       if(d.Fichier_url&&typeof appliquerCouvertureSiLivre==='function')appliquerCouvertureSiLivre(r,d);
     });
     pDocs.forEach(doc=>{
-      const fauxDoc={id:'prive-'+doc.id,Titre:doc.titre,Fichier_url:doc.fichier_url,Telechargement_autorise:true};
+      const fauxDoc={id:'prive-'+doc.id,privateDocumentId:Number(doc.id),Titre:doc.titre,Fichier_url:doc.fichier_url,Telechargement_autorise:true};
       const r=carteDocumentCase(fauxDoc,{
         meta:'Votre document déposé directement',
         telechargeable:true,

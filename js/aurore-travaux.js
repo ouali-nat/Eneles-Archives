@@ -5,6 +5,7 @@
   const ROOT_ID = 'etw-root';
   const state = {
     documentId: 0,
+    privateDocumentId: 0,
     document: null,
     isSectionOwner: false,
     works: [],
@@ -224,31 +225,48 @@
     document.addEventListener('pointerup', stopBallDrag);
   }
 
-  async function openWorks(documentId, highlightedId) {
+  async function openWorks(documentTarget, highlightedId) {
     ensureRoot();
-    state.documentId = Number(documentId);
+    const privateDocumentId = documentTarget && typeof documentTarget === 'object'
+      ? Number(documentTarget.privateDocumentId || 0) : 0;
+    state.privateDocumentId = privateDocumentId;
+    state.documentId = privateDocumentId ? 0 : Number(documentTarget);
     state.highlightedWorkId = Number(highlightedId || 0);
-    if (!Number.isSafeInteger(state.documentId) || state.documentId <= 0) return;
+    if (privateDocumentId) {
+      if (!Number.isSafeInteger(privateDocumentId) || privateDocumentId <= 0 || !currentUserId()) { requireLogin(); return; }
+    } else if (!Number.isSafeInteger(state.documentId) || state.documentId <= 0) return;
     openRoot();
     $('#etw-work-list').innerHTML = '<div class="etw-state">Chargement des contributions…</div>';
     try {
-      const docs = await rest('Document?select=id,Titre,Niveau,Classe&id=eq.' + state.documentId, { method: 'GET', cache: 'no-store' });
-      state.document = Array.isArray(docs) ? docs[0] : null;
-      if (!state.document) throw new Error('Ce document n’est pas disponible.');
-      $('#etw-doc-title').textContent = 'Travaux sur le document';
-      $('#etw-doc-mini').textContent = state.document.Titre || 'Document';
-      $('#etw-doc-subtitle').textContent = [state.document.Titre, state.document.Niveau, state.document.Classe].filter(Boolean).join(' · ');
-      state.isSectionOwner = false;
-      if (currentUserId()) {
-        try {
-          const ownership = await rest('Depots_deposants?select=id&document_id=eq.' + state.documentId + '&user_id=eq.' + encodeURIComponent(currentUserId()), { method: 'GET', cache: 'no-store' });
-          state.isSectionOwner = Array.isArray(ownership) && ownership.length > 0;
-        } catch (ownershipError) {
-          console.warn('[Travaux] vérification du propriétaire de section:', ownershipError);
+      if (privateDocumentId) {
+        const rows = await rest('documents_personnels_prives?select=id,titre,case_id&id=eq.' + privateDocumentId + '&user_id=eq.' + encodeURIComponent(currentUserId()), { method: 'GET', cache: 'no-store' });
+        state.document = Array.isArray(rows) ? rows[0] : null;
+        if (!state.document) throw new Error('Ce document personnel n’est pas disponible dans votre espace.');
+        state.isSectionOwner = true;
+        $('#etw-doc-title').textContent = 'Travaux sur votre document';
+        $('#etw-doc-mini').textContent = state.document.titre || 'Document personnel';
+        $('#etw-doc-subtitle').textContent = (state.document.titre || 'Document personnel') + ' · Section privée';
+      } else {
+        const docs = await rest('Document?select=id,Titre,Niveau,Classe&id=eq.' + state.documentId, { method: 'GET', cache: 'no-store' });
+        state.document = Array.isArray(docs) ? docs[0] : null;
+        if (!state.document) throw new Error('Ce document n’est pas disponible.');
+        $('#etw-doc-title').textContent = 'Travaux sur le document';
+        $('#etw-doc-mini').textContent = state.document.Titre || 'Document';
+        $('#etw-doc-subtitle').textContent = [state.document.Titre, state.document.Niveau, state.document.Classe].filter(Boolean).join(' · ');
+        state.isSectionOwner = false;
+        if (currentUserId()) {
+          try {
+            const ownership = await rest('Depots_deposants?select=id&document_id=eq.' + state.documentId + '&user_id=eq.' + encodeURIComponent(currentUserId()), { method: 'GET', cache: 'no-store' });
+            state.isSectionOwner = Array.isArray(ownership) && ownership.length > 0;
+          } catch (ownershipError) {
+            console.warn('[Travaux] vérification du propriétaire de section:', ownershipError);
+          }
         }
       }
       const ownerPanel = $('#etw-owner-panel');
       if (ownerPanel) ownerPanel.hidden = !state.isSectionOwner;
+      const imageTool = $('[data-add-block="image"]');
+      if (imageTool) imageTool.hidden = Boolean(privateDocumentId);
       await loadWorks();
       if (state.isSectionOwner) await loadOwnerReports();
     } catch (error) {
@@ -258,9 +276,12 @@
   }
 
   async function loadWorks() {
-    if (!state.documentId) return;
+    if (!state.documentId && !state.privateDocumentId) return;
     try {
-      const rows = await rest('travaux?select=*&document_id=eq.' + state.documentId + '&order=created_at.desc', { method: 'GET', cache: 'no-store' });
+      const targetQuery = state.privateDocumentId
+        ? 'document_prive_id=eq.' + state.privateDocumentId
+        : 'document_id=eq.' + state.documentId;
+      const rows = await rest('travaux?select=*&' + targetQuery + '&order=created_at.desc', { method: 'GET', cache: 'no-store' });
       state.works = Array.isArray(rows) ? rows : [];
       state.workById = new Map(state.works.map(work => [Number(work.id), work]));
       renderWorks();
@@ -453,12 +474,13 @@
   }
 
   async function uploadImage(file) {
+    if (state.privateDocumentId) throw new Error('Les images jointes seront activées dans les sections privées avec un stockage réellement privé.');
     if (!file || !/^image\/(jpeg|png|webp|gif)$/.test(file.type)) throw new Error('Format d’image non pris en charge.');
     if (file.size > 5 * 1024 * 1024) throw new Error('Chaque image doit peser 5 Mo ou moins.');
     const uid = currentUserId();
     if (!uid) throw new Error('Connecte-toi pour ajouter une image.');
     const extension = ({ 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' })[file.type];
-    const path = uid + '/' + state.documentId + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + extension;
+    const path = uid + '/' + (state.privateDocumentId ? 'prive-' + state.privateDocumentId : state.documentId) + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + extension;
     const encodedPath = path.split('/').map(encodeURIComponent).join('/');
     const response = await fetch(SUPABASE_URL + '/storage/v1/object/travaux-images/' + encodedPath, {
       method: 'POST',
@@ -513,7 +535,8 @@
           body: JSON.stringify(payload)
         });
       } else {
-        payload.document_id = state.documentId;
+        if (state.privateDocumentId) payload.document_prive_id = state.privateDocumentId;
+        else payload.document_id = state.documentId;
         payload.auteur_id = currentUserId();
         payload.auteur_nom = authorName || 'Contributeur';
         payload.statut = 'publie';
@@ -853,6 +876,35 @@
     });
   }
 
+  function ajouterBoutonTravauxDocument(container, doc) {
+    if (!container || !doc) return;
+    const privateId = Number(doc.privateDocumentId || 0);
+    const publicId = Number(doc.id);
+    if (!privateId && (!Number.isSafeInteger(publicId) || publicId <= 0)) return;
+    const anchor = container.querySelector('.doc-main-info') || container.querySelector('.info') || container;
+    if (privateId) {
+      if (anchor.querySelector('[data-open-private-document-works]')) return;
+    } else if (anchor.querySelector('[data-open-document-works][data-document-id="' + publicId + '"]')) return;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'document-works-badge';
+    button.title = 'Consulter les travaux associés';
+    button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5z"/><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20"/><path d="M8 7h8M8 10.5h6"/></svg><span>Travaux</span>';
+    if (privateId) {
+      button.dataset.openPrivateDocumentWorks = '1';
+      button.dataset.privateDocumentId = String(privateId);
+    } else {
+      button.dataset.openDocumentWorks = '';
+      button.dataset.documentId = String(publicId);
+    }
+    button.addEventListener('click', event => {
+      event.preventDefault();event.stopPropagation();
+      if (privateId) openWorks({ privateDocumentId: privateId });
+      else openWorks(publicId);
+    });
+    anchor.appendChild(button);
+  }
+
   const worksBadgeObserver = new MutationObserver(mutations => {
     mutations.forEach(mutation => mutation.addedNodes.forEach(node => {
       if (node.nodeType !== 1) return;
@@ -865,6 +917,12 @@
   }
 
   document.addEventListener('click', event => {
+    const privateOpenButton = event.target.closest('[data-open-private-document-works]');
+    if (privateOpenButton) {
+      event.preventDefault();event.stopPropagation();
+      openWorks({ privateDocumentId: Number(privateOpenButton.dataset.privateDocumentId) });
+      return;
+    }
     const openButton = event.target.closest('[data-open-document-works]');
     if (openButton) {
       event.preventDefault();
@@ -885,6 +943,7 @@
     }
   });
   window.auroreOuvrirTravauxDocument = openWorks;
+  window.auroreAjouterBoutonTravauxDocument = ajouterBoutonTravauxDocument;
   window.auroreChargerSignalementsTravauxAdmin = loadAdminReports;
   ensureRoot();
 })();

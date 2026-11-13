@@ -548,6 +548,32 @@
       afficherMessageCode(e&&e.name==='NotAllowedError'?'Empreinte non validée ou opération annulée. Vous pouvez saisir votre code.':'Déverrouillage biométrique impossible. Utilisez votre code.','err');
     }
   }
+  let lancementBiometrieAutomatiqueEnCours=false;
+  async function lancerBiometrieAutomatique(){
+    if(lancementBiometrieAutomatiqueEnCours)return;
+    lancementBiometrieAutomatiqueEnCours=true;
+    try{
+      if(credentialBiometrique()&&!biometrieNativeConfiguree()){
+        if(biometrieDisponible())await deverrouillerBiometrie();
+        else afficherMessageCode('La biométrie de cet appareil est indisponible dans cette fenêtre. Votre code reste utilisable.','err');
+        return;
+      }
+      if(!biometrieNativeConfiguree())return;
+      // La WebView peut précéder l'injection du pont Capacitor : on attend
+      // brièvement sa disponibilité dès l'ouverture du verrou, sans second clic.
+      const limite=Date.now()+6000;
+      while(!plateformeNative()&&Date.now()<limite)await new Promise(resolve=>setTimeout(resolve,60));
+      if(!plateformeNative()){
+        afficherMessageCode('Le service biométrique Android démarre encore. Saisissez votre code pour ouvrir votre espace.','err');return;
+      }
+      await obtenirPluginBiometrieNative();
+      await deverrouillerBiometrie();
+    }catch(error){
+      console.warn('[Espace personnel] démarrage biométrique automatique:',error);
+      afficherMessageCode('La biométrie n’a pas pu démarrer. Votre code reste disponible.','err');
+    }finally{lancementBiometrieAutomatiqueEnCours=false;}
+  }
+
   function showCode(mode,options){
     codeMode=mode;espaceOptions=options||{};if(!codeModal)return;
     codeMsg.className='access-code-message';codeMsg.textContent='';codeMsg.style.display='none';codeInput.value='';
@@ -576,8 +602,7 @@
     if(mode==='verify'&&!espaceOptions.biometricEnroll&&!espaceOptions.biometricDisable&&(credentialBiometrique()||biometrieNativeConfiguree())){
       // Sur une installation qui a déjà enregistré l’empreinte, lancer le système biométrique sans bouton intermédiaire.
       // En cas d’échec ou d’annulation, le champ du code reste utilisable.
-      if(biometrieDisponible())void deverrouillerBiometrie();
-      else afficherMessageCode('La biométrie n’est pas disponible dans cette fenêtre. Vous pouvez toujours saisir votre code.','err');
+      void lancerBiometrieAutomatique();
     } else {
       setTimeout(()=>codeInput.focus(),50);
     }
