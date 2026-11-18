@@ -1,0 +1,163 @@
+---
+title: "Thesis structure"
+description: "The report and book classes, front and main matter, chapters in separate files, appendices, and the back matter."
+summary: "Structure a thesis in LaTeX: the report and book classes, one file per chapter, front, main, and back matter, title page and abstract, and appendices."
+keywords: ["thesis","dissertation","book","report","\\chapter","\\frontmatter","\\mainmatter","\\backmatter","\\appendix","appendix","appendices","\\include","\\includeonly","\\input","titlepage","title page","abstract","acknowledgements","acknowledgments","dedication","\\chapter*","\\addcontentsline","\\tableofcontents","\\listoffigures","\\listoftables","roman page numbers","\\pagenumbering","oneside","twoside","openany","openright","bibliography","bibintoc","index","glossary","main file","long document"]
+---
+
+# Thesis structure
+
+Organise a thesis, dissertation, or book: choose the class, split the chapters into files, number the front matter and the main text differently, and put the appendices, bibliography, and index in the right order.
+
+## Choose a class
+
+Long documents use `report` or `book`. Both add `\chapter` above `\section`.
+
+| | `report` | `book` |
+| --- | --- | --- |
+| Sides | One-sided by default | Two-sided by default |
+| Chapters start | On the next page | On the next right-hand page |
+| `abstract` environment | Yes | No |
+| `\frontmatter`, `\mainmatter`, `\backmatter` | No | Yes |
+
+Class options adjust the defaults: `oneside` or `twoside`, `openany` to let chapters start on any page, and a base size such as `12pt`. If your university publishes its own class or template, start from that instead, because it encodes rules you would otherwise have to read. Eneles's [Library](/library) also has a "Book / long-form" document template.
+
+## One file per chapter
+
+Keep a short main file that holds the preamble and the order of the parts, and put every chapter in its own file. `\include` starts a new page and reads the file.
+
+```latex
+\documentclass[12pt, a4paper, oneside]{book}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+
+\begin{document}
+
+\frontmatter
+\include{front/titlepage}
+\include{front/abstract}
+\include{front/acknowledgements}
+\tableofcontents
+\listoffigures
+\listoftables
+
+\mainmatter
+\include{chapters/introduction}
+\include{chapters/methods}
+\include{chapters/results}
+\include{chapters/conclusion}
+
+\appendix
+\include{appendices/calibration}
+
+\backmatter
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
+```
+
+Each chapter file starts with `\chapter` and contains only body text: no `\documentclass`, no `\begin{document}`. In Eneles, the main file must be the project's **Main document**, which you set under **Project settings**, on the **Compiler** tab.
+
+While you write one chapter, compile only that one. `\includeonly` in the preamble skips the other files but keeps their page numbers, chapter numbers, and cross-references from the last full compile.
+
+```latex
+\includeonly{chapters/methods, chapters/results}
+```
+
+## Front matter, main matter, back matter
+
+In `book`, three switches change the numbering. They are why the main file above needs no manual counters.
+
+| Command | Page numbers | Chapters |
+| --- | --- | --- |
+| `\frontmatter` | Roman: i, ii, iii | Unnumbered, but listed in the contents |
+| `\mainmatter` | Arabic, restarting at 1 | Numbered: Chapter 1, 2, 3 |
+| `\appendix` | Continue | Lettered: Appendix A, B, C |
+| `\backmatter` | Continue | Unnumbered again |
+
+```latex-document
+\documentclass[oneside]{book}
+\usepackage[a5paper, margin=18mm]{geometry}
+\begin{document}
+\frontmatter
+\chapter{Abstract}
+Tide gauges that cost less than a hundred euros can match the accuracy of a harbour's reference gauge. This thesis describes the design, a year of field data, and the sources of the remaining error.
+\end{document}
+```
+
+The chapter has no number and the page is numbered "i". In `report`, which lacks these switches, get the same result with `\pagenumbering{roman}` before the front matter, `\pagenumbering{arabic}` at the first chapter, and `\chapter*` for unnumbered headings.
+
+## Title page, abstract, and acknowledgements
+
+`\maketitle` is rarely enough for a thesis. The `titlepage` environment gives you an empty, unnumbered page to lay out yourself.
+
+```latex-document
+\documentclass[12pt, a4paper]{report}
+\begin{document}
+\begin{titlepage}
+  \centering
+  \vspace*{3cm}
+  {\Huge\bfseries Low-cost tide gauges for small harbours\par}
+  \vspace{1.5cm}
+  {\Large Leila Haddad\par}
+  \vfill
+  A thesis submitted for the degree of\\
+  Master of Science\par
+  \vspace{1cm}
+  Department of Ocean Engineering\\
+  Northsea University\par
+  \vspace{1cm}
+  June 2025
+\end{titlepage}
+\end{document}
+```
+
+The abstract and the acknowledgements are short unnumbered chapters. In the front matter of a `book`, write `\chapter{Abstract}` and `\chapter{Acknowledgements}`. In a `report`, use the `abstract` environment, and for other headings write `\chapter*` followed by a line that adds the entry to the contents:
+
+```latex
+\chapter*{Acknowledgements}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+I thank the harbour office in Westhaven for access to the pier.
+```
+
+## Appendices
+
+`\appendix` is a switch, not an environment. Every `\chapter` after it is an appendix, lettered from A, and its sections, figures, and tables are numbered A.1, A.2, and so on.
+
+```latex-document
+\documentclass{report}
+\usepackage[a5paper, margin=18mm]{geometry}
+\begin{document}
+\appendix
+\chapter{Sensor calibration}
+\section{Procedure}
+Each sensor was held at five known distances from a flat target, and its reading was recorded a hundred times at each distance.
+\end{document}
+```
+
+## The order of the back matter
+
+A common order for the end of a thesis is:
+
+1. Appendices, after `\appendix`.
+2. Bibliography, after `\backmatter` in a `book`.
+3. Glossary or list of abbreviations, if you have one.
+4. Index, last.
+
+Some universities want the bibliography before the appendices. Their regulations win. Whatever the order, check that each part appears in the table of contents: the standard classes leave the bibliography out. With biblatex, write `\printbibliography[heading=bibintoc]`. With BibTeX, put `\clearpage` and an `\addcontentsline{toc}{chapter}{Bibliography}` line before `\bibliography`.
+
+## Common mistakes
+
+- Using `\frontmatter` or `\mainmatter` in `report`. TeX stops with "Undefined control sequence". Use `book`, or switch the numbering by hand with `\pagenumbering`.
+- Using the `abstract` environment in `book`. The error is "Environment abstract undefined". Write `\chapter{Abstract}` in the front matter.
+- Putting `\include` inside a file that is itself included. TeX reports "\include cannot be nested". Use `\input` inside chapter files.
+- Compiling a chapter file on its own. It has no preamble, so the first line fails. Always compile the main file, and use `\includeonly` to save time.
+
+## Next
+
+- [Multi-file projects](/learn/multi-file-projects)
+- [Contents, lists, and indexes](/learn/contents-lists-and-indexes)
+- [Headers and footers](/learn/headers-and-footers)

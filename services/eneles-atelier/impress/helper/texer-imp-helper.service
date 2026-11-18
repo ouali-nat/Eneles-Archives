@@ -1,0 +1,13 @@
+# systemd --user unit for the TeXeR IMP helper.
+# Installed by helper/install-helper.sh; see README.md "Snap / Flatpak".
+[Unit]
+Description=TeXeR IMP helper (LaTeX compile server for sandboxed LibreOffice)
+
+[Service]
+# A login shell, so TeX Live's PATH from ~/.profile is picked up.
+ExecStart=/bin/sh -lc 'exec python3 "%h/.local/share/texer-imp/TeXeR-IMP-helper.pyz"'
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target

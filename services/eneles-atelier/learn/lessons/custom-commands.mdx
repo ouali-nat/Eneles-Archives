@@ -1,0 +1,120 @@
+---
+title: "Custom commands"
+description: "Your own commands and environments with \\newcommand, \\renewcommand, and \\newenvironment, and when to define one."
+summary: "Define your own LaTeX commands and environments with \\newcommand, \\renewcommand, and \\newenvironment: arguments, optional arguments, and when to define one."
+keywords: ["\\newcommand","\\renewcommand","\\providecommand","\\newenvironment","\\renewenvironment","\\DeclareMathOperator","\\def","macro","macros","shortcut","abbreviation","argument","arguments","optional argument","default value","#1","#2","define command","custom environment","operator","argmin","argmax","command already defined","illegal parameter number","macros.tex"]
+---
+
+# Custom commands
+
+Define your own commands and environments, so that notation and formatting you repeat are written once and can be changed in one place.
+
+## A command without arguments
+
+`\newcommand` takes the new name and what it stands for. Definitions normally go in the preamble. From then on, the name expands to the definition wherever you use it.
+
+```latex-example
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\project}{\textsc{Tidewatch}}
+The \project{} sensors record a level $h \in \R$ every minute.
+\project\ data is public.
+```
+
+TeX skips spaces after a command name, so `\project data` would print "Tidewatchdata". End the command with `{}` or follow it with `\ ` (backslash, space) when a space must come next.
+
+Command names contain letters only, and they are case-sensitive: `\R` and `\r` are different commands, and `\vec2` is `\vec` followed by a 2.
+
+## Commands with arguments
+
+Give the number of arguments in brackets, then refer to them as `#1`, `#2`, and so on, up to `#9`.
+
+```latex-example
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\deriv}[2]{\frac{\mathrm{d} #1}{\mathrm{d} #2}}
+The velocity is $\vect{v} = \deriv{\vect{r}}{t}$, and
+the acceleration is $\vect{a} = \deriv{\vect{v}}{t}$.
+```
+
+This is the main reason to define commands. If a journal wants vectors as arrows instead of bold letters, you change one line, not every formula.
+
+## An optional argument
+
+A second pair of brackets holds a default value. That makes the first argument optional: leave it out to get the default, or give it in square brackets.
+
+```latex-example
+\newcommand{\norm}[2][2]{\lVert #2 \rVert_{#1}}
+Euclidean by default, $\norm{x}$, and on request
+$\norm[1]{x}$ or $\norm[\infty]{x}$.
+```
+
+Here `[2][2]` reads as: two arguments, and the first defaults to `2`. Only the first argument can be optional with `\newcommand`.
+
+## Redefine an existing command
+
+`\newcommand` refuses a name that is already taken. `\renewcommand` has the same syntax and replaces an existing definition. It is how you change the fixed text and symbols that LaTeX and its packages print.
+
+```latex-example
+\renewcommand{\labelitemi}{$\triangleright$}
+\renewcommand{\qedsymbol}{$\blacksquare$}
+\begin{itemize}
+  \item Bullets are now triangles.
+\end{itemize}
+\begin{proof}
+The proof ends with a filled square.
+\end{proof}
+```
+
+Other names you can redefine this way include `\abstractname`, `\contentsname`, `\figurename`, and `\refname`. A third form, `\providecommand`, defines a command only if it does not exist yet, which is useful in files shared between projects.
+
+## New environments
+
+`\newenvironment` takes a name, the code to run at `\begin`, and the code to run at `\end`. It accepts arguments in the same way as `\newcommand`, and they are available in the begin code.
+
+```latex-example
+\newenvironment{keypoint}[1]
+  {\begin{quote}\textbf{#1.}\ \itshape}
+  {\end{quote}}
+Ordinary text before.
+\begin{keypoint}{Remember}
+Calibrate the sensor before every deployment.
+\end{keypoint}
+```
+
+Font changes made in the begin code, such as `\itshape` here, end with the environment.
+
+## Math operators
+
+Function names such as `\sin` and `\max` are set upright with the right spacing around them. For a name LaTeX does not provide, use `\DeclareMathOperator` from `amsmath` in the preamble. The starred form places limits underneath in displayed formulas, as `\lim` does.
+
+```latex-document
+\documentclass[varwidth, border=10pt]{standalone}
+\usepackage{amsmath}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{document}
+If $\rank A = n$, the least-squares solution is unique:
+\[ \hat{x} = \argmin_{x} \lVert Ax - b \rVert^2 . \]
+Written without the operator, $rank A$ looks like a product of four variables.
+\end{document}
+```
+
+## When to define a command
+
+Define one when it names a meaning, not a shortcut. `\vect`, `\R`, and `\norm` say what something is, they keep notation consistent across a long document, and they let you change it later. A command you would use only once is not worth a definition.
+
+Avoid abbreviations for standard commands, such as `\be` for `\begin{equation}`. They save a few keystrokes and cost every collaborator the time to look them up. Eneles's autocomplete suggests commands and environments as you type, so the long forms cost little. One side effect of your own commands: in [visual mode](/docs/visual-mode), equations are drawn in the browser, not by TeX, so math that uses a command from your preamble may not be drawn correctly in the editor. The compiled PDF is unaffected.
+
+Keep definitions together in the preamble. In a large project, move them to a file such as `macros.tex` and load it with `\input{macros}`.
+
+## Common mistakes
+
+- Choosing a name that exists. `\newcommand{\vec}{…}` stops with "Command \vec already defined". Pick another name. Use `\renewcommand` only when you mean to replace the original everywhere, including inside packages that rely on it.
+- Using `#2` in a command declared with one argument. TeX stops with "Illegal parameter number in definition". Make the number in brackets match the highest argument you use.
+- Forgetting an argument when calling the command. TeX takes whatever comes next instead: the first letter of the following word, or the closing `$` of the formula, which ends in a confusing error such as "Missing } inserted". Give every argument, each in its own braces.
+- Defining commands with `\def`. It overwrites existing commands without warning. `\newcommand` checks first.
+
+## Next
+
+- [Packages and the preamble](/learn/packages-and-the-preamble)
+- [Theorems and proofs](/learn/theorems-and-proofs)
+- [Multi-file projects](/learn/multi-file-projects)

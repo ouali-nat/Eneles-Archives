@@ -1,0 +1,42 @@
+\documentclass[10pt,twocolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1.9cm]{geometry}
+\usepackage{times}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[hidelinks]{hyperref}
+
+\newcommand{\model}{\textsc{BlockSparse}}
+\DeclareMathOperator{\softmax}{softmax}
+
+\title{Block-Sparse Attention for Long-Document Summarization}
+\author{
+  Razz\textsuperscript{1} \and Kenji Watanabe\textsuperscript{2} \and Aria Nakamura\textsuperscript{1} \\[4pt]
+  \textsuperscript{1}Institute for Computational Linguistics \quad \textsuperscript{2}Department of Computer Science
+}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Transformer summarizers are limited by the quadratic cost of self-attention, which forces long documents to be truncated before they are read. We present \model{}, an attention pattern that combines a local window with a small set of learned block-level connections, and that runs in time linear in the document length. On three long-document benchmarks \model{} improves ROUGE-L by up to 1.8 points over truncation baselines while using 40\% less memory than full attention at 4{,}096 tokens. We release our code and pretrained checkpoints.
+\end{abstract}
+
+\input{sections/introduction}
+\input{sections/method}
+\input{sections/experiments}
+\input{sections/related}
+
+\section{Conclusion}
+
+We introduced \model{}, a sparse attention pattern for long documents whose global connections are learned rather than fixed. It matches or exceeds full attention on three summarization benchmarks at a fraction of the memory. In future work we plan to apply the same pattern to multi-document inputs.
+
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+\end{document}

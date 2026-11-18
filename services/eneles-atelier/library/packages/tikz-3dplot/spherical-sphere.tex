@@ -1,0 +1,23 @@
+% Name: Sphere with spherical coordinates
+% Description: A point on a sphere located by its radius and the angles θ and φ.
+% Tags: sphere, spherical coordinates, 3D, angles
+
+\usepackage{tikz-3dplot}
+\usetikzlibrary{arrows.meta, calc}
+
+\tdplotsetmaincoords{70}{110}
+\begin{tikzpicture}[tdplot_main_coords, scale=2.4, >={Stealth}]
+  \coordinate (O) at (0,0,0);
+  \tdplotsetcoord{P}{1}{50}{60}
+  \draw[tdplot_screen_coords, thick, ball color=blue!8, opacity=0.6] (0,0) circle (1);
+  \draw[gray] (0,0,0) circle (1);
+  \draw[->] (0,0,0) -- (1.4,0,0) node[anchor=north east] {$x$};
+  \draw[->] (0,0,0) -- (0,1.4,0) node[anchor=north west] {$y$};
+  \draw[->] (0,0,0) -- (0,0,1.4) node[anchor=south] {$z$};
+  \draw[->, very thick, blue!70!black] (O) -- (P) node[above right] {$P$};
+  \draw[dashed] (O) -- (Pxy) -- (P);
+  \tdplotdrawarc[->, orange!85!black]{(O)}{0.35}{0}{60}{anchor=north}{$\phi$}
+  \tdplotsetthetaplanecoords{60}
+  \tdplotdrawarc[tdplot_rotated_coords, ->, orange!85!black]{(O)}{0.45}{0}{50}{anchor=south west}{$\theta$}
+  \fill (P) circle (0.6pt);
+\end{tikzpicture}

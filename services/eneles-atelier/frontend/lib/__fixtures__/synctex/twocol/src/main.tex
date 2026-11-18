@@ -1,0 +1,28 @@
+\documentclass[twocolumn]{article}
+\usepackage{pdflscape}
+\usepackage{lipsum}
+\begin{document}
+\section{Left column}
+The first column starts with this sentence about herons.
+\lipsum[1]
+
+Another paragraph in the flow mentions a pelican here.
+\marginpar{Side remark}
+\lipsum[2-4]
+
+\section{Right column}
+Text that should land in the second column mentions an ibis.
+\lipsum[5-6]
+
+\begin{landscape}
+\section{Landscape page}
+This page is rotated and mentions a flamingo.
+\begin{tabular}{ll}
+  Left cell & Right cell \\
+  Lower left & Lower right \\
+\end{tabular}
+\end{landscape}
+
+\section{After}
+Back to portrait with a final sentence about storks.
+\end{document}

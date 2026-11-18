@@ -1,0 +1,14 @@
+% Name: Rhombus tiling
+% Description: The thin and thick rhombus version of the Penrose tiling, after four rounds of substitution.
+% Tags: penrose, rhombus, tiling
+
+\usetikzlibrary{tilings.penrose}
+
+\begin{tikzpicture}[
+  tiling step=7cm,
+  every tile/.style={draw, thin},
+  every thin rhombus/.style={fill=green!30},
+  every thick rhombus/.style={fill=blue!20},
+]
+  \TilingDecomposition{rhombus}{4}{T}
+\end{tikzpicture}

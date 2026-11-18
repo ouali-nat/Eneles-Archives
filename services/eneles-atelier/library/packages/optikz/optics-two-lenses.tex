@@ -1,0 +1,11 @@
+% Name: Two lenses
+% Description: Beam through two convex lenses.
+% Tags: lens, telescope, beam
+
+\usepackage{optikz}
+
+\begin{tikzpicture}[scale=0.7]
+  \draw[very thick, -{latex}] (0,0) -- (5,0);
+  \convexlens[angle=0, width=0.5] at (1.5,0);
+  \convexlens[angle=0, width=0.5] at (3.5,0);
+\end{tikzpicture}

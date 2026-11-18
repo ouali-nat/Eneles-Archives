@@ -1,0 +1,20 @@
+\chapter{Proofs}
+\label{app:proofs}
+
+\section{Proof of Theorem~\ref{thm:sketch}}
+
+\begin{proof}
+Write $M = 2I - \Lap$, which has eigenvalues $\mu_i = 2 - \lambda_i$ in decreasing order and the same eigenvectors as $\Lap$. Split $\Omega$ into $\Omega_1 = U_k^\top \Omega$ and $\Omega_2 = U_{\perp}^\top \Omega$, where $U_\perp$ collects the remaining eigenvectors. Since $\Omega$ is Gaussian and $U$ is orthogonal, $\Omega_1$ and $\Omega_2$ are independent Gaussian matrices, and $\Omega_1$ has full row rank almost surely.
+
+By the deterministic bound of Halko, Martinsson, and Tropp~\cite{halko2011finding},
+\[
+  \norm{(I - QQ^\top) U_k}_2 \le \norm{\Sigma_2^{q} \, \Omega_2 \Omega_1^{\dagger} \, \Sigma_1^{-q}}_2 \le \gamma^{q} \, \norm{\Omega_2}_2 \, \norm{\Omega_1^{\dagger}}_2 ,
+\]
+where $\Sigma_1 = \diag(\mu_1, \dots, \mu_k)$ and $\Sigma_2 = \diag(\mu_{k+1}, \dots, \mu_n)$. Standard tail bounds for Gaussian matrices give $\norm{\Omega_2}_2 \le 3\sqrt{n}$ and $\norm{\Omega_1^{\dagger}}_2 \le C' / \sqrt{p}$ with the stated probability, which proves the claim with $C = 3C'$.
+\end{proof}
+
+\section{Proof of Lemma~\ref{lem:chebyshev}}
+
+\begin{proof}
+The Chebyshev coefficients of a function analytic in the Bernstein ellipse with parameter $\rho$ satisfy $|c_j| \le 2M\rho^{-j}$. Since $|T_j| \le 1$ on $[-1, 1]$, the truncation error is at most $\sum_{j > J} 2M\rho^{-j} = 2M\rho^{-J} / (\rho - 1)$.
+\end{proof}

@@ -1,0 +1,11 @@
+{
+  "name": "Matrices",
+  "description": "Matrices typeset as TikZ matrices of math nodes, so rows, columns, and blocks can be highlighted.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "matrices",
+    "linear algebra",
+    "highlighting"
+  ],
+  "custom": true
+}

@@ -1,0 +1,109 @@
+---
+title: "Numbering and referencing equations"
+description: "Label equations and refer to them, choose which ones are numbered, and change the form of the numbers."
+summary: "Number and reference equations in LaTeX: \\label and \\eqref, choose which lines are numbered, custom tags, subequations, and numbering within sections."
+keywords: ["\\label","\\eqref","\\ref","\\tag","\\tag*","\\notag","\\nonumber","subequations","\\numberwithin","equation number","equation*","align*","unnumbered","cross-reference","??","multiply defined"]
+---
+
+# Numbering and referencing equations
+
+Number the equations you need, leave the rest unnumbered, refer to them by label so the numbers stay correct when the document changes, and choose what the numbers look like.
+
+## Label and refer
+
+Put `\label` inside a numbered equation and give it a name of your own. Then `\eqref` with the same name prints the equation's number in parentheses, wherever you use it. `\ref` prints the bare number. A prefix such as `eq:` keeps equation labels apart from those of sections and figures.
+
+```latex-example
+\begin{equation}
+  E = mc^2 \label{eq:energy}
+\end{equation}
+By \eqref{eq:energy}, mass is a form of energy.
+With \verb|\ref| you get only \ref{eq:energy}.
+```
+
+Never type an equation number by hand. Add an equation earlier in the document and every typed number is wrong, while every `\eqref` updates itself.
+
+LaTeX records labels on one pass and fills in the numbers on the next. Eneles reruns TeX until the references settle, and typing `\eqref{` lists the labels in your project.
+
+## Choose which lines get a number
+
+Every line of an `align` or `gather` is numbered, and each can have its own label. Put `\notag` before the `\\` of a line that should have none. `\nonumber` is the older LaTeX name for the same command.
+
+```latex-example
+\begin{align}
+  \nabla \cdot \mathbf{B} &= 0 \label{eq:no-monopoles} \\
+  \nabla \times \mathbf{E}
+    &= -\frac{\partial \mathbf{B}}{\partial t} \notag \\
+  \nabla \cdot \mathbf{E} &= \frac{\rho}{\varepsilon_0} \label{eq:gauss}
+\end{align}
+Only \eqref{eq:no-monopoles} and \eqref{eq:gauss} are numbered.
+```
+
+To number nothing, use the starred form of the environment: `equation*`, `align*`, `gather*`, or `multline*`. A common rule is to number an equation only if the text refers to it, unless your journal asks for all of them.
+
+## Custom tags
+
+`\tag` replaces the number with text of your choice, and `\eqref` then prints that text. It also works in starred environments. `\tag*` prints its argument without the parentheses.
+
+```latex-example
+\begin{equation}
+  a^2 + b^2 = c^2 \tag{P} \label{eq:pythagoras}
+\end{equation}
+\begin{equation*}
+  x^n + y^n = z^n \tag*{Fermat}
+\end{equation*}
+Equation \eqref{eq:pythagoras} has integer solutions.
+```
+
+A tagged equation does not use up a number, so the numbering of the others is unaffected.
+
+## Subequations
+
+Wrap related equations in `subequations` to number them as parts of one: 1a, 1b, and so on. A label placed straight after `\begin{subequations}` refers to the group, and labels on the lines refer to the parts.
+
+```latex-example
+\begin{subequations} \label{eq:system}
+\begin{align}
+  x + y &= 3 \label{eq:system-sum} \\
+  x - y &= 1 \label{eq:system-difference}
+\end{align}
+\end{subequations}
+Adding \eqref{eq:system-sum} to \eqref{eq:system-difference}
+solves the system \eqref{eq:system}.
+```
+
+## Number within sections
+
+In a long document, numbers such as (3.2) are easier to find than (47). `\numberwithin` in the preamble restarts the equation counter in every section and puts the section number in front.
+
+```latex-document
+\documentclass[varwidth=11cm,border=10pt]{standalone}
+\usepackage{amsmath}
+\numberwithin{equation}{section}
+\begin{document}
+\section{Circles}
+\begin{equation}
+  A = \pi r^2
+\end{equation}
+\section{Spheres}
+\begin{equation}
+  V = \tfrac{4}{3} \pi r^3 \label{eq:sphere}
+\end{equation}
+The volume \eqref{eq:sphere} grows with the cube of $r$.
+\end{document}
+```
+
+In a book or thesis, use `\numberwithin{equation}{chapter}`. Classes with chapters already number equations that way.
+
+## Common mistakes
+
+- **`??` in the PDF.** The label does not exist, usually because of a typo. The log says ``Reference `eq:enrgy' on page 1 undefined``. Make the names in `\label` and `\eqref` match exactly.
+- **A label on an unnumbered equation.** A `\label` in `equation*`, or on a line with `\notag`, has no equation number to take, so the reference prints an unrelated number, such as the section's. Label only what is numbered.
+- **The same label twice.** The log warns ``Label `eq:energy' multiply defined`` and every reference points to the last one. Give each label a unique name.
+- **Two tags on one equation.** `equation` and `split` produce a single number, so a second `\tag` stops with `Multiple \tag`.
+
+## Next
+
+- [Cross-references](/learn/cross-references)
+- [Aligning equations](/learn/aligning-equations)
+- [Theorems and proofs](/learn/theorems-and-proofs)

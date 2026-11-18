@@ -1,0 +1,10 @@
+% Name: Pullback
+% Description: A pullback (fiber product) diagram.
+% Tags: pullback, fiber product, category theory
+
+\usepackage{tikz-cd}
+
+\begin{tikzcd}
+  P \arrow[r, "p_1"] \arrow[d, "p_2"'] \arrow[dr, phantom, "\lrcorner", very near start] & X \arrow[d, "f"] \\
+  Y \arrow[r, "g"'] & Z
+\end{tikzcd}

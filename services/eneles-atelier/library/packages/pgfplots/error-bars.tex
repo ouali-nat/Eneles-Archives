@@ -1,0 +1,21 @@
+% Name: Line plot with error bars
+% Description: Two measured series with markers, lines, and symmetric error bars.
+% Tags: error bars, line plot, measurements
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\begin{tikzpicture}
+  \begin{axis}[
+    width=9cm, height=6cm,
+    xlabel={Temperature ($^\circ$C)}, ylabel={Reaction rate (mol/s)},
+    grid=major, grid style={gray!20},
+    legend pos=north west, legend cell align=left,
+  ]
+    \addplot[blue!70!black, thick, mark=*, error bars/.cd, y dir=both, y explicit]
+      coordinates {(20,1.2) +- (0,0.2) (30,1.9) +- (0,0.25) (40,2.9) +- (0,0.3) (50,4.1) +- (0,0.35) (60,5.6) +- (0,0.4)};
+    \addplot[orange!85!black, thick, mark=square*, error bars/.cd, y dir=both, y explicit]
+      coordinates {(20,0.8) +- (0,0.15) (30,1.1) +- (0,0.2) (40,1.6) +- (0,0.2) (50,2.2) +- (0,0.3) (60,2.9) +- (0,0.3)};
+    \legend{With catalyst, Without catalyst}
+  \end{axis}
+\end{tikzpicture}

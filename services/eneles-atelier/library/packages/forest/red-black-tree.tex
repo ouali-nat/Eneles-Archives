@@ -1,0 +1,29 @@
+% Name: Red-black tree
+% Description: A balanced binary search tree with red and black nodes, styled with one key per color.
+% Tags: red-black tree, balanced tree, data structure
+
+\usepackage{forest}
+
+\begin{forest}
+  for tree={
+    circle, draw, fill=black, text=white, font=\small\bfseries,
+    minimum size=7mm, inner sep=0pt, s sep=5mm, l sep=3mm,
+  },
+  red/.style={fill=red!75!black, draw=red!75!black},
+  [13
+    [8, red
+      [1
+        [, phantom]
+        [6, red]
+      ]
+      [11]
+    ]
+    [17, red
+      [15]
+      [25
+        [22, red]
+        [27, red]
+      ]
+    ]
+  ]
+\end{forest}

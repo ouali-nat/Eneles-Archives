@@ -1,0 +1,11 @@
+{
+  "name": "Digital logic",
+  "description": "Karnaugh maps, logic gates, timing diagrams, and sorting networks.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "digital logic",
+    "boolean algebra",
+    "hardware"
+  ],
+  "custom": true
+}

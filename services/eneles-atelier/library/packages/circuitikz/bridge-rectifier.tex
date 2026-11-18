@@ -1,0 +1,14 @@
+% Name: Bridge rectifier
+% Description: Four diodes that turn an alternating input into a direct voltage across the load.
+% Tags: rectifier, diodes, power supply
+
+\usepackage{circuitikz}
+
+\begin{circuitikz}
+  \draw (3,4) to[D*, -*] (5,2);
+  \draw (3,0) to[D*, -*] (5,2);
+  \draw (1,2) to[D*, *-*] (3,4);
+  \draw (1,2) to[D*, -*] (3,0);
+  \draw (3,4) -- (3,4.8) -- (-1,4.8) to[sV, l_=$v_{in}$] (-1,-0.8) -- (3,-0.8) -- (3,0);
+  \draw (5,2) -- (7,2) to[R, l_=$R_L$, v^>=$v_{out}$] (7,-1.6) -- (1,-1.6) -- (1,2);
+\end{circuitikz}

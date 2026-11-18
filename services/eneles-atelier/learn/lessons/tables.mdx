@@ -1,0 +1,150 @@
+---
+title: "Tables"
+description: "Build a table with tabular, rule it with booktabs, caption it, and align numbers on the decimal point."
+summary: "Tables in LaTeX: build one with tabular, choose column types, rule it with booktabs, caption it in a table float, and align numbers on the decimal point."
+keywords: ["tabular","table","booktabs","\\toprule","\\midrule","\\bottomrule","\\hline","\\addlinespace","column types","l c r","p column","siunitx","S column","decimal alignment","caption","rows","columns","grid"]
+---
+
+# Tables
+
+After this page you can build a table with `tabular`, rule it cleanly with `booktabs`, give it a caption and a number, and line up numbers on the decimal point.
+
+## A first table
+
+The `tabular` environment takes one argument that declares the columns: one letter per column. In the body, `&` moves to the next column and `\\` ends the row.
+
+```latex-example
+\begin{tabular}{lcr}
+  Item     & Unit      & Price \\
+  Notebook & each      & 3.50  \\
+  Pencils  & box of 12 & 4.20  \\
+\end{tabular}
+```
+
+Spaces around `&` are ignored, so line the source up however you find readable. A `tabular` is a box like a letter: it sits in the paragraph where you put it and never breaks across pages.
+
+## Column types
+
+| In the argument | Meaning |
+| --- | --- |
+| `l`, `c`, `r` | A column aligned left, centered, or aligned right, as wide as its widest cell. |
+| `p{3cm}` | A column of fixed width whose text wraps into lines. |
+| `\|` | A vertical rule at this position. |
+| `@{text}` | Put `text` here instead of the normal space between columns. `@{}` removes the space. |
+| `*{4}{c}` | Repeat: the same as `cccc`. |
+
+Wrapping columns and cells that span several columns are covered in [Advanced tables](/learn/advanced-tables).
+
+## Rules
+
+Plain LaTeX draws horizontal rules with `\hline` and vertical ones with `|`. The result is a grid with text pressed against the lines. The `booktabs` package gives three rules with proper space around them: `\toprule`, `\midrule`, and `\bottomrule`.
+
+```latex-example
+\begin{tabular}{|l|r|}
+  \hline
+  Station & Depth (m) \\
+  \hline
+  Alder   & 12 \\
+  Birch   & 148 \\
+  \hline
+\end{tabular}
+\qquad
+\begin{tabular}{@{}lr@{}}
+  \toprule
+  Station & Depth (m) \\
+  \midrule
+  Alder   & 12 \\
+  Birch   & 148 \\
+  \bottomrule
+\end{tabular}
+```
+
+The second table follows the practice of printed books: no vertical rules, a heavier rule at the top and bottom, and a lighter one under the header. The eye follows aligned columns without any help, so the vertical rules only add clutter. `@{}` at both ends removes the padding so that the rules stop exactly at the text.
+
+Inside a long table, separate groups of rows with `\addlinespace` instead of more rules.
+
+```latex-example
+\begin{tabular}{@{}llr@{}}
+  \toprule
+  Group & Species & Count \\
+  \midrule
+  Birds   & Wren     & 14 \\
+          & Dunnock  & 9  \\
+  \addlinespace
+  Mammals & Hedgehog & 2  \\
+  \bottomrule
+\end{tabular}
+```
+
+## The table float
+
+A `tabular` has no caption or number. For those, put it inside a `table` environment, which floats exactly like a figure: the same placement letters and the same `\caption` and `\label` rules apply (see [Figures and captions](/learn/figures-and-captions)).
+
+```latex-document
+\documentclass{article}
+\usepackage[paperwidth=9cm,paperheight=5.5cm,margin=8mm]{geometry}
+\usepackage{booktabs}
+\usepackage{caption}
+\pagestyle{empty}
+\begin{document}
+\begin{table}[htbp]
+  \centering
+  \caption{Boiling points at sea level.}
+  \label{tab:boiling}
+  \begin{tabular}{@{}lr@{}}
+    \toprule
+    Liquid  & Kelvin \\
+    \midrule
+    Water   & 373 \\
+    Ethanol & 351 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Table~\ref{tab:boiling} lists both liquids.
+\end{document}
+```
+
+The `geometry` line only makes the page small enough to show here. By convention a table's caption goes above it. The standard classes space captions for the position below, so a caption above sits too close to the table. Loading the `caption` package corrects that spacing.
+
+In Eneles, press `Shift + Space`, open **Structure**, and choose **Table** to insert a table float to fill in.
+
+## Align numbers
+
+Right-align whole numbers with `r` so that units sit under units. Decimals with different numbers of digits need more: the `S` column of the `siunitx` package lines them up on the decimal point.
+
+```latex-document
+\documentclass[varwidth=11cm,border=10pt]{standalone}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\begin{document}
+\begin{tabular}{@{}lS[table-format=3.2]S[table-format=1.3]@{}}
+  \toprule
+  Sample & {Mass (g)} & {Error} \\
+  \midrule
+  A & 4.5    & 0.25  \\
+  B & 112.75 & 0.125 \\
+  C & 38     & 0.5   \\
+  \bottomrule
+\end{tabular}
+\end{document}
+```
+
+`table-format=3.2` reserves room for three digits before the point and two after, which also centers the column under its header. Anything in an `S` column that is not a number, such as a header, must be wrapped in braces.
+
+<Callout type="note" title="Every row ends with \\, including the last one before a rule">
+  `\hline`, `\midrule`, and `\bottomrule` must come directly after a `\\`. Leave it out and TeX stops with `! Misplaced \noalign.`
+</Callout>
+
+## Common mistakes
+
+- **More cells than columns.** `! Extra alignment tab has been changed to \cr.` means a row has more `&` than the column argument allows. Count the columns, or look for a missing `\\` on the row above.
+- **A bare `&` or `%` in a cell.** `&` starts a new column and `%` comments out the rest of the line, including the `\\`. Write `\&` and `\%`.
+- **Vertical rules with `booktabs`.** The rules have space above and below, so `|` leaves visible gaps. Drop the vertical rules.
+- **A table wider than the page.** The log reports an `Overfull \hbox` and the table runs into the margin. Use a wrapping column, as shown in [Advanced tables](/learn/advanced-tables).
+
+## Next
+
+- [Advanced tables](/learn/advanced-tables)
+- [Cross-references](/learn/cross-references)
+- [Figures and captions](/learn/figures-and-captions)

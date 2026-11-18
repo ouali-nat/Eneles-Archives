@@ -1,0 +1,12 @@
+{
+  "name": "Timelines",
+  "description": "Timelines in plain TikZ, horizontal or vertical, with milestones and labeled periods.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "timeline",
+    "milestones",
+    "history",
+    "project"
+  ],
+  "custom": true
+}

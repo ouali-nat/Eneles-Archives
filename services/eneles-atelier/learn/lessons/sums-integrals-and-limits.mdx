@@ -1,0 +1,115 @@
+---
+title: "Sums, integrals, and limits"
+description: "Write sums, products, integrals, and limits, and control where their bounds are placed."
+summary: "Sums, products, integrals, and limits in LaTeX: \\sum, \\prod, \\int, and \\lim with bounds, differentials, conditions on several lines, and where bounds go."
+keywords: ["\\sum","\\prod","\\int","\\iint","\\iiint","\\oint","\\lim","\\max","\\min","\\sup","\\inf","\\limits","\\nolimits","\\substack","\\bigcup","\\bigcap","summation","integral","differential","dx","bounds","big operators"]
+---
+
+# Sums, integrals, and limits
+
+Write sums, products, integrals, and limits with their bounds, and decide whether the bounds go above and below the symbol or beside it.
+
+## Sums and products
+
+`\sum` and `\prod` take their bounds as a subscript and a superscript. In a display the bounds are set below and above the symbol. Inline they move to the side, so that the line keeps its height.
+
+```latex-example
+\[
+  \sum_{k=1}^{n} k = \frac{n(n+1)}{2}
+  \qquad
+  \prod_{k=1}^{n} k = n!
+\]
+Inline, the same sum is $\sum_{k=1}^{n} k$.
+```
+
+The other large operators behave the same way, among them `\bigcup`, `\bigcap`, `\bigoplus`, and `\coprod`.
+
+## Integrals
+
+`\int` takes bounds in the same way, but keeps them beside the symbol even in a display. For multiple integrals use `\iint` and `\iiint`, which set the signs closer together than repeated `\int` would. `\oint` is the contour integral.
+
+```latex-example
+\[
+  \int_0^\infty e^{-x^2} \, dx = \frac{\sqrt{\pi}}{2}
+  \qquad
+  \iint_D f(x, y) \, dx \, dy
+  \qquad
+  \oint_C \mathbf{F} \cdot d\mathbf{r}
+\]
+```
+
+## Differentials
+
+TeX reads `dx` as the product of `d` and `x` and sets it tight against the integrand. Add a thin space, `\,`, before each differential.
+
+Some styles, including the ISO standard, set the `d` upright. If you want that, define a command once so that every differential in the document agrees. The one below also supplies the thin space itself.
+
+```latex-example
+\newcommand{\diff}{\mathop{}\!\mathrm{d}}
+\[
+  \int_a^b f(x) dx
+  \qquad
+  \int_a^b f(x) \, dx
+  \qquad
+  \int_a^b f(x) \diff x
+\]
+```
+
+In a real document the `\newcommand` line belongs in the preamble. See [Custom commands](/learn/custom-commands).
+
+## Limits
+
+`\lim` takes what the variable tends to as a subscript. `\max`, `\min`, `\sup`, `\inf`, `\limsup`, and `\liminf` work the same way.
+
+```latex-example
+\[
+  \lim_{x \to 0} \frac{\sin x}{x} = 1
+  \qquad
+  \lim_{n \to \infty} \left( 1 + \frac{1}{n} \right)^{n} = e
+  \qquad
+  \max_{0 \leq x \leq 1} x(1 - x) = \frac{1}{4}
+\]
+```
+
+## Moving the bounds
+
+Put `\limits` straight after the operator to force the bounds above and below, or `\nolimits` to force them beside it. The choice applies to that one operator.
+
+```latex-example
+Forced above and below in text: $\sum\limits_{k=1}^{n} k$.
+\[
+  \int\limits_0^1 x \, dx
+  \qquad
+  \sum\nolimits_{k=1}^{n} k
+\]
+```
+
+`\limits` inline pushes the lines of the paragraph apart, so use it rarely. If an inline formula needs that much room, display it instead.
+
+## Conditions on several lines
+
+When the condition under a sum is long, stack it with `\substack`. Lines are separated by `\\` and centered.
+
+```latex-example
+\[
+  \sum_{\substack{1 \leq i \leq n \\ i \neq j}} a_{ij}
+  \qquad
+  \prod_{\substack{p \leq x \\ p \text{ prime}}}
+    \left( 1 - \frac{1}{p} \right)
+\]
+```
+
+In Eneles, press `Shift + Space` and open the Math group: Sum, Integral, and Limit each insert the operator with its bounds ready to edit.
+
+## Common mistakes
+
+- **Bounds without braces.** `\sum_i=1^n` attaches only `i` and `1` to the sum. Write `\sum_{i=1}^{n}`.
+- **Operator names without a backslash.** `lim`, `max`, and `sin` typed as letters come out italic, as a product of variables, and cannot take a bound underneath. Use `\lim`, `\max`, and `\sin`.
+- **`\limits` after something that is not an operator.** `x\limits_a` stops with `Limit controls must follow a math operator`. To put text under an ordinary symbol, use `\underset`, or declare an operator as described in [Math fonts](/learn/math-fonts).
+- **`\int\int` for a double integral.** The two signs stand too far apart. Use `\iint`.
+
+## Next
+
+- [Math fonts](/learn/math-fonts)
+- [Spacing in math](/learn/spacing-in-math)
+- [Brackets and delimiters](/learn/brackets-and-delimiters)

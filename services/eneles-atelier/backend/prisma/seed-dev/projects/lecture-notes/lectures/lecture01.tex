@@ -1,0 +1,32 @@
+\section{Sigma-algebras and measures}
+
+\emph{Lecture 1, 7 September.}
+
+\begin{definition}
+Let $X$ be a set. A collection $\cF$ of subsets of $X$ is a \emph{$\sigma$-algebra} if
+\begin{enumerate}[label=(\roman*)]
+  \item $X \in \cF$;
+  \item $A \in \cF$ implies $X \setminus A \in \cF$;
+  \item $A_1, A_2, \dots \in \cF$ implies $\bigcup_{n=1}^\infty A_n \in \cF$.
+\end{enumerate}
+The pair $(X, \cF)$ is a \emph{measurable space}.
+\end{definition}
+
+\begin{example}
+The power set of $X$ and the trivial collection $\{\emptyset, X\}$ are $\sigma$-algebras. On $\R$, the \emph{Borel $\sigma$-algebra} $\mathcal{B}(\R)$ is the smallest $\sigma$-algebra containing every open set.
+\end{example}
+
+\begin{definition}
+A \emph{measure} on $(X, \cF)$ is a function $\mu \colon \cF \to [0, \infty]$ with $\mu(\emptyset) = 0$ that is \emph{countably additive}: for pairwise disjoint $A_1, A_2, \dots \in \cF$,
+\[
+  \mu\Bigl( \bigcup_{n=1}^\infty A_n \Bigr) = \sum_{n=1}^\infty \mu(A_n).
+\]
+\end{definition}
+
+\begin{lemma}[Continuity from below]
+If $A_1 \subseteq A_2 \subseteq \cdots$ are measurable, then $\mu\bigl( \bigcup_n A_n \bigr) = \lim_{n \to \infty} \mu(A_n)$.
+\end{lemma}
+
+\begin{proof}
+Set $B_1 = A_1$ and $B_n = A_n \setminus A_{n-1}$ for $n \ge 2$. The sets $B_n$ are disjoint with the same union, so by countable additivity $\mu\bigl( \bigcup_n A_n \bigr) = \sum_n \mu(B_n) = \lim_{N \to \infty} \sum_{n \le N} \mu(B_n) = \lim_{N \to \infty} \mu(A_N)$.
+\end{proof}

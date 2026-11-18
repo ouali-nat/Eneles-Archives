@@ -1,0 +1,10 @@
+{
+  "name": "tilings",
+  "description": "Penrose tilings, the aperiodic tilings of the plane, with the tilings library: kites and darts, rhombuses, and pentagons.",
+  "ctanUrl": "https://ctan.org/pkg/tilings",
+  "tags": [
+    "penrose",
+    "tilings",
+    "aperiodic"
+  ]
+}

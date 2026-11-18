@@ -1,0 +1,26 @@
+{
+  "name": "texer.ppt.local",
+  "version": "1.0.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Eneles-org/ppt.git",
+    "directory": "local-server"
+  },
+  "description": "Local helper for the Eneles PowerPoint add-in. Compiles LaTeX with whatever TeX distribution is already installed on THIS machine (TeX Live or MiKTeX) and crops the result to an SVG with dvisvgm. Nothing leaves the computer; there is no cloud service involved.",
+  "private": true,
+  "main": "server.js",
+  "bin": {
+    "texer-ppt-server": "./server.js"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.0"
+  }
+}

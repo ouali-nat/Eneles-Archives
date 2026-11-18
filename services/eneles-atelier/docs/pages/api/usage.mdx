@@ -1,0 +1,64 @@
+---
+title: "Usage"
+description: "Check quota consumption and account statistics."
+summary: "The Eneles REST API for usage: check how much of your monthly conversion quota is used and read your account's usage statistics."
+keywords: ["quota","limits","statistics","billing","plan"]
+method: GET
+---
+
+# Usage
+
+Track your conversion quotas and view usage statistics.
+
+---
+
+## GET /usage/current
+
+Get the authenticated user's usage for the current billing period.
+
+**Auth:** Bearer token
+
+```bash
+curl https://api.texer.org/usage/current \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+```json
+{
+  "snipsUsed": 12,
+  "snipsLimit": 300,
+  "pdfPagesUsed": 45,
+  "pdfPagesLimit": 200,
+  "projectsUsed": 3,
+  "projectsLimit": null,
+  "periodStart": "2025-06-01T00:00:00Z",
+  "periodEnd": "2025-07-01T00:00:00Z"
+}
+```
+
+---
+
+## GET /usage/statistics
+
+Get historical usage statistics for charts and dashboards.
+
+**Auth:** Bearer token
+
+```bash
+curl https://api.texer.org/usage/statistics \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+```json
+{
+  "daily": [
+    { "date": "2025-06-14", "snips": 3, "pdfPages": 10, "compiles": 8 },
+    { "date": "2025-06-15", "snips": 5, "pdfPages": 0, "compiles": 12 }
+  ],
+  "totals": {
+    "snips": 142,
+    "pdfPages": 380,
+    "compiles": 1203
+  }
+}
+```

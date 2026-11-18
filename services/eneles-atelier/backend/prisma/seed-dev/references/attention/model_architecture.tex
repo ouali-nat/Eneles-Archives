@@ -1,0 +1,13 @@
+\section{Model Architecture}
+
+Placeholder text. The model is an encoder--decoder built from stacked self-attention and feed-forward layers.
+
+\subsection{Scaled dot-product attention}
+
+\begin{equation}
+  \operatorname{Attention}(Q, K, V) = \operatorname{softmax}\left( \frac{Q K^\top}{\sqrt{d_k}} \right) V
+\end{equation}
+
+\subsection{Multi-head attention}
+
+Several attention functions run in parallel on learned projections of the queries, keys, and values, and their outputs are concatenated.

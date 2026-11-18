@@ -1,0 +1,11 @@
+{
+  "name": "polyhedra",
+  "description": "Draw polyhedral solids: cubes, dodecahedra, etc.",
+  "ctanUrl": "https://ctan.org/pkg/polyhedra",
+  "tags": [
+    "polyhedra",
+    "3D",
+    "geometry",
+    "solids"
+  ]
+}

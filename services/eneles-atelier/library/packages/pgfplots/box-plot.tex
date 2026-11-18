@@ -1,0 +1,21 @@
+% Name: Box plot
+% Description: Three groups summarized by median, quartiles, whiskers, and an outlier.
+% Tags: box plot, statistics, distribution, quartiles
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{statistics}
+\pgfplotsset{compat=1.18}
+
+\begin{tikzpicture}
+  \begin{axis}[
+    width=9cm, height=6cm,
+    boxplot/draw direction=y,
+    ylabel={Response time (ms)},
+    xtick={1,2,3}, xticklabels={Server A, Server B, Server C},
+    ymajorgrids, grid style={gray!20},
+  ]
+    \addplot+[boxplot prepared={median=120, upper quartile=145, lower quartile=100, upper whisker=190, lower whisker=70}, fill=blue!20, draw=blue!70!black] coordinates {};
+    \addplot+[boxplot prepared={median=95, upper quartile=110, lower quartile=82, upper whisker=135, lower whisker=60}, fill=orange!25, draw=orange!85!black] coordinates {(0,210)};
+    \addplot+[boxplot prepared={median=150, upper quartile=180, lower quartile=128, upper whisker=230, lower whisker=95}, fill=green!20, draw=green!50!black] coordinates {};
+  \end{axis}
+\end{tikzpicture}

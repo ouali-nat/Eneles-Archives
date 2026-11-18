@@ -1,0 +1,11 @@
+{
+  "name": "forest",
+  "description": "Draw linguistic syntax trees and general tree diagrams with automatic layout.",
+  "ctanUrl": "https://ctan.org/pkg/forest",
+  "tags": [
+    "trees",
+    "syntax trees",
+    "linguistics",
+    "data structures"
+  ]
+}

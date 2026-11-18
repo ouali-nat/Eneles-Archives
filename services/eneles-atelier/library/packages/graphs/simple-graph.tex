@@ -1,0 +1,11 @@
+% Name: Simple graph
+% Description: Four vertices and five edges, placed by hand: the smallest useful starting point.
+% Tags: graph, vertices, edges
+
+\begin{tikzpicture}[vertex/.style={circle, draw, minimum size=7mm}]
+  \node[vertex] (a) at (0,0) {$a$};
+  \node[vertex] (b) at (2,0) {$b$};
+  \node[vertex] (c) at (2,2) {$c$};
+  \node[vertex] (d) at (0,2) {$d$};
+  \draw (a) -- (b) -- (c) -- (d) -- (a) -- (c);
+\end{tikzpicture}

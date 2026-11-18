@@ -1,0 +1,113 @@
+---
+title: "Errors and debugging"
+description: "How to read a TeX error, the ten most common errors and their fixes, the warnings that matter, and how to find the faulty line."
+summary: "Fix LaTeX errors: read a TeX error message, the ten most common errors and their fixes, the warnings worth fixing, and how to find the faulty line."
+keywords: ["error","errors","debug","debugging","log","warning","warnings","undefined control sequence","missing $ inserted","runaway argument","file ended while scanning","paragraph ended before","too many }'s","extra }","environment undefined","file not found","misplaced alignment tab","missing \\begin{document}","illegal unit of measure","overfull hbox","overfull \\hbox","undefined reference","??","\\path","line number","bisect","minimal example","troubleshooting"]
+---
+
+# Errors and debugging
+
+Read a TeX error message, fix the ten errors you will meet most often, decide which warnings matter, and find the faulty line when the message points somewhere else.
+
+## Read an error message
+
+An error stops the compile. In the log it has three parts:
+
+```text
+! Undefined control sequence.
+l.14 The \textbff
+                 {result} was clear.
+```
+
+- The `!` line says what went wrong: TeX met a command it does not know.
+- `l.14` is the line number in the file TeX was reading.
+- The source line is split where TeX stopped reading. The problem is just before the split: `\textbff`, a misspelling of `\textbf`.
+
+In Eneles, a failed compile opens the **Logs** panel, which gives the error with its file and line. With **Syntax checking** on, the editor also marks syntax errors as you type.
+
+## The line TeX names is where it noticed
+
+TeX reports the place where it could not continue, which can be far below the mistake. An unclosed brace is the classic case:
+
+```latex
+The \textbf{yield rose by a third.
+
+Rainfall was normal.
+```
+
+```text
+Runaway argument?
+{yield rose by a third. \par Rainfall was normal. \end {document} 
+! File ended while scanning use of \textbf .
+```
+
+TeX read to the end of the file looking for the closing brace, so the line number is no help. The clue is the text after `Runaway argument?`: it starts where the brace was opened.
+
+<Callout type="tip" title="Fix the first error first">
+  One mistake can set off a string of messages. Fix the first error and compile again before you read the rest. Eneles stops at the first error for this reason.
+</Callout>
+
+## The ten most common errors
+
+| Message | Usual cause | Fix |
+| --- | --- | --- |
+| `Undefined control sequence` | A misspelled command, or one from a package that is not loaded. | Correct the name, or add the `\usepackage`. |
+| `Missing $ inserted` | Math in text: usually `_` or `^`, or a command such as `\alpha`. | Escape the character, as in `\_`, or put the math between `$` signs. |
+| `Runaway argument`, then `File ended while scanning use of` or `Paragraph ended before ... was complete` | A `{` that is never closed. | Close the brace of the command named. |
+| `Too many }'s` or `Extra }, or forgotten $` | A `}` with no `{` to match. | Delete it, or add the opening brace. |
+| `\begin{itemize} on input line 12 ended by \end{document}` | An environment left open, or closed with another name. | Add or correct the `\end` of the first one named. |
+| `Environment align undefined` | A misspelled environment, or a package that is not loaded. | Correct the name, or load the package (`amsmath` for `align`). |
+| ``File `diagram' not found`` | A name or path that matches no image, `\input` file, or package. | Check the spelling, the letter case, and the folder. |
+| `Misplaced alignment tab character &` | An `&` in ordinary text. | Write `\&`. |
+| `Missing \begin{document}` | Text or a stray character in the preamble. | Move it into the body, or delete it. |
+| `Illegal unit of measure (pt inserted)` | A length with no unit, as in `\vspace{1}`. | Add the unit: `\vspace{1cm}`. |
+
+## Warnings worth fixing
+
+A warning does not stop the compile, but something in the PDF may be wrong. Two kinds deserve attention.
+
+**An overfull box.** `Overfull \hbox (21.6pt too wide)` means a line sticks out into the margin because TeX found no good place to break it, usually at a long path, URL, or word. The frames below mark the text width. The second uses `\path`, which `hyperref` provides, so the path can break.
+
+```latex-example
+\fbox{\begin{minipage}[t]{4.5cm}
+The sensor writes to /var/log/station/readings/last.csv once a minute.
+\end{minipage}}
+\hspace{1.2cm}
+\fbox{\begin{minipage}[t]{4.5cm}
+The sensor writes to \path{/var/log/station/readings/last.csv} once a minute.
+\end{minipage}}
+```
+
+Rewording the sentence is the other fix. An excess under a point is invisible and can stay.
+
+**An undefined reference.** ``Reference `sec:metods' on page 1 undefined`` means a `\ref` names a label that does not exist. The PDF prints ?? in its place, and [?] for a missing citation.
+
+```latex-example
+\section{Methods} \label{sec:methods}
+Section~\ref{sec:metods} has a typo in the label name. Section~\ref{sec:methods} does not.
+```
+
+## Find the faulty line
+
+1. Go to the first error and the line it names. Read that line and the few above it.
+2. If the line looks right, the cause is earlier. Look upwards for a brace or an environment that is still open.
+3. Halve the document: put a temporary `\end{document}` in the middle of the body and compile. If the error is gone, it is below that line, so move the line down. If not, move it up. A few rounds narrow it to one paragraph.
+4. If that fails, copy the document and delete parts until the error disappears. The last thing you removed is the cause.
+
+```latex
+\section{Methods}
+Text that compiles.
+
+\end{document}   % temporary: nothing below this line is read
+
+\section{Results}
+Text with an error somewhere in it.
+```
+
+In a multi-file project, comment out `\input` or `\include` lines the same way.
+
+## Next
+
+- [Multi-file projects](/learn/multi-file-projects)
+- [Special characters](/learn/special-characters)
+- [Compiling in Eneles](/docs/compiling)

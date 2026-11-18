@@ -1,0 +1,11 @@
+\section{Tasks}
+\label{sec:tasks}
+
+Each task instance consists of a long distractor document, one or more inserted \emph{evidence} passages, and a question. We control three variables:
+\begin{itemize}
+  \item the total length $n$ of the input, in tokens;
+  \item the relative position $\rho \in [0, 1]$ of the evidence;
+  \item the number $k$ of evidence passages that must be combined.
+\end{itemize}
+
+The tasks fall into three families: \emph{retrieval} ($k = 1$), \emph{aggregation} (count or sum over $k$ passages), and \emph{multi-hop reasoning} (a chain of $k$ facts). Answers are short strings, scored by exact match after normalization.

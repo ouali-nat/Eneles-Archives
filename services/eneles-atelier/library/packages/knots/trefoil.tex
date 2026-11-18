@@ -1,0 +1,14 @@
+% Name: Trefoil knot
+% Description: The simplest nontrivial knot, drawn as one closed strand with three crossings.
+% Tags: trefoil, knot
+
+\usetikzlibrary{knots}
+
+\begin{tikzpicture}[scale=0.9]
+  \begin{knot}[consider self intersections=true, clip width=5, flip crossing=2]
+    \strand[thick] (0,2)
+      .. controls +(2.2,0) and +(120:-2.2) .. (210:2)
+      .. controls +(120:2.2) and +(60:2.2) .. (-30:2)
+      .. controls +(60:-2.2) and +(-2.2,0) .. (0,2);
+  \end{knot}
+\end{tikzpicture}

@@ -1,0 +1,51 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+
+% Fill in these four lines.
+\newcommand{\course}{Course name}
+\newcommand{\assignment}{Problem Set 1}
+\newcommand{\student}{Your name}
+\newcommand{\duedate}{Due date}
+
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\course}
+\chead{\assignment}
+\rhead{\student}
+\cfoot{\thepage}
+
+\newcounter{problem}
+\newcommand{\problem}{\stepcounter{problem}\subsection*{Problem \theproblem}}
+\newenvironment{solution}{\begin{proof}[Solution]}{\end{proof}}
+
+\begin{document}
+
+\begin{center}
+  {\Large \textbf{\assignment}} \\[4pt] \duedate
+\end{center}
+
+\problem
+State the problem here.
+
+\begin{solution}
+Write the solution here. Set mathematics in dollar signs, for example $\sum_{k=1}^{n} k = \frac{n(n+1)}{2}$.
+\end{solution}
+
+\problem
+State the next problem.
+
+\begin{enumerate}[label=(\alph*)]
+  \item First part.
+  \item Second part.
+\end{enumerate}
+
+\begin{solution}
+Write the solution here.
+\end{solution}
+
+\end{document}

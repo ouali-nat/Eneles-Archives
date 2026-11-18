@@ -1,0 +1,11 @@
+{
+  "name": "Mind maps",
+  "description": "Mind maps and concept maps with TikZ's mindmap library: a central idea, branches, and sub-branches.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "mind map",
+    "concept map",
+    "brainstorming"
+  ],
+  "custom": true
+}

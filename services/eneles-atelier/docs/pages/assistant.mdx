@@ -1,0 +1,121 @@
+---
+title: "Assistant and dictation"
+description: "Ask for changes, review what the assistant proposes, fix compile errors, and dictate text."
+summary: "The Eneles assistant proposes edits to your LaTeX project that you accept or reject, and fixes compile errors. Dictation types what you say at the cursor."
+keywords: ["ai","axya","chat","proposed changes","accept","reject","diff","fix compile errors","dock","panel","voice","microphone","speech","dictate","transcribe"]
+---
+
+# Assistant and dictation
+
+The assistant makes changes to your project for you: say what you want, and it proposes edits that you accept or reject. Dictation turns what you say into text at the cursor. Both come with the Pro and Team plans.
+
+## Who can use them
+
+- **Your plan.** The assistant and dictation are on Pro and Team. It is the plan of the person asking that counts, not the plan of the project's owner. On Free, the prompt reads "The assistant is on Pro and Team", with a **See plans.** link to [Billing](/billing).
+- **Your role.** Asking the assistant for a change needs edit access to the project.
+
+On a server where no AI model has been set up, the prompt reads "AI isn't set up on this server".
+
+## Open the assistant
+
+Click the sparkle button (**Assistant**) in the project toolbar. Click it again to put the assistant away. The assistant appears under the name **Axya**.
+
+## Ask for a change
+
+Type what you want in the box that reads "Ask for a change to your document", then press `Enter` or click the arrow button. "Working on it" shows while the assistant works. Its reply then appears in the conversation, and any changes it wants to make are listed as a proposal.
+
+Nothing in your project changes until you accept a proposal.
+
+A request can be up to 10,000 characters. If a request fails, your text stays in the box so that you can send it again.
+
+The conversation is kept for as long as the project stays open in the tab, and the assistant is sent the most recent messages with each new request, so you can follow up with "make it shorter" or "undo the second part". Reloading the page starts a new conversation.
+
+## What the assistant can read
+
+With each request, the assistant is given:
+
+- Every text file in the project, and which file you have open.
+- The text files of the [reference papers](/docs/reference-papers) attached to the project. It can read these but never changes them.
+- The errors from the last compile, when you use **Fix compile errors**.
+
+For images and other uploaded files, only the names are sent, not the contents. To answer, Eneles passes this material to the AI model that the server is set up to use.
+
+A project whose text files come to more than 1.8 million characters is refused with "This project is too large to send to the assistant at once."
+
+## Review a proposal
+
+A proposal has two parts:
+
+- A **Proposed changes** bar, with the number of lines added in green and removed in red, and the **Reject all** and **Accept all** buttons.
+- A list headed with the number of files changed. Each file has its own line counts, a tick (**Accept**), and a cross (**Reject**).
+
+Work through a proposal like this:
+
+1. Open each listed file from the **Files** panel and read its changes. While a file has proposed changes waiting, the editor marks them in that file, and you cannot type in it until they are accepted or rejected.
+2. Click the tick next to a file to apply its changes, or the cross to discard them. Either way the rest of the proposal stays, waiting for your decision.
+3. Click **Accept all** to apply what is left, or **Reject all** to discard it.
+
+In the editor, each marked change also has its own tick (**Accept this change**) and cross (**Reject this change**), for deciding one change at a time. Once you decide one change this way, go through the rest of that file's changes the same way.
+
+Accepted changes are saved at once, in every file they touch, whether or not that file is open. When the assistant proposes a file that does not exist yet, accepting it creates the file.
+
+A proposal is saved with the project, so it is still waiting after you reload the page.
+
+## Fix compile errors
+
+After a compile fails, a **Fix compile errors** button appears above the prompt. Click it to send the assistant the errors from that compile, up to the first twenty, with the request to fix them. The fix comes back as a proposal like any other.
+
+## Panel or floating dock
+
+The assistant has two forms:
+
+- **Panel.** The assistant is a panel of the editor, like **Files** or **Review**. This is how it starts.
+- **Dock.** The assistant floats over the bottom of the editor and leaves only a slim bar in the layout.
+
+To switch to the dock, click the dock button (**Float as a dock**) at the top of the assistant. To switch back, click **Use as a panel**: it is a button at the top of the dock, and also in the slim bar that the assistant leaves in the workspace while it floats, which reads "Floating as a dock".
+
+In the dock, the conversation and the list of changed files fold away. Click the arrow at the top of the dock (**Show the conversation** or **Hide the conversation**) to open or close them. A new reply or a new proposal opens them for you. The **Proposed changes** bar and the prompt always show.
+
+Your choice of form is remembered in the browser you made it in. The **Assistant** button in the project toolbar shows and hides the assistant in either form.
+
+## Dictation
+
+Dictation uses the microphone button next to the assistant's prompt.
+
+1. Put the cursor in the editor where the text should go.
+2. Click the microphone button (**Dictate**). The first time, your browser asks whether Eneles may use the microphone.
+3. Speak. The button widens to show a red dot and bars that move with your voice.
+4. Click the button again to stop.
+
+Eneles transcribes the recording and inserts the text at the cursor in the editor, followed by a space. The text goes into your document, not into the assistant's prompt.
+
+### What the button shows
+
+| The button shows | It means |
+| --- | --- |
+| A microphone | Ready. Click to start. |
+| A spinner, labeled "Waiting for the microphone" | Your browser is asking for permission to use the microphone. |
+| A red dot and moving bars | Recording. Click to stop. |
+| A spinner, labeled "Transcribing" | The recording is being turned into text. |
+| A tick | The text was added. |
+| An alert mark | Dictation failed. The reason is in the **Logs** panel. |
+
+The tick and the alert mark show for a moment, then the microphone returns. Clicks do nothing while the button shows a spinner.
+
+### When dictation fails
+
+The **Logs** panel gives one of these reasons:
+
+- "The browser did not allow the microphone." Allow the microphone for Eneles in your browser's site settings, then try again.
+- "Could not open the microphone." No microphone could be opened. Check that one is connected and that no other program has taken it.
+- "That was too short to transcribe. Speak for at least a second."
+- "No speech was heard."
+
+Leaving the editor while recording stops the recording and releases the microphone.
+
+## Related
+
+- [Reference papers](/docs/reference-papers): attach papers that the assistant can read.
+- [Plans and billing](/docs/plans-and-billing): which plans include the assistant.
+- [Compiling](/docs/compiling): read the errors that **Fix compile errors** works from.
+- [Review](/docs/review): comments and suggested changes from people.

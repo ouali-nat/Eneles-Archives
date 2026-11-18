@@ -1,0 +1,12 @@
+{
+  "name": "Graphs and networks",
+  "description": "Graphs drawn with nodes and edges: directed, weighted, bipartite, colored, and a highlighted shortest path.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "graph theory",
+    "graphs",
+    "networks",
+    "algorithms"
+  ],
+  "custom": true
+}

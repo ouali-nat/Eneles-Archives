@@ -1,0 +1,10 @@
+% Name: Optical setup
+% Description: Lens and beam with optikz.
+% Tags: optics, lens, beam
+
+\usepackage{optikz}
+
+\begin{tikzpicture}[scale=0.9]
+  \draw[very thick, -{latex}] (-1.5,0) -- (4,0);
+  \convexlens[angle=0, width=0.6] at (2,0);
+\end{tikzpicture}

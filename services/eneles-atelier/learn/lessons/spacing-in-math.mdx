@@ -1,0 +1,124 @@
+---
+title: "Spacing in math"
+description: "Add or remove space in a formula where automatic spacing falls short, and leave it alone elsewhere."
+summary: "Spacing in LaTeX math: what TeX spaces automatically, the spacing commands, where a thin space belongs, negative space, commas, and phantoms."
+keywords: ["\\,","\\:","\\;","\\!","\\quad","\\qquad","\\phantom","\\hphantom","\\vphantom","thin space","negative space","math spacing","decimal comma","units","binary operator","unary minus"]
+---
+
+# Spacing in math
+
+Add or remove space in a formula in the few places where TeX's automatic spacing needs help, and recognize the many places where it does not.
+
+## What TeX does for you
+
+Spaces you type in math mode are ignored. TeX spaces a formula from what each symbol is: an ordinary letter, a binary operator such as `+`, a relation such as `=`, punctuation, or an opening or closing delimiter. `a+b` and `a + b` give the same output. Most formulas therefore need no spacing commands at all, and the first fix for bad spacing is to check that each symbol was typed with the right command.
+
+## The spacing commands
+
+| Command | Width | Name |
+| --- | --- | --- |
+| `\!` | −3/18 em | negative thin space |
+| `\,` | 3/18 em | thin space |
+| `\:` | 4/18 em | medium space |
+| `\;` | 5/18 em | thick space |
+| `\quad` | 1 em | quad |
+| `\qquad` | 2 em | double quad |
+
+An em is about the width of the letter M in the current font, so these spaces scale with the text size.
+
+```latex-example
+\begin{tabular}{@{}llll@{}}
+  nothing     & $x y$       & \verb|\;|     & $x \; y$ \\
+  \verb|\!|   & $x \! y$    & \verb|\quad|  & $x \quad y$ \\
+  \verb|\,|   & $x \, y$    & \verb|\qquad| & $x \qquad y$ \\
+  \verb|\:|   & $x \: y$    &               &
+\end{tabular}
+```
+
+## Where a thin space belongs
+
+The thin space, `\,`, is the one you will use most. Add it before a differential, between a number and its unit, between two factors that would otherwise run together, such as two factorials, and just inside the braces of a set.
+
+```latex-example
+\[
+  \int_0^1 x^2 \, dx
+  \qquad
+  g = 9.8\,\mathrm{m/s^2}
+  \qquad
+  \frac{n!}{k!\,(n-k)!}
+  \qquad
+  \{\, x \in \mathbb{R} \mid x > 0 \,\}
+\]
+```
+
+## Wide space and negative space
+
+Use `\quad` or `\qquad` between two formulas in one display, and between a formula and the condition that follows it. Words go in `\text`, with their own spaces inside.
+
+`\!` pulls two things together. Its main use is after a function name that is followed by `\left(`: TeX puts a thin space there that a plain parenthesis would not get, and `\!` cancels it.
+
+```latex-example
+\[
+  f(x) = x^2 \quad \text{for all } x \geq 0,
+  \qquad
+  g(x) = -x \quad \text{otherwise}
+\]
+\[
+  \sin\left( \frac{x}{2} \right)
+  \quad\text{or}\quad
+  \sin\!\left( \frac{x}{2} \right)
+\]
+```
+
+## Signs and binary operators
+
+`+` and `-` get space on both sides when they stand between two terms, and none when they are signs, as in `-x`. TeX decides from what is to the left. A continuation line that begins with `+` has nothing to its left, so the `+` is set as a sign, tight against the next term. Put an empty group, `{}`, in front to give it something to operate on.
+
+```latex-example
+\begin{gather*}
+  p(x) = a_0 + a_1 x + a_2 x^2 \\
+  + a_3 x^3 + a_4 x^4 \\
+  {}+ a_3 x^3 + a_4 x^4
+\end{gather*}
+```
+
+In `align`, write `&` before the operator, as in `&+`, and the environment supplies the empty group for you.
+
+## Commas
+
+A comma in math is punctuation and gets a thin space after it. That is right for lists and coordinates. It is wrong inside a number, so wrap that comma in braces. A list of separate formulas in a sentence belongs to the text: end math mode at each comma, so the gaps are word spaces and the line can break there.
+
+```latex-example
+With a gap: $1,000$ and $3,14$. Without: $1{,}000$ and $3{,}14$.
+
+Thin gaps: $a, b, c$. Word spaces: $a$, $b$, and $c$.
+```
+
+## Phantoms
+
+`\phantom` takes up exactly the room of its argument and prints nothing. Use it to line things up, for example to hold the place of a missing minus sign in a matrix. `\vphantom` reserves only the height, which evens out neighbors such as roots, and `\hphantom` only the width.
+
+```latex-example
+\[
+  \begin{pmatrix} 1 & -1 \\ -1 & 1 \end{pmatrix}
+  \to
+  \begin{pmatrix} \phantom{-}1 & -1 \\ -1 & \phantom{-}1 \end{pmatrix}
+  \qquad
+  \sqrt{a} + \sqrt{b}
+  \to
+  \sqrt{\vphantom{b}a} + \sqrt{b}
+\]
+```
+
+## Common mistakes
+
+- **Spacing a symbol that was typed wrong.** If `sin x`, `f: A \to B`, or a bar meaning "such that" looks cramped, the cure is the right command (`\sin`, `\colon`, `\mid`), not a space.
+- **Spacing words by hand.** `x \ if \ y` and `x~if~y` give italic words with uneven gaps. Write `x \text{ if } y`.
+- **Padding operators and relations.** `a \, = \, b` makes that one equation differ from every other one in the document. Leave `=` and `+` alone.
+- **Building symbols out of negative space.** `\int\!\!\!\int` only approximates `\iint`, and breaks when the font or size changes. Look for the real command first.
+
+## Next
+
+- [Brackets and delimiters](/learn/brackets-and-delimiters)
+- [Aligning equations](/learn/aligning-equations)
+- [Spacing](/learn/spacing)

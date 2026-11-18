@@ -1,0 +1,15 @@
+% Name: 3D surface plot
+% Description: A 3D surface plot of a mathematical function.
+% Tags: 3D, surface, gaussian
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\begin{tikzpicture}
+\begin{axis}[
+  view={60}{30},
+  xlabel=$x$, ylabel=$y$, zlabel=$z$,
+]
+  \addplot3[surf, domain=-2:2, domain y=-2:2, samples=25] {exp(-(x^2+y^2))};
+\end{axis}
+\end{tikzpicture}

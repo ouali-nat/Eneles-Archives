@@ -1,0 +1,1221 @@
+[
+  {
+    "id": "flowcharts",
+    "name": "Flowcharts",
+    "examples": [
+      {
+        "id": "simple-flowchart",
+        "name": "Simple flowchart",
+        "source": "\\usetikzlibrary{shapes.geometric, arrows.meta, positioning}\n\n\\begin{tikzpicture}[\n  node distance=8mm,\n  box/.style={draw, rounded corners, minimum width=24mm, minimum height=8mm},\n  choice/.style={draw, diamond, aspect=2, inner sep=1pt},\n  every edge/.style={draw, -{Stealth}},\n]\n  \\node[box] (start) {Start};\n  \\node[box, below=of start] (step) {Do the work};\n  \\node[choice, below=of step] (check) {Done?};\n  \\node[box, below=of check] (stop) {Stop};\n\n  \\path (start) edge (step)\n  (step) edge (check)\n  (check) edge node[right] {yes} (stop);\n  \\draw[-{Stealth}] (check.east) -- ++(8mm,0) |- node[pos=0.25, right] {no} (step.east);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "algorithm-flowchart",
+        "name": "Algorithm flowchart",
+        "source": "\\usetikzlibrary{shapes.geometric, shapes.misc, arrows.meta, positioning}\n\n\\begin{tikzpicture}[\n  node distance=6mm and 12mm,\n  every node/.style={font=\\small},\n  terminal/.style={rounded rectangle, draw, minimum width=20mm, minimum height=7mm},\n  process/.style={rectangle, draw, minimum width=26mm, minimum height=7mm},\n  io/.style={trapezium, trapezium stretches body, trapezium left angle=70, trapezium right angle=110, draw, minimum width=22mm, minimum height=7mm},\n  decision/.style={diamond, aspect=2, draw, inner sep=1pt},\n  arrow/.style={-{Stealth}, thick},\n]\n  \\node[terminal] (start) {Start};\n  \\node[io, below=of start] (read) {Read $n$};\n  \\node[process, below=of read] (init) {$i \\gets 1$, $s \\gets 0$};\n  \\node[decision, below=of init] (test) {$i \\le n$?};\n  \\node[process, right=of test] (add) {$s \\gets s + i$, $i \\gets i + 1$};\n  \\node[io, below=of test] (print) {Print $s$};\n  \\node[terminal, below=of print] (stop) {Stop};\n\n  \\draw[arrow] (start) -- (read);\n  \\draw[arrow] (read) -- (init);\n  \\draw[arrow] (init) -- (test);\n  \\draw[arrow] (test) -- node[above] {yes} (add);\n  \\draw[arrow] (add) |- (init);\n  \\draw[arrow] (test) -- node[right] {no} (print);\n  \\draw[arrow] (print) -- (stop);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "troubleshooting",
+        "name": "Troubleshooting flowchart",
+        "source": "\\usetikzlibrary{shapes.geometric, arrows.meta, positioning}\n\n\\begin{tikzpicture}[\n  node distance=8mm and 12mm,\n  every node/.style={font=\\small, align=center},\n  decision/.style={diamond, aspect=2.2, draw, inner sep=1pt},\n  action/.style={rectangle, rounded corners, draw, minimum height=8mm, text width=26mm},\n  arrow/.style={-{Stealth}, thick},\n]\n  \\node[action] (start) {The lamp does\\\\not turn on};\n  \\node[decision, below=of start] (plug) {Plugged in?};\n  \\node[action, right=of plug] (fix1) {Plug it in};\n  \\node[decision, below=of plug] (bulb) {Bulb burned\\\\out?};\n  \\node[action, right=of bulb] (fix2) {Replace the bulb};\n  \\node[action, below=of bulb] (fix3) {Have the lamp\\\\repaired};\n\n  \\draw[arrow] (start) -- (plug);\n  \\draw[arrow] (plug) -- node[above] {no} (fix1);\n  \\draw[arrow] (plug) -- node[left] {yes} (bulb);\n  \\draw[arrow] (bulb) -- node[above] {yes} (fix2);\n  \\draw[arrow] (bulb) -- node[left] {no} (fix3);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "build-pipeline",
+        "name": "Build pipeline",
+        "source": "\\usetikzlibrary{shapes.geometric, arrows.meta, positioning}\n\n\\begin{tikzpicture}[\n  node distance=6mm and 7mm,\n  every node/.style={font=\\small},\n  stage/.style={rectangle, rounded corners, draw, minimum height=9mm, minimum width=16mm},\n  gate/.style={diamond, aspect=1.6, draw, inner sep=1pt},\n  arrow/.style={-{Stealth}, thick},\n]\n  \\node[stage] (commit) {Commit};\n  \\node[stage, right=of commit] (build) {Build};\n  \\node[gate, right=of build] (test) {Tests pass?};\n  \\node[stage, right=of test] (deploy) {Deploy};\n  \\node[stage, below=10mm of test] (notify) {Notify the author};\n\n  \\draw[arrow] (commit) -- (build);\n  \\draw[arrow] (build) -- (test);\n  \\draw[arrow] (test) -- node[above] {yes} (deploy);\n  \\draw[arrow] (test) -- node[right] {no} (notify);\n  \\draw[arrow] (notify) -| (commit);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "swimlane",
+        "name": "Swimlane process",
+        "source": "\\usetikzlibrary{arrows.meta}\n\n\\begin{tikzpicture}[\n  x=0.94cm,\n  every node/.style={font=\\small},\n  task/.style={rectangle, rounded corners, draw, minimum width=19mm, minimum height=8mm},\n  arrow/.style={-{Stealth}, thick},\n]\n  \\foreach \\y/\\lane in {0/Customer, -1.6/Shop, -3.2/Warehouse} {\n    \\draw[gray!60] (0,\\y+0.8) rectangle (12.2,\\y-0.8);\n    \\node[rotate=90, font=\\small\\bfseries] at (0.35,\\y) {\\lane};\n  }\n  \\draw[gray!60] (0.7,0.8) -- (0.7,-4);\n\n  \\node[task] (order) at (2.1,0) {Place order};\n  \\node[task] (check) at (4.4,-1.6) {Check stock};\n  \\node[task] (pack) at (6.7,-3.2) {Pack items};\n  \\node[task] (ship) at (9,-1.6) {Ship order};\n  \\node[task] (receive) at (11.1,0) {Receive};\n\n  \\draw[arrow] (order) |- (check);\n  \\draw[arrow] (check) |- (pack);\n  \\draw[arrow] (pack) -| (ship);\n  \\draw[arrow] (ship) |- (receive);\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "block-diagrams",
+    "name": "Block diagrams",
+    "examples": [
+      {
+        "id": "feedback-loop",
+        "name": "Feedback control loop",
+        "source": "\\usetikzlibrary{arrows.meta, positioning}\n\n\\begin{tikzpicture}[\n  node distance=8mm and 10mm,\n  block/.style={draw, thick, minimum height=10mm, minimum width=16mm},\n  sum/.style={draw, thick, circle, inner sep=0pt, minimum size=6mm},\n  arrow/.style={-{Stealth}, thick},\n]\n  \\coordinate (in);\n  \\node[sum, right=of in] (sum) {};\n  \\node[block, right=of sum] (ctrl) {$C(s)$};\n  \\node[block, right=of ctrl] (plant) {$G(s)$};\n  \\coordinate[right=6mm of plant] (tap);\n  \\coordinate[right=10mm of tap] (out);\n  \\node[block, below=of plant] (sensor) {$H(s)$};\n\n  \\draw[arrow] (in) -- node[above] {$r$} (sum);\n  \\draw[arrow] (sum) -- node[above] {$e$} (ctrl);\n  \\draw[arrow] (ctrl) -- node[above] {$u$} (plant);\n  \\draw[thick] (plant) -- (tap);\n  \\draw[arrow] (tap) -- node[above] {$y$} (out);\n  \\draw[arrow] (tap) |- (sensor);\n  \\draw[arrow] (sensor) -| node[pos=0.9, right] {$-$} (sum);\n  \\fill (tap) circle (1.5pt);\n  \\node at ([shift={(-4mm,4mm)}]sum) {$+$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "pid-controller",
+        "name": "PID controller",
+        "source": "\\usetikzlibrary{arrows.meta, positioning}\n\n\\begin{tikzpicture}[\n  node distance=5mm and 12mm,\n  block/.style={draw, thick, minimum height=11mm, minimum width=24mm},\n  sum/.style={draw, thick, circle, inner sep=1pt, minimum size=7mm},\n  arrow/.style={-{Stealth}, thick},\n]\n  \\node[block] (i) {$K_i \\int_0^t e(\\tau)\\,d\\tau$};\n  \\node[block, above=of i] (p) {$K_p\\, e(t)$};\n  \\node[block, below=of i] (d) {$K_d\\, \\dfrac{de}{dt}$};\n  \\coordinate[left=of i] (split);\n  \\coordinate[left=10mm of split] (in);\n  \\node[sum, right=of i] (sum) {$\\Sigma$};\n  \\coordinate[right=10mm of sum] (out);\n\n  \\draw[thick] (in) node[left] {$e(t)$} -- (split);\n  \\fill (split) circle (1.5pt);\n  \\foreach \\b in {p, i, d}\n  \\draw[arrow] (split) |- (\\b);\n  \\draw[arrow] (p) -| (sum);\n  \\draw[arrow] (i) -- (sum);\n  \\draw[arrow] (d) -| (sum);\n  \\draw[arrow] (sum) -- (out) node[right] {$u(t)$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "state-space",
+        "name": "State-space model",
+        "source": "\\usetikzlibrary{arrows.meta}\n\n\\begin{tikzpicture}[\n  block/.style={draw, thick, minimum size=9mm},\n  sum/.style={draw, thick, circle, inner sep=0pt, minimum size=5mm},\n  arrow/.style={-{Stealth}, thick},\n]\n  \\node[block] (B) at (1.6,0) {$B$};\n  \\node[sum] (s1) at (3,0) {};\n  \\node[block] (int) at (4.4,0) {$\\int$};\n  \\node[block] (C) at (6.6,0) {$C$};\n  \\node[sum] (s2) at (8,0) {};\n  \\node[block] (A) at (4.4,-1.6) {$A$};\n  \\node[block] (D) at (4.4,1.6) {$D$};\n\n  \\draw[thick] (0,0) node[left] {$u$} -- (0.6,0);\n  \\draw[arrow] (0.6,0) -- (B);\n  \\draw[arrow] (B) -- (s1);\n  \\draw[arrow] (s1) -- node[above] {$\\dot{x}$} (int);\n  \\draw[arrow] (int) -- node[above] {$x$} (C);\n  \\draw[arrow] (C) -- (s2);\n  \\draw[arrow] (s2) -- (9.2,0) node[right] {$y$};\n  \\draw[arrow] (5.6,0) |- (A);\n  \\draw[arrow] (A) -| (s1);\n  \\draw[arrow] (0.6,0) |- (D);\n  \\draw[arrow] (D) -| (s2);\n  \\fill (0.6,0) circle (1.5pt) (5.6,0) circle (1.5pt);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "communication-system",
+        "name": "Communication system",
+        "source": "\\usetikzlibrary{arrows.meta, positioning, fit}\n\n\\begin{tikzpicture}[\n  node distance=6mm and 8mm,\n  every node/.style={font=\\small},\n  block/.style={draw, thick, minimum height=9mm, minimum width=20mm},\n  group/.style={draw, dashed, gray, inner sep=3mm},\n  arrow/.style={-{Stealth}, thick},\n]\n  \\node[block] (src) {Source};\n  \\node[block, right=of src] (enc) {Encoder};\n  \\node[block, right=of enc] (mod) {Modulator};\n  \\node[block, below=14mm of mod] (ch) {Channel};\n  \\node[block, below=14mm of ch] (dem) {Demodulator};\n  \\node[block, left=of dem] (dec) {Decoder};\n  \\node[block, left=of dec] (sink) {Destination};\n  \\node[right=10mm of ch] (noise) {Noise};\n\n  \\node[group, fit=(src)(mod), label=above:Transmitter] {};\n  \\node[group, fit=(sink)(dem), label=below:Receiver] {};\n\n  \\draw[arrow] (src) -- (enc);\n  \\draw[arrow] (enc) -- (mod);\n  \\draw[arrow] (mod) -- (ch);\n  \\draw[arrow] (ch) -- (dem);\n  \\draw[arrow] (dem) -- (dec);\n  \\draw[arrow] (dec) -- (sink);\n  \\draw[arrow, dashed] (noise) -- (ch);\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "trees",
+    "name": "Trees",
+    "examples": [
+      {
+        "id": "simple-tree",
+        "name": "Simple tree",
+        "source": "\\begin{tikzpicture}[\n  level distance=12mm,\n  level 1/.style={sibling distance=30mm},\n  level 2/.style={sibling distance=15mm},\n]\n  \\node {Root}\n  child { node {A}\n    child { node {A1} }\n    child { node {A2} }\n  }\n  child { node {B}\n    child { node {B1} }\n    child { node {B2} }\n  };\n\\end{tikzpicture}"
+      },
+      {
+        "id": "probability-tree",
+        "name": "Probability tree",
+        "source": "\\begin{tikzpicture}[\n  grow=right, sloped,\n  level 1/.style={level distance=30mm, sibling distance=28mm},\n  level 2/.style={level distance=30mm, sibling distance=13mm},\n  every node/.style={font=\\small},\n  edge from parent/.style={draw, thick},\n  event/.style={draw, rounded corners, inner sep=3pt},\n  outcome/.style={anchor=west},\n]\n  \\node[circle, fill, inner sep=1.5pt] {}\n  child { node[event] {Dry}\n    child { node[outcome] {On time \\quad $0.7 \\times 0.9 = 0.63$} edge from parent node[below] {$0.9$} }\n    child { node[outcome] {Late \\quad $0.7 \\times 0.1 = 0.07$} edge from parent node[above] {$0.1$} }\n    edge from parent node[below] {$0.7$}\n  }\n  child { node[event] {Rain}\n    child { node[outcome] {On time \\quad $0.3 \\times 0.4 = 0.12$} edge from parent node[below] {$0.4$} }\n    child { node[outcome] {Late \\quad $0.3 \\times 0.6 = 0.18$} edge from parent node[above] {$0.6$} }\n    edge from parent node[above] {$0.3$}\n  };\n\\end{tikzpicture}"
+      },
+      {
+        "id": "binary-search-path",
+        "name": "Binary search tree with a search path",
+        "source": "\\begin{tikzpicture}[\n  level distance=12mm,\n  level 1/.style={sibling distance=36mm},\n  level 2/.style={sibling distance=18mm},\n  level 3/.style={sibling distance=10mm},\n  every node/.style={circle, draw, thick, minimum size=7mm, inner sep=0pt, font=\\small},\n  found/.style={fill=orange!25, draw=orange!85!black},\n]\n  \\node[found] (root) {8}\n  child { node[found] (a) {3}\n    child { node {1} }\n    child { node[found] (b) {6}\n      child { node {4} }\n      child { node {7} }\n    }\n  }\n  child { node {10}\n    child[missing]\n    child { node {14}\n      child { node {13} }\n      child[missing]\n    }\n  };\n  \\draw[orange!85!black, very thick] (root) -- (a) -- (b);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "binary-heap",
+        "name": "Binary heap and its array",
+        "source": "\\begin{tikzpicture}[\n  level distance=11mm,\n  level 1/.style={sibling distance=30mm},\n  level 2/.style={sibling distance=15mm},\n  key/.style={circle, draw, thick, minimum size=7mm, inner sep=0pt, font=\\small},\n  cell/.style={draw, thick, minimum size=7mm, font=\\small},\n]\n  \\node[key] {1}\n  child { node[key] {3}\n    child { node[key] {7} }\n    child { node[key] {4} }\n  }\n  child { node[key] {2}\n    child { node[key] {9} }\n    child { node[key] {5} }\n  };\n  \\foreach \\k [count=\\i from 0] in {1, 3, 2, 7, 4, 9, 5} {\n    \\node[cell] at (\\i*0.7 - 2.1, -3.4) {\\k};\n    \\node[font=\\scriptsize, gray] at (\\i*0.7 - 2.1, -4) {\\i};\n  }\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "forest",
+    "name": "forest",
+    "examples": [
+      {
+        "id": "syntax-tree",
+        "name": "Syntax tree",
+        "source": "\\usepackage{forest}\n\n\\begin{forest}\n  [S\n    [NP\n      [Det [the]]\n      [N [cat]]\n    ]\n    [VP\n      [V [sat]]\n      [PP\n        [P [on]]\n        [NP\n          [Det [the]]\n          [N [mat]]\n        ]\n      ]\n    ]\n  ]\n\\end{forest}"
+      },
+      {
+        "id": "binary-tree",
+        "name": "Binary search tree",
+        "source": "\\usepackage{forest}\n\n\\begin{forest}\n  for tree={circle, draw, minimum size=2em, inner sep=1pt, s sep=10mm}\n  [8\n    [3\n      [1]\n      [6\n        [4]\n        [7]\n      ]\n    ]\n    [10\n      [{}]\n      [14\n        [13]\n        [{}]\n      ]\n    ]\n  ]\n\\end{forest}"
+      },
+      {
+        "id": "org-chart",
+        "name": "Organization chart",
+        "source": "\\usepackage{forest}\n\n\\begin{forest}\n  for tree={draw, align=center, s sep=1.5mm}\n  [CEO\n    [CTO\n      [Dev Team]\n      [QA Team]\n    ]\n    [CFO\n      [Accounting]\n      [Finance]\n    ]\n    [COO\n      [Operations]\n      [Logistics]\n    ]\n  ]\n\\end{forest}"
+      },
+      {
+        "id": "decision-tree",
+        "name": "Decision tree",
+        "source": "\\usepackage{forest}\n\n\\begin{forest}\n  for tree={draw, rounded corners}\n  [Feature $>$ threshold?\n    [Yes\n      [Class A]\n    ]\n    [No\n      [Feature2 $>$ 0?\n        [Yes [Class B]]\n        [No [Class C]]\n      ]\n    ]\n  ]\n\\end{forest}"
+      },
+      {
+        "id": "file-tree",
+        "name": "Directory tree",
+        "source": "\\usepackage[edges]{forest}\n\n\\begin{forest}\n  for tree={\n    font=\\ttfamily\\small, grow'=0, folder,\n    inner sep=2pt, s sep=1pt, l sep'=5mm,\n    edge={gray, thick},\n  }\n  [project/\n    [src/\n      [main.ts]\n      [utils.ts]\n    ]\n    [docs/\n      [guide.md]\n    ]\n    [package.json]\n  ]\n\\end{forest}"
+      },
+      {
+        "id": "roof-tree",
+        "name": "Constituency tree with triangles",
+        "source": "\\usepackage[linguistics]{forest}\n\n\\begin{forest}\n  for tree={font=\\small}\n  [S\n    [NP\n      [Det [every]]\n      [N [student]]\n    ]\n    [VP\n      [V [read]]\n      [NP [two long papers, roof]]\n    ]\n  ]\n\\end{forest}"
+      },
+      {
+        "id": "red-black-tree",
+        "name": "Red-black tree",
+        "source": "\\usepackage{forest}\n\n\\begin{forest}\n  for tree={\n    circle, draw, fill=black, text=white, font=\\small\\bfseries,\n    minimum size=7mm, inner sep=0pt, s sep=5mm, l sep=3mm,\n  },\n  red/.style={fill=red!75!black, draw=red!75!black},\n  [13\n    [8, red\n      [1\n        [, phantom]\n        [6, red]\n      ]\n      [11]\n    ]\n    [17, red\n      [15]\n      [25\n        [22, red]\n        [27, red]\n      ]\n    ]\n  ]\n\\end{forest}"
+      }
+    ]
+  },
+  {
+    "id": "timelines",
+    "name": "Timelines",
+    "examples": [
+      {
+        "id": "simple-timeline",
+        "name": "Simple timeline",
+        "source": "\\begin{tikzpicture}\n  \\draw[thick, ->] (0,0) -- (10,0);\n  \\foreach \\x/\\year/\\event in {1/2021/Founded, 3/2022/First hire, 5/2023/Launch, 7/2024/Funding, 9/2025/Expansion} {\n    \\draw (\\x,0.15) -- (\\x,-0.15) node[below] {\\year};\n    \\node[above] at (\\x,0.2) {\\event};\n  }\n\\end{tikzpicture}"
+      },
+      {
+        "id": "project-milestones",
+        "name": "Project timeline",
+        "source": "\\usetikzlibrary{arrows.meta}\n\n\\begin{tikzpicture}[\n  x=0.92cm,\n  every node/.style={font=\\small},\n  milestone/.style={draw, rounded corners, inner sep=3pt},\n]\n  \\draw[thick, -{Stealth}] (0,0) -- (12,0);\n  \\foreach \\x/\\month in {0.5/Jan, 2.5/Feb, 4.5/Mar, 6.5/Apr, 8.5/May, 10.5/Jun}\n  \\draw (\\x,0.12) -- (\\x,-0.12) node[below, gray] {\\month};\n  \\foreach \\x/\\y/\\event in {1.5/1/Kick-off, 3.5/-1.2/Requirements, 5.5/1/Prototype, 7.5/-1.2/Beta, 10/1/Launch} {\n    \\draw[gray] (\\x,0) -- (\\x,\\y);\n    \\fill[blue!70!black] (\\x,0) circle (2.5pt);\n    \\node[milestone] at (\\x,\\y) {\\event};\n  }\n\\end{tikzpicture}"
+      },
+      {
+        "id": "vertical-timeline",
+        "name": "Vertical timeline",
+        "source": "\\begin{tikzpicture}[every node/.style={font=\\small}]\n  \\draw[very thick, gray!50] (0,0.5) -- (0,-5.3);\n  \\foreach \\y/\\year/\\event in {\n    0/1936/Turing describes a universal machine,\n    -1.6/1945/ENIAC runs its first program,\n    -3.2/1971/The first commercial microprocessor,\n    -4.8/1991/The World Wide Web goes public%\n  } {\n  \\fill[blue!70!black] (0,\\y) circle (3pt);\n  \\node[anchor=east, font=\\small\\bfseries] at (-0.3,\\y) {\\year};\n  \\node[anchor=west, text width=55mm] at (0.3,\\y) {\\event};\n  }\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "pgfgantt",
+    "name": "pgfgantt",
+    "examples": [
+      {
+        "id": "gantt-chart",
+        "name": "Gantt chart",
+        "source": "\\usepackage{pgfgantt}\n\n\\begin{ganttchart}[\n  hgrid, vgrid,\n  x unit=6.5mm, y unit chart=6mm, y unit title=6mm, title height=1,\n  title label font=\\small, bar label font=\\small,\n  group label font=\\small\\bfseries, milestone label font=\\small\\itshape,\n  bar/.append style={fill=blue!25},\n  group/.append style={fill=blue!70!black},\n  milestone/.append style={fill=orange!85!black},\n  link/.style={-latex, thick, orange!85!black},\n]{1}{12}\n  \\gantttitle{Weeks}{12} \\\\\n  \\gantttitlelist{1,...,12}{1} \\\\\n  \\ganttgroup{Research}{1}{5} \\\\\n  \\ganttbar{Literature review}{1}{3} \\\\\n  \\ganttbar[name=survey]{Survey design}{3}{5} \\\\\n  \\ganttgroup{Development}{5}{11} \\\\\n  \\ganttbar[name=proto]{Prototype}{6}{8} \\\\\n  \\ganttbar{Testing}{8}{11} \\\\\n  \\ganttmilestone{Release}{11}\n  \\ganttlink{survey}{proto}\n\\end{ganttchart}"
+      },
+      {
+        "id": "gantt-progress",
+        "name": "Sprint plan with progress",
+        "source": "\\usepackage{pgfgantt}\n\n\\begin{ganttchart}[\n  hgrid, vgrid={*6{draw=none}, *1{dotted}},\n  x unit=5mm, y unit chart=6mm, y unit title=6mm, title height=1,\n  title label font=\\small, bar label font=\\small,\n  today=7, today label=Today, today label font=\\small,\n  bar/.append style={fill=green!45!black},\n  bar incomplete/.append style={fill=gray!20},\n]{1}{14}\n  \\gantttitle{Sprint 12}{14} \\\\\n  \\gantttitlelist{1,...,14}{1} \\\\\n  \\ganttbar[progress=100]{Design review}{1}{3} \\\\\n  \\ganttbar[progress=60]{API endpoints}{3}{8} \\\\\n  \\ganttbar[progress=20]{Front end}{6}{12} \\\\\n  \\ganttbar[progress=0]{Release notes}{12}{14}\n\\end{ganttchart}"
+      }
+    ]
+  },
+  {
+    "id": "mindmap",
+    "name": "Mind maps",
+    "examples": [
+      {
+        "id": "concept-map",
+        "name": "Concept map",
+        "source": "\\usetikzlibrary{mindmap}\n\n\\begin{tikzpicture}[\n  small mindmap, grow cyclic,\n  every node/.style={concept, execute at begin node=\\hskip0pt},\n  concept color=green!50!black, text=white,\n  level 1/.append style={level distance=2.6cm, sibling angle=120},\n  level 2/.append style={level distance=1.9cm, sibling angle=50},\n]\n  \\node {Photo\\-synthesis}\n  child[concept color=blue!70!black] { node {Inputs}\n    child { node {Light} }\n    child { node {Water} }\n    child { node {CO$_2$} }\n  }\n  child[concept color=orange!85!black] { node {Outputs}\n    child { node {Glucose} }\n    child { node {O$_2$} }\n  }\n  child[concept color=teal!80!black] { node {Where}\n    child { node {Leaves} }\n    child { node {Chloro\\-plasts} }\n  };\n\\end{tikzpicture}"
+      },
+      {
+        "id": "thesis-mindmap",
+        "name": "Mind map",
+        "source": "\\usetikzlibrary{mindmap}\n\n\\begin{tikzpicture}[\n  mindmap, grow cyclic,\n  every node/.style={concept, execute at begin node=\\hskip0pt},\n  concept color=blue!70!black, text=white,\n  root concept/.append style={minimum size=26mm, font=\\large},\n  level 1/.append style={level distance=36mm, sibling angle=90, minimum size=18mm, font=\\small},\n  level 2/.append style={level distance=22mm, sibling angle=55, minimum size=14mm, font=\\scriptsize},\n]\n  \\node[root concept] {Thesis}\n  child[concept color=teal!80!black] { node {Methods}\n    child { node {Survey} }\n    child { node {Interviews} }\n  }\n  child[concept color=orange!85!black] { node {Data}\n    child { node {Cleaning} }\n    child { node {Analysis} }\n  }\n  child[concept color=violet!80!black] { node {Writing}\n    child { node {Drafts} }\n    child { node {Review} }\n  }\n  child[concept color=green!50!black] { node {Reading}\n    child { node {Papers} }\n    child { node {Notes} }\n  };\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "chronology",
+    "name": "chronology",
+    "examples": [
+      {
+        "id": "timeline",
+        "name": "Simple timeline",
+        "source": "\\usepackage{chronology}\n\n\\begin{chronology}[5]{2015}{2025}{8cm}\n  \\event{2016}{Event A}\n  \\event{2019}{Event B}\n  \\event{2022}{Event C}\n\\end{chronology}"
+      },
+      {
+        "id": "timeline-span",
+        "name": "Timeline with a span",
+        "source": "\\usepackage{chronology}\n\n\\begin{chronology}[2]{2020}{2030}{8cm}\n  \\event{2021}{Project Start}\n  \\eventspan{2022}{2024}{Development Phase}\n  \\event{2025}{Launch}\n\\end{chronology}"
+      },
+      {
+        "id": "timeline-dense",
+        "name": "Yearly phases",
+        "source": "\\usepackage{chronology}\n\n\\begin{chronology}[1]{2023}{2028}{8cm}\n  \\event{2024}{Phase 1}\n  \\event{2025}{Phase 2}\n  \\event{2026}{Phase 3}\n  \\event{2027}{Complete}\n\\end{chronology}"
+      }
+    ]
+  },
+  {
+    "id": "pgfplots",
+    "name": "pgfplots",
+    "examples": [
+      {
+        "id": "sin-cos",
+        "name": "Sine and cosine",
+        "source": "\\usepackage{pgfplots}\n\\pgfplotsset{compat=1.18}\n\n\\begin{tikzpicture}\n  \\begin{axis}[\n    xlabel=$x$, ylabel=$y$,\n    domain=-2*pi:2*pi,\n    samples=100,\n    legend pos=north west,\n    grid=major\n  ]\n    \\addplot[blue, thick] {sin(deg(x))};\n    \\addplot[red, thick, dashed] {cos(deg(x))};\n    \\legend{$\\sin(x)$, $\\cos(x)$}\n  \\end{axis}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "scatter-plot",
+        "name": "Scatter plot",
+        "source": "\\usepackage{pgfplots}\n\\pgfplotsset{compat=1.18}\n\n\\begin{tikzpicture}\n  \\begin{axis}[\n    xlabel=$x$, ylabel=$y$,\n    grid=major,\n    legend pos=north west\n  ]\n    \\addplot[only marks, mark=*, blue] coordinates {\n      (1,2) (2,3) (3,2.5) (4,4) (5,3.5)\n    };\n    \\addplot[only marks, mark=square*, red] coordinates {\n      (1.5,1.5) (2.5,2.5) (3.5,3) (4.5,2)\n    };\n    \\legend{Set A, Set B}\n  \\end{axis}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "bar-chart",
+        "name": "Grouped bar chart",
+        "source": "\\usepackage{pgfplots}\n\\pgfplotsset{compat=1.18}\n\n\\begin{tikzpicture}\n  \\begin{axis}[\n    ybar, bar width=11pt, ymin=0, ymax=60,\n    width=9cm, height=6cm,\n    symbolic x coords={Physics, Chemistry, Biology, Mathematics},\n    xtick=data, ylabel={Students},\n    nodes near coords, nodes near coords style={font=\\footnotesize},\n    legend style={at={(0.5,1.03)}, anchor=south, legend columns=-1, draw=none},\n    ymajorgrids, grid style={gray!20},\n  ]\n    \\addplot[fill=blue!60!black, draw=none] coordinates {(Physics,34) (Chemistry,28) (Biology,41) (Mathematics,25)};\n    \\addplot[fill=orange!80!black, draw=none] coordinates {(Physics,29) (Chemistry,35) (Biology,38) (Mathematics,31)};\n    \\legend{2024, 2025}\n  \\end{axis}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "histogram",
+        "name": "Histogram",
+        "source": "\\usepackage{pgfplots}\n\\pgfplotsset{compat=1.18}\n\n\\begin{tikzpicture}\n  \\begin{axis}[\n    ybar,\n    ymin=0,\n    xlabel={Bin},\n    ylabel={Count},\n    symbolic x coords={A, B, C, D, E}\n  ]\n    \\addplot coordinates {(A,5) (B,8) (C,3) (D,12) (E,6)};\n  \\end{axis}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "error-bars",
+        "name": "Line plot with error bars",
+        "source": "\\usepackage{pgfplots}\n\\pgfplotsset{compat=1.18}\n\n\\begin{tikzpicture}\n  \\begin{axis}[\n    width=9cm, height=6cm,\n    xlabel={Temperature ($^\\circ$C)}, ylabel={Reaction rate (mol/s)},\n    grid=major, grid style={gray!20},\n    legend pos=north west, legend cell align=left,\n  ]\n    \\addplot[blue!70!black, thick, mark=*, error bars/.cd, y dir=both, y explicit]\n    coordinates {(20,1.2) +- (0,0.2) (30,1.9) +- (0,0.25) (40,2.9) +- (0,0.3) (50,4.1) +- (0,0.35) (60,5.6) +- (0,0.4)};\n    \\addplot[orange!85!black, thick, mark=square*, error bars/.cd, y dir=both, y explicit]\n    coordinates {(20,0.8) +- (0,0.15) (30,1.1) +- (0,0.2) (40,1.6) +- (0,0.2) (50,2.2) +- (0,0.3) (60,2.9) +- (0,0.3)};\n    \\legend{With catalyst, Without catalyst}\n  \\end{axis}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "stacked-bars",
+        "name": "Stacked bar chart",
+        "source": "\\usepackage{pgfplots}\n\\pgfplotsset{compat=1.18}\n\n\\begin{tikzpicture}\n  \\begin{axis}[\n    ybar stacked, bar width=18pt, ymin=0,\n    width=9cm, height=6cm,\n    symbolic x coords={2021, 2022, 2023, 2024, 2025},\n    xtick=data, ylabel={Energy (TWh)},\n    legend style={at={(1.02,1)}, anchor=north west, draw=none},\n    reverse legend, ymajorgrids, grid style={gray!20},\n  ]\n    \\addplot[fill=gray!60, draw=none] coordinates {(2021,52) (2022,48) (2023,41) (2024,35) (2025,30)};\n    \\addplot[fill=blue!60!black, draw=none] coordinates {(2021,20) (2022,22) (2023,23) (2024,24) (2025,24)};\n    \\addplot[fill=green!50!black, draw=none] coordinates {(2021,15) (2022,19) (2023,25) (2024,31) (2025,37)};\n    \\addplot[fill=orange!80!black, draw=none] coordinates {(2021,8) (2022,11) (2023,15) (2024,19) (2025,24)};\n    \\legend{Gas, Hydro, Wind, Solar}\n  \\end{axis}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "box-plot",
+        "name": "Box plot",
+        "source": "\\usepackage{pgfplots}\n\\usepgfplotslibrary{statistics}\n\\pgfplotsset{compat=1.18}\n\n\\begin{tikzpicture}\n  \\begin{axis}[\n    width=9cm, height=6cm,\n    boxplot/draw direction=y,\n    ylabel={Response time (ms)},\n    xtick={1,2,3}, xticklabels={Server A, Server B, Server C},\n    ymajorgrids, grid style={gray!20},\n  ]\n    \\addplot+[boxplot prepared={median=120, upper quartile=145, lower quartile=100, upper whisker=190, lower whisker=70}, fill=blue!20, draw=blue!70!black] coordinates {};\n    \\addplot+[boxplot prepared={median=95, upper quartile=110, lower quartile=82, upper whisker=135, lower whisker=60}, fill=orange!25, draw=orange!85!black] coordinates {(0,210)};\n    \\addplot+[boxplot prepared={median=150, upper quartile=180, lower quartile=128, upper whisker=230, lower whisker=95}, fill=green!20, draw=green!50!black] coordinates {};\n  \\end{axis}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "log-log",
+        "name": "Log-log plot",
+        "source": "\\usepackage{pgfplots}\n\\pgfplotsset{compat=1.18}\n\n\\begin{tikzpicture}\n  \\begin{loglogaxis}[\n    width=9cm, height=6.5cm, domain=10:1e6, samples=20,\n    xlabel={Input size $n$}, ylabel={Operations},\n    legend pos=north west, legend cell align=left,\n    grid=major, grid style={gray!20},\n  ]\n    \\addplot[red!70!black, thick] {x^2};\n    \\addplot[blue!70!black, thick] {x*ln(x)/ln(2)};\n    \\addplot[green!50!black, thick] {x};\n    \\legend{$n^2$, $n \\log_2 n$, $n$}\n  \\end{loglogaxis}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "group-plots",
+        "name": "Subplots with groupplots",
+        "source": "\\usepackage{pgfplots}\n\\usepgfplotslibrary{groupplots}\n\\pgfplotsset{compat=1.18}\n\n\\begin{tikzpicture}\n  \\begin{groupplot}[\n    group style={group size=2 by 2, horizontal sep=1.6cm, vertical sep=1.8cm},\n    width=5.4cm, height=4cm, domain=0:2*pi, samples=60,\n    grid=major, grid style={gray!20}, title style={font=\\small},\n  ]\n    \\nextgroupplot[title={$\\sin x$}]\n    \\addplot[blue!70!black, thick] {sin(deg(x))};\n    \\nextgroupplot[title={$\\cos x$}]\n    \\addplot[orange!85!black, thick] {cos(deg(x))};\n    \\nextgroupplot[title={$e^{-x/2}$}]\n    \\addplot[green!50!black, thick] {exp(-x/2)};\n    \\nextgroupplot[title={$e^{-x/2} \\sin 3x$}]\n    \\addplot[red!70!black, thick] {exp(-x/2)*sin(deg(3*x))};\n  \\end{groupplot}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "parametric-curve",
+        "name": "Parametric curve",
+        "source": "\\usepackage{pgfplots}\n\\pgfplotsset{compat=1.18}\n\n\\begin{tikzpicture}\n  \\begin{axis}[\n    width=7cm, height=7cm, axis equal,\n    axis lines=middle, xlabel=$x$, ylabel=$y$,\n    xmin=-1.3, xmax=1.3, ymin=-1.3, ymax=1.3,\n    xtick={-1,1}, ytick={-1,1},\n  ]\n    \\addplot[blue!70!black, thick, domain=0:360, samples=300, variable=\\t]\n    ({sin(3*t)}, {sin(4*t)});\n  \\end{axis}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "polar-plot",
+        "name": "Polar plot",
+        "source": "\\usepackage{pgfplots}\n\\pgfplotsset{compat=1.18}\n\\usepgfplotslibrary{polar}\n\n\\begin{tikzpicture}\n  \\begin{polaraxis}[\n    width=6cm,\n    xlabel={$\\theta$},\n    ylabel={$r$}\n  ]\n    \\addplot[domain=0:360, samples=73, thick] {sin(4*x)};\n  \\end{polaraxis}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "confidence-band",
+        "name": "Linear fit with confidence band",
+        "source": "\\usepackage{pgfplots}\n\\usepgfplotslibrary{fillbetween}\n\\pgfplotsset{compat=1.18}\n\n\\begin{tikzpicture}\n  \\begin{axis}[\n    width=9cm, height=6cm, xlabel=$x$, ylabel=$y$,\n    legend pos=north west, legend cell align=left,\n    grid=major, grid style={gray!20},\n  ]\n    \\addplot[name path=upper, draw=none, domain=0:10, forget plot] {1.2 + 0.8*x + 0.5 + 0.03*(x - 5)^2};\n    \\addplot[name path=lower, draw=none, domain=0:10, forget plot] {1.2 + 0.8*x - 0.5 - 0.03*(x - 5)^2};\n    \\addplot[blue!20] fill between[of=upper and lower];\n    \\addplot[blue!70!black, thick, domain=0:10] {1.2 + 0.8*x};\n    \\addplot[only marks, mark=*, mark size=1.8pt, orange!85!black] coordinates {\n      (0.5,1.9) (1.2,1.8) (2,3.1) (2.8,3.2) (3.5,4.4) (4.1,4.2) (5,5.5)\n      (5.7,5.4) (6.4,6.6) (7.1,6.6) (7.9,7.8) (8.6,8.0) (9.4,8.6)\n    };\n    \\legend{95\\% band, Fit, Data}\n  \\end{axis}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "heat-map",
+        "name": "Heat map",
+        "source": "\\usepackage{pgfplots}\n\\pgfplotsset{compat=1.18}\n\n\\begin{tikzpicture}\n  \\begin{axis}[\n    width=9cm, height=6.5cm, enlargelimits=false,\n    colormap={blues}{color=(white) color=(blue!55)}, colorbar,\n    xtick={0,...,4}, xticklabels={Mon, Tue, Wed, Thu, Fri},\n    ytick={0,...,3}, yticklabels={Night, Evening, Afternoon, Morning},\n    tick style={draw=none},\n    nodes near coords={\\pgfmathprintnumber\\pgfplotspointmeta},\n    nodes near coords style={font=\\footnotesize, anchor=center},\n  ]\n    \\addplot[matrix plot*, mesh/cols=5, point meta=explicit] coordinates {\n      (0,0) [2]  (1,0) [3]  (2,0) [1]  (3,0) [4]  (4,0) [6]\n\n      (0,1) [14] (1,1) [12] (2,1) [15] (3,1) [18] (4,1) [25]\n\n      (0,2) [22] (1,2) [27] (2,2) [24] (3,2) [21] (4,2) [19]\n\n      (0,3) [31] (1,3) [29] (2,3) [35] (3,3) [28] (4,3) [17]\n    };\n  \\end{axis}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "filled-contour",
+        "name": "Filled contour plot",
+        "source": "\\usepackage{pgfplots}\n\\pgfplotsset{compat=1.18}\n\n\\begin{tikzpicture}\n  \\begin{axis}[\n    view={0}{90}, width=8cm, height=7cm,\n    xlabel=$x$, ylabel=$y$, colorbar, colormap/viridis,\n    axis equal image, enlargelimits=false,\n  ]\n    \\addplot3[contour filled={number=12}, domain=-2:2, domain y=-2:2, samples=41]\n    {exp(-x^2 - y^2) - 0.7*exp(-(x - 1)^2 - (y - 1)^2)};\n  \\end{axis}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "3d-surface",
+        "name": "3D surface plot",
+        "source": "\\usepackage{pgfplots}\n\\pgfplotsset{compat=1.18}\n\n\\begin{tikzpicture}\n  \\begin{axis}[\n    view={60}{30},\n    xlabel=$x$, ylabel=$y$, zlabel=$z$,\n  ]\n    \\addplot3[surf, domain=-2:2, domain y=-2:2, samples=25] {exp(-(x^2+y^2))};\n  \\end{axis}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "torus-surface",
+        "name": "Parametric surface",
+        "source": "\\usepackage{pgfplots}\n\\pgfplotsset{compat=1.18}\n\n\\begin{tikzpicture}\n  \\begin{axis}[\n    width=9cm, view={35}{40}, axis equal image, hide axis,\n    colormap/cool, z buffer=sort,\n  ]\n    \\addplot3[surf, shader=faceted interp, samples=36, samples y=18,\n      domain=0:360, domain y=0:360, line width=0.1pt]\n      ({(2 + cos(y))*cos(x)}, {(2 + cos(y))*sin(x)}, {sin(y)});\n  \\end{axis}\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "calculus",
+    "name": "Functions and calculus",
+    "examples": [
+      {
+        "id": "simple-axes",
+        "name": "Axes and a function",
+        "source": "\\begin{tikzpicture}[domain=-2:2, samples=50]\n  \\draw[->] (-2.5,0) -- (2.5,0) node[right] {$x$};\n  \\draw[->] (0,-0.5) -- (0,4.5) node[above] {$y$};\n  \\draw[thick] plot (\\x, {\\x*\\x}) node[right] {$y = x^2$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "function-graph",
+        "name": "Function on coordinate axes",
+        "source": "\\usetikzlibrary{arrows.meta}\n\n\\begin{tikzpicture}[>={Stealth}]\n  \\draw[gray!20] (-3,-2) grid (3,2);\n  \\draw[->] (-3.2,0) -- (3.3,0) node[right] {$x$};\n  \\draw[->] (0,-2.2) -- (0,2.4) node[above] {$y$};\n  \\foreach \\x in {-3,-2,-1,1,2,3}\n  \\draw (\\x,0.08) -- (\\x,-0.08) node[below, font=\\footnotesize] {$\\x$};\n  \\foreach \\y in {-2,-1,1,2}\n  \\draw (0.08,\\y) -- (-0.08,\\y) node[left, font=\\footnotesize] {$\\y$};\n  \\draw[very thick, blue!70!black, domain=-2.3:2.3, samples=80, smooth]\n  plot (\\x, {\\x*\\x*\\x/3 - \\x});\n  \\fill[orange!85!black] (-1,2/3) circle (2pt) (1,-2/3) circle (2pt);\n  \\node[blue!70!black, fill=white, inner sep=2pt] at (-1.9,1.6) {$f(x) = \\tfrac{1}{3}x^3 - x$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "integral-area",
+        "name": "Area under a curve",
+        "source": "\\usetikzlibrary{arrows.meta}\n\n\\begin{tikzpicture}[>={Stealth}, scale=1.2]\n  \\fill[blue!15] (1,0) -- plot[domain=1:4, samples=40] (\\x, {0.15*\\x*\\x - 0.6*\\x + 2}) -- (4,0) -- cycle;\n  \\draw[->] (-0.2,0) -- (5.4,0) node[right] {$x$};\n  \\draw[->] (0,-0.2) -- (0,3.3) node[above] {$y$};\n  \\draw[very thick, blue!70!black, domain=0:5, samples=60, smooth]\n  plot (\\x, {0.15*\\x*\\x - 0.6*\\x + 2}) node[right] {$y = f(x)$};\n  \\draw[thick] (1,0) -- (1,1.55) (4,0) -- (4,2.0);\n  \\node[below] at (1,0) {$a$};\n  \\node[below] at (4,0) {$b$};\n  \\node at (2.5,0.7) {$\\displaystyle\\int_a^b f(x)\\,dx$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "riemann-sum",
+        "name": "Riemann sum",
+        "source": "\\usetikzlibrary{arrows.meta}\n\n\\begin{tikzpicture}[>={Stealth}, scale=1.1]\n  \\foreach \\i in {0,...,7} {\n    \\pgfmathsetmacro\\x{0.5 + 0.5*\\i}\n    \\pgfmathsetmacro\\h{2 + sin(deg(\\x))}\n    \\draw[fill=orange!25, draw=orange!70!black] (\\x,0) rectangle ++(0.5,\\h);\n  }\n  \\draw[->] (-0.2,0) -- (5,0) node[right] {$x$};\n  \\draw[->] (0,-0.2) -- (0,3.4) node[above] {$y$};\n  \\draw[very thick, blue!70!black, domain=0.2:4.7, samples=60, smooth]\n  plot (\\x, {2 + sin(deg(\\x))});\n  \\node[below] at (0.5,0) {$a$};\n  \\node[below] at (4.5,0) {$b$};\n  \\node[font=\\small, align=center] at (2.5,-0.9) {$\\displaystyle\\sum_{i=0}^{7} f(x_i)\\,\\Delta x \\approx \\int_a^b f(x)\\,dx$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "tangent-secant",
+        "name": "Secant and tangent lines",
+        "source": "\\usetikzlibrary{arrows.meta}\n\n\\begin{tikzpicture}[>={Stealth}, scale=1.3]\n  \\draw[->] (-0.3,0) -- (4.3,0) node[right] {$x$};\n  \\draw[->] (0,-0.3) -- (0,3.6) node[above] {$y$};\n  \\draw[very thick, blue!70!black, domain=0:3.6, samples=60, smooth]\n  plot (\\x, {0.25*\\x*\\x + 0.5}) node[right] {$f$};\n  \\draw[thick, orange!85!black, domain=0.2:3.9] plot (\\x, {\\x - 0.25}) node[right] {secant};\n  \\draw[thick, green!50!black, domain=-0.1:3.4] plot (\\x, {0.5*\\x + 0.25}) node[right] {tangent};\n  \\draw[dashed] (1,0.75) -- (3,0.75) node[midway, below] {$\\Delta x$};\n  \\draw[dashed] (3,0.75) -- (3,2.75) node[midway, right] {$\\Delta y$};\n  \\fill (1,0.75) circle (1.6pt) node[above left] {$P$};\n  \\fill (3,2.75) circle (1.6pt) node[above left] {$Q$};\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "geometry",
+    "name": "Geometry",
+    "examples": [
+      {
+        "id": "right-triangle",
+        "name": "Right triangle",
+        "source": "\\begin{tikzpicture}[thick]\n  \\draw (0,0) coordinate (A) -- (4,0) coordinate (B) -- (4,3) coordinate (C) -- cycle;\n  \\draw (3.7,0) -- (3.7,0.3) -- (4,0.3);\n  \\node[below] at (2,0) {$a$};\n  \\node[right] at (4,1.5) {$b$};\n  \\node[above left] at (2,1.5) {$c$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "triangle-angles",
+        "name": "Triangle with marked angles",
+        "source": "\\usetikzlibrary{angles, quotes}\n\n\\begin{tikzpicture}[thick]\n  \\coordinate[label=below left:$A$] (A) at (0,0);\n  \\coordinate[label=below right:$B$] (B) at (5,0);\n  \\coordinate[label=above:$C$] (C) at (1.6,3);\n  \\pic[draw, angle radius=7mm, angle eccentricity=1.5, \"$\\alpha$\"] {angle=B--A--C};\n  \\pic[draw, angle radius=7mm, angle eccentricity=1.5, \"$\\beta$\"] {angle=C--B--A};\n  \\pic[draw, angle radius=6mm, angle eccentricity=1.6, \"$\\gamma$\"] {angle=A--C--B};\n  \\draw (A) -- node[below] {$c$} (B) -- node[above right] {$a$} (C) -- node[above left] {$b$} cycle;\n\\end{tikzpicture}"
+      },
+      {
+        "id": "unit-circle",
+        "name": "Unit circle",
+        "source": "\\usetikzlibrary{arrows.meta}\n\n\\begin{tikzpicture}[scale=2.6, >={Stealth}]\n  \\coordinate (P) at (40:1);\n  \\draw[->] (-1.3,0) -- (1.35,0) node[right] {$x$};\n  \\draw[->] (0,-1.3) -- (0,1.35) node[above] {$y$};\n  \\draw[thick] (0,0) circle (1);\n  \\draw[fill=orange!25, draw=orange!85!black] (0,0) -- (0.28,0) arc[start angle=0, end angle=40, radius=0.28] -- cycle;\n  \\node at (20:0.4) {$\\theta$};\n  \\draw[very thick, green!50!black] (0,0) -- node[below] {$\\cos\\theta$} (P |- 0,0);\n  \\draw[very thick, red!70!black] (P |- 0,0) -- node[right] {$\\sin\\theta$} (P);\n  \\draw[very thick, blue!70!black] (0,0) -- (P);\n  \\fill (P) circle (0.6pt) node[above right] {$(\\cos\\theta, \\sin\\theta)$};\n  \\foreach \\a/\\label/\\pos in {0/{(1,0)}/below right, 90/{(0,1)}/above left, 180/{(-1,0)}/below left, 270/{(0,-1)}/below right}\n  \\node[font=\\footnotesize, \\pos] at (\\a:1) {$\\label$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "vector-addition",
+        "name": "Vector addition",
+        "source": "\\usetikzlibrary{arrows.meta}\n\n\\begin{tikzpicture}[>={Stealth[length=3mm]}, thick]\n  \\draw[gray!25, thin] (-0.5,-0.5) grid (6,4.5);\n  \\draw[dashed, gray] (4,1) -- (5.5,4) (1.5,3) -- (5.5,4);\n  \\draw[->, blue!70!black] (0,0) -- node[below right] {$\\mathbf{u}$} (4,1);\n  \\draw[->, red!70!black] (0,0) -- node[above left] {$\\mathbf{v}$} (1.5,3);\n  \\draw[->, green!50!black] (0,0) -- node[above, sloped] {$\\mathbf{u} + \\mathbf{v}$} (5.5,4);\n  \\fill (0,0) circle (1.5pt) node[below left] {$O$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "inscribed-angle",
+        "name": "Inscribed angle theorem",
+        "source": "\\usetikzlibrary{angles, quotes}\n\n\\begin{tikzpicture}[thick]\n  \\coordinate[label=above:$O$] (O) at (0,0);\n  \\coordinate[label=below left:$A$] (A) at (215:2.4);\n  \\coordinate[label=below right:$B$] (B) at (325:2.4);\n  \\coordinate[label=above:$P$] (P) at (105:2.4);\n  \\pic[draw, fill=orange!20, angle radius=6mm, angle eccentricity=1.7, \"$2\\theta$\"] {angle=A--O--B};\n  \\pic[draw, fill=blue!15, angle radius=8mm, angle eccentricity=1.4, \"$\\theta$\"] {angle=A--P--B};\n  \\draw (O) circle (2.4);\n  \\draw (A) -- (O) -- (B);\n  \\draw[blue!60!black] (A) -- (P) -- (B);\n  \\foreach \\p in {O, A, B, P} \\fill (\\p) circle (1.5pt);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "pythagoras",
+        "name": "Pythagorean theorem",
+        "source": "\\begin{tikzpicture}[scale=0.55, thick]\n  \\draw[fill=blue!15] (0,0) -- (0,3) -- (-3,3) -- (-3,0) -- cycle;\n  \\draw[fill=orange!20] (0,0) -- (4,0) -- (4,-4) -- (0,-4) -- cycle;\n  \\draw[fill=green!20] (4,0) -- (0,3) -- (3,7) -- (7,4) -- cycle;\n  \\draw[fill=white] (0,0) -- (4,0) -- (0,3) -- cycle;\n  \\draw (0,0) rectangle (0.5,0.5);\n  \\node at (-1.5,1.5) {$a^2$};\n  \\node at (2,-2) {$b^2$};\n  \\node at (3.5,3.5) {$c^2$};\n  \\node[left] at (0,1.5) {$a$};\n  \\node[below] at (2,0) {$b$};\n  \\node[above right] at (2,1.5) {$c$};\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "tikz-cd",
+    "name": "tikz-cd",
+    "examples": [
+      {
+        "id": "basic-square",
+        "name": "Commutative square",
+        "source": "\\usepackage{tikz-cd}\n\n\\begin{tikzcd}\n  A \\arrow[r, \"f\"] \\arrow[d, \"g\"'] & B \\arrow[d, \"h\"] \\\\\n  C \\arrow[r, \"k\"'] & D\n\\end{tikzcd}"
+      },
+      {
+        "id": "exact-sequence",
+        "name": "Short exact sequence",
+        "source": "\\usepackage{tikz-cd}\n\n\\begin{tikzcd}\n  0 \\arrow[r] & A \\arrow[r, \"\\iota\"] & B \\arrow[r, \"\\pi\"] & C \\arrow[r] & 0\n\\end{tikzcd}"
+      },
+      {
+        "id": "pullback",
+        "name": "Pullback",
+        "source": "\\usepackage{tikz-cd}\n\n\\begin{tikzcd}\n  P \\arrow[r, \"p_1\"] \\arrow[d, \"p_2\"'] \\arrow[dr, phantom, \"\\lrcorner\", very near start] & X \\arrow[d, \"f\"] \\\\\n  Y \\arrow[r, \"g\"'] & Z\n\\end{tikzcd}"
+      },
+      {
+        "id": "pushout",
+        "name": "Pushout",
+        "source": "\\usepackage{tikz-cd}\n\n\\begin{tikzcd}\n  A \\arrow[r, \"f\"] \\arrow[d, \"g\"'] & B \\arrow[d, \"j\"] \\\\\n  C \\arrow[r, \"i\"'] & P\n\\end{tikzcd}"
+      },
+      {
+        "id": "fiber-product",
+        "name": "Fiber product",
+        "source": "\\usepackage{tikz-cd}\n\n\\begin{tikzcd}\n  X \\times_Z Y \\arrow[r, \"p_1\"] \\arrow[d, \"p_2\"'] & X \\arrow[d, \"f\"] \\\\\n  Y \\arrow[r, \"g\"'] & Z\n\\end{tikzcd}"
+      },
+      {
+        "id": "long-exact",
+        "name": "Long exact sequence",
+        "source": "\\usepackage{tikz-cd}\n\n\\begin{tikzcd}\n  \\cdots \\arrow[r] & H_n(A) \\arrow[r, \"i_*\"] & H_n(X) \\arrow[r, \"j_*\"] & H_n(X,A) \\arrow[dll, \"\\partial\"] \\\\\n  & H_{n-1}(A) \\arrow[r, \"i_*\"] & H_{n-1}(X) \\arrow[r] & \\cdots\n\\end{tikzcd}"
+      },
+      {
+        "id": "commutative-cube",
+        "name": "Commutative cube",
+        "source": "\\usepackage{tikz-cd}\n\n\\begin{tikzcd}[row sep=1.6em, column sep=1.6em]\n  & A' \\arrow[rr] \\arrow[dd] & & B' \\arrow[dd] \\\\\n  A \\arrow[ur] \\arrow[rr, crossing over] \\arrow[dd] & & B \\arrow[ur] \\\\\n  & C' \\arrow[rr] & & D' \\\\\n  C \\arrow[ur] \\arrow[rr] & & D \\arrow[ur] \\arrow[from=uu, crossing over]\n\\end{tikzcd}"
+      },
+      {
+        "id": "adjunction",
+        "name": "Adjunction",
+        "source": "\\usepackage{tikz-cd}\n\n\\begin{tikzcd}[column sep=large]\n  \\mathcal{C} \\arrow[r, bend left=35, \"F\"{name=F}] &\n  \\mathcal{D} \\arrow[l, bend left=35, \"G\"{name=G}]\n  \\arrow[phantom, from=F, to=G, \"\\dashv\" rotate=-90]\n\\end{tikzcd}"
+      },
+      {
+        "id": "natural-transformation",
+        "name": "Natural transformation",
+        "source": "\\usepackage{tikz-cd}\n\n\\begin{tikzcd}[column sep=huge]\n  \\mathcal{C} \\arrow[r, bend left=50, \"F\"{name=U}] \\arrow[r, bend right=50, \"G\"'{name=D}] &\n  \\mathcal{D}\n  \\arrow[Rightarrow, from=U, to=D, shorten=1.5mm, \"\\eta\"]\n\\end{tikzcd}"
+      },
+      {
+        "id": "snake-lemma",
+        "name": "Snake lemma",
+        "source": "\\usepackage{tikz-cd}\n\\usetikzlibrary{calc}\n\n\\begin{tikzcd}[column sep=2em, row sep=2.2em]\n  & \\ker a \\arrow[r] \\arrow[d] & \\ker b \\arrow[r] \\arrow[d] & \\ker c \\arrow[d]\n  \\arrow[dddll, rounded corners, to path={\n    -- ([xshift=3ex]\\tikztostart.east)\n    |- ($(\\tikztostart)!0.5!(\\tikztotarget)$) node[pos=0.3, right] {$\\partial$}\n    -| ([xshift=-3ex]\\tikztotarget.west)\n    -- (\\tikztotarget)}] \\\\\n    & A \\arrow[r] \\arrow[d, \"a\", near start] & B \\arrow[r] \\arrow[d, \"b\", near start] & C \\arrow[r] \\arrow[d, \"c\", near start] & 0 \\\\\n    0 \\arrow[r] & A' \\arrow[r] \\arrow[d] & B' \\arrow[r] \\arrow[d] & C' \\arrow[d] \\\\\n    & \\operatorname{coker} a \\arrow[r] & \\operatorname{coker} b \\arrow[r] & \\operatorname{coker} c\n\\end{tikzcd}"
+      }
+    ]
+  },
+  {
+    "id": "set-diagrams",
+    "name": "Venn and Euler diagrams",
+    "examples": [
+      {
+        "id": "symmetric-difference",
+        "name": "Symmetric difference",
+        "source": "\\begin{tikzpicture}[thick]\n  \\fill[blue!25, even odd rule] (-0.75,0) circle (1.4) (0.75,0) circle (1.4);\n  \\draw (-0.75,0) circle (1.4) (0.75,0) circle (1.4);\n  \\draw (-2.8,-1.9) rectangle (2.8,1.9);\n  \\node at (-1.95,1.3) {$A$};\n  \\node at (1.95,1.3) {$B$};\n  \\node[above left] at (2.8,-1.9) {$U$};\n  \\node[below] at (0,-1.9) {$A \\mathbin{\\triangle} B$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "set-difference",
+        "name": "Set difference",
+        "source": "\\begin{tikzpicture}[thick]\n  \\begin{scope}\n    \\clip (-0.75,0) circle (1.4);\n    \\fill[orange!35] (-3,-2) rectangle (3,2);\n    \\fill[white] (0.75,0) circle (1.4);\n  \\end{scope}\n  \\draw (-0.75,0) circle (1.4) (0.75,0) circle (1.4);\n  \\draw (-2.8,-1.9) rectangle (2.8,1.9);\n  \\node at (-1.95,1.3) {$A$};\n  \\node at (1.95,1.3) {$B$};\n  \\node[below] at (0,-1.9) {$A \\setminus B$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "venn-counts",
+        "name": "Three sets with counts",
+        "source": "\\begin{tikzpicture}[every node/.style={font=\\small}]\n  \\fill[blue!40, fill opacity=0.25] (90:1) circle (1.6);\n  \\fill[orange!70, fill opacity=0.25] (210:1) circle (1.6);\n  \\fill[green!50!black, fill opacity=0.25] (330:1) circle (1.6);\n  \\draw[thick] (90:1) circle (1.6) (210:1) circle (1.6) (330:1) circle (1.6);\n  \\node[font=\\small\\bfseries] at (90:2.85) {Tea};\n  \\node[font=\\small\\bfseries] at (-2.3,-2.4) {Coffee};\n  \\node[font=\\small\\bfseries] at (2.3,-2.4) {Juice};\n  \\node at (90:1.7) {12};\n  \\node at (210:1.7) {18};\n  \\node at (330:1.7) {9};\n  \\node at (150:1) {6};\n  \\node at (30:1) {4};\n  \\node at (270:1) {5};\n  \\node at (0,0) {3};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "euler-diagram",
+        "name": "Euler diagram",
+        "source": "\\begin{tikzpicture}[thick, every node/.style={font=\\small}]\n  \\draw[fill=gray!10] (0,0) ellipse (4 and 2.2);\n  \\draw[fill=blue!15] (-1.3,-0.1) ellipse (2.1 and 1.5);\n  \\draw[fill=blue!35] (-1.6,-0.4) ellipse (1 and 0.7);\n  \\draw[fill=orange!25] (2.2,0) ellipse (1.1 and 0.9);\n  \\node at (0,1.85) {Animals};\n  \\node at (-1.3,0.95) {Mammals};\n  \\node at (-1.6,-0.4) {Dogs};\n  \\node at (2.2,0) {Birds};\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "venndiagram",
+    "name": "venndiagram",
+    "examples": [
+      {
+        "id": "venn-2",
+        "name": "Two sets, intersection",
+        "source": "\\usepackage{venndiagram}\n\n\\begin{venndiagram2sets}[labelA=$A$, labelB=$B$, shade=gray!30]\n  \\fillACapB\n\\end{venndiagram2sets}"
+      },
+      {
+        "id": "venn-2-union",
+        "name": "Two sets, union",
+        "source": "\\usepackage{venndiagram}\n\n\\begin{venndiagram2sets}[labelA=$A$, labelB=$B$, shade=lightgray]\n  \\fillA\n  \\fillB\n\\end{venndiagram2sets}"
+      },
+      {
+        "id": "venn-3",
+        "name": "Three sets",
+        "source": "\\usepackage{venndiagram}\n\n\\begin{venndiagram3sets}[labelA=$A$, labelB=$B$, labelC=$C$]\n\\end{venndiagram3sets}"
+      },
+      {
+        "id": "venn-3-fill",
+        "name": "Three sets, intersection",
+        "source": "\\usepackage{venndiagram}\n\n\\begin{venndiagram3sets}[labelA=$A$, labelB=$B$, labelC=$C$, shade=gray!20]\n  \\fillACapBCapC\n\\end{venndiagram3sets}"
+      }
+    ]
+  },
+  {
+    "id": "matrices",
+    "name": "Matrices",
+    "examples": [
+      {
+        "id": "block-matrix",
+        "name": "Matrix with highlighted blocks",
+        "source": "\\usetikzlibrary{matrix, fit, backgrounds}\n\n\\begin{tikzpicture}\n  \\matrix (m) [\n    matrix of math nodes, left delimiter={[}, right delimiter={]},\n    nodes={minimum size=8mm}, column sep=1mm, row sep=1mm,\n  ] {\n  a_{11} & a_{12} & a_{13} & a_{14} \\\\\n  a_{21} & a_{22} & a_{23} & a_{24} \\\\\n  a_{31} & a_{32} & a_{33} & a_{34} \\\\\n  a_{41} & a_{42} & a_{43} & a_{44} \\\\\n  };\n  \\begin{scope}[on background layer, every node/.style={rounded corners, inner sep=0pt}]\n    \\node[fill=blue!15, fit=(m-1-1)(m-2-2), label={[blue!70!black]above:$A$}] {};\n    \\node[fill=orange!20, fit=(m-1-3)(m-2-4), label={[orange!85!black]above:$B$}] {};\n    \\node[fill=green!20, fit=(m-3-1)(m-4-2), label={[green!45!black]below:$C$}] {};\n    \\node[fill=red!15, fit=(m-3-3)(m-4-4), label={[red!70!black]below:$D$}] {};\n  \\end{scope}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "matrix-multiplication",
+        "name": "Matrix multiplication",
+        "source": "\\usetikzlibrary{matrix, fit, backgrounds, positioning}\n\n\\begin{tikzpicture}[\n  mat/.style={\n    matrix of math nodes, left delimiter={[}, right delimiter={]},\n    nodes={minimum size=7mm, font=\\small}, column sep=1mm, row sep=1mm,\n  },\n]\n  \\matrix[mat] (A) {\n    a_{11} & a_{12} & a_{13} \\\\ a_{21} & a_{22} & a_{23} \\\\ a_{31} & a_{32} & a_{33} \\\\\n  };\n  \\node[right=3mm of A] (times) {$\\times$};\n  \\matrix[mat, right=3mm of times] (B) {\n    b_{11} & b_{12} & b_{13} \\\\ b_{21} & b_{22} & b_{23} \\\\ b_{31} & b_{32} & b_{33} \\\\\n  };\n  \\node[right=3mm of B] (eq) {$=$};\n  \\matrix[mat, right=3mm of eq] (C) {\n    c_{11} & c_{12} & c_{13} \\\\ c_{21} & c_{22} & c_{23} \\\\ c_{31} & c_{32} & c_{33} \\\\\n  };\n  \\begin{scope}[on background layer, every node/.style={rounded corners, inner sep=0pt}]\n    \\node[fill=blue!15, fit=(A-2-1)(A-2-3)] {};\n    \\node[fill=orange!20, fit=(B-1-3)(B-3-3)] {};\n    \\node[fill=green!25, fit=(C-2-3)] {};\n  \\end{scope}\n  \\node[below=5mm of B, font=\\small] {$c_{23} = a_{21} b_{13} + a_{22} b_{23} + a_{23} b_{33}$};\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "string-diagrams",
+    "name": "String diagrams",
+    "examples": [
+      {
+        "id": "morphism",
+        "name": "Identity and a morphism",
+        "source": "\\begin{tikzpicture}[thick, baseline=(current bounding box.center)]\n  \\draw (0,0) node[below] {$A$} -- (0,2) node[above] {$A$};\n  \\draw (2,0) node[below] {$A$} -- (2,2) node[above] {$B$};\n  \\node[draw, fill=white, minimum width=8mm, minimum height=6mm] at (2,1) {$f$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "composition-tensor",
+        "name": "Composition and tensor product",
+        "source": "\\begin{tikzpicture}[thick, box/.style={draw, fill=white, minimum width=8mm, minimum height=6mm}]\n  \\draw (0,0) node[below] {$A$} -- (0,3) node[above] {$C$};\n  \\node[box] at (0,0.9) {$f$};\n  \\node[box] at (0,2.1) {$g$};\n  \\node at (0,-0.9) {$g \\circ f$};\n\n  \\draw (2.5,0) node[below] {$A$} -- (2.5,3) node[above] {$B$};\n  \\draw (3.7,0) node[below] {$C$} -- (3.7,3) node[above] {$D$};\n  \\node[box] at (2.5,1.5) {$f$};\n  \\node[box] at (3.7,1.5) {$g$};\n  \\node at (3.1,-0.9) {$f \\otimes g$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "cup-cap",
+        "name": "Cup and cap",
+        "source": "\\begin{tikzpicture}[thick]\n  \\draw (0,0) node[below] {$A^*$} -- (0,0.6) arc[start angle=180, end angle=0, radius=0.6] -- (1.2,0) node[below] {$A$};\n  \\node at (0.6,-0.9) {$\\mathrm{ev}_A$};\n\n  \\draw (3,1.6) node[above] {$A$} -- (3,1) arc[start angle=180, end angle=360, radius=0.6] -- (4.2,1.6) node[above] {$A^*$};\n  \\node at (3.6,-0.9) {$\\mathrm{coev}_A$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "snake-identity",
+        "name": "Snake identity",
+        "source": "\\begin{tikzpicture}[thick, baseline=(current bounding box.center)]\n  \\draw (0,0) -- (0,1.5) arc[start angle=180, end angle=0, radius=0.5]\n  -- (1,1) arc[start angle=180, end angle=360, radius=0.5] -- (2,2.5);\n  \\node at (2.9,1.25) {$=$};\n  \\draw (3.8,0) -- (3.8,2.5);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "braiding",
+        "name": "Braiding and its inverse",
+        "source": "\\begin{tikzpicture}[thick, baseline=(current bounding box.center)]\n  % c_{A,B} followed by its inverse\n  \\draw (1,0) .. controls (1,0.5) and (0,0.5) .. (0,1);\n  \\draw[white, line width=5pt] (0,0) .. controls (0,0.5) and (1,0.5) .. (1,1);\n  \\draw (0,0) .. controls (0,0.5) and (1,0.5) .. (1,1);\n  \\draw (0,1) .. controls (0,1.5) and (1,1.5) .. (1,2);\n  \\draw[white, line width=5pt] (1,1) .. controls (1,1.5) and (0,1.5) .. (0,2);\n  \\draw (1,1) .. controls (1,1.5) and (0,1.5) .. (0,2);\n  \\node[below] at (0,0) {$A$};\n  \\node[below] at (1,0) {$B$};\n  \\node at (1.8,1) {$=$};\n  \\draw (2.6,0) node[below] {$A$} -- (2.6,2);\n  \\draw (3.6,0) node[below] {$B$} -- (3.6,2);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "twist",
+        "name": "Twist",
+        "source": "\\begin{tikzpicture}[thick, baseline=(current bounding box.center)]\n  \\draw (0,0) -- (0,1) .. controls (0,2) and (1.2,2) .. (1.2,1.5);\n  \\draw[white, line width=5pt] (1.2,1.5) .. controls (1.2,1) and (0,1.2) .. (0,2.2);\n  \\draw (1.2,1.5) .. controls (1.2,1) and (0,1.2) .. (0,2.2) -- (0,3);\n  \\node[below] at (0,0) {$A$};\n  \\node at (1.9,1.5) {$=$};\n  \\draw (2.6,0) node[below] {$A$} -- (2.6,3);\n  \\node[draw, fill=white, minimum width=8mm, minimum height=6mm] at (2.6,1.5) {$\\theta_A$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "trace",
+        "name": "Trace",
+        "source": "\\begin{tikzpicture}[thick, baseline=(current bounding box.center)]\n  \\draw (0,-0.6) -- (0,0.6) arc[start angle=180, end angle=0, radius=0.6]\n  -- (1.2,-0.6) arc[start angle=360, end angle=180, radius=0.6];\n  \\node[draw, fill=white, minimum width=8mm, minimum height=6mm] at (0,0) {$f$};\n  \\node[right] at (1.2,0) {$A$};\n  \\node at (2.6,0) {$= \\operatorname{tr}(f)$};\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "braids",
+    "name": "braids",
+    "examples": [
+      {
+        "id": "braid-vertical",
+        "name": "Vertical braid",
+        "source": "\\usetikzlibrary{braids}\n\n\\begin{tikzpicture}\n  \\pic[braid/.cd, every strand/.style={thick}] {braid={s_1 s_2^{-1} s_1}};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "braid-relation",
+        "name": "Braid relation",
+        "source": "\\usetikzlibrary{braids}\n\n\\begin{tikzpicture}[every strand/.style={thick}]\n  \\pic[braid/.cd, every strand/.style={thick}] at (0,0) {braid={s_1 s_2 s_1}};\n  \\node at (3.5,-1.75) {$=$};\n  \\pic[braid/.cd, every strand/.style={thick}] at (4.5,0) {braid={s_2 s_1 s_2}};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "braid-vertical-colored",
+        "name": "Vertical braid with colored strands",
+        "source": "\\usetikzlibrary{braids}\n\n\\begin{tikzpicture}\n  \\pic[\n    braid/.cd,\n    every strand/.style={ultra thick},\n    strand 1/.style={blue!70!black},\n    strand 2/.style={orange!85!black},\n    strand 3/.style={green!50!black},\n    strand 4/.style={red!70!black},\n  ] {braid={s_1 s_3 s_2^{-1} s_1 s_3}};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "braid-simple",
+        "name": "Simple crossing",
+        "source": "\\usetikzlibrary{braids}\n\n\\begin{tikzpicture}\n  \\pic[\n    rotate=90,\n    braid/.cd,\n    strand 1/.style={blue},\n    strand 2/.style={red}\n  ] {braid={s_1}};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "braid-3strand",
+        "name": "Three-strand braid",
+        "source": "\\usetikzlibrary{braids}\n\n\\begin{tikzpicture}\n  \\pic[\n    rotate=90,\n    braid/.cd,\n    strand 1/.style={red},\n    strand 2/.style={blue},\n    strand 3/.style={green}\n  ] {braid={s_1 s_2^{-1} s_1}};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "braid-4strand",
+        "name": "Four-strand braid",
+        "source": "\\usetikzlibrary{braids}\n\n\\begin{tikzpicture}\n  \\pic[\n    rotate=90,\n    braid/.cd,\n    every strand/.style={thick}\n  ] {braid={s_1 s_2 s_3^{-1} s_2}};\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "knots",
+    "name": "knots",
+    "examples": [
+      {
+        "id": "trefoil",
+        "name": "Trefoil knot",
+        "source": "\\usetikzlibrary{knots}\n\n\\begin{tikzpicture}[scale=0.9]\n  \\begin{knot}[consider self intersections=true, clip width=5, flip crossing=2]\n    \\strand[thick] (0,2)\n    .. controls +(2.2,0) and +(120:-2.2) .. (210:2)\n    .. controls +(120:2.2) and +(60:2.2) .. (-30:2)\n    .. controls +(60:-2.2) and +(-2.2,0) .. (0,2);\n  \\end{knot}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "hopf-link",
+        "name": "Hopf link",
+        "source": "\\usetikzlibrary{knots}\n\n\\begin{tikzpicture}\n  \\begin{knot}[clip width=5, flip crossing=2]\n    \\strand[thick, blue!70!black] (0,0) circle (1.2);\n    \\strand[thick, orange!85!black] (1.4,0) circle (1.2);\n  \\end{knot}\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "tikz-nfold",
+    "name": "tikz-nfold",
+    "examples": [
+      {
+        "id": "nfold-path",
+        "name": "Triple line",
+        "source": "\\usetikzlibrary{nfold}\n\n\\begin{tikzpicture}\n  \\draw[double distance=4pt, nfold=3, thick] (0,0) -- (2,1) -- (3,0);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "nfold-5",
+        "name": "Five-fold arrow",
+        "source": "\\usetikzlibrary{nfold, arrows.meta}\n\n\\begin{tikzpicture}\n  \\draw[double distance=6pt, nfold=5, arrows=-Implies] (0,0) to[bend left=30] (3,0);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "nfold-circle",
+        "name": "Four-fold circle",
+        "source": "\\usetikzlibrary{nfold}\n\n\\begin{tikzpicture}\n  \\draw[double distance=4pt, nfold=4] (0,0) circle (1.2);\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "dynkin-diagrams",
+    "name": "dynkin-diagrams",
+    "examples": [
+      {
+        "id": "dynkin-a2",
+        "name": "A2 Dynkin diagram",
+        "source": "\\usepackage{dynkin-diagrams}\n\n\\dynkin A{2}"
+      },
+      {
+        "id": "dynkin-b2",
+        "name": "B2 and G2",
+        "source": "\\usepackage{dynkin-diagrams}\n\n\\dynkin B{2} \\quad \\dynkin G{2}"
+      }
+    ]
+  },
+  {
+    "id": "tensormatrix",
+    "name": "tensormatrix",
+    "examples": [
+      {
+        "id": "tensor-matrix",
+        "name": "Tensor matrix",
+        "source": "\\usepackage{tensormatrix}\n\n$\\begin{tmat}{3}{3}\n  \\tmatpv{1}{1} \\tmatpv{2}{2} \\tmatpv{3}{3}\n  \\tmatlink{1 1}{2 2}\n\\end{tmat}$"
+      },
+      {
+        "id": "tensor-metric",
+        "name": "Metric tensor",
+        "source": "\\usepackage{tensormatrix}\n\n$\\begin{tmat}{2}{2}\n  \\tmatpv{1}{1} \\tmatpv{1}{2} \\tmatpv{2}{1} \\tmatpv{2}{2}\n  \\tmatlink{1 1}{2 2}\n\\end{tmat}$"
+      },
+      {
+        "id": "tensor-mixed",
+        "name": "Linked elements",
+        "source": "\\usepackage{tensormatrix}\n\n$\\begin{tmat}{3}{3}\n  \\tmatpv{1}{1} \\tmatpn{1}{2} \\tmatpv{2}{2}\n  \\tmatlink{1 1}{1 2} \\tmatlink{1 2}{2 2}\n\\end{tmat}$"
+      }
+    ]
+  },
+  {
+    "id": "polyhedra",
+    "name": "polyhedra",
+    "examples": [
+      {
+        "id": "polyhedron-axes",
+        "name": "3D polyhedron axes",
+        "source": "\\usepackage{polyhedra}\n\n\\begin{polyhedron}{dim=3, phi=60, theta=120}\n  \\axes{x={1,3}, y={1,3}, z={1,3}}\n  \\vertex{point={0,0,0}, text={O}}\n  \\edge{points={(0,0,0),(1.5,1,1)}}\n\\end{polyhedron}"
+      },
+      {
+        "id": "polyhedron-triangle",
+        "name": "2D polygon",
+        "source": "\\usepackage{polyhedra}\n\n\\begin{polyhedron}{dim=2}\n  \\axes{x={1,3}, y={1,3}}\n  \\polygon{points={(0,0),(2,0),(1,1.5)}, status=alert}\n\\end{polyhedron}"
+      },
+      {
+        "id": "polyhedron-cone",
+        "name": "Polyhedral cone",
+        "source": "\\usepackage{polyhedra}\n\n\\begin{polyhedron}{}\n  \\cone{vertex={(0,0)}, generators={(1,1),(1,-1)}, status=focus}\n\\end{polyhedron}"
+      }
+    ]
+  },
+  {
+    "id": "penrose",
+    "name": "tilings",
+    "examples": [
+      {
+        "id": "penrose-simple",
+        "name": "Kite and dart tiling",
+        "source": "\\usetikzlibrary{tilings.penrose}\n\n\\begin{tikzpicture}[\n  tiling step=7cm,\n  every tile/.style={draw, thin},\n  every kite/.style={fill=blue!25},\n  every dart/.style={fill=orange!35},\n]\n  \\TilingDecomposition{kite}{4}{T}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "penrose-rhomb",
+        "name": "Rhombus tiling",
+        "source": "\\usetikzlibrary{tilings.penrose}\n\n\\begin{tikzpicture}[\n  tiling step=7cm,\n  every tile/.style={draw, thin},\n  every thin rhombus/.style={fill=green!30},\n  every thick rhombus/.style={fill=blue!20},\n]\n  \\TilingDecomposition{rhombus}{4}{T}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "penrose-pentagon",
+        "name": "Pentagon tiling",
+        "source": "\\usetikzlibrary{tilings.penrose}\n\n\\begin{tikzpicture}[\n  tiling step=6cm,\n  every tile/.style={draw, thin, fill=yellow!25},\n]\n  \\TilingDecomposition{pentagon}{2}{P}\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "graphs",
+    "name": "Graphs and networks",
+    "examples": [
+      {
+        "id": "simple-graph",
+        "name": "Simple graph",
+        "source": "\\begin{tikzpicture}[vertex/.style={circle, draw, minimum size=7mm}]\n  \\node[vertex] (a) at (0,0) {$a$};\n  \\node[vertex] (b) at (2,0) {$b$};\n  \\node[vertex] (c) at (2,2) {$c$};\n  \\node[vertex] (d) at (0,2) {$d$};\n  \\draw (a) -- (b) -- (c) -- (d) -- (a) -- (c);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "directed-graph",
+        "name": "Directed graph",
+        "source": "\\usetikzlibrary{arrows.meta}\n\n\\begin{tikzpicture}[\n  >={Stealth[length=2.5mm]},\n  vertex/.style={circle, draw, thick, minimum size=8mm},\n]\n  \\foreach \\i in {1,...,5}\n  \\node[vertex] (v\\i) at ({90 + 72*(\\i-1)}:2cm) {$v_{\\i}$};\n  \\path[->, thick]\n  (v1) edge (v2)\n  (v2) edge (v3)\n  (v3) edge (v4)\n  (v4) edge (v5)\n  (v5) edge (v1)\n  (v1) edge (v3)\n  (v2) edge[bend left=15] (v5)\n  (v5) edge[bend left=15] (v2)\n  (v4) edge[loop below] (v4);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "weighted-graph",
+        "name": "Weighted graph",
+        "source": "\\begin{tikzpicture}[\n  town/.style={circle, draw, thick, minimum size=9mm, font=\\small},\n  weight/.style={font=\\footnotesize, inner sep=1.5pt},\n]\n  \\node[town] (A) at (0,0) {A};\n  \\node[town] (B) at (3,1.6) {B};\n  \\node[town] (C) at (3,-1.6) {C};\n  \\node[town] (D) at (6,1.2) {D};\n  \\node[town] (E) at (6,-1.2) {E};\n\n  \\foreach \\u/\\v/\\w in {A/B/12, A/C/9, B/C/4, B/D/7, C/E/11, D/E/3, C/D/8}\n  \\draw[thick, gray!70!black] (\\u) -- node[weight] {\\w} (\\v);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "shortest-path",
+        "name": "Shortest path",
+        "source": "\\begin{tikzpicture}[\n  vertex/.style={circle, draw, thick, fill=white, minimum size=8mm, font=\\small},\n  onpath/.style={vertex, fill=orange!20, draw=orange!85!black},\n  dist/.style={font=\\footnotesize, text=orange!85!black},\n  weight/.style={font=\\footnotesize, fill=white, inner sep=1.5pt},\n]\n  \\node[onpath, label={[dist]left:0}] (A) at (0,0) {A};\n  \\node[onpath, label={[dist]above:3}] (B) at (2.2,1.6) {B};\n  \\node[onpath, label={[dist]below:2}] (C) at (2.2,-1.6) {C};\n  \\node[onpath, label={[dist]above:8}] (D) at (4.8,1.6) {D};\n  \\node[onpath, label={[dist]below:10}] (E) at (4.8,-1.6) {E};\n  \\node[onpath, label={[dist]right:13}] (F) at (7,0) {F};\n\n  \\foreach \\u/\\v in {A/B, C/D, C/E, D/F}\n  \\draw[thick, gray!60] (\\u) -- (\\v);\n  \\foreach \\u/\\v in {A/C, C/B, B/D, D/E, E/F}\n  \\draw[very thick, orange!85!black] (\\u) -- (\\v);\n  \\foreach \\u/\\v/\\w in {A/B/4, A/C/2, B/C/1, B/D/5, C/D/8, C/E/10, D/E/2, D/F/6, E/F/3}\n  \\path (\\u) -- node[weight] {\\w} (\\v);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "bipartite-graph",
+        "name": "Bipartite graph with a matching",
+        "source": "\\begin{tikzpicture}[\n  worker/.style={circle, draw, thick, fill=blue!10, minimum size=8mm, font=\\small},\n  job/.style={circle, draw, thick, fill=orange!15, minimum size=8mm, font=\\small},\n]\n  \\foreach \\i in {1,...,4} {\n    \\node[worker] (w\\i) at (0,-1.2*\\i) {$w_{\\i}$};\n    \\node[job] (j\\i) at (4,-1.2*\\i) {$j_{\\i}$};\n  }\n  \\node[font=\\small\\bfseries] at (0,0) {Workers};\n  \\node[font=\\small\\bfseries] at (4,0) {Jobs};\n\n  \\foreach \\a/\\b in {1/1, 2/3, 3/2, 4/4}\n  \\draw[thick, gray!60] (w\\a) -- (j\\b);\n  \\foreach \\a/\\b in {1/2, 2/1, 3/4, 4/3}\n  \\draw[very thick, green!50!black] (w\\a) -- (j\\b);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "dependency-dag",
+        "name": "Dependency graph",
+        "source": "\\usetikzlibrary{arrows.meta}\n\n\\begin{tikzpicture}[\n  >={Stealth},\n  course/.style={draw, thick, rounded corners, text width=20mm, align=center, minimum height=9mm, font=\\small},\n]\n  \\node[course] (calc1) at (0,1.8) {Calculus I};\n  \\node[course] (linalg) at (0,0.6) {Linear algebra};\n  \\node[course] (prog) at (0,-0.6) {Programming};\n  \\node[course] (disc) at (0,-1.8) {Discrete math};\n  \\node[course] (calc2) at (3.1,1.8) {Calculus II};\n  \\node[course] (ds) at (3.1,-0.6) {Data structures};\n  \\node[course] (ode) at (6.2,1.2) {Differential equations};\n  \\node[course] (algo) at (6.2,-1.2) {Algorithms};\n  \\node[course] (ml) at (9.2,0) {Machine learning};\n\n  \\foreach \\a/\\b in {calc1/calc2, calc2/ode, linalg/ode, prog/ds, ds/algo, disc/algo, linalg/ml, algo/ml}\n  \\draw[->, thick] (\\a.east) -- (\\b.west);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "graph-coloring",
+        "name": "Graph coloring",
+        "source": "\\begin{tikzpicture}[\n  vertex/.style={circle, draw, thick, minimum size=6mm, inner sep=0pt},\n  c1/.style={vertex, fill=blue!40},\n  c2/.style={vertex, fill=orange!60},\n  c3/.style={vertex, fill=green!45},\n]\n  \\foreach \\i/\\c in {0/c1, 1/c2, 2/c1, 3/c2, 4/c3}\n  \\node[\\c] (o\\i) at ({90 + 72*\\i}:2.2) {};\n  \\foreach \\i/\\c in {0/c2, 1/c1, 2/c3, 3/c3, 4/c2}\n  \\node[\\c] (i\\i) at ({90 + 72*\\i}:1.1) {};\n  \\foreach \\i in {0,...,4} {\n    \\pgfmathtruncatemacro\\next{mod(\\i + 1, 5)}\n    \\pgfmathtruncatemacro\\skip{mod(\\i + 2, 5)}\n    \\draw[thick] (o\\i) -- (o\\next) (o\\i) -- (i\\i) (i\\i) -- (i\\skip);\n  }\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "automata",
+    "name": "automata",
+    "examples": [
+      {
+        "id": "dfa",
+        "name": "Deterministic finite automaton",
+        "source": "\\usetikzlibrary{automata, positioning}\n\n\\begin{tikzpicture}[shorten >=1pt, node distance=2.5cm, on grid, auto]\n  \\node[state, initial] (q0) {$q_0$};\n  \\node[state] (q1) [right=of q0] {$q_1$};\n  \\node[state, accepting] (q2) [right=of q1] {$q_2$};\n\n  \\path[->]\n  (q0) edge[loop above] node{b} ()\n  edge node{a} (q1)\n  (q1) edge[loop above] node{a} ()\n  edge node{b} (q2)\n  (q2) edge[bend left] node{a} (q1)\n  edge[bend left=50] node[below]{b} (q0);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "nfa",
+        "name": "Nondeterministic finite automaton",
+        "source": "\\usetikzlibrary{automata, positioning}\n\n\\begin{tikzpicture}[shorten >=1pt, node distance=2.5cm, on grid, auto]\n  \\node[state, initial] (q0) {$q_0$};\n  \\node[state] (q1) [above right=of q0] {$q_1$};\n  \\node[state] (q2) [below right=of q0] {$q_2$};\n  \\node[state, accepting] (q3) [right=3cm of q0] {$q_3$};\n\n  \\path[->]\n  (q0) edge node{$\\varepsilon$} (q1)\n  edge node[below left]{$\\varepsilon$} (q2)\n  (q1) edge node{a} (q3)\n  (q2) edge node[below right]{b} (q3);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "fsm-simple",
+        "name": "Two-state machine",
+        "source": "\\usetikzlibrary{automata, positioning}\n\n\\begin{tikzpicture}[shorten >=1pt, node distance=3cm, on grid, auto]\n  \\node[state, initial] (S0) {On};\n  \\node[state, accepting] (S1) [right=of S0] {Off};\n\n  \\path[->]\n  (S0) edge[bend left] node{press} (S1)\n  (S1) edge[bend left] node{press} (S0);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "traffic-light",
+        "name": "Traffic light controller",
+        "source": "\\usetikzlibrary{automata, arrows.meta}\n\n\\begin{tikzpicture}[\n  shorten >=1pt, auto, >={Stealth}, every state/.style={minimum size=15mm, font=\\small, thick},\n]\n  \\node[state, initial, fill=green!25] (g) at (0,0) {Green};\n  \\node[state, fill=yellow!40] (y) at (4,0) {Yellow};\n  \\node[state, fill=red!25] (r) at (2,-3.2) {Red};\n\n  \\path[->]\n  (g) edge node {30 s or button} (y)\n  (y) edge node {5 s} (r)\n  (r) edge node {25 s} (g);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "markov-chain",
+        "name": "Markov chain",
+        "source": "\\usetikzlibrary{automata, positioning}\n\n\\begin{tikzpicture}[shorten >=1pt, node distance=2.5cm, on grid, auto]\n  \\node[state] (A) {$A$};\n  \\node[state] (B) [right=of A] {$B$};\n  \\node[state] (C) [right=of B] {$C$};\n\n  \\path[->]\n  (A) edge[loop above] node{0.5} ()\n  edge[bend left] node{0.5} (B)\n  (B) edge[bend left] node{0.3} (A)\n  edge[bend left] node{0.7} (C)\n  (C) edge[loop above] node{0.2} ()\n  edge[bend left] node{0.8} (B);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "pushdown-automaton",
+        "name": "Pushdown automaton",
+        "source": "\\usetikzlibrary{automata, positioning, arrows.meta}\n\n\\begin{tikzpicture}[shorten >=1pt, node distance=3.8cm, on grid, auto, >={Stealth}]\n  \\node[state, initial] (q0) {$q_0$};\n  \\node[state] (q1) [right=of q0] {$q_1$};\n  \\node[state, accepting] (q2) [right=of q1] {$q_2$};\n\n  \\path[->]\n  (q0) edge[loop above] node[align=center] {$a, Z / AZ$\\\\$a, A / AA$} ()\n  edge node {$b, A / \\varepsilon$} (q1)\n  (q1) edge[loop above] node {$b, A / \\varepsilon$} ()\n  edge node {$\\varepsilon, Z / Z$} (q2);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "turing-machine",
+        "name": "Turing machine",
+        "source": "\\usetikzlibrary{automata, positioning}\n\n\\begin{tikzpicture}[shorten >=1pt, node distance=3cm, on grid, auto]\n  \\node[state, initial] (q0) {$q_0$};\n  \\node[state] (q1) [right=of q0] {$q_1$};\n  \\node[state] (q2) [right=of q1] {$q_2$};\n  \\node[state, accepting] (qa) [below=2.2cm of q0] {$q_a$};\n\n  \\path[->]\n  (q0) edge node{$0/X, R$} (q1)\n  (q1) edge[loop above] node{$0/0, R$} ()\n  edge node{$1/Y, L$} (q2)\n  (q2) edge[loop above] node{$0/0, L$} ()\n  edge[bend left=35] node{$X/X, R$} (q0)\n  (q0) edge node[left]{$Y/Y, R$} (qa);\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "neural-networks",
+    "name": "Neural networks",
+    "examples": [
+      {
+        "id": "perceptron",
+        "name": "Perceptron",
+        "source": "\\usetikzlibrary{arrows.meta, positioning}\n\n\\begin{tikzpicture}[\n  node distance=6mm and 14mm,\n  every edge/.style={draw, -{Stealth}},\n]\n  \\node[circle, draw, minimum size=10mm] (sum) {$\\Sigma$};\n  \\node[left=of sum] (x2) {$x_2$};\n  \\node[above=of x2] (x1) {$x_1$};\n  \\node[below=of x2] (x3) {$x_3$};\n  \\node[draw, right=of sum, minimum size=10mm] (act) {$\\sigma$};\n  \\node[right=10mm of act] (y) {$y$};\n\n  \\path (x1) edge node[above] {$w_1$} (sum)\n  (x2) edge node[above] {$w_2$} (sum)\n  (x3) edge node[below] {$w_3$} (sum)\n  (sum) edge (act)\n  (act) edge (y);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "feed-forward",
+        "name": "Feed-forward network",
+        "source": "\\begin{tikzpicture}[\n  x=2.2cm, y=1cm,\n  neuron/.style={circle, draw, thick, minimum size=8mm, inner sep=0pt},\n]\n  \\foreach \\i in {1,...,3} \\node[neuron] (I\\i) at (0, 2-\\i) {$x_{\\i}$};\n  \\foreach \\i in {1,...,4} \\node[neuron] (A\\i) at (1, 2.5-\\i) {};\n  \\foreach \\i in {1,...,4} \\node[neuron] (B\\i) at (2, 2.5-\\i) {};\n  \\foreach \\i in {1,...,2} \\node[neuron] (O\\i) at (3, 1.5-\\i) {$y_{\\i}$};\n\n  \\foreach \\i in {1,...,3} \\foreach \\j in {1,...,4} \\draw[gray] (I\\i) -- (A\\j);\n  \\foreach \\i in {1,...,4} \\foreach \\j in {1,...,4} \\draw[gray] (A\\i) -- (B\\j);\n  \\foreach \\i in {1,...,4} \\foreach \\j in {1,...,2} \\draw[gray] (B\\i) -- (O\\j);\n\n  \\foreach \\x/\\layer in {0/Input, 1/Hidden, 2/Hidden, 3/Output}\n  \\node[font=\\small\\bfseries] at (\\x, 2.2) {\\layer};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "rnn-unrolled",
+        "name": "Recurrent network, unrolled",
+        "source": "\\usetikzlibrary{arrows.meta}\n\n\\begin{tikzpicture}[\n  cell/.style={draw, thick, rounded corners, minimum width=13mm, minimum height=10mm},\n  io/.style={circle, draw, thick, minimum size=10mm, inner sep=0pt, font=\\small},\n  arrow/.style={-{Stealth}, thick},\n]\n  \\foreach \\i/\\t in {0/{t-1}, 1/t, 2/{t+1}} {\n    \\node[cell] (h\\i) at (2.8*\\i,0) {$h_{\\t}$};\n    \\node[io] (x\\i) at (2.8*\\i,-1.8) {$x_{\\t}$};\n    \\node[io] (y\\i) at (2.8*\\i,1.8) {$y_{\\t}$};\n    \\draw[arrow] (x\\i) -- (h\\i);\n    \\draw[arrow] (h\\i) -- (y\\i);\n  }\n  \\draw[arrow] (h0) -- node[above] {$W$} (h1);\n  \\draw[arrow] (h1) -- node[above] {$W$} (h2);\n  \\draw[arrow, dashed] (-1.7,0) -- (h0);\n  \\draw[arrow, dashed] (h2) -- (7.3,0);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "cnn-pipeline",
+        "name": "Convolutional network",
+        "source": "\\usetikzlibrary{arrows.meta}\n\n\\begin{tikzpicture}[every node/.style={font=\\footnotesize, align=center}]\n  \\foreach \\x/\\h/\\w/\\c/\\name/\\size in {\n    0/2.6/0.2/gray!25/Input/$32^2{\\times}3$,\n    1.3/2.2/0.5/blue!25/Conv/$28^2{\\times}16$,\n    2.8/1.5/0.5/green!30/Pool/$14^2{\\times}16$,\n    4.2/1.2/0.8/blue!25/Conv/$10^2{\\times}32$,\n    5.9/0.8/0.8/green!30/Pool/$5^2{\\times}32$,\n    7.6/2/0.2/orange!30/Dense/$120$,\n    8.8/1/0.2/red!25/Output/$10$%\n  } {\n  \\draw[fill=\\c] (\\x,-\\h/2) rectangle ++(\\w,\\h);\n  \\draw[fill=\\c] (\\x,\\h/2) -- ++(0.3,0.3) -- ++(\\w,0) -- ++(-0.3,-0.3) -- cycle;\n  \\draw[fill=\\c] (\\x+\\w,-\\h/2) -- ++(0.3,0.3) -- ++(0,\\h) -- ++(-0.3,-0.3) -- cycle;\n  \\node[above] at (\\x+\\w/2+0.15,\\h/2+0.3) {\\name};\n  \\node[below] at (\\x+\\w/2,-\\h/2) {\\size};\n  }\n  \\foreach \\a/\\b in {0.5/1.3, 2.1/2.8, 3.6/4.2, 5.3/5.9, 7/7.6, 8.1/8.8}\n  \\draw[-{Stealth}, thick] (\\a,0) -- (\\b,0);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "attention",
+        "name": "Scaled dot-product attention",
+        "source": "\\usetikzlibrary{arrows.meta, positioning}\n\n\\begin{tikzpicture}[\n  node distance=5mm,\n  every node/.style={font=\\small},\n  op/.style={draw, thick, rounded corners, minimum width=28mm, minimum height=7mm},\n  arrow/.style={-{Stealth}, thick},\n]\n  \\node[op, fill=violet!15] (mm1) at (0,0) {MatMul};\n  \\node[op, fill=yellow!30, above=of mm1] (scale) {Scale by $1/\\sqrt{d_k}$};\n  \\node[op, fill=red!12, above=of scale] (mask) {Mask (optional)};\n  \\node[op, fill=green!20, above=of mask] (soft) {Softmax};\n  \\node[op, fill=violet!15, above=of soft, xshift=12mm] (mm2) {MatMul};\n  \\node (q) at (-8mm,-13mm) {$Q$};\n  \\node (k) at (8mm,-13mm) {$K$};\n  \\node (v) at (22mm,-13mm) {$V$};\n\n  \\draw[arrow] (q) -- (q |- mm1.south);\n  \\draw[arrow] (k) -- (k |- mm1.south);\n  \\draw[arrow] (mm1) -- (scale);\n  \\draw[arrow] (scale) -- (mask);\n  \\draw[arrow] (mask) -- (soft);\n  \\draw[arrow] (soft.north) -- (soft.north |- mm2.south);\n  \\draw[arrow] (v) -- (v |- mm2.south);\n  \\draw[arrow] (mm2) -- ++(0,10mm) node[above] {Output};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "transformer-encoder",
+        "name": "Transformer encoder layer",
+        "source": "\\usetikzlibrary{arrows.meta, positioning, fit, backgrounds}\n\n\\begin{tikzpicture}[\n  node distance=5mm,\n  every node/.style={font=\\small},\n  sub/.style={draw, thick, rounded corners, minimum width=34mm, minimum height=8mm},\n  arrow/.style={-{Stealth}, thick},\n]\n  \\node[sub, fill=orange!20] (attn) {Multi-head attention};\n  \\node[sub, fill=yellow!30, above=of attn] (norm1) {Add \\& norm};\n  \\node[sub, fill=blue!12, above=9mm of norm1] (ff) {Feed forward};\n  \\node[sub, fill=yellow!30, above=of ff] (norm2) {Add \\& norm};\n  \\node[below=12mm of attn] (in) {Inputs and positional encoding};\n  \\coordinate[below=4mm of attn] (r1);\n  \\coordinate[above=4mm of norm1] (r2);\n\n  \\begin{scope}[on background layer]\n    \\node[draw, thick, rounded corners=3mm, fill=gray!8, fit=(attn)(norm2)(r1), inner xsep=8mm, inner ysep=3mm, label=left:{$N\\times$}] {};\n  \\end{scope}\n\n  \\draw[arrow] (in) -- (attn);\n  \\foreach \\dx in {-9mm, 9mm}\n  \\draw[arrow] (r1) -| ([xshift=\\dx]attn.south);\n  \\draw[arrow] (r1) -- ++(-23mm,0) |- (norm1.west);\n  \\draw[arrow] (attn) -- (norm1);\n  \\draw[arrow] (norm1) -- (ff);\n  \\draw[arrow] (r2) -- ++(-23mm,0) |- (norm2.west);\n  \\draw[arrow] (ff) -- (norm2);\n  \\draw[arrow] (norm2) -- ++(0,11mm) node[above] {Encoder output};\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "software-diagrams",
+    "name": "Software diagrams",
+    "examples": [
+      {
+        "id": "architecture-boxes",
+        "name": "Boxes and arrows",
+        "source": "\\usetikzlibrary{arrows.meta, positioning}\n\n\\begin{tikzpicture}[\n  node distance=8mm and 16mm,\n  box/.style={draw, rounded corners, minimum width=24mm, minimum height=10mm},\n  every edge/.style={draw, -{Stealth}},\n]\n  \\node[box] (client) {Client};\n  \\node[box, right=of client] (api) {API};\n  \\node[box, right=of api] (db) {Database};\n\n  \\path (client) edge node[above] {HTTP} (api)\n  (api) edge node[above] {SQL} (db);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "sequence-diagram",
+        "name": "Sequence diagram",
+        "source": "\\usetikzlibrary{arrows.meta}\n\n\\begin{tikzpicture}[\n  every node/.style={font=\\small},\n  actor/.style={draw, thick, minimum width=20mm, minimum height=7mm},\n  active/.style={draw, fill=white},\n  call/.style={-{Stealth}, thick},\n  reply/.style={-{Stealth}, dashed},\n]\n  \\foreach \\x/\\name in {0/Browser, 4/Server, 8/Database} {\n    \\node[actor] at (\\x,0) {\\name};\n    \\draw[gray, dashed] (\\x,-0.35) -- (\\x,-5.4);\n  }\n  \\draw[active] (3.9,-1) rectangle (4.1,-4.6);\n  \\draw[active] (7.9,-1.8) rectangle (8.1,-2.8);\n\n  \\draw[call] (0,-1) -- node[above] {GET /orders} (3.9,-1);\n  \\draw[call] (4.1,-1.8) -- node[above] {SELECT orders} (7.9,-1.8);\n  \\draw[reply] (7.9,-2.8) -- node[above] {rows} (4.1,-2.8);\n  \\draw[call] (4.1,-3.3) -- ++(0.7,0) -- ++(0,-0.5) node[midway, right] {render} -- (4.1,-3.8);\n  \\draw[reply] (3.9,-4.6) -- node[above] {200 OK} (0,-4.6);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "class-diagram",
+        "name": "UML class diagram",
+        "source": "\\usetikzlibrary{shapes.multipart, arrows.meta, positioning}\n\n\\begin{tikzpicture}[\n  node distance=12mm and 16mm,\n  class/.style={\n    rectangle split, rectangle split parts=3, draw, thick, font=\\small,\n    rectangle split part align={center, left, left}, align=left, minimum width=32mm,\n  },\n  inherit/.style={-{Triangle[open, length=3mm, width=3mm]}, thick},\n]\n  \\node[class] (account) {\\textbf{Account}\n    \\nodepart{second} $-$ id: int \\\\ $-$ balance: float\n    \\nodepart{third} $+$ deposit(amount) \\\\ $+$ withdraw(amount)};\n    \\node[class, left=of account] (customer) {\\textbf{Customer}\n      \\nodepart{second} $-$ name: string\n      \\nodepart{third} $+$ accounts()};\n      \\node[class, below=of account, xshift=-19mm] (savings) {\\textbf{Savings}\n        \\nodepart{second} $-$ rate: float\n        \\nodepart{third} $+$ addInterest()};\n        \\node[class, below=of account, xshift=19mm] (checking) {\\textbf{Checking}\n          \\nodepart{second} $-$ overdraft: float\n          \\nodepart{third} $+$ writeCheck()};\n\n          \\coordinate (join) at ([yshift=-6mm]account.south);\n          \\draw[thick] (savings.north) |- (join) -| (checking.north);\n          \\draw[inherit] (join) -- (account.south);\n          \\draw[thick] (customer) -- node[above, pos=0.18] {1} node[above, pos=0.8] {1..*} (account);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "er-diagram",
+        "name": "Entity-relationship diagram",
+        "source": "\\usetikzlibrary{shapes.geometric, positioning}\n\n\\begin{tikzpicture}[\n  node distance=8mm and 13mm,\n  every node/.style={font=\\small},\n  entity/.style={draw, thick, minimum width=20mm, minimum height=8mm},\n  relation/.style={diamond, draw, thick, aspect=1.8, inner sep=1pt},\n  attribute/.style={ellipse, draw, minimum width=14mm, inner sep=1pt},\n]\n  \\node[entity] (student) {Student};\n  \\node[relation, right=of student] (enrolls) {Enrolls};\n  \\node[entity, right=of enrolls] (course) {Course};\n  \\node[attribute, above=of student, xshift=-11mm] (sid) {\\underline{id}};\n  \\node[attribute, above=of student, xshift=11mm] (sname) {name};\n  \\node[attribute, above=of course, xshift=-11mm] (code) {\\underline{code}};\n  \\node[attribute, above=of course, xshift=11mm] (title) {title};\n  \\node[attribute, below=of enrolls] (grade) {grade};\n\n  \\draw[thick] (student) -- node[above] {$M$} (enrolls) -- node[above] {$N$} (course);\n  \\foreach \\a/\\b in {student/sid, student/sname, course/code, course/title, enrolls/grade}\n  \\draw (\\a) -- (\\b);\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "systems",
+    "name": "Systems and architecture",
+    "examples": [
+      {
+        "id": "network-topology",
+        "name": "Network topology",
+        "source": "\\usetikzlibrary{shapes.symbols}\n\n\\begin{tikzpicture}[\n  every node/.style={font=\\small},\n  device/.style={draw, thick, rounded corners, minimum width=20mm, minimum height=8mm},\n  host/.style={draw, thick, minimum width=19mm, minimum height=8mm},\n]\n  \\node[cloud, draw, thick, cloud puffs=11, aspect=2.2, minimum width=28mm] (net) at (0,4.3) {Internet};\n  \\node[device] (fw) at (0,2.8) {Firewall};\n  \\node[device] (router) at (0,1.4) {Router};\n  \\node[device] (switch) at (0,0) {Switch};\n  \\foreach \\x/\\name in {-3.3/Web server, -1.1/Database, 1.1/Laptop, 3.3/Printer}\n  \\node[host] (\\name) at (\\x,-1.8) {\\name};\n\n  \\draw[thick] (net) -- (fw) -- (router) -- (switch);\n  \\foreach \\name in {Web server, Database, Laptop, Printer}\n  \\draw[thick] (switch.south) -- ++(0,-0.45) -| (\\name.north);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "memory-layout",
+        "name": "Process memory layout",
+        "source": "\\usetikzlibrary{arrows.meta}\n\n\\begin{tikzpicture}[every node/.style={font=\\small}, >={Stealth}]\n  \\foreach \\lo/\\hi/\\c/\\name/\\note in {\n    0/0.9/gray!20/Text/machine code,\n    0.9/1.6/blue!12/Data/initialized globals,\n    1.6/2.3/blue!20/BSS/zeroed globals,\n    2.3/3.3/green!20/Heap/{\\texttt{malloc}, \\texttt{new}},\n    5.3/6.3/orange!25/Stack/local variables,\n    6.3/7.2/red!15/Kernel/not accessible%\n  } {\n  \\draw[thick, fill=\\c] (0,\\lo) rectangle (4,\\hi);\n  \\node at (2,{(\\lo+\\hi)/2}) {\\name};\n  \\node[right, gray!40!black] at (4.2,{(\\lo+\\hi)/2}) {\\note};\n  }\n  \\draw[thick, dashed] (0,3.3) rectangle (4,5.3);\n  \\draw[->, thick, green!40!black] (2,3.4) -- (2,4.1);\n  \\draw[->, thick, orange!80!black] (2,5.2) -- (2,4.5);\n  \\node[left] at (-0.2,0) {low addresses};\n  \\node[left] at (-0.2,7.2) {high addresses};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "stack-frames",
+        "name": "Call stack frames",
+        "source": "\\usetikzlibrary{arrows.meta, decorations.pathreplacing}\n\n\\begin{tikzpicture}[\n  y=6.5mm, >={Stealth},\n  every node/.style={font=\\small},\n  cell/.style={draw, thick, minimum width=40mm, minimum height=6.5mm, anchor=north west},\n]\n  \\foreach \\label/\\fill [count=\\i] in {\n    {local $x = 7$}/gray!15, {local $y = 2$}/gray!15,\n    {argument $n = 3$}/blue!12, {return address}/blue!12, {saved frame pointer}/blue!12, {local $i$}/blue!12,\n    {argument $k = 4$}/orange!20, {return address}/orange!20, {saved frame pointer}/orange!20, {local $t$}/orange!20%\n  }\n  \\node[cell, fill=\\fill] at (0,-\\i) {\\label};\n\n  \\foreach \\top/\\bottom/\\name in {1/3/main, 3/7/f, 7/11/g}\n  \\draw[decorate, decoration={brace, amplitude=5pt}, thick] (4.15,-\\top) -- (4.15,-\\bottom)\n  node[midway, right=6pt] {\\texttt{\\name}};\n  \\draw[<-, thick] (0,-9.5) -- ++(-0.8,0) node[left] {\\texttt{fp}};\n  \\draw[<-, thick] (0,-11) -- ++(-0.8,0) node[left] {\\texttt{sp}};\n  \\draw[->, thick, gray] (-2.2,-1) -- (-2.2,-10.5) node[midway, above, rotate=90] {stack grows down};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "cpu-pipeline",
+        "name": "Instruction pipeline",
+        "source": "\\begin{tikzpicture}[x=11mm, y=8mm, every node/.style={font=\\small}]\n  \\node[anchor=east] at (0.4,1) {Cycle};\n  \\foreach \\c in {1,...,9}\n  \\node[gray!40!black] at (\\c,1) {\\c};\n  \\foreach \\i in {1,...,5} {\n    \\node[anchor=east] at (0.4,1-\\i) {$i_{\\i}$};\n    \\foreach \\s/\\stage/\\col in {0/IF/blue!15, 1/ID/green!20, 2/EX/orange!25, 3/MEM/violet!15, 4/WB/red!12}\n    \\node[draw, fill=\\col, minimum width=11mm, minimum height=8mm] at (\\i+\\s,1-\\i) {\\stage};\n  }\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "digital-logic",
+    "name": "Digital logic",
+    "examples": [
+      {
+        "id": "karnaugh-map",
+        "name": "Karnaugh map",
+        "source": "\\begin{tikzpicture}[x=9mm, y=9mm, every node/.style={font=\\small}]\n  \\draw[thick] (0,0) grid (4,4);\n  \\draw[thick] (0,4) -- (-0.8,4.8);\n  \\node at (-0.65,4.25) {$AB$};\n  \\node at (-0.15,4.75) {$CD$};\n  \\foreach \\v [count=\\i from 0] in {00, 01, 11, 10} {\n    \\node at (\\i + 0.5, 4.3) {$\\v$};\n    \\node at (-0.35, 3.5 - \\i) {$\\v$};\n  }\n  \\foreach \\row [count=\\r] in {{1,0,0,1}, {0,1,1,0}, {0,1,1,0}, {1,0,0,1}}\n  \\foreach \\v [count=\\c] in \\row\n  \\node at (\\c - 0.5, 4.5 - \\r) {$\\v$};\n\n  \\draw[blue!70!black, very thick, rounded corners=3mm] (1.1,1.1) rectangle (2.9,2.9);\n  \\foreach \\x/\\y in {0/0, 3/0, 0/3, 3/3}\n  \\draw[orange!85!black, very thick, rounded corners=3mm] (\\x + 0.1,\\y + 0.1) rectangle (\\x + 0.9,\\y + 0.9);\n  \\node[below] at (2,-0.2) {$f = {\\color{blue!70!black} BD} + {\\color{orange!85!black} \\bar{B}\\bar{D}}$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "half-adder",
+        "name": "Half adder",
+        "source": "\\usetikzlibrary{circuits.logic.US}\n\n\\begin{tikzpicture}[circuit logic US, thick, every circuit symbol/.style={thick}]\n  \\node[xor gate] (sum) at (3,1) {};\n  \\node[and gate] (carry) at (3,-1) {};\n\n  \\draw (sum.input 1) -- ++(left:14mm) coordinate (a1);\n  \\draw (carry.input 1) -- ++(left:14mm) coordinate (a2);\n  \\draw (sum.input 2) -- ++(left:8mm) coordinate (b1);\n  \\draw (carry.input 2) -- ++(left:8mm) coordinate (b2);\n  \\draw (a1) -- (a2) (b1) -- (b2);\n  \\draw (a1) -- ++(left:8mm) node[left] {$A$};\n  \\draw (b2) -- ++(left:14mm) node[left] {$B$};\n  \\fill (a1) circle (1.5pt) (b2) circle (1.5pt);\n\n  \\draw (sum.output) -- ++(right:8mm) node[right] {$S = A \\oplus B$};\n  \\draw (carry.output) -- ++(right:8mm) node[right] {$C = AB$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "timing-diagram",
+        "name": "Timing diagram",
+        "source": "\\begin{tikzpicture}[x=6mm, y=6mm, thick, every node/.style={font=\\small}]\n  \\foreach \\x in {4, 10}\n  \\draw[gray!60, dashed, thin] (\\x,1.4) -- (\\x,-4.4);\n  \\node[left] at (-0.3,0.5) {CLK};\n  \\draw (0,0) \\foreach \\i in {0,...,7} { -- ++(0,1) -- ++(1,0) -- ++(0,-1) -- ++(1,0) };\n  \\node[left] at (-0.3,-1.5) {D};\n  \\draw[blue!70!black] (0,-2) -- (3,-2) -- (3,-1) -- (9,-1) -- (9,-2) -- (16,-2);\n  \\node[left] at (-0.3,-3.5) {Q};\n  \\draw[orange!85!black] (0,-4) -- (4,-4) -- (4,-3) -- (10,-3) -- (10,-4) -- (16,-4);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "sorting-network",
+        "name": "Sorting network",
+        "source": "\\begin{tikzpicture}[x=1cm, y=8mm, every node/.style={font=\\small}]\n  \\foreach \\w/\\in/\\out in {1/3/1, 2/1/2, 3/4/3, 4/2/4} {\n    \\draw[thick] (0,-\\w) -- (5.4,-\\w);\n    \\node[left] at (0,-\\w) {$\\in$};\n    \\node[right] at (5.4,-\\w) {$\\out$};\n  }\n  \\foreach \\x/\\a/\\b in {1/1/2, 1/3/4, 2.2/1/3, 2.8/2/4, 4.2/2/3}\n  \\draw[very thick, blue!70!black] (\\x,-\\a) node[circle, fill=blue!70!black, inner sep=1.6pt] {}\n  -- (\\x,-\\b) node[circle, fill=blue!70!black, inner sep=1.6pt] {};\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "neuralnetwork",
+    "name": "neuralnetwork",
+    "examples": [
+      {
+        "id": "nn-simple",
+        "name": "Simple neural network",
+        "source": "\\usepackage{neuralnetwork}\n\n\\begin{neuralnetwork}[height=4, nodespacing=8mm, layerspacing=20mm]\n  \\inputlayer[count=3]\n  \\hiddenlayer[count=4]\n  \\linklayers\n  \\outputlayer[count=2]\n  \\linklayers\n\\end{neuralnetwork}"
+      },
+      {
+        "id": "nn-wide",
+        "name": "Wide network",
+        "source": "\\usepackage{neuralnetwork}\n\n\\begin{neuralnetwork}[height=5, nodespacing=6mm, layerspacing=15mm]\n  \\inputlayer[count=5]\n  \\hiddenlayer[count=6]\n  \\linklayers\n  \\outputlayer[count=3]\n  \\linklayers\n\\end{neuralnetwork}"
+      },
+      {
+        "id": "nn-deep",
+        "name": "Deep network",
+        "source": "\\usepackage{neuralnetwork}\n\n\\begin{neuralnetwork}[height=4, nodespacing=7mm, layerspacing=12mm]\n  \\inputlayer[count=4]\n  \\hiddenlayer[count=5]\n  \\linklayers\n  \\hiddenlayer[count=4]\n  \\linklayers\n  \\outputlayer[count=2]\n  \\linklayers\n\\end{neuralnetwork}"
+      }
+    ]
+  },
+  {
+    "id": "circuitikz",
+    "name": "circuitikz",
+    "examples": [
+      {
+        "id": "voltage-divider",
+        "name": "Voltage divider",
+        "source": "\\usepackage{circuitikz}\n\n\\begin{circuitikz}\n  \\draw (0,0) to[V=$V_{in}$] (0,3)\n  to[R=$R_1$] (3,3)\n  to[R=$R_2$] (3,0) -- (0,0);\n  \\draw (3,3) to[short, -o] (4,3) node[right]{$V_{out}$};\n  \\draw (3,0) to[short, -o] (4,0) node[right]{GND};\n\\end{circuitikz}"
+      },
+      {
+        "id": "rc-filter",
+        "name": "RC low-pass filter",
+        "source": "\\usepackage{circuitikz}\n\n\\begin{circuitikz}\n  \\draw (0,0) node[ground]{}\n  to[V=$V_{in}$] (0,3)\n  to[R=$R$, -] (3,3)\n  to[C=$C$] (3,0)\n  node[ground]{};\n  \\draw (3,3) to[short, -o] (4.5,3) node[right]{$V_{out}$};\n\\end{circuitikz}"
+      },
+      {
+        "id": "rlc-series",
+        "name": "Series RLC circuit",
+        "source": "\\usepackage{circuitikz}\n\n\\begin{circuitikz}\n  \\draw (0,0) to[sV, l=$v_s(t)$] (0,3)\n  to[R, l=$R$, i>^=$i(t)$] (3,3)\n  to[L, l=$L$] (6,3)\n  to[C, l=$C$] (6,0) -- (0,0);\n\\end{circuitikz}"
+      },
+      {
+        "id": "opamp-circuit",
+        "name": "Inverting amplifier",
+        "source": "\\usepackage{circuitikz}\n\n\\begin{circuitikz}\n  \\draw (0,0) node[op amp] (oa) {};\n  \\draw (oa.-) to[short, -*] ++(-0.6,0) coordinate (inv)\n  to[R, l=$R_1$, -o] ++(-2.4,0) node[left] {$v_{in}$};\n  \\draw (inv) -- ++(0,1.6) coordinate (top)\n  to[R, l=$R_f$] (top -| oa.out) to[short, -*] (oa.out);\n  \\draw (oa.+) -- ++(-0.6,0) node[ground] {};\n  \\draw (oa.out) to[short, -o] ++(1,0) node[right] {$v_{out}$};\n\\end{circuitikz}"
+      },
+      {
+        "id": "transistor-switch",
+        "name": "Transistor switch",
+        "source": "\\usepackage{circuitikz}\n\n\\begin{circuitikz}\n  \\draw (0,0) node[npn] (Q) {};\n  \\draw (Q.C) to[leD, l=LED] ++(0,1.6) to[R, l=$R_C$] ++(0,1.6) node[vcc] {$+5\\,\\mathrm{V}$};\n  \\draw (Q.B) to[R, l_=$R_B$, -o] ++(-2.4,0) node[left] {$V_{in}$};\n  \\draw (Q.E) node[ground] {};\n\\end{circuitikz}"
+      },
+      {
+        "id": "logic-gates",
+        "name": "Logic gates",
+        "source": "\\usepackage{circuitikz}\n\n\\begin{circuitikz}\n  \\draw (0,1) node[and port] (and) {};\n  \\draw (0,-1) node[not port] (not) {};\n  \\draw (3.4,0) node[or port] (or) {};\n  \\draw (and.in 1) -- (and.in 1 -| -2,0) node[left] {$A$};\n  \\draw (and.in 2) -- (and.in 2 -| -2,0) node[left] {$B$};\n  \\draw (not.in) -- (not.in -| -2,0) node[left] {$C$};\n  \\draw (and.out) -- ++(0.3,0) |- (or.in 1);\n  \\draw (not.out) -- ++(0.3,0) |- (or.in 2);\n  \\draw (or.out) -- ++(0.5,0) node[right] {$Y$};\n\\end{circuitikz}"
+      },
+      {
+        "id": "bridge-rectifier",
+        "name": "Bridge rectifier",
+        "source": "\\usepackage{circuitikz}\n\n\\begin{circuitikz}\n  \\draw (3,4) to[D*, -*] (5,2);\n  \\draw (3,0) to[D*, -*] (5,2);\n  \\draw (1,2) to[D*, *-*] (3,4);\n  \\draw (1,2) to[D*, -*] (3,0);\n  \\draw (3,4) -- (3,4.8) -- (-1,4.8) to[sV, l_=$v_{in}$] (-1,-0.8) -- (3,-0.8) -- (3,0);\n  \\draw (5,2) -- (7,2) to[R, l_=$R_L$, v^>=$v_{out}$] (7,-1.6) -- (1,-1.6) -- (1,2);\n\\end{circuitikz}"
+      },
+      {
+        "id": "common-emitter",
+        "name": "Common-emitter amplifier",
+        "source": "\\usepackage{circuitikz}\n\n\\begin{circuitikz}\n  \\draw (3,0) node[npn] (Q) {};\n  \\draw (1,3.2) -- (3,3.2) node[right] {$V_{CC}$};\n  \\draw (1,3.2) to[R, l_=$R_1$, -*] (1,0) to[R, l_=$R_2$] (1,-3);\n  \\draw (1,0) -- (Q.B);\n  \\draw (Q.C) to[short, -*] (3,1.2) to[R, l=$R_C$] (3,3.2);\n  \\draw (Q.E) to[short, -*] (3,-1.2) to[R, l_=$R_E$] (3,-3);\n  \\draw (3,-1.2) -- (4.4,-1.2) to[C, l=$C_E$] (4.4,-3);\n  \\draw (1,-3) -- (4.4,-3);\n  \\draw (2.2,-3) node[ground] {};\n  \\draw (-1.2,0) node[left] {$v_{in}$} to[C, l=$C_{in}$, o-] (1,0);\n  \\draw (3,1.2) to[C, l=$C_{out}$, -o] (5.6,1.2) node[right] {$v_{out}$};\n\\end{circuitikz}"
+      }
+    ]
+  },
+  {
+    "id": "quantikz",
+    "name": "quantikz",
+    "examples": [
+      {
+        "id": "bell-state",
+        "name": "Bell state preparation",
+        "source": "\\usepackage{quantikz}\n\n\\begin{quantikz}\n  \\lstick{$|0\\rangle$} & \\gate{H} & \\ctrl{1} & \\qw \\\\\n  \\lstick{$|0\\rangle$} & \\qw & \\targ{} & \\qw\n\\end{quantikz}"
+      },
+      {
+        "id": "ghz-state",
+        "name": "GHZ state",
+        "source": "\\usepackage{quantikz}\n\n\\begin{quantikz}\n  \\lstick{$|0\\rangle$} & \\gate{H} & \\ctrl{1} & \\qw \\\\\n  \\lstick{$|0\\rangle$} & \\qw & \\targ{} & \\ctrl{1} \\\\\n  \\lstick{$|0\\rangle$} & \\qw & \\qw & \\targ{}\n\\end{quantikz}"
+      },
+      {
+        "id": "swap-gate",
+        "name": "SWAP gate",
+        "source": "\\usepackage{quantikz}\n\n\\begin{quantikz}\n  \\lstick{$|a\\rangle$} & \\swap{1} & \\rstick{$|b\\rangle$} \\\\\n  \\lstick{$|b\\rangle$} & \\targX{} & \\rstick{$|a\\rangle$}\n\\end{quantikz}"
+      },
+      {
+        "id": "toffoli",
+        "name": "Toffoli (CCNOT) gate",
+        "source": "\\usepackage{quantikz}\n\n\\begin{quantikz}\n  \\lstick{$|a\\rangle$} & \\ctrl{2} & \\qw \\\\\n  \\lstick{$|b\\rangle$} & \\ctrl{1} & \\qw \\\\\n  \\lstick{$|c\\rangle$} & \\targ{} & \\qw\n\\end{quantikz}"
+      },
+      {
+        "id": "teleportation",
+        "name": "Quantum teleportation",
+        "source": "\\usepackage{quantikz}\n\n\\begin{quantikz}\n  \\lstick{$|\\psi\\rangle$} & \\qw & \\ctrl{1} & \\gate{H} & \\meter{} & \\cwbend{2} & \\qw & \\qw \\\\\n  \\lstick{$|0\\rangle$} & \\gate{H} & \\targ{} & \\qw & \\meter{} & \\cwbend{1} & \\qw & \\qw \\\\\n  \\lstick{$|0\\rangle$} & \\qw & \\qw & \\qw & \\qw & \\gate{X} & \\gate{Z} & \\rstick{$|\\psi\\rangle$}\n\\end{quantikz}"
+      },
+      {
+        "id": "qft",
+        "name": "Quantum Fourier transform, two qubits",
+        "source": "\\usepackage{quantikz}\n\n\\begin{quantikz}\n  \\lstick{} & \\gate{H} & \\gate{R_z(\\pi/2)} & \\qw \\\\\n  \\lstick{} & \\qw & \\ctrl{-1} & \\gate{H}\n\\end{quantikz}"
+      },
+      {
+        "id": "qft-three",
+        "name": "Quantum Fourier transform, three qubits",
+        "source": "\\usepackage{quantikz}\n\n\\begin{quantikz}\n  \\lstick{$|x_1\\rangle$} & \\gate{H} & \\gate{R_2} & \\gate{R_3} & \\qw & \\qw & \\qw & \\swap{2} & \\qw \\\\\n  \\lstick{$|x_2\\rangle$} & \\qw & \\ctrl{-1} & \\qw & \\gate{H} & \\gate{R_2} & \\qw & \\qw & \\qw \\\\\n  \\lstick{$|x_3\\rangle$} & \\qw & \\qw & \\ctrl{-2} & \\qw & \\ctrl{-1} & \\gate{H} & \\targX{} & \\qw\n\\end{quantikz}"
+      },
+      {
+        "id": "deutsch-jozsa",
+        "name": "Deutsch-Jozsa algorithm",
+        "source": "\\usepackage{quantikz}\n\n\\begin{quantikz}\n  \\lstick{$|0\\rangle^{\\otimes n}$} & \\qwbundle{n} & \\gate{H^{\\otimes n}} & \\gate[2]{U_f} & \\gate{H^{\\otimes n}} & \\meter{} \\\\\n  \\lstick{$|1\\rangle$} & \\qw & \\gate{H} & \\qw & \\qw & \\qw\n\\end{quantikz}"
+      },
+      {
+        "id": "phase-estimation",
+        "name": "Phase estimation",
+        "source": "\\usepackage{quantikz}\n\n\\begin{quantikz}\n  \\lstick{$|0\\rangle$} & \\gate{H} & \\qw & \\ctrl{2} & \\gate[2]{\\mathrm{QFT}^\\dagger} & \\meter{} \\\\\n  \\lstick{$|0\\rangle$} & \\gate{H} & \\ctrl{1} & \\qw & \\qw & \\meter{} \\\\\n  \\lstick{$|u\\rangle$} & \\qw & \\gate{U} & \\gate{U^2} & \\qw & \\qw\n\\end{quantikz}"
+      }
+    ]
+  },
+  {
+    "id": "zx-calculus",
+    "name": "zx-calculus",
+    "examples": [
+      {
+        "id": "zx-simple",
+        "name": "ZX diagram (Z and X spiders)",
+        "source": "\\usepackage{tikz}\n\\usepackage{zx-calculus}\n\n\\begin{ZX}\n  \\zxZ{} \\arrow[r] & \\zxX{}\n\\end{ZX}"
+      },
+      {
+        "id": "zx-phase",
+        "name": "ZX with phases",
+        "source": "\\usepackage{tikz}\n\\usepackage{zx-calculus}\n\n\\begin{ZX}\n  \\zxZ{\\alpha} \\arrow[r] & \\zxZ{\\beta}\n\\end{ZX}"
+      },
+      {
+        "id": "zx-cnot",
+        "name": "CNOT as a ZX diagram",
+        "source": "\\usepackage{zx-calculus}\n\n\\begin{ZX}\n  \\zxN{} \\rar & \\zxZ{} \\rar \\dar & \\zxN{} \\\\\n  \\zxN{} \\rar & \\zxX{} \\rar & \\zxN{}\n\\end{ZX}"
+      },
+      {
+        "id": "zx-spider-fusion",
+        "name": "Spider fusion",
+        "source": "\\usepackage{zx-calculus}\n\n$\\begin{ZX}\n  \\zxN{} \\rar & \\zxZ{\\alpha} \\rar & \\zxZ{\\beta} \\rar & \\zxN{}\n\\end{ZX}\n=\n\\begin{ZX}\n  \\zxN{} \\rar & \\zxZ{\\alpha+\\beta} \\rar & \\zxN{}\n\\end{ZX}$"
+      },
+      {
+        "id": "zx-hadamard",
+        "name": "Hadamard color change",
+        "source": "\\usepackage{zx-calculus}\n\n$\\begin{ZX}\n  \\zxN{} \\rar & \\zxH{} \\rar & \\zxZ{\\alpha} \\rar & \\zxH{} \\rar & \\zxN{}\n\\end{ZX}\n=\n\\begin{ZX}\n  \\zxN{} \\rar & \\zxX{\\alpha} \\rar & \\zxN{}\n\\end{ZX}$"
+      },
+      {
+        "id": "zx-bialgebra",
+        "name": "Bialgebra rule",
+        "source": "\\usepackage{zx-calculus}\n\n$\\begin{ZX}\n  \\zxN{} \\rar & \\zxZ{} \\rar \\ar[rd] & \\zxX{} \\rar & \\zxN{} \\\\\n  \\zxN{} \\rar & \\zxZ{} \\rar \\ar[ru] & \\zxX{} \\rar & \\zxN{}\n\\end{ZX}\n=\n\\begin{ZX}\n  \\zxN{} \\ar[rd] & & & \\zxN{} \\\\\n  & \\zxX{} \\rar & \\zxZ{} \\ar[ru] \\ar[rd] & \\\\\n  \\zxN{} \\ar[ru] & & & \\zxN{}\n\\end{ZX}$"
+      },
+      {
+        "id": "zx-hopf",
+        "name": "Hopf rule",
+        "source": "\\usepackage{zx-calculus}\n\n$\\begin{ZX}\n  \\zxN{} \\rar & \\zxZ{} \\ar[r, bend left] \\ar[r, bend right] & \\zxX{} \\rar & \\zxN{}\n\\end{ZX}\n=\n\\begin{ZX}\n  \\zxN{} \\rar & \\zxZ{} & \\zxX{} \\rar & \\zxN{}\n\\end{ZX}$"
+      }
+    ]
+  },
+  {
+    "id": "fusion-diagrams",
+    "name": "Fusion diagrams",
+    "examples": [
+      {
+        "id": "fusion-vertex",
+        "name": "Fusion and splitting vertices",
+        "source": "\\begin{tikzpicture}[thick]\n  \\draw (0,0) node[below] {$a$} -- (0.7,1) -- (1.4,0) node[below] {$b$};\n  \\draw (0.7,1) -- (0.7,2) node[above] {$c$};\n  \\node at (0.7,-0.9) {fusion};\n\n  \\draw (3,2) node[above] {$a$} -- (3.7,1) -- (4.4,2) node[above] {$b$};\n  \\draw (3.7,1) -- (3.7,0) node[below] {$c$};\n  \\node at (3.7,-0.9) {splitting};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "fusion-tree-basis",
+        "name": "Fusion tree basis",
+        "source": "\\begin{tikzpicture}[thick]\n  \\draw (0,0) node[below] {$a_1$} -- (0.6,0.8);\n  \\draw (1.2,0) node[below] {$a_2$} -- (0.6,0.8);\n  \\draw (0.6,0.8) -- node[left] {$x_1$} (1.2,1.6);\n  \\draw (2.4,0) node[below] {$a_3$} -- (1.2,1.6);\n  \\draw (1.2,1.6) -- node[left] {$x_2$} (1.8,2.4);\n  \\draw (3.6,0) node[below] {$a_4$} -- (1.8,2.4);\n  \\draw (1.8,2.4) -- (1.8,3.2) node[above] {$c$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "f-move",
+        "name": "F-move",
+        "source": "$\\begin{tikzpicture}[thick, baseline=(current bounding box.center)]\n  \\draw (0,0) node[below] {$a$} -- (0.5,0.7) -- (1,0) node[below] {$b$};\n  \\draw (0.5,0.7) -- node[left] {$e$} (1,1.4) -- (2,0) node[below] {$c$};\n  \\draw (1,1.4) -- (1,2) node[above] {$d$};\n\\end{tikzpicture}\n\\;=\\; \\sum_f \\bigl[F^{abc}_d\\bigr]_{ef}\n\\begin{tikzpicture}[thick, baseline=(current bounding box.center)]\n  \\draw (0,0) node[below] {$a$} -- (1,1.4);\n  \\draw (1,0) node[below] {$b$} -- (1.5,0.7) -- (2,0) node[below] {$c$};\n  \\draw (1.5,0.7) -- node[right] {$f$} (1,1.4);\n  \\draw (1,1.4) -- (1,2) node[above] {$d$};\n\\end{tikzpicture}$"
+      },
+      {
+        "id": "r-move",
+        "name": "R-move",
+        "source": "$\\begin{tikzpicture}[thick, baseline=(current bounding box.center)]\n  \\draw (1,0) node[below] {$b$} .. controls (1,0.5) and (0,0.5) .. (0,1) -- (0.5,1.6);\n  \\draw[white, line width=5pt] (0,0) .. controls (0,0.5) and (1,0.5) .. (1,1);\n  \\draw (0,0) node[below] {$a$} .. controls (0,0.5) and (1,0.5) .. (1,1) -- (0.5,1.6);\n  \\draw (0.5,1.6) -- (0.5,2.2) node[above] {$c$};\n\\end{tikzpicture}\n\\;=\\; R^{ab}_c\n\\begin{tikzpicture}[thick, baseline=(current bounding box.center)]\n  \\draw (0,0) node[below] {$a$} -- (0.5,1.2) -- (1,0) node[below] {$b$};\n  \\draw (0.5,1.2) -- (0.5,2.2) node[above] {$c$};\n\\end{tikzpicture}$"
+      },
+      {
+        "id": "pentagon-equation",
+        "name": "Pentagon equation",
+        "source": "\\usepackage{tikz-cd}\n\n\\begin{tikzcd}[column sep=tiny, row sep=large]\n  & ((ab)c)d \\arrow[dl, \"F\"'] \\arrow[dr, \"F\"] & \\\\\n  (a(bc))d \\arrow[d, \"F\"'] & & (ab)(cd) \\arrow[d, \"F\"] \\\\\n  a((bc)d) \\arrow[rr, \"F\"'] & & a(b(cd))\n\\end{tikzcd}"
+      },
+      {
+        "id": "hexagon-equation",
+        "name": "Hexagon equation",
+        "source": "\\usepackage{tikz-cd}\n\n\\begin{tikzcd}[column sep=small]\n  & (ba)c \\arrow[r, \"F\"] & b(ac) \\arrow[dr, \"R\"] & \\\\\n  (ab)c \\arrow[ur, \"R\"] \\arrow[dr, \"F\"'] & & & b(ca) \\\\\n  & a(bc) \\arrow[r, \"R\"'] & (bc)a \\arrow[ur, \"F\"'] &\n\\end{tikzcd}"
+      }
+    ]
+  },
+  {
+    "id": "tikz-feynman",
+    "name": "tikz-feynman",
+    "examples": [
+      {
+        "id": "feynman-simple",
+        "name": "Photon emission",
+        "source": "\\usepackage[compat=1.1.0]{tikz-feynman}\n\n\\begin{tikzpicture}\n  \\begin{feynman}\n    \\vertex (a) at (0,0);\n    \\vertex (i) at (-1.8,-1.2) {$e^-$};\n    \\vertex (f) at (1.8,-1.2) {$e^-$};\n    \\vertex (p) at (1.6,1.4) {$\\gamma$};\n    \\diagram* {\n      (i) -- [fermion] (a) -- [fermion] (f),\n      (a) -- [photon] (p),\n    };\n  \\end{feynman}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "s-channel",
+        "name": "Electron-positron annihilation",
+        "source": "\\usepackage[compat=1.1.0]{tikz-feynman}\n\n\\begin{tikzpicture}\n  \\begin{feynman}\n    \\vertex (a) at (0,0);\n    \\vertex (b) at (2.4,0);\n    \\vertex (i1) at (-1.6,1.5) {$e^-$};\n    \\vertex (i2) at (-1.6,-1.5) {$e^+$};\n    \\vertex (f1) at (4,1.5) {$\\mu^-$};\n    \\vertex (f2) at (4,-1.5) {$\\mu^+$};\n    \\diagram* {\n      (i1) -- [fermion] (a) -- [fermion] (i2),\n      (a) -- [photon, edge label=$\\gamma$] (b),\n      (f2) -- [fermion] (b) -- [fermion] (f1),\n    };\n  \\end{feynman}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "moller-scattering",
+        "name": "Electron-electron scattering",
+        "source": "\\usepackage[compat=1.1.0]{tikz-feynman}\n\n\\begin{tikzpicture}\n  \\begin{feynman}\n    \\vertex (a) at (0,1.2);\n    \\vertex (b) at (0,-1.2);\n    \\vertex (i1) at (-2,2) {$e^-$};\n    \\vertex (f1) at (2,2) {$e^-$};\n    \\vertex (i2) at (-2,-2) {$e^-$};\n    \\vertex (f2) at (2,-2) {$e^-$};\n    \\diagram* {\n      (i1) -- [fermion] (a) -- [fermion] (f1),\n      (i2) -- [fermion] (b) -- [fermion] (f2),\n      (a) -- [photon, edge label=$\\gamma$] (b),\n    };\n  \\end{feynman}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "compton-scattering",
+        "name": "Compton scattering",
+        "source": "\\usepackage[compat=1.1.0]{tikz-feynman}\n\n\\begin{tikzpicture}\n  \\begin{feynman}\n    \\vertex (a) at (0,0);\n    \\vertex (b) at (2.2,0);\n    \\vertex (i1) at (-1.6,-1.4) {$e^-$};\n    \\vertex (i2) at (-1.6,1.4) {$\\gamma$};\n    \\vertex (f1) at (3.8,-1.4) {$e^-$};\n    \\vertex (f2) at (3.8,1.4) {$\\gamma$};\n    \\diagram* {\n      (i1) -- [fermion] (a) -- [fermion] (b) -- [fermion] (f1),\n      (i2) -- [photon] (a),\n      (b) -- [photon] (f2),\n    };\n  \\end{feynman}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "gluon-emission",
+        "name": "Gluon emission",
+        "source": "\\usepackage[compat=1.1.0]{tikz-feynman}\n\n\\begin{tikzpicture}\n  \\begin{feynman}\n    \\vertex (a) at (0,0);\n    \\vertex (i) at (-1.8,0) {$q$};\n    \\vertex (f) at (1.8,-1.2) {$q$};\n    \\vertex (g) at (1.8,1.3) {$g$};\n    \\diagram* {\n      (i) -- [fermion] (a) -- [fermion] (f),\n      (a) -- [gluon] (g),\n    };\n  \\end{feynman}\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "optikz",
+    "name": "optikz",
+    "examples": [
+      {
+        "id": "optics-setup",
+        "name": "Optical setup",
+        "source": "\\usepackage{optikz}\n\n\\begin{tikzpicture}[scale=0.9]\n  \\draw[very thick, -{latex}] (-1.5,0) -- (4,0);\n  \\convexlens[angle=0, width=0.6] at (2,0);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "optics-mirror",
+        "name": "Beam and mirror",
+        "source": "\\usepackage{optikz}\n\n\\begin{tikzpicture}[scale=0.8]\n  \\draw[very thick, -{latex}] (-1,0) -- (2,0);\n  \\mirror[angle=-45] at (2,0);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "optics-two-lenses",
+        "name": "Two lenses",
+        "source": "\\usepackage{optikz}\n\n\\begin{tikzpicture}[scale=0.7]\n  \\draw[very thick, -{latex}] (0,0) -- (5,0);\n  \\convexlens[angle=0, width=0.5] at (1.5,0);\n  \\convexlens[angle=0, width=0.5] at (3.5,0);\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "tikzorbital",
+    "name": "tikzorbital",
+    "examples": [
+      {
+        "id": "orbital-p",
+        "name": "p_x orbital",
+        "source": "\\usepackage{tikzorbital}\n\n\\begin{tikzpicture}\n  \\orbital[scale=0.8]{px}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "orbital-py",
+        "name": "p_y orbital",
+        "source": "\\usepackage{tikzorbital}\n\n\\begin{tikzpicture}\n  \\orbital[scale=0.8]{py}\n\\end{tikzpicture}"
+      },
+      {
+        "id": "orbital-pz",
+        "name": "p_z orbital",
+        "source": "\\usepackage{tikzorbital}\n\n\\begin{tikzpicture}\n  \\orbital[scale=0.8]{pz}\n\\end{tikzpicture}"
+      }
+    ]
+  },
+  {
+    "id": "chemfig",
+    "name": "chemfig",
+    "examples": [
+      {
+        "id": "benzene",
+        "name": "Benzene ring",
+        "source": "\\usepackage{chemfig}\n\n\\chemfig{*6(-=-=-=)}"
+      },
+      {
+        "id": "ethanol",
+        "name": "Ethanol",
+        "source": "\\usepackage{chemfig}\n\n\\chemfig{H_3C-CH_2-OH}"
+      },
+      {
+        "id": "acetic-acid",
+        "name": "Acetic acid",
+        "source": "\\usepackage{chemfig}\n\n\\chemfig{CH_3-C(=[:90]O)-[:330]OH}"
+      },
+      {
+        "id": "alanine",
+        "name": "Amino acid (alanine)",
+        "source": "\\usepackage{chemfig}\n\n\\chemfig{H_2N-C(-[2]H)(-[6]CH_3)-C(=[1]O)-[7]OH}"
+      },
+      {
+        "id": "glucose",
+        "name": "Glucose (Fischer projection)",
+        "source": "\\usepackage{chemfig}\n\n\\chemfig{[6]CHO-C(-[4]H)(-[0]OH)-C(-[4]HO)(-[0]H)-C(-[4]H)(-[0]OH)-C(-[4]H)(-[0]OH)-CH_2OH}"
+      },
+      {
+        "id": "aspirin",
+        "name": "Aspirin",
+        "source": "\\usepackage{chemfig}\n\n\\chemfig{*6(=-=(-COOH)-(-O-[::-60]C(=[::-60]O)-[::60]CH_3)=-)}"
+      },
+      {
+        "id": "caffeine",
+        "name": "Caffeine",
+        "source": "\\usepackage{chemfig}\n\n\\chemfig{*6((=O)-N(-CH_3)-(=O)-N(-CH_3)-*5(-N=-N(-CH_3)-)=-)}"
+      },
+      {
+        "id": "reaction-arrow",
+        "name": "Reaction scheme",
+        "source": "\\usepackage{chemfig}\n\n\\schemestart\n\\chemfig{A} \\+ \\chemfig{B}\n\\arrow{->[catalyst][heat]}\n\\chemfig{C}\n\\schemestop"
+      },
+      {
+        "id": "esterification",
+        "name": "Esterification",
+        "source": "\\usepackage{chemfig}\n\n\\schemestart\n\\chemfig{CH_3-C(=[1]O)-[7]OH}\n\\+ \\chemfig{C_2H_5OH}\n\\arrow{<=>[H$^+$]}[,0.7]\n\\chemfig{CH_3-C(=[1]O)-[7]OC_2H_5}\n\\+ \\chemfig{H_2O}\n\\schemestop"
+      }
+    ]
+  },
+  {
+    "id": "tikz-3dplot",
+    "name": "tikz-3dplot",
+    "examples": [
+      {
+        "id": "spherical-coords",
+        "name": "3D axes with a vector",
+        "source": "\\usepackage{tikz-3dplot}\n\n\\tdplotsetmaincoords{60}{110}\n\\begin{tikzpicture}[tdplot_main_coords, scale=1.5]\n  \\draw[->] (0,0,0) -- (3,0,0) node[anchor=north east]{$x$};\n  \\draw[->] (0,0,0) -- (0,3,0) node[anchor=north west]{$y$};\n  \\draw[->] (0,0,0) -- (0,0,3) node[anchor=south]{$z$};\n  \\draw[->, thick, blue] (0,0,0) -- (1.5,1.3,1.5) node[above right]{$P$};\n  \\draw[dashed] (1.5,1.3,1.5) -- (1.5,1.3,0) -- (1.5,0,0);\n  \\draw[dashed] (1.5,1.3,0) -- (0,1.3,0);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "coordinate-grid",
+        "name": "3D coordinate planes",
+        "source": "\\usepackage{tikz-3dplot}\n\n\\tdplotsetmaincoords{70}{120}\n\\begin{tikzpicture}[tdplot_main_coords, scale=1.2]\n  \\fill[blue!12] (0,0,0) -- (2,0,0) -- (2,2,0) -- (0,2,0) -- cycle;\n  \\fill[green!15] (0,0,0) -- (2,0,0) -- (2,0,2) -- (0,0,2) -- cycle;\n  \\draw[->, thick] (0,0,0) -- (2.6,0,0) node[anchor=north east] {$x$};\n  \\draw[->, thick] (0,0,0) -- (0,2.6,0) node[anchor=north west] {$y$};\n  \\draw[->, thick] (0,0,0) -- (0,0,2.6) node[anchor=south] {$z$};\n  \\node at (1,1,0) {$xy$};\n  \\node at (1,0,1) {$xz$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "cross-product",
+        "name": "Vectors in space",
+        "source": "\\usepackage{tikz-3dplot}\n\\usetikzlibrary{arrows.meta}\n\n\\tdplotsetmaincoords{65}{115}\n\\begin{tikzpicture}[tdplot_main_coords, scale=1.5, >={Stealth}]\n  \\fill[blue!12] (0,0,0) -- (1.6,0.3,0) -- (2,1.8,0) -- (0.4,1.5,0) -- cycle;\n  \\draw[->] (0,0,0) -- (2.4,0,0) node[anchor=north east] {$x$};\n  \\draw[->] (0,0,0) -- (0,2.4,0) node[anchor=north west] {$y$};\n  \\draw[->] (0,0,0) -- (0,0,2.6) node[anchor=south] {$z$};\n  \\draw[->, very thick, blue!70!black] (0,0,0) -- (1.6,0.3,0) node[anchor=north] {$\\mathbf{a}$};\n  \\draw[->, very thick, red!70!black] (0,0,0) -- (0.4,1.5,0) node[anchor=west] {$\\mathbf{b}$};\n  \\draw[->, very thick, green!50!black] (0,0,0) -- (0,0,2.2) node[anchor=east] {$\\mathbf{a} \\times \\mathbf{b}$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "cube",
+        "name": "3D cube",
+        "source": "\\usepackage{tikz-3dplot}\n\n\\tdplotsetmaincoords{70}{110}\n\\begin{tikzpicture}[tdplot_main_coords, scale=2]\n  \\draw[thick] (0,0,0) -- (1,0,0) -- (1,1,0) -- (0,1,0) -- cycle;\n  \\draw[thick] (0,0,1) -- (1,0,1) -- (1,1,1) -- (0,1,1) -- cycle;\n  \\draw[thick] (0,0,0) -- (0,0,1);\n  \\draw[thick] (1,0,0) -- (1,0,1);\n  \\draw[thick] (1,1,0) -- (1,1,1);\n  \\draw[dashed] (0,1,0) -- (0,1,1);\n\\end{tikzpicture}"
+      },
+      {
+        "id": "cone",
+        "name": "3D cone",
+        "source": "\\usepackage{tikz-3dplot}\n\n\\tdplotsetmaincoords{70}{90}\n\\begin{tikzpicture}[tdplot_main_coords, thick]\n  \\tdplotdrawarc[dashed]{(0,0,0)}{1.2}{90}{270}{}{}\n  \\tdplotdrawarc{(0,0,0)}{1.2}{270}{450}{}{}\n  \\draw (0,1.2,0) -- (0,0,3) -- (0,-1.2,0);\n  \\draw[dashed, gray] (0,0,0) -- (0,0,3) node[pos=0.4, right, black] {$h$};\n  \\draw[dashed, gray] (0,0,0) -- (0,1.2,0) node[midway, below, black] {$r$};\n\\end{tikzpicture}"
+      },
+      {
+        "id": "spherical-sphere",
+        "name": "Sphere with spherical coordinates",
+        "source": "\\usepackage{tikz-3dplot}\n\\usetikzlibrary{arrows.meta, calc}\n\n\\tdplotsetmaincoords{70}{110}\n\\begin{tikzpicture}[tdplot_main_coords, scale=2.4, >={Stealth}]\n  \\coordinate (O) at (0,0,0);\n  \\tdplotsetcoord{P}{1}{50}{60}\n  \\draw[tdplot_screen_coords, thick, ball color=blue!8, opacity=0.6] (0,0) circle (1);\n  \\draw[gray] (0,0,0) circle (1);\n  \\draw[->] (0,0,0) -- (1.4,0,0) node[anchor=north east] {$x$};\n  \\draw[->] (0,0,0) -- (0,1.4,0) node[anchor=north west] {$y$};\n  \\draw[->] (0,0,0) -- (0,0,1.4) node[anchor=south] {$z$};\n  \\draw[->, very thick, blue!70!black] (O) -- (P) node[above right] {$P$};\n  \\draw[dashed] (O) -- (Pxy) -- (P);\n  \\tdplotdrawarc[->, orange!85!black]{(O)}{0.35}{0}{60}{anchor=north}{$\\phi$}\n  \\tdplotsetthetaplanecoords{60}\n  \\tdplotdrawarc[tdplot_rotated_coords, ->, orange!85!black]{(O)}{0.45}{0}{50}{anchor=south west}{$\\theta$}\n  \\fill (P) circle (0.6pt);\n\\end{tikzpicture}"
+      }
+    ]
+  }
+]

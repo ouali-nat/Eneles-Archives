@@ -1,0 +1,12 @@
+{
+  "name": "Systems and architecture",
+  "description": "Network topologies, memory layouts, call stacks, and processor pipelines.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "systems",
+    "architecture",
+    "networking",
+    "memory"
+  ],
+  "custom": true
+}

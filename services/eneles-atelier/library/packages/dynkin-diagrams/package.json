@@ -1,0 +1,10 @@
+{
+  "name": "dynkin-diagrams",
+  "description": "Dynkin, Coxeter, and Satake diagrams for Lie algebras.",
+  "ctanUrl": "https://ctan.org/pkg/dynkin-diagrams",
+  "tags": [
+    "dynkin",
+    "lie algebra",
+    "coxeter"
+  ]
+}

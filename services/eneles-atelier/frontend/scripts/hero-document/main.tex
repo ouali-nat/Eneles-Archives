@@ -1,0 +1,38 @@
+\documentclass[10pt]{article}
+\usepackage[a5paper, hmargin=14mm, top=8mm, bottom=12mm]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\newtheorem{theorem}{Theorem}
+\pagenumbering{gobble}
+\title{Braiding Fibonacci anyons}
+\author{Michael Atiyah \and Henri Poincar\'e \and Richard Feynman}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Topological quantum computers keep qubits in
+the fusion space of anyons~\cite{kitaev03}.
+Fibonacci anyons have one nontrivial particle,
+$\tau$, with the fusion rule
+\[ \tau \otimes \tau = 1 \oplus \tau. \]
+%TYPED%
+
+\begin{theorem}
+  The fusion space of $n$ copies of $\tau$
+  has dimension $F_{n+1}$, a Fibonacci number.
+\end{theorem}
+
+\section{Braiding}
+Exchanging two anyons that fuse to $c$ multiplies
+the state by the phase $R^{\tau\tau}_c$, where
+\[ R^{\tau\tau}_1 = e^{-4\pi i/5}, \qquad
+   R^{\tau\tau}_\tau = e^{3\pi i/5}. \]
+Changing the order of fusion is the $F$-move, and
+the two satisfy the pentagon and hexagon
+equations~\cite{kitaev06, wang10}. For how this
+becomes a computer, see the survey~\cite{nayak08}.
+
+\bibliographystyle{plain}
+{\small\bibliography{references}}
+\end{document}

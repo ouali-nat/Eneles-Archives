@@ -1,0 +1,34 @@
+\chapter{Experiments}
+\label{ch:experiments}
+
+\section{Setup}
+
+We evaluate on six node-classification benchmarks. Each model is trained with the Adam optimizer for at most 500 epochs with early stopping on the validation loss, and every number is the mean over ten random splits. All experiments ran on a single machine with 64\,GB of memory.
+
+\section{Results}
+
+Table~\ref{tab:accuracy} compares the sketched embedding with the exact one. The sketched models lose at most 0.6 points of accuracy, and on the two largest graphs the exact eigendecomposition does not fit in memory at all.
+
+\begin{table}[ht]
+  \centering
+  \caption{Test accuracy (\%) and peak memory. A dash marks runs that exceeded 64\,GB.}
+  \label{tab:accuracy}
+  \begin{tabular}{lrrrrr}
+    \toprule
+    & & \multicolumn{2}{c}{Exact} & \multicolumn{2}{c}{Sketched (ours)} \\
+    \cmidrule(lr){3-4} \cmidrule(lr){5-6}
+    Dataset & Nodes & Acc. & Mem. (GB) & Acc. & Mem. (GB) \\
+    \midrule
+    Cora & 2{,}708 & 81.4 & 0.1 & 81.1 & 0.1 \\
+    CiteSeer & 3{,}327 & 70.9 & 0.1 & 70.6 & 0.1 \\
+    PubMed & 19{,}717 & 79.2 & 3.1 & 78.9 & 0.2 \\
+    Flickr & 89{,}250 & 51.8 & 63.7 & 51.2 & 0.9 \\
+    Reddit & 232{,}965 & --- & --- & 94.3 & 2.4 \\
+    Products & 2{,}449{,}029 & --- & --- & 78.6 & 21.8 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Effect of power iterations}
+
+Theorem~\ref{thm:sketch} predicts that the error decays geometrically in the number $q$ of power iterations. On PubMed the subspace error drops from $0.41$ at $q = 1$ to $0.03$ at $q = 4$, after which it is dominated by floating-point error. We use $q = 4$ everywhere else.

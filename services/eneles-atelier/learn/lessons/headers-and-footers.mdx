@@ -1,0 +1,157 @@
+---
+title: "Headers and footers"
+description: "Page styles, custom headers and footers with fancyhdr, page numbering, and a different first page."
+summary: "Headers and footers in LaTeX: page styles, custom headers with fancyhdr, running titles and page counts, page numbering styles, and a different first page."
+keywords: ["fancyhdr","\\pagestyle","\\thispagestyle","plain","empty","headings","myheadings","fancy","\\fancyhf","\\fancyhead","\\fancyfoot","\\headrulewidth","\\footrulewidth","\\fancypagestyle","\\leftmark","\\rightmark","\\nouppercase","\\markboth","\\markright","page number","page numbers","\\pagenumbering","\\thepage","roman","arabic","\\setcounter{page}","lastpage","page x of y","running head","running title","header","footer","headheight too small","remove page number"]
+---
+
+# Headers and footers
+
+Put running titles and page numbers at the top and bottom of every page, change how pages are numbered, and give the first page its own treatment.
+
+## Built-in page styles
+
+Every page has a page style that decides what the header and footer hold. `\pagestyle` sets it from that point on, and `\thispagestyle` sets it for the current page only. The examples on this page use A6 paper so that the header and footer are easy to see.
+
+| Style | Header | Footer |
+| --- | --- | --- |
+| `plain` | Empty | Page number, centred. The default in `article` and `report` |
+| `empty` | Empty | Empty |
+| `headings` | Section or chapter title and page number | Empty. The default in `book` |
+| `myheadings` | Text you set with `\markboth` or `\markright`, and the page number | Empty |
+
+```latex-document
+\documentclass{article}
+\usepackage[a6paper, margin=12mm, includehead, includefoot]{geometry}
+\usepackage{lipsum}
+\pagestyle{headings}
+\begin{document}
+\section{Sampling}
+\lipsum[1][1-7]
+\end{document}
+```
+
+## Custom headers with fancyhdr
+
+The `fancyhdr` package gives you three slots in the header and three in the footer. Switch to its `fancy` style, clear every slot with `\fancyhf{}`, then fill the ones you want.
+
+```latex-document
+\documentclass{article}
+\usepackage[a6paper, margin=12mm, includehead, includefoot, headheight=15pt]{geometry}
+\usepackage{fancyhdr}
+\usepackage{lipsum}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Field report}
+\fancyhead[R]{M. Okafor}
+\fancyfoot[C]{\thepage}
+\begin{document}
+\section{Sampling}
+\lipsum[1][1-6]
+\end{document}
+```
+
+The letter in brackets picks the slot: `L`, `C`, or `R`. Several slots can share one command, as in `\fancyhead[L,R]{…}`. The line under the header is `\headrulewidth` thick, and the footer has a matching `\footrulewidth` that starts at zero:
+
+```latex
+\renewcommand{\headrulewidth}{0pt}    % no line under the header
+\renewcommand{\footrulewidth}{0.4pt}  % a line above the footer
+```
+
+In a two-sided document, add `E` or `O` for even and odd pages. `\fancyhead[LE,RO]{\thepage}` puts the page number on the outer edge of every page.
+
+## Running titles and page counts
+
+LaTeX records the current chapter and section as it goes. In the `fancy` style, `\leftmark` holds the higher level (the chapter in `book`, the section in `article`), and `\rightmark` holds the level below it. Use them in a slot to get a running title. To print "Page 2 of 9", load `lastpage` and refer to its `LastPage` label.
+
+```latex-document
+\documentclass{article}
+\usepackage[a6paper, margin=12mm, includehead, includefoot, headheight=15pt]{geometry}
+\usepackage{fancyhdr, lastpage}
+\usepackage{lipsum}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\itshape\nouppercase{\leftmark}}
+\fancyfoot[R]{Page \thepage\ of \pageref{LastPage}}
+\begin{document}
+\section{Sampling}
+\lipsum[1-3]
+\end{document}
+```
+
+The marks arrive in capitals in the standard classes. `\nouppercase` turns that off.
+
+## Page numbering styles and restarts
+
+`\pagenumbering` changes how the number is printed and resets it to 1. Use it at the start of a page, usually right after `\clearpage`, because it applies to the page being built.
+
+| Argument | Prints |
+| --- | --- |
+| `arabic` | 1, 2, 3 |
+| `roman` | i, ii, iii |
+| `Roman` | I, II, III |
+| `alph` | a, b, c |
+| `Alph` | A, B, C |
+
+```latex-document
+\documentclass{article}
+\usepackage[a6paper, margin=12mm, includefoot]{geometry}
+\begin{document}
+\pagenumbering{roman}
+\section*{Preface}
+These pages are numbered i, ii, iii.
+
+\clearpage
+\pagenumbering{arabic}
+\section{Introduction}
+Numbering restarts at 1 here.
+\end{document}
+```
+
+To continue from a specific number without changing the style, set the counter: `\setcounter{page}{5}`. `\thepage` prints the number in the current style anywhere in the text.
+
+## A different first page
+
+`\maketitle` and `\chapter` quietly switch their page to the `plain` style, which is why a title page ignores your `fancy` header. You have two choices. Redefine `plain` with `\fancypagestyle` to control what those pages show:
+
+```latex-document
+\documentclass{article}
+\usepackage[a6paper, margin=12mm, includehead, includefoot, headheight=15pt]{geometry}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Field report}
+\fancyfoot[C]{\thepage}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \fancyfoot[C]{Draft, not for circulation}%
+}
+\title{Field report}
+\author{M. Okafor}
+\date{March 2025}
+\begin{document}
+\maketitle
+The first page has no header and its own footer. Later pages use the fancy style.
+\end{document}
+```
+
+Or remove everything from one page by putting `\thispagestyle{empty}` after the command that starts it:
+
+```latex
+\maketitle
+\thispagestyle{empty}
+```
+
+## Common mistakes
+
+- Skipping `\fancyhf{}`. The `fancy` style starts with its own defaults (section titles in the header, the page number in the footer), so your text appears next to content you did not ask for. Clear the slots first.
+- Ignoring "`\headheight` is too small". `fancyhdr` warns when the header is taller than the space reserved for it, and the text area shifts down the page. Set the height the warning suggests, for example `\setlength{\headheight}{15pt}` or the `headheight=15pt` option of `geometry`.
+- Writing `\thispagestyle{empty}` before `\maketitle`. The title resets the style to `plain`, so the page number comes back. Put it after.
+- Calling `\pagenumbering` in the middle of a page. The whole page, including text above the command, gets the new style. Use `\clearpage` first.
+
+## Next
+
+- [Page layout](/learn/page-layout)
+- [Thesis structure](/learn/thesis-structure)
+- [Sections and structure](/learn/sections-and-structure)

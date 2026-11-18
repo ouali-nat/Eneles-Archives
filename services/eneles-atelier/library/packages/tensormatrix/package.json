@@ -1,0 +1,10 @@
+{
+  "name": "tensormatrix",
+  "description": "Matrix representations of tensors with indices.",
+  "ctanUrl": "https://ctan.org/pkg/tensormatrix",
+  "tags": [
+    "tensor",
+    "matrix",
+    "indices"
+  ]
+}

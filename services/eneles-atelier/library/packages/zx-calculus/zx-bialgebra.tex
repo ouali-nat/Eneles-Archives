@@ -1,0 +1,16 @@
+% Name: Bialgebra rule
+% Description: Two Z spiders fully connected to two X spiders equal one X spider joined to one Z spider.
+% Tags: bialgebra, rewrite rule, ZX
+
+\usepackage{zx-calculus}
+
+$\begin{ZX}
+  \zxN{} \rar & \zxZ{} \rar \ar[rd] & \zxX{} \rar & \zxN{} \\
+  \zxN{} \rar & \zxZ{} \rar \ar[ru] & \zxX{} \rar & \zxN{}
+\end{ZX}
+=
+\begin{ZX}
+  \zxN{} \ar[rd] & & & \zxN{} \\
+  & \zxX{} \rar & \zxZ{} \ar[ru] \ar[rd] & \\
+  \zxN{} \ar[ru] & & & \zxN{}
+\end{ZX}$

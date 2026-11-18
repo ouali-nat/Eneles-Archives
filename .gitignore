@@ -1,0 +1,23 @@
+# Node dependencies and build artifacts (including the integrated Atelier monorepo)
+**/node_modules/
+**/.next/
+**/dist/
+**/coverage/
+**/.turbo/
+**/.cache/
+**/generated/prisma/
+**/.env
+**/.env.*
+!**/.env.example
+**/*.log
+**/playwright-report/
+**/test-results/
+.DS_Store
+
+# Never commit developer/private TLS material from optional Office add-ins
+**/*.key
+**/*.pem
+**/ca-private/
+**/.content-cache/
+services/eneles-atelier/frontend/content/
+services/eneles-atelier/frontend/public/tikz-previews/

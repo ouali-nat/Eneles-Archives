@@ -1,0 +1,790 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                   Int              @id @default(autoincrement())
+  email                String           @unique
+  /// Stable identity from Eneles Supabase Auth; never supplied as a trusted client field.
+  supabaseUserId       String?          @unique
+  name                 String
+  bio                  String?
+  affiliation          String?
+  accountStatus        AccountStatus    @default(active)
+  location             String?
+  avatarUrl            String?
+  subscriptionType     SubscriptionType @default(free)
+  verified             Boolean          @default(false)
+  twoFactorEnabled     Boolean          @default(false)
+  twoFactorSecret      String?
+  /// May open the operators' panel. Set by the root administrator from the panel, or by hand in the database; never by the account itself.
+  isAdmin              Boolean          @default(false)
+  settings             Json             @default("[\"system\"]")
+  notificationSettings Json             @default("[true, true, true, false, true]")
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  apiKeys              ApiKey[]
+  otps                 OTP[]
+  payments             Payment[]
+  pdfs                 PDF[]
+  sessions             Session[]
+  snips                Snip[]
+  subscription         Subscription?
+  usageRecords         UsageRecord[]
+  aiUsage              AiUsage[]
+  projects             Project[]
+  collaborations       ProjectCollaborator[]
+  sentInvitations      ProjectInvitation[]   @relation("inviter")
+  editorSettings       EditorSettings?
+  dictionary           UserDictionary?
+  macros               UserMacro[]
+  assistantCommands    AssistantCommand[]
+  aiProviderKeys       AiProviderKey[]
+  aiPreference         AiPreference?
+  customTemplates      Template[]
+  commentThreads       CommentThread[]  @relation("CommentThreadAuthor")
+  commentMessages      CommentMessage[] @relation("CommentMessageAuthor")
+  chatMessages         ProjectChatMessage[]
+
+  @@map("users")
+}
+
+model Session {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  token      String   @unique
+  deviceType String
+  browser    String
+  os         String
+  ipAddress  String?
+  location   String?
+  isActive   Boolean  @default(true)
+  lastActive DateTime @default(now())
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@index([userId, isActive])
+  @@map("sessions")
+}
+
+model Subscription {
+  id                     Int                @id @default(autoincrement())
+  userId                 Int                @unique
+  stripeCustomerId       String             @unique
+  stripeSubscriptionId   String?            @unique
+  stripePriceId          String?
+  stripeCurrentPeriodEnd DateTime?
+  status                 SubscriptionStatus @default(active)
+  cancelAtPeriodEnd      Boolean            @default(false)
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+  user                   User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model Payment {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  stripePaymentId String   @unique
+  amount          Int
+  currency        String   @default("usd")
+  status          String
+  description     String?
+  receiptUrl      String?
+  createdAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("payments")
+}
+
+model Snip {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  title        String
+  imagePath    String
+  latexContent String?
+  originalText String?
+  status       Status   @default(pending)
+  tags         String[] @default([])
+  fileSize     Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("snips")
+}
+
+model PDF {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  title        String
+  filePath     String
+  fileSize     Int?
+  pageCount    Int?
+  latexContent String?
+  status       Status   @default(pending)
+  tags         String[] @default([])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("pdfs")
+}
+
+model OTP {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  code      String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("otps")
+}
+
+model UsageRecord {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  month           Int
+  year            Int
+  snipsUsed       Int      @default(0)
+  pdfPagesUsed    Int      @default(0)
+  conversionsUsed Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, month, year])
+  @@index([userId])
+  @@map("usage_records")
+}
+
+/// One use of a paid model on the user's behalf: an assistant message or a dictated clip. It records how much was used, never what was said.
+model AiUsage {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  /// "chat" or "dictation".
+  kind         String
+  provider     String?
+  model        String?
+  /// Round trips to the model: one assistant message can take several while it reads and edits files.
+  requests     Int      @default(1)
+  inputTokens  Int      @default(0)
+  outputTokens Int      @default(0)
+  /// Bytes of audio for dictation.
+  audioBytes   Int      @default(0)
+  durationMs   Int      @default(0)
+  ok           Boolean  @default(true)
+  /// Whose key paid for it: "own" (the person's key), "platform" (ours), or "local" (the development script, no model).
+  keySource    String?
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([createdAt])
+  @@map("ai_usage")
+}
+
+model ApiKey {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  name       String
+  keyHash    String    @unique
+  keyPrefix  String
+  lastUsedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([keyHash])
+  @@map("api_keys")
+}
+
+model Project {
+  id             Int                   @id @default(autoincrement())
+  uid            String                @unique
+  userId         Int
+  title          String
+  status         Status                @default(pending)
+  tags           String[]              @default([])
+  color          String?
+  access         ProjectAccess         @default(private)
+  archived       Boolean               @default(false)
+  pendingAiDiff Json?                 // { edits: [{ path, oldContent, newContent }], message?: string }; persists until Accept/Reject
+  /// Set when this project is a reference paper attached to another project: it is listed in that project's References panel, not among the owner's projects, and access to it follows the parent's.
+  referenceOfId  Int?
+  /// The arXiv identifier a reference was imported from, e.g. 1706.03762v7.
+  arxivId        String?
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  files          ProjectFile[]
+  collaborators  ProjectCollaborator[]
+  invitations    ProjectInvitation[]
+  settings       ProjectSettings?
+  revisions      ProjectRevision[]
+  undoStack      UndoEntry[]
+  fileHistory    FileHistory[]
+  filePathMoves  FilePathMove[]
+  yjsDocument    YjsDocument?
+  commentThreads CommentThread[]
+  chatMessages   ProjectChatMessage[]
+  githubLink     ProjectGitHubLink?
+  referenceOf    Project?              @relation("ProjectReferences", fields: [referenceOfId], references: [id], onDelete: Cascade)
+  references     Project[]             @relation("ProjectReferences")
+
+  @@index([userId])
+  @@index([uid])
+  @@index([referenceOfId])
+  @@map("projects")
+}
+
+model ProjectFile {
+  id        Int      @id @default(autoincrement())
+  projectId Int
+  path      String
+  content   String?
+  /// Storage key for an image or other binary file; content is then null.
+  filePath  String?
+  /// Bytes, for binary files, counted against the owner's upload storage.
+  size      Int?
+  isMain    Boolean  @default(false)
+  isFolder  Boolean  @default(false)
+  /// Optimistic-locking counter. Incremented on every content write. Clients
+  /// that pass `expectedVersion` get a 409 instead of silently clobbering a
+  /// concurrent write; clients that omit it keep last-writer-wins behaviour.
+  version   Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, path])
+  @@index([projectId])
+  @@map("project_files")
+}
+
+model ProjectCollaborator {
+  id        Int              @id @default(autoincrement())
+  projectId Int
+  userId    Int
+  role      CollaboratorRole @default(viewer)
+  addedAt   DateTime         @default(now())
+  project   Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@index([userId])
+  @@map("project_collaborators")
+}
+
+model ProjectInvitation {
+  id        Int              @id @default(autoincrement())
+  projectId Int
+  email     String
+  role      CollaboratorRole @default(viewer)
+  token     String           @unique
+  status    InvitationStatus @default(pending)
+  invitedBy Int
+  expiresAt DateTime
+  createdAt DateTime         @default(now())
+  project   Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  inviter   User             @relation("inviter", fields: [invitedBy], references: [id])
+
+  @@unique([projectId, email])
+  @@index([token])
+  @@index([email])
+  @@index([email, status])
+  @@map("project_invitations")
+}
+
+enum SubscriptionType {
+  free
+  pro
+  team
+  enterprise
+}
+
+enum Status {
+  pending
+  processing
+  completed
+  error
+}
+
+enum SubscriptionStatus {
+  active
+  canceled
+  past_due
+  incomplete
+  trialing
+}
+
+enum CollaboratorRole {
+  viewer
+  editor
+}
+
+enum InvitationStatus {
+  pending
+  accepted
+  declined
+}
+
+enum AccountStatus {
+  active
+  deleted
+  /// Disabled by an administrator: cannot sign in, and every session ended when it was set. Undone from the admin panel.
+  suspended
+}
+
+enum ProjectAccess {
+  private
+  view
+  edit
+}
+
+model EditorSettings {
+  id               Int      @id @default(autoincrement())
+  userId           Int      @unique
+  autoComplete     Boolean  @default(true)
+  autoCloseBrackets Boolean @default(true)
+  codeCheck        Boolean  @default(true)
+  spellcheckLang   String   @default("en")
+  theme            String   @default("dark")
+  editorTheme      String   @default("thry")
+  pdfTheme         String   @default("light")
+  fontSize         Int      @default(16)
+  fontFamily       String   @default("Consolas")
+  lineHeight       String   @default("normal")
+  updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("editor_settings")
+}
+
+model ProjectSettings {
+  id               Int      @id @default(autoincrement())
+  projectId        Int      @unique
+  mainDocument     String   @default("main.tex")
+  compiler         String   @default("pdflatex")
+  texLiveVersion   String   @default("2024")
+  compileMode      String   @default("normal")
+  stopOnFirstError Boolean  @default(false)
+  autoCompile      Boolean  @default(false)
+  tabSize          Int      @default(4)
+  macrosEnabled    Boolean  @default(true)
+  snippetsEnabled  Boolean  @default(true)
+  updatedAt        DateTime @updatedAt
+  project          Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("project_settings")
+}
+
+model UserDictionary {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  words     String[] @default([])
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_dictionaries")
+}
+
+/// Published checkpoints (e.g. from "Publish" action). Delta-based: stores diff from previous revision.
+/// Git commit SHA can be stored when using git; otherwise we rely on DB.
+model ProjectRevision {
+  id          Int       @id @default(autoincrement())
+  projectId   Int
+  sequence    Int       // ordering within project
+  message     String?   // commit / publish message
+  gitCommitSha String?   // when using git integration
+  delta       Json      // diff/delta from previous revision (or full snapshot if first)
+  createdAt   DateTime  @default(now())
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, sequence])
+  @@index([projectId])
+  @@index([projectId, createdAt])
+  @@map("project_revisions")
+}
+
+/// Undo stack: last 50 operations per project. Reverts working state.
+/// source = 'user' | 'ai' for tagging.
+model UndoEntry {
+  id        Int       @id @default(autoincrement())
+  projectId Int
+  filePath  String
+  beforeContent String // content before the edit (or delta in future)
+  afterContent  String // content after the edit
+  source    String    @default("user") // 'user' | 'ai'
+  sequence  Int       // higher = more recent
+  createdAt DateTime  @default(now())
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([projectId, sequence])
+  @@map("undo_entries")
+}
+
+/// User macro overrides. Only stores macros that differ from the universal defaults.
+/// The API merges these with DEFAULT_MACROS at read time.
+model UserMacro {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  name      String   // e.g. "R", "N", "Z"
+  expansion String   // e.g. "\\mathbb{R}"
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, name])
+  @@index([userId])
+  @@map("user_macros")
+}
+
+/// A slash command a person added to the assistant: "/name" in the composer sends `prompt`. The built-in commands live in the frontend; only the person's own are stored.
+model AssistantCommand {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  name         String   // typed after the slash: lowercase letters, digits, hyphens
+  description  String   // one line shown under the name in the list
+  prompt       String   // what is sent; {file} is the open file's path and {input} what was typed after the command
+  useSelection Boolean  @default(true) // attach the editor's selection when there is one
+  position     Int      @default(0)
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, name])
+  @@index([userId])
+  @@map("assistant_commands")
+}
+
+/// A person's own API key for one model provider, for the assistant to call that provider on their behalf. The key is sealed with AES-256-GCM under AI_KEY_SECRET and is never sent back to the browser: only its last four characters are kept in the clear, to tell keys apart.
+model AiProviderKey {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  /// anthropic, openai, gemini, openrouter, mistral, groq, xai, deepseek, or compatible.
+  provider   String
+  /// iv.tag.ciphertext, each base64.
+  sealedKey  String
+  last4      String
+  /// Only for the OpenAI-compatible provider: where its API lives.
+  baseUrl    String?
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime?
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, provider])
+  @@map("ai_provider_keys")
+}
+
+/// How a person likes the assistant set up: the model it uses by default, and optional settings sent with every request.
+model AiPreference {
+  userId          Int      @id
+  provider        String?
+  model           String?
+  temperature     Float?
+  maxOutputTokens Int?
+  /// Added to the assistant's instructions, at most 2000 characters.
+  systemNote      String?
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("ai_preferences")
+}
+
+/// Settings for the whole platform, changed by the root administrator. One row per setting; `platform_ai` holds { enabled } (whether subscribers may use the platform's own model keys).
+model PlatformSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+  updatedBy Int?
+
+  @@map("platform_settings")
+}
+
+/// Per-file version history, Overleaf-style.
+/// One row per Ctrl+S save per file. Retained for 30 days (see expiresAt).
+/// Content is stored as the full snapshot (no delta) for simplicity.
+/// label = optional user tag ("Submitted to journal", etc.)
+model FileHistory {
+  id         Int      @id @default(autoincrement())
+  projectId  Int
+  filePath   String   // relative path within the project, e.g. "main.tex"
+  version    Int      // monotonically increasing per-file counter
+  content    String   // full file content at this point in time
+  label      String?  // optional user label
+  userId     Int?     // who saved it (the person whose save or autosave sent it); null when the server wrote it as a live session closed
+  userName   String?  // the saver's name at the time, shown if their account is later deleted
+  linesAdded   Int?   // lines added against the previous version of this file; null on rows from before this was recorded (filled in when first listed)
+  linesRemoved Int?   // lines removed against the previous version of this file
+  restoredFromId Int? // the history row this version restored, when it is a restore
+  expiresAt  DateTime // createdAt + 30 days; rows past this are eligible for cleanup
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) // the last write to this snapshot: saves less than a minute apart by the same people fold into one row
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  authors    FileHistoryAuthor[]
+
+  @@unique([projectId, filePath, version])
+  @@index([projectId, filePath])
+  @@index([projectId, filePath, createdAt])
+  @@index([projectId, id])
+  @@index([expiresAt]) // for TTL cleanup queries
+  @@map("file_history")
+}
+
+/// Who changed a file between one history snapshot and the one before it. Several people's live edits merge into one document, so a snapshot can have several authors; `edits` counts the changes each one's socket sent for this file since the previous snapshot (0 when the change did not come through the live session, e.g. a save with no socket, or a restore). People are kept by id with no foreign key, so their history outlives their membership and their account; `name` is the name they had then, shown if the account is gone.
+model FileHistoryAuthor {
+  historyId Int
+  projectId Int
+  userId    Int
+  name      String
+  edits     Int         @default(0)
+  history   FileHistory @relation(fields: [historyId], references: [id], onDelete: Cascade)
+
+  @@id([historyId, userId])
+  @@index([projectId, userId])
+  @@map("file_history_authors")
+}
+
+/// A file or folder took a new path. History is kept under the path a file had when it was saved, so this is how the History panel tells a renamed file from a deleted one.
+model FilePathMove {
+  id        Int      @id @default(autoincrement())
+  projectId Int
+  fromPath  String
+  toPath    String
+  createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, fromPath])
+  @@map("file_path_moves")
+}
+
+/// Server-authoritative Yjs (CRDT) state, one row per project.
+///
+/// Without this the Y.Doc lives only in the gateway's memory: it is created
+/// when the first collaborator joins and destroyed when the last one leaves,
+/// so any edit made after the last REST autosave, or any edit at all if the
+/// server restarts mid-session, is silently lost. Persisting the encoded doc
+/// lets a room be rehydrated with its full CRDT history intact, which also
+/// means a returning client's state vector still diffs correctly instead of
+/// being force-fed a fresh document.
+model YjsDocument {
+  id         Int      @id @default(autoincrement())
+  projectUid String   @unique
+  /// Y.encodeStateAsUpdate(doc): opaque binary, not human-readable.
+  state      Bytes
+  /// Rough size of `state` in bytes, denormalised so monitoring/cleanup can
+  /// find runaway documents without loading the blob.
+  sizeBytes  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  project    Project  @relation(fields: [projectUid], references: [uid], onDelete: Cascade)
+
+  @@index([updatedAt])
+  @@map("yjs_documents")
+}
+/// Immutable audit trail for security-relevant events.
+/// Structured so it can serve as evidence in a security review or incident
+/// investigation. Records are NEVER deleted. Archive to cold storage after 90 days if needed.
+model AuditLog {
+  id           Int      @id @default(autoincrement())
+  /// The authenticated user who performed the action (null for unauthenticated events)
+  userId       Int?
+  /// Action verb: login.success, login.fail, otp.lockout, resource.create,
+  ///   resource.update, resource.delete, auth.logout, account.delete, invite.send, etc.
+  action       String
+  /// Resource type: user, project, snip, pdf, api_key, session, billing, etc.
+  resource     String?
+  /// Primary key of the affected resource (uid or id as string)
+  resourceId   String?
+  /// Outcome: success | failure | blocked
+  outcome      String   @default("success")
+  /// IP address of the request originator
+  ipAddress    String?
+  /// User-Agent header (truncated to 255 chars)
+  userAgent    String?
+  /// Additional structured context (e.g. changed fields, error codes)
+  metadata     Json?
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([resource, resourceId])
+  @@index([createdAt])
+  @@index([userId, createdAt])
+  @@map("audit_logs")
+}
+
+/// Custom user-created templates. Users can save project layouts as reusable templates.
+/// isPublic templates are visible to all users; private ones are only visible to the creator.
+model Template {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  name        String
+  description String?
+  category    String    @default("custom")
+  content     String    // Main .tex file content
+  files       Json?     // Additional files: [{ path: string, content: string }]
+  isPublic    Boolean   @default(false)
+  tags        String[]  @default([])
+  usageCount  Int       @default(0)
+  /// A shared template reaches other people only once a reviewer approves it.
+  /// Any edit to a shared template sends it back for review.
+  review      TemplateReview @default(none)
+  reviewedAt  DateTime?
+  /// Shown to the author: why a template was not approved.
+  reviewNote  String?
+  /// People who reported it. Enough reports hide it until it is reviewed again.
+  reportedBy  Int[]     @default([])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isPublic, category])
+  @@index([isPublic, name])
+  @@index([isPublic, review])
+  @@map("templates")
+}
+
+enum TemplateReview {
+  none
+  pending
+  approved
+  rejected
+}
+
+/// A comment on a range of a project file, with its replies.
+model CommentThread {
+  id           Int              @id @default(autoincrement())
+  projectId    Int
+  path         String
+  /// Yjs relative positions (base64) of the range's two ends, so the comment
+  /// follows the text as people edit around it.
+  anchorStart  String?
+  anchorEnd    String?
+  /// The text commented on, and where it was, to find it again without Yjs.
+  quote        String
+  offset       Int              @default(0)
+  /// The highlight's hue, one of the interface's named hues ("amber", "teal"…); null draws the default, amber.
+  color        String?
+  resolved     Boolean          @default(false)
+  resolvedAt   DateTime?
+  resolvedById Int?
+  createdById  Int
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  project      Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdBy    User             @relation("CommentThreadAuthor", fields: [createdById], references: [id], onDelete: Cascade)
+  messages     CommentMessage[]
+
+  @@index([projectId, path])
+  @@map("comment_threads")
+}
+
+model CommentMessage {
+  id        Int           @id @default(autoincrement())
+  threadId  Int
+  authorId  Int
+  content   String
+  createdAt DateTime      @default(now())
+  editedAt  DateTime?
+  thread    CommentThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  author    User          @relation("CommentMessageAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([threadId])
+  @@map("comment_messages")
+}
+
+/// The project's chat, beside the editor.
+model ProjectChatMessage {
+  id        Int      @id @default(autoincrement())
+  projectId Int
+  userId    Int
+  content   String
+  createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, createdAt])
+  @@map("project_chat_messages")
+}
+
+/// A project kept in step with a GitHub repository by the owner's pushes and pulls.
+model ProjectGitHubLink {
+  id            Int       @id @default(autoincrement())
+  projectId     Int       @unique
+  /// "owner/name"
+  repo          String
+  branch        String
+  /// The owner's GitHub token, encrypted (AES-256-GCM).
+  token         String
+  /// The GitHub commit the project matched at the last push or pull.
+  lastCommitSha String?
+  /// Each file's git blob id at the last push or pull, by path.
+  fileShas      Json      @default("{}")
+  lastSyncedAt  DateTime?
+  linkedById    Int
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  project       Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("project_github_links")
+}
+
+/// An email the API sent through Resend, and what has happened to it since (Resend's webhook, POST /email/webhook). The admin panel's Email page reads these. A sign-in code's subject is never kept (it holds the code), and any 4 to 8 digit number in a kept subject is masked.
+model EmailMessage {
+  id            Int          @id @default(autoincrement())
+  /// Resend's id for the email.
+  resendId      String       @unique
+  /// "sign-in code", "admin sign-in code", "invitation", "contact", or "other" (an email Resend reported that this API did not record when sending).
+  kind          String
+  recipients    String[]
+  sender        String?
+  subject       String?
+  /// The furthest the email got: "sent", "delivery_delayed", "delivered", "opened", "clicked", "bounced", "complained", or "failed".
+  status        String       @default("sent")
+  bounceType    String?
+  bounceMessage String?
+  deliveredAt   DateTime?
+  openedAt      DateTime?
+  clickedAt     DateTime?
+  bouncedAt     DateTime?
+  complainedAt  DateTime?
+  lastEventAt   DateTime?
+  createdAt     DateTime     @default(now())
+  events        EmailEvent[]
+
+  @@index([createdAt])
+  @@index([status, createdAt])
+  @@map("email_messages")
+}
+
+/// One webhook event from Resend for an email. `webhookId` (Svix's message id) makes a retried delivery count once.
+model EmailEvent {
+  id         Int          @id @default(autoincrement())
+  messageId  Int
+  message    EmailMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  type       String
+  occurredAt DateTime
+  webhookId  String       @unique
+  /// The event's detail without the email's content: a bounce's type and reason, a click's link host.
+  detail     Json?
+  createdAt  DateTime     @default(now())
+
+  @@index([messageId, occurredAt])
+  @@map("email_events")
+}

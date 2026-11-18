@@ -1,0 +1,14 @@
+% Name: Two-state machine
+% Description: A minimal two-state finite state machine.
+% Tags: FSM, toggle, state machine
+
+\usetikzlibrary{automata, positioning}
+
+\begin{tikzpicture}[shorten >=1pt, node distance=3cm, on grid, auto]
+  \node[state, initial] (S0) {On};
+  \node[state, accepting] (S1) [right=of S0] {Off};
+
+  \path[->]
+    (S0) edge[bend left] node{press} (S1)
+    (S1) edge[bend left] node{press} (S0);
+\end{tikzpicture}

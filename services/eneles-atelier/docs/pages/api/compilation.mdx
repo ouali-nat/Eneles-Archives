@@ -1,0 +1,67 @@
+---
+title: "Compilation"
+description: "Compile LaTeX to PDF and read the build log."
+summary: "The Eneles REST API for compiling: send LaTeX source or name a project, get a signed URL to the compiled PDF, and read the build log for errors."
+keywords: ["compile","pdf","latex","build","log","errors"]
+method: POST
+---
+
+# Compilation
+
+Compile LaTeX source to PDF in seconds. Send raw source code or reference an existing project. The response includes a signed URL to download the compiled PDF (valid for 1 hour).
+
+## Overview
+
+The compilation endpoint accepts either inline LaTeX source or a project UID. When a project UID is provided, the API pulls the latest saved files from that project and compiles them together. Compilation logs are always returned in the response, so check the `logs` field for warnings or errors if the build fails. The `pdf_url` in a successful response is a signed URL that expires after 1 hour; fetch or share it before then.
+
+---
+
+### POST /compile
+
+Compile LaTeX source to PDF. You can send raw source code directly, or reference a project by its UID to compile its current files.
+
+**Auth:** Bearer token or API key
+
+#### Compile from raw source
+
+```bash
+curl -X POST https://api.texer.org/compile \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "source": "\\documentclass{article}\n\\begin{document}\nHello, world!\n\\end{document}"
+  }'
+```
+
+#### Compile from a project
+
+```bash
+curl -X POST https://api.texer.org/compile \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"project_uid": "prj_n7w3q8"}'
+```
+
+#### Success response
+
+```json
+{
+  "status": "success",
+  "pdf_url": "https://cdn.texer.org/compiled/cmp_a2b4c6.pdf",
+  "expires_at": "2025-06-15T10:10:00Z",
+  "logs": "This is pdfTeX, Version 3.14159265...",
+  "compile_time_ms": 2340
+}
+```
+
+#### Error response
+
+If the LaTeX source contains errors, the API returns a `422` status with diagnostic information:
+
+```json
+{
+  "status": "error",
+  "logs": "! Undefined control sequence.\nl.4 \\invalid\n",
+  "compile_time_ms": 980
+}
+```

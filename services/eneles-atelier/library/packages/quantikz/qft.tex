@@ -1,0 +1,10 @@
+% Name: Quantum Fourier transform, two qubits
+% Description: A 2-qubit QFT circuit.
+% Tags: QFT, fourier transform
+
+\usepackage{quantikz}
+
+\begin{quantikz}
+  \lstick{} & \gate{H} & \gate{R_z(\pi/2)} & \qw \\
+  \lstick{} & \qw & \ctrl{-1} & \gate{H}
+\end{quantikz}

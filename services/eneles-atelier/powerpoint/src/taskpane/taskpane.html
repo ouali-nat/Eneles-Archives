@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Eneles</title>
+    <link rel="stylesheet" href="taskpane.css" />
+    <script>
+      (function () {
+        try {
+          var raw = localStorage.getItem("texer-ppt.settings.v1");
+          var theme = raw ? JSON.parse(raw).theme : null;
+          if (theme !== "light" && theme !== "dark") {
+            theme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          }
+          if (theme === "dark") document.documentElement.classList.add("dark");
+        } catch (e) {}
+      })();
+    </script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [
+            ["$", "$"],
+            ["\\(", "\\)"],
+          ],
+          displayMath: [
+            ["$$", "$$"],
+            ["\\[", "\\]"],
+          ],
+          packages: { "[+]": ["ams", "boldsymbol", "cancel", "color", "mhchem", "physics", "braket"] },
+        },
+        svg: { fontCache: "none" },
+        startup: { typeset: false },
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg-full.js"></script>
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  </head>
+  <body>
+    <header class="top">
+      <div class="brand" title="Eneles">
+        <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 30" role="img" aria-label="Eneles">
+          <g fill="currentColor">
+            <path d="M4.26,21.65v-.22c0-.25.2-.46.45-.46.93-.01,1.84-.07,2.72-.18,1.03-.12,1.54-.4,1.54-.85V2.17c0-.46-.13-.75-.39-.86-.26-.11-.68-.17-1.26-.17h-1.36c-1.78,0-3.05.39-3.8,1.17-.39.39-.67,1.01-.84,1.87-.15.77-.28,1.7-.39,2.82-.02.24-.22.42-.46.42h-.02C.19,7.41-.02,7.18,0,6.91L.54.42c.02-.24.22-.42.46-.42h18.93c.24,0,.44.18.46.42l.54,6.49c.02.27-.19.5-.46.5h-.03c-.24,0-.44-.18-.46-.42-.12-1.2-.24-2.16-.38-2.89-.15-.82-.43-1.41-.83-1.79-.76-.78-2.02-1.17-3.79-1.17h-1.36c-.39,0-.69.02-.91.05-.22.03-.39.12-.53.28-.14.15-.21.39-.21.7v17.78c0,.44.51.72,1.53.85.88.1,1.78.16,2.69.18.25,0,.45.21.45.46v.22c0,.25-.21.46-.46.46H4.72c-.25,0-.46-.21-.46-.46Z" />
+            <path d="M17.77,29.04v-.22c0-.25.2-.45.45-.46,1.93-.04,2.9-.39,2.9-1.02V9.55c0-.64-.97-.98-2.9-1.02-.25,0-.45-.21-.45-.46v-.22c0-.25.21-.46.46-.46h17.43c.23,0,.43.17.46.4l.79,6.49c.03.27-.18.52-.46.52h0c-.23,0-.42-.17-.46-.4-.23-1.66-.53-2.88-.92-3.66-.42-.84-1.08-1.42-2-1.74-.92-.32-2.29-.47-4.13-.47h-3.18c-.39,0-.69.02-.91.05-.22.03-.39.12-.53.28-.14.15-.21.39-.21.7v7.44c0,.25.21.46.46.46h1.93c1.1,0,1.92-.09,2.46-.28.54-.18.92-.54,1.13-1.06.18-.45.28-1.11.3-1.99,0-.25.21-.45.46-.45h.02c.25,0,.46.21.46.46v7.77c0,.25-.21.46-.46.46h-.02c-.25,0-.45-.2-.46-.45-.03-.87-.13-1.53-.3-1.99-.21-.53-.58-.88-1.13-1.07-.54-.18-1.37-.28-2.46-.28h-1.93c-.25,0-.46.21-.46.46v8.28c0,.46.13.75.4.86.26.11.68.17,1.25.17h3.43c1.5,0,2.71-.12,3.63-.36.92-.24,1.64-.63,2.15-1.19.51-.55.91-1.27,1.19-2.15.26-.81.5-1.9.72-3.27.04-.22.23-.39.45-.39h0c.28,0,.5.25.45.53l-1.21,7.57c-.04.22-.23.39-.45.39h-17.89c-.25,0-.46-.21-.46-.46Z" />
+            <path d="M36.96,21.65v-.23c0-.25.19-.45.44-.46,1.96-.08,3.34-.69,4.16-1.82l5.2-7.74c.1-.15.1-.35,0-.51l-5.77-8.79s-.03-.04-.04-.05c-.34-.39-.78-.63-1.35-.74-.47-.09-1.05-.14-1.74-.16-.25,0-.45-.21-.45-.46v-.22c0-.25.21-.46.46-.46h8.14c.25,0,.46.21.46.46v.25c0,.23-.17.43-.4.46-.29.03-.6.1-.94.2-.51.15-.76.37-.76.64,0,.04.01.08.03.13l3.86,5.87c.18.28.58.28.77,0l3.32-4.95s.03-.05.04-.08c.07-.17.11-.31.11-.42,0-.44-.22-.79-.66-1.04-.32-.18-.65-.3-.99-.35-.22-.03-.39-.23-.39-.45v-.25c0-.25.21-.46.46-.46h6.98c.25,0,.46.21.46.46v.23c0,.25-.19.45-.44.46-1.96.08-3.35.69-4.16,1.84l-4.27,6.37c-.1.15-.1.35,0,.51l6.65,10.14s.03.04.05.06c.36.39.82.64,1.37.74.46.09,1.03.14,1.71.15.25,0,.45.21.45.46v.22c0,.25-.21.46-.46.46h-8.15c-.25,0-.46-.21-.46-.46v-.25c0-.23.17-.43.4-.46.27-.03.58-.1.92-.2.53-.15.8-.37.8-.64,0-.06-.02-.11-.05-.13l-4.73-7.23c-.18-.28-.58-.28-.77,0l-4.25,6.33s-.03.04-.04.07c-.05.12-.08.25-.08.41,0,.44.22.79.65,1.04.31.18.64.3.97.35.22.03.39.23.39.45v.25c0,.25-.21.46-.46.46h-6.98c-.25,0-.46-.21-.46-.46Z" />
+            <path d="M55.98,29.04v-.22c0-.25.2-.45.45-.46,1.93-.04,2.9-.39,2.9-1.02V9.55c0-.64-.97-.98-2.9-1.02-.25,0-.45-.21-.45-.46v-.22c0-.25.21-.46.46-.46h17.43c.23,0,.43.17.46.4l.79,6.49c.03.27-.18.52-.46.52h0c-.23,0-.42-.17-.46-.4-.23-1.66-.53-2.88-.92-3.66-.42-.84-1.08-1.42-2-1.74-.92-.32-2.29-.47-4.13-.47h-3.18c-.39,0-.69.02-.91.05-.22.03-.39.12-.53.28-.14.15-.21.39-.21.7v7.44c0,.25.21.46.46.46h1.93c1.1,0,1.92-.09,2.46-.28.54-.18.92-.54,1.13-1.06.18-.45.28-1.11.3-1.99,0-.25.21-.45.46-.45h.02c.25,0,.46.21.46.46v7.77c0,.25-.21.46-.46.46h-.02c-.25,0-.45-.2-.46-.45-.03-.87-.13-1.53-.3-1.99-.21-.53-.58-.88-1.13-1.07-.54-.18-1.37-.28-2.46-.28h-1.93c-.25,0-.46.21-.46.46v8.28c0,.46.13.75.39.86.26.11.68.17,1.25.17h3.43c1.5,0,2.71-.12,3.63-.36.92-.24,1.64-.63,2.15-1.19.51-.55.91-1.27,1.19-2.15.26-.81.5-1.9.72-3.27.04-.22.23-.39.45-.39h0c.28,0,.5.25.45.53l-1.21,7.57c-.04.22-.23.39-.45.39h-17.89c-.25,0-.46-.21-.46-.46Z" />
+            <path d="M75.18,21.65v-.22c0-.25.2-.45.45-.46,1.92-.04,2.88-.39,2.88-1.02V2.17c0-.64-.96-.98-2.88-1.02-.25,0-.45-.21-.45-.46v-.22c0-.25.21-.46.46-.46h9.7c1.21,0,2.48.22,3.82.66,1.33.44,2.45,1.1,3.34,2,.9.9,1.34,1.97,1.34,3.21,0,.91-.27,1.71-.81,2.43-.54.71-1.24,1.31-2.09,1.79-.48.27-.97.5-1.47.69-.36.14-.4.64-.06.83.54.3,1.03.68,1.47,1.13.73.74,1.16,1.58,1.31,2.53l.46,2.88c.21,1.3.43,2.26.66,2.9.23.64.74.96,1.53.96.67,0,1.18-.31,1.51-.94.33-.63.5-1.31.5-2.05,0-.07.03-.14.1-.2.07-.06.14-.09.21-.09h.3c.21,0,.32.14.32.43,0,.59-.12,1.17-.35,1.73-.23.56-.57,1.03-1,1.4-.44.37-.96.55-1.56.55-1.56,0-2.9-.39-4.02-1.16s-1.68-1.91-1.68-3.41v-2.88c0-1.07-.37-2-1.12-2.77-.75-.77-1.67-1.15-2.75-1.15h-3.43c-.25,0-.46.21-.46.46v8.03c0,.64.96.98,2.88,1.02.25,0,.45.21.45.46v.22c0,.25-.21.46-.46.46h-8.66c-.25,0-.46-.21-.46-.46ZM81.42,10.16c0,.25.21.46.46.46h3c1.79,0,3.16-.36,4.09-1.08.94-.72,1.41-1.95,1.41-3.67s-.46-2.93-1.39-3.65c-.93-.72-2.3-1.07-4.11-1.07h-1.82c-.39,0-.69.02-.91.05-.22.03-.39.12-.53.28-.14.15-.21.39-.21.7v8Z" />
+          </g>
+        </svg>
+      </div>
+      <div class="header-actions">
+        <button type="button" id="theme-toggle" class="icon-btn" title="Dark">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M21 14.3A9 9 0 1 1 9.7 3a7 7 0 0 0 11.3 11.3z" />
+          </svg>
+          <span class="sr-only">Toggle theme</span>
+        </button>
+        <button type="button" id="server-pill" class="pill unknown" title="Local TeX server">TeX</button>
+      </div>
+    </header>
+
+    <nav class="modes" role="tablist">
+      <button type="button" class="mode on" data-workspace="math" role="tab" aria-selected="true">Math</button>
+      <button type="button" class="mode" data-workspace="latex" role="tab" aria-selected="false">LaTeX</button>
+      <button type="button" class="mode" data-workspace="boxes" role="tab" aria-selected="false">Boxes</button>
+      <button type="button" class="mode" data-workspace="tikz" role="tab" aria-selected="false">TikZ</button>
+    </nav>
+
+    <p id="mode-hint" class="hint">Renders in the pane. No local server.</p>
+
+    <label id="source-field" class="field">
+      <span class="row-label">
+        Source
+        <span class="row-tools">
+          <select id="snippet-select" aria-label="Examples">
+            <option value="">Examples</option>
+          </select>
+          <button type="button" id="btn-save-snippet" class="icon-btn small" title="Save as snippet">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+            <span class="sr-only">Save as snippet</span>
+          </button>
+        </span>
+      </span>
+      <textarea
+        id="source"
+        spellcheck="false"
+        rows="8"
+        placeholder="LaTeX source. Ctrl+Enter to render."
+      ></textarea>
+    </label>
+
+    <section id="box-builder" class="workspace-tool hidden" aria-label="Theorem box builder">
+      <div class="row-label">Box builder</div>
+      <div class="box-fields">
+        <label class="box-control">
+          <span class="box-control-label">Type</span>
+          <input type="text" id="box-type" list="box-type-options" value="Theorem" spellcheck="false" placeholder="Theorem, Conjecture, ..." />
+          <datalist id="box-type-options"></datalist>
+        </label>
+        <label class="box-control">
+          <span class="box-control-label">Number <span class="optional"><input type="checkbox" id="box-auto" /> auto</span></span>
+          <input type="text" id="box-number" value="1" spellcheck="false" placeholder="1.2" />
+        </label>
+        <label class="box-control">
+          <span class="box-control-label">Style</span>
+          <select id="box-style"></select>
+        </label>
+      </div>
+      <label class="box-control box-title-row">
+        <span class="box-control-label">Title <span class="optional">optional</span></span>
+        <input type="text" id="box-title" spellcheck="false" placeholder="Universal property" />
+      </label>
+      <div class="box-layout-fields">
+        <label class="look-item">
+          Width
+          <span class="stepper">
+            <input type="number" id="box-width" min="5" max="500" step="5" value="100" />
+            <select id="box-width-unit" aria-label="Width unit">
+              <option value="%">% of width</option>
+              <option value="mm">mm</option>
+              <option value="cm">cm</option>
+              <option value="in">in</option>
+              <option value="pt">pt</option>
+            </select>
+          </span>
+        </label>
+        <div class="look-item">
+          Colours
+          <span class="swatches">
+            <label class="swatch" title="Accent"><input type="color" id="box-color" value="#222b82" /><span>Accent</span></label>
+            <label class="swatch" title="Fill"><input type="color" id="box-fill" value="#eef0f8" /><span>Fill</span></label>
+            <button type="button" id="box-fill-auto" class="link-btn" title="Tint the accent toward the slide colour">auto</button>
+          </span>
+        </div>
+      </div>
+      <label class="field box-content-field">
+        Content
+        <textarea id="box-content" rows="4" spellcheck="false" placeholder="Write the statement; $...$ math works here."></textarea>
+      </label>
+      <div class="box-actions">
+        <button type="button" id="btn-build-box" class="ghost">Regenerate source</button>
+        <button type="button" id="btn-save-box-style" class="ghost">Save style...</button>
+      </div>
+      <p class="tool-note">Type any label. Text follows the slide ink; the fill tints toward the slide colour unless you pick one.</p>
+    </section>
+
+    <section id="tikz-tools" class="workspace-tool hidden" aria-label="TikZ tools">
+      <div class="row-label">TikZ setup</div>
+      <label class="field compact-field">
+        Starter
+        <select id="tikz-starter">
+          <option value="">Choose a starter...</option>
+        </select>
+      </label>
+      <div class="row-label">Libraries and packages</div>
+      <div id="tikz-library-chips" class="chips" aria-label="Add a TikZ library or LaTeX package"></div>
+      <p class="tool-note">Choosing a chip adds its declaration to your source; duplicate clicks are ignored.</p>
+    </section>
+
+    <section class="look-wrap">
+      <div class="row-label">Look <span class="optional">for every workspace</span></div>
+      <div class="look">
+        <label class="look-item">
+          Slide
+          <select id="slide-preset" title="The slide you're inserting onto (not this pane)">
+            <option value="light">Light slide</option>
+            <option value="dark">Dark slide</option>
+            <option value="custom">Custom</option>
+          </select>
+        </label>
+        <div class="look-item">
+          Colours
+          <span class="swatches">
+            <label class="swatch" title="Ink: text and lines"><input type="color" id="look-ink" value="#171717" /><span>Ink</span></label>
+            <label class="swatch" title="Paper: the slide background"><input type="color" id="look-paper" value="#ffffff" /><span>Paper</span></label>
+          </span>
+        </div>
+        <label class="look-item">
+          Font
+          <select id="look-font"></select>
+        </label>
+      </div>
+      <div class="look">
+        <div id="quick-opts" class="look-cluster">
+          <label class="check">
+            <input type="checkbox" id="display-math" checked />
+            Display
+          </label>
+        </div>
+        <label class="look-item">
+          Size
+          <span class="stepper">
+            <input type="number" id="math-scale" min="50" max="200" step="10" value="100" />
+            <span class="unit">%</span>
+          </span>
+        </label>
+        <label class="look-item">
+          Spacing
+          <span class="stepper">
+            <input type="number" id="math-spacing" min="-20" max="40" step="5" value="0" />
+            <span class="unit">%</span>
+          </span>
+        </label>
+        <div id="full-opts" class="look-cluster hidden">
+          <label class="look-item">
+            Engine
+            <select id="engine">
+              <option value="pdflatex">pdflatex</option>
+              <option value="xelatex">xelatex</option>
+              <option value="lualatex">lualatex</option>
+            </select>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <div class="actions main">
+      <button type="button" id="btn-render" class="primary">Render</button>
+    </div>
+
+    <div id="status" class="status" role="status"></div>
+
+    <section class="preview-wrap">
+      <div class="row-label">
+        Preview
+        <button type="button" id="preview-bg" class="bg-toggle" title="Preview background">
+          <span class="bg-swatch" aria-hidden="true"></span>
+          <span id="preview-bg-label">Transparent</span>
+        </button>
+      </div>
+      <div id="preview" class="preview checker" aria-live="polite">
+        <span class="empty">Nothing yet</span>
+      </div>
+    </section>
+
+    <div class="export">
+      <button type="button" id="btn-insert" class="ghost" disabled>Insert picture</button>
+      <button type="button" id="btn-insert-svg" class="ghost" disabled>Insert SVG</button>
+      <div class="menu-wrap">
+        <button type="button" id="btn-export" class="ghost" disabled aria-haspopup="menu" aria-expanded="false">Export &#9662;</button>
+        <div id="export-menu" class="menu hidden" role="menu">
+          <button type="button" role="menuitem" data-export="svg">Save SVG file</button>
+          <button type="button" role="menuitem" data-export="pdf">Save PDF file</button>
+          <button type="button" role="menuitem" data-export="png">Save PNG file</button>
+          <hr />
+          <button type="button" role="menuitem" data-export="copy-svg">Copy SVG</button>
+          <button type="button" role="menuitem" data-export="copy-source">Copy LaTeX source</button>
+        </div>
+      </div>
+      <button type="button" id="btn-edit-selected" class="ghost hidden" disabled title="Load the selected Eneles picture">Edit selected</button>
+      <button type="button" id="btn-rerender" class="ghost hidden" title="Re-render every Eneles picture in this presentation with the current Look">Re-render all</button>
+    </div>
+
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button type="button" class="tab on" data-tab="recents" role="tab" aria-selected="true">Recents</button>
+      <button type="button" class="tab" data-tab="saved" role="tab" aria-selected="false">Saved</button>
+      <button type="button" class="tab" data-tab="settings" role="tab" aria-selected="false">Settings</button>
+      <button type="button" class="tab" data-tab="info" role="tab" aria-selected="false">Info</button>
+    </nav>
+
+    <section data-panel="recents" class="panel-view">
+      <div class="row-label">Recent renders</div>
+      <div id="recents-list" class="recents-list"></div>
+      <p id="recents-empty" class="hint hidden">Nothing rendered yet. Renders show up here automatically.</p>
+    </section>
+
+    <section data-panel="saved" class="panel-view hidden">
+      <div class="row-label">Saved snippets</div>
+      <div id="saved-list" class="recents-list"></div>
+      <p id="saved-empty" class="hint hidden">Nothing saved yet. Use the save icon next to Examples.</p>
+      <div class="row-label">Box styles</div>
+      <div id="box-presets-list" class="recents-list"></div>
+      <p id="box-presets-empty" class="hint hidden">No saved box styles. Use Save style... in Boxes.</p>
+    </section>
+
+    <section data-panel="settings" class="panel-view hidden">
+      <label class="field">
+        Local server URL
+        <input type="text" id="set-url" spellcheck="false" placeholder="http://127.0.0.1:4756" />
+      </label>
+      <label class="field">
+        Token
+        <input type="password" id="set-token" spellcheck="false" autocomplete="off" />
+      </label>
+      <button type="button" id="btn-check" class="ghost">Check connection</button>
+      <label class="field">
+        Extra preamble
+        <textarea id="set-preamble" rows="3" spellcheck="false" placeholder="\usetikzlibrary{arrows.meta}"></textarea>
+      </label>
+      <label class="field">
+        Crop border
+        <input type="text" id="set-border" spellcheck="false" />
+      </label>
+      <label class="inline">
+        SVG fonts
+        <select id="set-fontmode">
+          <option value="path">Outlines</option>
+          <option value="embed">WOFF</option>
+        </select>
+      </label>
+      <label class="field">
+        System font name
+        <input type="text" id="set-font-name" spellcheck="false" placeholder="e.g. Fira Sans (used when Font is System font)" />
+      </label>
+      <label class="inline">
+        Width (in)
+        <input type="number" id="set-width" min="0.5" max="12" step="0.25" />
+      </label>
+      <label class="inline">
+        Raster scale
+        <input type="number" id="set-scale" min="1" max="8" step="1" />
+      </label>
+      <label class="check">
+        <input type="checkbox" id="set-transparent" />
+        Transparent background
+      </label>
+    </section>
+
+    <section data-panel="info" class="panel-view hidden">
+      <div class="info-rows">
+        <div class="info-row"><span>Version</span><span><%= appVersion %></span></div>
+        <div class="info-row"><span>Released</span><span><%= buildDate %></span></div>
+        <div class="info-row"><span>License</span><span>MIT</span></div>
+      </div>
+      <p class="info-text">LaTeX for Microsoft PowerPoint, no server required. Renders with the TeX you already have installed and drops it straight onto the slide.</p>
+      <div class="info-links">
+        <a href="https://eneles.example" target="_blank" rel="noopener">Website</a>
+        <a href="https://github.com/Eneles-org/ppt" target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <p class="info-text muted">Made by Eneles.</p>
+    </section>
+  </body>
+</html>

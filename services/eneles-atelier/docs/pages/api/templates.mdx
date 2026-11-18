@@ -1,0 +1,129 @@
+---
+title: "Templates"
+description: "Browse prebuilt templates and manage your own."
+summary: "The Eneles REST API for templates: browse the prebuilt LaTeX templates, save your own from a main .tex file and extra files, and start projects from them."
+keywords: ["template","starter","boilerplate","prebuilt"]
+method: GET
+---
+
+# Templates
+
+Save a LaTeX document as a template, then start new projects from it. A template is a main `.tex` source plus, optionally, extra files such as a bibliography or a class file.
+
+## Overview
+
+Your templates are private unless you share them. A shared template reaches other people only after a reviewer approves it, and any change you make to it sends it back for review. People can report a shared template; three reports take it out of the library until it is reviewed again.
+
+The `review` field on your own templates says where each one stands:
+
+| `review` | Meaning |
+| --- | --- |
+| `none` | Private. Only you can see it. |
+| `pending` | Shared and waiting for a reviewer. Only you can see it. |
+| `approved` | Shared and visible to everyone signed in. |
+| `rejected` | Not approved. `reviewNote` says why; edit it to send it back. |
+
+---
+
+### GET /templates/mine
+
+List your own templates, with their review status.
+
+**Auth:** Bearer token or API key
+
+```bash
+curl https://api.texer.org/templates/mine \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+```json
+{
+  "data": [
+    {
+      "id": 12,
+      "name": "Lab report",
+      "description": "Abstract, methods, results.",
+      "category": "custom",
+      "isPublic": true,
+      "review": "pending",
+      "reviewNote": null,
+      "tags": ["lab"],
+      "usageCount": 0,
+      "createdAt": "2026-11-08T09:20:00.000Z",
+      "updatedAt": "2026-11-08T09:20:00.000Z"
+    }
+  ],
+  "meta": { "page": 1, "limit": 20, "total": 1, "totalPages": 1, "hasNext": false, "hasPrev": false }
+}
+```
+
+---
+
+### GET /templates
+
+Your templates and every approved shared template. Filter with `category`, `search`, `page`, and `limit`.
+
+**Auth:** Bearer token or API key
+
+---
+
+### POST /templates
+
+Save a template. Set `isPublic` to share it; it waits for review first.
+
+**Auth:** Bearer token or API key
+
+```bash
+curl -X POST https://api.texer.org/templates \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Lab report",
+    "description": "Abstract, methods, results.",
+    "content": "\\documentclass{article}\n\\title{Lab report}\n...",
+    "files": [{ "path": "refs.bib", "content": "@article{...}" }],
+    "isPublic": true,
+    "tags": ["lab"]
+  }'
+```
+
+Limits: `name` up to 200 characters, `description` 2,000, `content` and each file 1,000,000, up to 100 `files` with relative paths (no `..`), up to 20 `tags` of 50 characters each.
+
+---
+
+### PUT /templates/:id
+
+Change any of the fields above. Editing a shared template sends it back for review.
+
+### DELETE /templates/:id
+
+Delete one of your templates.
+
+### POST /templates/from-project/:uid
+
+Save a project's text files as a template. The project's main document becomes the template's source and its other text files come along; images and other uploads do not. Takes `name`, and optionally `description`, `isPublic`, and `tags`. Only the owner and editors can do this. The reply includes `leftOut`, the number of files that were not copied.
+
+### POST /templates/:id/use
+
+Start a new project from one of your templates or an approved shared one. Takes an optional `title`; the reply has the new project's `uid`.
+
+---
+
+### POST /templates/:id/report
+
+Report a shared template that should not be in the library. One report per person counts; you cannot report your own.
+
+**Auth:** Bearer token or API key
+
+```bash
+curl -X POST https://api.texer.org/templates/12/report \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{ "reason": "Spam" }'
+```
+
+---
+
+### Reviewing
+
+Reviewers are the accounts listed in the server's `REVIEWER_EMAILS` setting. `GET /templates/review/access` says whether you are one. `GET /templates/review` lists the templates waiting, oldest first, and `POST /templates/:id/review` with `{ "decision": "approve" }` or `{ "decision": "reject", "note": "..." }` decides one. The note is shown to the author.

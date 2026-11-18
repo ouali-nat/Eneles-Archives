@@ -1,0 +1,38 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\title{Title of the Experiment}
+\author{Your name \and Lab partner}
+\date{Course name \\ \today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+State in three sentences what was measured, how, and the result with its uncertainty, for example $g = \SI{9.79(6)}{\metre\per\second\squared}$.
+\end{abstract}
+
+\section{Theory}
+Give the relation the experiment tests.
+\begin{equation}
+  T = 2\pi \sqrt{\frac{L}{g}}
+\end{equation}
+
+\section{Method}
+Describe the apparatus and the procedure in enough detail for someone else to repeat it. Give the uncertainty of each instrument, for example \SI{2}{\milli\metre}.
+
+\section{Results}
+\input{data/measurements}
+
+\section{Discussion}
+Compare the result with the accepted value and name the largest sources of error.
+
+\section{Conclusion}
+One paragraph.
+
+\end{document}

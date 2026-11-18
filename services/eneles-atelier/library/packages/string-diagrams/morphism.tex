@@ -1,0 +1,9 @@
+% Name: Identity and a morphism
+% Description: A wire is the identity on an object; a box on a wire is a morphism from the object below to the object above.
+% Tags: identity, morphism, string diagram
+
+\begin{tikzpicture}[thick, baseline=(current bounding box.center)]
+  \draw (0,0) node[below] {$A$} -- (0,2) node[above] {$A$};
+  \draw (2,0) node[below] {$A$} -- (2,2) node[above] {$B$};
+  \node[draw, fill=white, minimum width=8mm, minimum height=6mm] at (2,1) {$f$};
+\end{tikzpicture}

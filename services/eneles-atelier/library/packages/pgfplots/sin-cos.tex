@@ -1,0 +1,20 @@
+% Name: Sine and cosine
+% Description: Basic trigonometric function plot.
+% Tags: trigonometry, sine, cosine
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\begin{tikzpicture}
+\begin{axis}[
+  xlabel=$x$, ylabel=$y$,
+  domain=-2*pi:2*pi,
+  samples=100,
+  legend pos=north west,
+  grid=major
+]
+  \addplot[blue, thick] {sin(deg(x))};
+  \addplot[red, thick, dashed] {cos(deg(x))};
+  \legend{$\sin(x)$, $\cos(x)$}
+\end{axis}
+\end{tikzpicture}

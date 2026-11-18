@@ -1,0 +1,10 @@
+{
+  "name": "venndiagram",
+  "description": "Venn diagrams for set theory.",
+  "ctanUrl": "https://ctan.org/pkg/venndiagram",
+  "tags": [
+    "venn",
+    "sets",
+    "logic"
+  ]
+}

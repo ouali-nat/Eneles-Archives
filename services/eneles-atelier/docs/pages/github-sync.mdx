@@ -1,0 +1,78 @@
+---
+title: "GitHub sync"
+description: "Link a repository, then push and pull the project's files."
+summary: "Keep a Eneles project in a GitHub repository: create a token, link the repository, push the project's files as a commit, and pull commits made on GitHub."
+keywords: ["github","git","repository","push","pull","commit","token","sync"]
+---
+
+# GitHub sync
+
+Keep a project in a GitHub repository. Pushing sends the project's files to GitHub as a commit; pulling brings in commits made on GitHub. You start both yourself: nothing syncs in the background.
+
+Only the project owner can link a repository, push, and pull. Everyone else who opens **File**, then **GitHub…**, sees which repository and branch the project is linked to, and when it last synced.
+
+## Create a token
+
+Eneles reaches the repository with a token you create on GitHub:
+
+1. On GitHub, create a [fine-grained personal access token](https://github.com/settings/personal-access-tokens/new).
+2. Give it access to the repository you want to link.
+3. Under repository permissions, set **Contents** to **Read and write**.
+4. Copy the token.
+
+Eneles stores the token encrypted and uses it only for this project's pushes and pulls. It is never shown again, not even to you.
+
+## Link a repository
+
+1. In the project, choose **File**, then **GitHub…**.
+2. Under **Repository**, enter the repository as `owner/name`. A `github.com` link to it also works.
+3. Under **Branch (optional)**, enter a branch, or leave it empty to use the repository's default branch.
+4. Paste the token under **Access token**.
+5. Click **Link repository**.
+
+Eneles checks that the token can write to the repository before linking. If it can only read, you see "The token can read that repository but not write to it".
+
+### When the repository already has files
+
+If the branch already has commits, Eneles asks right after linking which version to keep for files that exist in both places:
+
+- **Use GitHub's** replaces the project's copy with GitHub's. Choose this to bring an existing repository into a new project.
+- **Keep mine, save GitHub's beside them** keeps the project's copy and saves GitHub's next to it, as described under [Pull](#pull).
+
+Files that exist on only one side are not affected by this choice.
+
+## Push
+
+1. Choose **File**, then **GitHub…**.
+2. Optionally, enter a **Commit message**. Without one, the commit is called "Update from Eneles".
+3. Click **Push to GitHub**.
+
+A push sends every file that changed since the last sync, images and other uploads included, and removes from GitHub the files you deleted in Eneles. Files on GitHub that never came into the project are left alone. Edits collaborators are making in the editor at that moment are saved first, so the push includes them.
+
+<Callout type="warning" title="Pull before you push">
+  If someone committed to the branch on GitHub since your last sync, the push is refused with "GitHub has commits this project has not pulled. Pull first, then push." Pull, check the result, then push again. Eneles never overwrites commits on GitHub.
+</Callout>
+
+## Pull
+
+Click **Pull from GitHub** in the same dialog. Eneles compares each file with the version both sides last agreed on:
+
+- **Changed only on GitHub, or new on GitHub**: the project gets GitHub's version.
+- **Changed in Eneles and on GitHub**: the project keeps its version, and GitHub's is saved beside it with `.github` before the extension, so `intro.tex` gets `intro.github.tex`.
+- **Deleted on GitHub, unchanged in Eneles**: the file is removed from the project.
+- **Deleted on GitHub, changed in Eneles**: the file is kept, and the pull reports it.
+
+The project's main file is never removed by a pull. Files larger than 10 MB, and files with names Eneles does not allow, are not brought in, and the result lists them.
+
+After a pull, the dialog lists what was updated, added, and removed, and any files that need your attention. Compare a `.github` copy with your version, keep what you want, and delete the copy.
+
+Collaborators who have the project open see "Files changed after a pull from GitHub", and their file list reloads. A file someone has open changes in their editor as an ordinary edit.
+
+## Unlink
+
+Click **Unlink** in the dialog. Eneles forgets the repository and the token. The repository on GitHub is unchanged. Linking again starts afresh, including the choice of which files to keep.
+
+## Related
+
+- [Collaboration](/docs/collaboration): who owns a project and what each role can do.
+- [Compiling](/docs/compiling): set the main document.

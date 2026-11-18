@@ -1,0 +1,136 @@
+---
+title: "Lists"
+description: "Bulleted, numbered, and description lists, nesting, and custom labels and spacing with enumitem."
+summary: "Lists in LaTeX: itemize, enumerate, and description lists, nesting, and custom labels, spacing, and numbering with the enumitem package, with examples."
+keywords: ["itemize","enumerate","description","\\item","bullet","bullets","bulleted list","numbered list","ordered list","unordered list","nested list","nesting","enumitem","label","\\alph","\\roman","\\arabic","nosep","noitemsep","\\setlist","resume","start","missing \\item","too deeply nested"]
+---
+
+# Lists
+
+Write bulleted, numbered, and labelled lists, nest them, and change their labels, spacing, and numbering with the `enumitem` package.
+
+## Bulleted and numbered lists
+
+A list is an environment, and each entry starts with `\item`. `itemize` gives bullets. `enumerate` gives numbers, which LaTeX counts for you, so adding or moving a step never means renumbering by hand.
+
+```latex-example
+\begin{itemize}
+  \item Flour
+  \item Water
+  \item Salt
+\end{itemize}
+\begin{enumerate}
+  \item Mix the dough.
+  \item Let it rise overnight.
+  \item Bake at 230 degrees.
+\end{enumerate}
+```
+
+In Eneles, the toolbar above the editor has **Bullet list** and **Numbered list** buttons that insert the environment with its first `\item`.
+
+## Description lists
+
+`description` is for terms and their explanations. The term goes in square brackets after `\item` and is set in bold.
+
+```latex-example
+\begin{description}
+  \item[Poolish] A wet starter mixed the day before baking.
+  \item[Autolyse] A rest after the flour and water are combined.
+\end{description}
+```
+
+## Nested lists
+
+Put one list inside an item of another. You can mix the three kinds, up to four levels deep. The label changes at each level: numbered lists go 1., (a), i., A., and bulleted lists go from a bullet to a dash, an asterisk, and a dot.
+
+```latex-example
+\begin{enumerate}
+  \item Prepare the ingredients.
+  \begin{enumerate}
+    \item Weigh the flour.
+    \item Warm the water.
+    \begin{itemize}
+      \item Not above 30 degrees.
+    \end{itemize}
+  \end{enumerate}
+  \item Mix.
+\end{enumerate}
+```
+
+Indenting the source is for you. LaTeX does not need it, but it makes a missing `\end` easy to spot.
+
+## Change a label
+
+To change the label of one item, give it in square brackets, as in a description list: `\item[--]` or `\item[$\star$]`.
+
+To change the labels of a whole list, load `enumitem` in the preamble with `\usepackage{enumitem}`. It adds an optional argument to the three list environments. In `label=`, a counter style followed by `*` stands for the number of the current item, and anything around it is printed as typed.
+
+```latex-example
+\begin{enumerate}[label=(\alph*)]
+  \item A label in parentheses
+  \item With letters for numbers
+\end{enumerate}
+\begin{enumerate}[label=Step \arabic*:, leftmargin=*]
+  \item Text around the number
+\end{enumerate}
+\begin{itemize}[label=--]
+  \item Dashes for bullets
+\end{itemize}
+```
+
+| In `label=` | Gives |
+| --- | --- |
+| `\arabic*` | 1, 2, 3 |
+| `\alph*` | a, b, c |
+| `\Alph*` | A, B, C |
+| `\roman*` | i, ii, iii |
+| `\Roman*` | I, II, III |
+
+## Change the spacing
+
+The standard lists are airy. `enumitem` has keys to tighten them: `noitemsep` removes the space between items, and `nosep` also removes the space above and below the list.
+
+```latex-example
+Dry ingredients:
+\begin{itemize}[nosep]
+  \item Flour
+  \item Salt
+  \item Yeast
+\end{itemize}
+Add the water last.
+```
+
+To apply settings to every list in the document, use `\setlist` in the preamble: `\setlist{nosep}` for all lists, or `\setlist[enumerate]{label=(\alph*)}` for one kind.
+
+## Resume and restart numbering
+
+With `enumitem`, the `resume` key continues the numbering of the previous `enumerate`, so you can interrupt a list with a paragraph. `start=` begins at any number.
+
+```latex-example
+\begin{enumerate}
+  \item Shape the loaf.
+  \item Preheat the oven.
+\end{enumerate}
+While the oven heats, the loaf rises a second time.
+\begin{enumerate}[resume]
+  \item Score the top.
+\end{enumerate}
+\begin{enumerate}[start=10]
+  \item Cool on a rack.
+\end{enumerate}
+```
+
+To refer to a step by its number, put a `\label` after its `\item` and use `\ref`. See [Cross-references](/learn/cross-references).
+
+## Common mistakes
+
+- **Text before the first `\item`, or a list with no items.** LaTeX stops with `Something's wrong--perhaps a missing \item`. Every piece of text in a list must follow an `\item`.
+- **`[label=...]` or `[nosep]` without `enumitem`.** The standard environments take no optional argument, so the bracket is read as text before the first item. LaTeX stops with the same `missing \item` error, or with `Missing number, treated as zero`. Add `\usepackage{enumitem}` to the preamble.
+- **A square bracket at the start of an item.** `\item [sic] is correct` turns "sic" into the label. Write `\item {[sic]} is correct`. Inside a label, hide a closing bracket in braces the same way: `\item[{[a]}]`.
+- **More than four levels.** LaTeX stops with `Too deeply nested`. Restructure the list, or turn the top level into headings.
+
+## Next
+
+- [Special characters](/learn/special-characters)
+- [Cross-references](/learn/cross-references)
+- [Tables](/learn/tables)

@@ -1,0 +1,124 @@
+---
+title: "Colors"
+description: "Colored text, boxes, table rows, and pages with xcolor, and how to define your own colors."
+summary: "Colors in LaTeX with xcolor: colored text, mixing colors, defining your own colors, colored boxes, table row backgrounds, and page backgrounds."
+keywords: ["xcolor","color","colour","\\textcolor","\\color","\\definecolor","\\colorlet","\\colorbox","\\fcolorbox","\\pagecolor","\\nopagecolor","\\rowcolor","\\rowcolors","\\cellcolor","\\columncolor","colortbl","dvipsnames","svgnames","x11names","HTML","hex","RGB","rgb","cmyk","gray","tint","shade","mix","highlight","background","striped table","zebra","\\fboxsep","\\fboxrule","tcolorbox","undefined color"]
+---
+
+# Colors
+
+Color text, boxes, table rows, and whole pages with the `xcolor` package, and define the exact colors your document needs.
+
+## Colored text
+
+Load `xcolor` in the preamble. `\textcolor` takes a color and the text to color. `\color` is a declaration: it applies until the current group ends.
+
+```latex-example
+A \textcolor{red}{red word} and a \textcolor{teal}{teal one}.\par
+{\color{blue} Everything in this group is blue, including $x^2 + 1$.}
+Back to black.
+```
+
+These names work without any options: `black`, `white`, `gray`, `darkgray`, `lightgray`, `red`, `green`, `blue`, `cyan`, `magenta`, `yellow`, `orange`, `purple`, `violet`, `pink`, `brown`, `teal`, `olive`, and `lime`.
+
+For more names, pass an option when you load the package. `dvipsnames` adds 68 colors such as `ForestGreen`, `Maroon`, and `RoyalBlue`. `svgnames` and `x11names` add several hundred more.
+
+```latex
+\usepackage[dvipsnames]{xcolor}
+```
+
+## Mix colors
+
+You rarely need a new name. An exclamation mark mixes a color with white, or with another color you name, by percentage.
+
+```latex-example
+\newcommand{\swatch}[1]{\textcolor{#1}{\rule{1.1cm}{1.6ex}}}
+\swatch{blue} \swatch{blue!60} \swatch{blue!30} \swatch{blue!10}\par
+\swatch{blue!70!black} \swatch{blue!50!red} \swatch{blue!50!green} \swatch{-blue}
+```
+
+`blue!30` is 30% blue and 70% white. `blue!70!black` is 70% blue and 30% black, a darker shade. A minus sign in front gives the complementary color.
+
+## Define your own colors
+
+`\definecolor` creates a name from exact values. `\colorlet` gives a name to an existing color or mix, which lets you change a document's accent color in one place.
+
+```latex-example
+\definecolor{ink}{HTML}{1B3A5C}
+\definecolor{clay}{RGB}{196, 98, 56}
+\definecolor{moss}{rgb}{0.35, 0.50, 0.25}
+\colorlet{accent}{clay!85!black}
+\textcolor{ink}{Ink}, \textcolor{clay}{clay}, \textcolor{moss}{moss}, and an \textcolor{accent}{accent}.
+```
+
+| Model | Values | Example |
+| --- | --- | --- |
+| `HTML` | Six hex digits, no `#` | `1B3A5C` |
+| `RGB` | Three integers from 0 to 255 | `196, 98, 56` |
+| `rgb` | Three decimals from 0 to 1 | `0.35, 0.50, 0.25` |
+| `gray` | One decimal from 0 (black) to 1 (white) | `0.8` |
+| `cmyk` | Four decimals from 0 to 1 | `0, 0.5, 0.7, 0.2` |
+
+## Colored boxes
+
+`\colorbox` puts a background behind a piece of text. `\fcolorbox` adds a frame: its first argument is the frame color, its second the background.
+
+```latex-example
+\colorbox{yellow!40}{Highlighted} text, a
+\fcolorbox{red!70!black}{red!8}{framed warning}, and
+\colorbox{black}{\textcolor{white}{white on black}}.
+
+\medskip
+\setlength{\fboxsep}{8pt}
+\colorbox{teal!12}{\parbox{6cm}{A paragraph box inside a color box wraps like normal text.}}
+```
+
+`\fboxsep` is the padding inside the box and `\fboxrule` is the frame thickness. Both boxes stay on one line, so wrap longer content in a `\parbox`. For titled boxes that break across pages, look at the `tcolorbox` package.
+
+## Table backgrounds
+
+The `table` option of `xcolor` adds `\rowcolor`, `\cellcolor`, and `\columncolor`, plus `\rowcolors` for alternating stripes. `\rowcolors` takes the row to start at, then the colors for odd and even rows.
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage[table]{xcolor}
+\begin{document}
+\rowcolors{2}{white}{gray!12}
+\begin{tabular}{lrr}
+  \rowcolor{teal!70!black}
+  \color{white}Station & \color{white}Depth (m) & \color{white}Temp.\ (°C) \\
+  Alder Point & 12 & 14.2 \\
+  Birch Cove  & 30 & 11.8 \\
+  Cedar Reach & 45 & \cellcolor{orange!35}9.1 \\
+  Dune Head   & 61 & 8.4 \\
+\end{tabular}
+\end{document}
+```
+
+## Page background
+
+`\pagecolor` sets the background of the current page and every page after it. `\nopagecolor` turns it off again. Set the text color to match.
+
+```latex-document
+\documentclass[varwidth=8cm, border=12pt]{standalone}
+\usepackage{xcolor}
+\begin{document}
+\pagecolor{blue!35!black}
+\color{white}
+\textbf{Night edition}\par
+Light text on a dark page, set with two commands.
+\end{document}
+```
+
+## Common mistakes
+
+- Using a name that needs an option. `\textcolor{Maroon}{…}` without `dvipsnames` stops with "Undefined color `Maroon'". Add the option, or define the color.
+- Using `\rowcolor` or `\cellcolor` without the `table` option. TeX stops with "Undefined control sequence", because plain `xcolor` does not define them. Load the package as `\usepackage[table]{xcolor}`.
+- Leaving `\color` unscoped. `\color{red}` with no braces around it colors the rest of the document. Use `\textcolor`, or wrap the declaration in braces.
+- Writing the hash in a hex color. `\definecolor{ink}{HTML}{#1B3A5C}` fails, because `#` is a special character in TeX. Give the six digits alone.
+
+## Next
+
+- [Advanced tables](/learn/advanced-tables)
+- [Drawing with TikZ](/learn/drawing-with-tikz)
+- [Presentations with beamer](/learn/presentations-with-beamer)

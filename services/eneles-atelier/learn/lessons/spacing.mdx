@@ -1,0 +1,139 @@
+---
+title: "Spacing"
+description: "Line spacing, paragraph spacing, exact horizontal and vertical gaps, units, and stretchable space."
+summary: "Spacing in LaTeX: lengths and units, horizontal and vertical space with \\hspace and \\vspace, line spacing, paragraph indent and skip, and stretchable space."
+keywords: ["setspace","line spacing","double spacing","\\doublespacing","\\onehalfspacing","\\singlespacing","\\setstretch","\\linespread","\\baselineskip","\\vspace","\\hspace","\\smallskip","\\medskip","\\bigskip","\\quad","\\qquad","\\enspace","\\,","~","\\hfill","\\vfill","\\dotfill","\\hrulefill","\\stretch","\\parskip","\\parindent","parskip","\\noindent","\\setlength","\\addtolength","length","units","pt","em","ex","cm","mm","in","indent","gap","blank space","whitespace","illegal unit of measure"]
+---
+
+# Spacing
+
+Control the space between lines, paragraphs, and words, add exact gaps where you need them, and let stretchable space push content to the edges of a line or a page.
+
+## Lengths and units
+
+Every spacing command takes a length: a number followed by a unit. Use `em` and `ex` for space that should grow with the text, and absolute units for the page.
+
+| Unit | Size |
+| --- | --- |
+| `pt` | A point, 1/72.27 inch. TeX's native unit |
+| `mm`, `cm`, `in` | Millimetre, centimetre, inch |
+| `em` | Roughly the width of an "M" in the current font |
+| `ex` | Roughly the height of an "x" in the current font |
+
+Some spacing is stored in named lengths such as `\parindent`. Change one with `\setlength`, or add to it with `\addtolength`.
+
+## Horizontal space
+
+`\hspace` inserts a gap of any width. The shorthands cover the common cases.
+
+```latex-example
+A\hspace{1cm}B\hspace{3em}C\par
+A\,B \quad thin space (\verb|\,|)\par
+A\enspace B \quad half an em (\verb|\enspace|)\par
+A\quad B \quad one em (\verb|\quad|)\par
+A\qquad B \quad two ems (\verb|\qquad|)
+```
+
+A `~` is a normal space where the line may not break, as in `Figure~3`. TeX drops `\hspace` at a line break. Use `\hspace*` for space that must survive there.
+
+## Vertical space
+
+`\vspace` adds space between paragraphs. `\smallskip`, `\medskip`, and `\bigskip` are fixed steps of about a quarter, a half, and a full line.
+
+```latex-example
+First paragraph.
+
+\medskip
+After a medskip.
+
+\vspace{8mm}
+After 8 mm.\\[4mm]
+A new line 4 mm lower, in the same paragraph.
+```
+
+Use `\vspace` between paragraphs, not inside one: in the middle of a paragraph the space lands after the line the command happens to fall on. TeX discards `\vspace` at the top of a page, so write `\vspace*` there.
+
+## Line spacing
+
+The `setspace` package sets the line spacing of the whole document with `\onehalfspacing` or `\doublespacing` in the preamble, or any factor with `\setstretch`. Its `spacing` environment changes one passage.
+
+```latex-document
+\documentclass[varwidth=8cm, border=10pt]{standalone}
+\usepackage{setspace}
+\begin{document}
+Single spacing is the default. Lines sit close together, as in a printed book.
+
+\begin{spacing}{1.5}
+One-and-a-half spacing, a common requirement for coursework and theses.
+\end{spacing}
+
+\begin{spacing}{2}
+Double spacing leaves room for a marker's handwritten notes.
+\end{spacing}
+\end{document}
+```
+
+`setspace` keeps footnotes, captions, and tables single-spaced, which is what most style guides want. That is the reason to prefer it over the low-level `\linespread`.
+
+## Paragraph indent and paragraph skip
+
+LaTeX marks a new paragraph by indenting its first line by `\parindent`, with no extra space above. The other convention is no indent and a gap of `\parskip` between paragraphs. Pick one. Using both wastes space, and using neither hides the paragraph breaks.
+
+```latex-example
+\begin{minipage}[t]{4.6cm}
+\setlength{\parindent}{1.5em}
+Indented style. The first line of each paragraph steps in.
+
+A second paragraph follows with no gap above it.
+\end{minipage}\hspace{8mm}%
+\begin{minipage}[t]{4.6cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{8pt}
+Block style. Paragraphs start flush left.
+
+A gap separates this paragraph from the last.
+\end{minipage}
+```
+
+For block style in a whole document, load the `parskip` package instead of setting the lengths yourself. It also adjusts lists and the table of contents, which a bare `\setlength{\parskip}{…}` stretches apart. `\noindent` removes the indent from a single paragraph.
+
+## Stretchable space
+
+`\hfill` is a horizontal space that grows to fill the line, so it pushes whatever follows to the right edge. Two of them centre the middle item. `\dotfill` and `\hrulefill` fill the gap with dots or a rule.
+
+```latex-example
+\begin{minipage}{8cm}
+Left\hfill Right\par
+Left\hfill Centre\hfill Right\par
+Chapter 1\dotfill 12\par
+Signature: \hrulefill
+\end{minipage}
+```
+
+`\vfill` does the same vertically: it pushes what follows to the bottom of the page, or of a box with a fixed height. When several fills compete, they share the space equally. `\stretch` gives one of them a larger share.
+
+```latex-example
+\fbox{\begin{minipage}[t][3cm]{3.4cm}
+Top\par \vfill Bottom
+\end{minipage}}
+\fbox{\begin{minipage}[t][3cm]{3.4cm}
+Top\par \vspace{\stretch{1}}
+One third down\par \vspace{\stretch{2}}
+Bottom
+\end{minipage}}
+```
+
+A title page is the classic use: `\vfill` above and below the title block centres it between the top and bottom margins.
+
+## Common mistakes
+
+- Ending paragraphs with `\\` to get space between them. TeX reports "Underfull \hbox (badness 10000)" and the text is still one paragraph. Leave a blank line, and set `\parskip` or load `parskip` if you want a gap.
+- Putting `\vspace` at the top of a page and seeing nothing. Space at a page break is discarded. Use `\vspace*`.
+- Writing a length without a unit, as in `\vspace{10}`. TeX stops with "Illegal unit of measure (pt inserted)". Every length needs a unit, even zero: `0pt`.
+- Stacking manual `\vspace` commands to make a page look right. The next edit moves everything. Fix spacing globally in the preamble first, and adjust single spots only in the final pass.
+
+## Next
+
+- [Paragraphs and line breaks](/learn/paragraphs-and-line-breaks)
+- [Spacing in math](/learn/spacing-in-math)
+- [Page layout](/learn/page-layout)

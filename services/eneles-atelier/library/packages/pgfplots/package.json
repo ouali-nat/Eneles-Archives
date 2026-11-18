@@ -1,0 +1,11 @@
+{
+  "name": "pgfplots",
+  "description": "Create high-quality plots and charts. Supports 2D/3D plots, bar charts, histograms, and more.",
+  "ctanUrl": "https://ctan.org/pkg/pgfplots",
+  "tags": [
+    "plots",
+    "charts",
+    "data visualization",
+    "graphs"
+  ]
+}

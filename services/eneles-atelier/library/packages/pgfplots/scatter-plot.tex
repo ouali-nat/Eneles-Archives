@@ -1,0 +1,22 @@
+% Name: Scatter plot
+% Description: Scatter plot with marks.
+% Tags: scatter, data, points
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\begin{tikzpicture}
+\begin{axis}[
+  xlabel=$x$, ylabel=$y$,
+  grid=major,
+  legend pos=north west
+]
+  \addplot[only marks, mark=*, blue] coordinates {
+    (1,2) (2,3) (3,2.5) (4,4) (5,3.5)
+  };
+  \addplot[only marks, mark=square*, red] coordinates {
+    (1.5,1.5) (2.5,2.5) (3.5,3) (4.5,2)
+  };
+  \legend{Set A, Set B}
+\end{axis}
+\end{tikzpicture}

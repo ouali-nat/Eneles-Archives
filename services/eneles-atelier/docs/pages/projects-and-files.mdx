@@ -1,0 +1,147 @@
+---
+title: "Projects and files"
+description: "The Projects page, the Files panel, uploads, the main document, and upload storage."
+summary: "Create and organize LaTeX projects in Eneles, manage files and folders in the Files panel, upload images, set the main document, and see the size limits."
+keywords: ["new project","search","labels","archive","clone","download zip","export","delete project","file tree","folder","rename","move","upload","image","drag and drop","preview","main document","file size","storage"]
+---
+
+# Projects and files
+
+A project is a set of files and folders that compiles to one PDF. This guide covers the Projects page, where you create and organize projects, and the **Files** panel in the editor, where you manage what is inside one.
+
+## The Projects page
+
+Open [Projects](/projects) from the sidebar. The page lists the projects you own and the projects shared with you, most recently edited first. A project that someone shared with you is marked **Shared by** with the owner's name. Each row also shows the project's labels and when it was last edited. Click a row to open the project in the editor.
+
+To find a project:
+
+- Type in **Search projects** to keep only the projects whose title contains what you type.
+- Once any project has a label, a menu next to the search box filters the list to one label. **All labels** shows everything again.
+- Click **Show archived** to see archived projects, and **Show active** to go back.
+
+### Actions on a project
+
+Hover over a row and click the three-dot button at its end, or right-click the row.
+
+| Action | What it does | Who can do it |
+| --- | --- | --- |
+| **Select** | Shows a checkbox on every row. Tick several projects, then use **Archive**, **Label**, or **Delete** in the bar above the list. **Cancel** leaves selection. | Anyone |
+| **Rename** | Makes the title editable in place. Press `Enter` to save or `Esc` to cancel. | People who can edit the project |
+| **Label** | Opens the **Labels** dialog, described under [Label projects](#label-projects). | The owner |
+| **Clone** | Creates a new project named after the original with "(copy)" added, holding a copy of its text files. | Anyone who can open the project |
+| **Download ZIP** | Downloads every file in the project, text files and uploads alike, as one ZIP named after the project. | Anyone who can open the project |
+| **Archive**, **Unarchive** | Moves the project out of the main list, or back into it. | The owner |
+| **Delete** | Erases the project for good, after a confirmation. | The owner |
+
+<Callout type="warning" title="Cloning leaves images empty">
+  **Clone** copies text files only. Images and other uploaded files appear in the copy under the same names, but empty, so upload them to the copy again.
+</Callout>
+
+### Label projects
+
+In the **Labels** dialog, the project's labels are listed with a cross next to each to remove it. To add one, type a **Label name**, pick a **Color** if you want one, and click **Add label**. Labels belong to the project. A label's color is remembered in the browser you chose it in.
+
+### Archive a project
+
+Archiving only moves a project out of the main list. Nothing in it changes, and it still opens and compiles as before. To bring it back, click **Show archived**, open the project's menu, and choose **Unarchive**.
+
+### Delete a project
+
+**Delete** asks you to type `delete permanently` and then click **Delete permanently**. The project goes with everything in it: its files, its uploads, and the [reference papers](/docs/reference-papers) attached to it. It cannot be brought back.
+
+Only the owner can delete a project. On a project that was shared with you, **Delete** answers "You can only delete projects you own".
+
+## Create a project
+
+Click **New project** on the Projects page. The **Create project** dialog has four tabs. On the **New** tab, enter a **Project name** and click **Create project**. A project with no name is called "Untitled Project". It opens in the editor with one file, `main.tex`, holding a short article.
+
+The other three tabs, **Templates**, **Import ZIP**, and **ArXiv**, start a project from something that already exists. They are described in [Importing a project](/docs/importing).
+
+## The Files panel
+
+In the editor, the **Files** panel lists the project's folders and files: folders first, then files, each in alphabetical order. The bar at the top of the panel says how many files the project has. If the panel is closed, click the **Files panel** button in the project toolbar.
+
+Click a file to open it. Click a folder to open or close it. A colored dot next to a file means a collaborator has that file open; hover over the dot to see who.
+
+Creating, renaming, moving, deleting, and uploading all need edit access to the project.
+
+### Create a file or folder
+
+Use either of these:
+
+- The **New file** and **New folder** buttons at the top of the panel. The new item goes inside the folder that is selected, or at the top level when no folder is. Clicking a folder selects it; clicking it again, or opening a file, clears the selection.
+- The right-click menu. Right-click a folder and choose **New File** or **New Folder** to create inside it. Right-click a file to create next to it, in the same folder. Right-click the empty space below the list to create at the top level.
+
+A name field appears in the list. For a file, the field already holds `.tex`: type the name in front of it, or replace the whole thing to use another extension. Press `Enter` or click the tick to create the item, and `Esc` or the cross to cancel. A file name without an extension gets `.tex`. A new file opens in the editor at once.
+
+### Rename a file or folder
+
+Right-click a file or folder, choose **Rename**, type the new name, and press `Enter`. `Esc` cancels.
+
+### Move files and folders
+
+Drag a file or folder onto a folder to move it there. Drop it anywhere else in the panel to move it to the top level.
+
+To move several items at once, select them first: hold `Ctrl` (`⌘` on Mac) and click each one, or hold `Shift` and click to select a range. Right-click, then **Select**, adds an item to the selection too. Then drag any one of the selected items.
+
+### Delete files and folders
+
+Right-click a file or folder and choose **Delete**. The item is removed at once: there is no confirmation and no way to undo it. Deleting a folder deletes everything inside it.
+
+To delete several items, select them as described under [Move files and folders](#move-files-and-folders), then right-click one of them and choose **Delete**, which names how many items it will remove, or press `Delete`. This route asks for confirmation first.
+
+<Callout type="note" title="After changing a folder">
+  Renaming or moving a folder takes its contents with it, and deleting a folder removes them. The panel does not always redraw the folder's contents straight away: until you reload the page, they can appear at the top level. Reload after renaming, moving, or deleting a folder.
+</Callout>
+
+### Upload images and other files
+
+Drag files from your computer onto the **Files** panel. The panel shows "Drop to upload", and any type of file is accepted. Each file is added at the top level of the project under the name it has on your computer, and Eneles confirms with "Uploaded" and the file's name.
+
+Drop the files on the empty space or on a file, not on a folder: a drop on a folder is ignored. To put an uploaded file in a folder, drag it there afterwards.
+
+What happens to a file depends on what is in it:
+
+- **Text** becomes an ordinary project file that you can edit. That covers LaTeX sources, `.bib`, `.sty`, and `.cls` files, and anything else that reads as plain text, such as `.csv` or `.svg`.
+- **Everything else**, such as images, PDFs, and fonts, is stored exactly as it is. Uploading one of these under the name of a file the project already has replaces that file.
+
+You can also drag image files from your computer onto the editor itself, which shows "Drop image". Each image is uploaded to the top level of the project, and a `figure` environment that includes it with `\includegraphics` is inserted at the cursor. Dragging an image from the **Files** panel into the editor inserts the same environment for an image the project already has.
+
+### Files that open as previews
+
+Text files open in the editor. A file that was stored as it is opens as a preview instead, because there is no text to edit:
+
+- **PNG, JPEG, GIF, and WebP images** are shown.
+- **Other files**, such as PDFs, EPS files, and fonts, show their name.
+
+The preview has a **Download** button. For PNG, JPEG, PDF, and EPS files it also shows the `\includegraphics` line that inserts the file.
+
+## The main document
+
+Two things go by this name, and they can differ.
+
+- **The file compiles start from.** This is the **Main document** setting on the **Compiler** tab of **Project settings**, described in [Compiling](/docs/compiling#main-document). A new project uses `main.tex`.
+- **The file marked "main" in the Files panel.** This is the file the project was created with. It cannot be deleted, which is why its right-click menu has no **Delete**. The mark stays on that file even if you choose another main document for compiling.
+
+The **Main document** setting stores the file's path. If you rename or move the file you compile from, choose it again under **Main document**.
+
+## Size limits and upload storage
+
+Each file can be at most 10 MB.
+
+Your plan includes an amount of upload storage. These count toward it:
+
+- Images and other files stored as they are in projects you own, including ones a collaborator uploaded there.
+- Figures and other such files in [reference papers](/docs/reference-papers) you attached.
+- PDFs you uploaded for [PDF extraction](/docs/pdf-extraction), and images you uploaded as [snips](/docs/image-to-latex).
+
+Text files never count, however many you have.
+
+An upload that would take you past the allowance is refused with a message that names the allowance. Deleting files you no longer need frees the space again. [Statistics](/statistics) shows how much you are using, and [Plans and billing](/docs/plans-and-billing) lists the allowance on each plan.
+
+## Related
+
+- [Importing a project](/docs/importing): start from a ZIP, an arXiv paper, a template, or a GitHub repository.
+- [Compiling](/docs/compiling): choose the main document and the engine.
+- [Collaboration](/docs/collaboration): who owns a project and what each role can do.
+- [Keyboard shortcuts](/docs/keyboard-shortcuts): every binding in the editor.

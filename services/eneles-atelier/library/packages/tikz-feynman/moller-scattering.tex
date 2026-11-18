@@ -1,0 +1,21 @@
+% Name: Electron-electron scattering
+% Description: Two electrons exchange a photon (t-channel).
+% Tags: scattering, QED, t-channel
+
+\usepackage[compat=1.1.0]{tikz-feynman}
+
+\begin{tikzpicture}
+  \begin{feynman}
+    \vertex (a) at (0,1.2);
+    \vertex (b) at (0,-1.2);
+    \vertex (i1) at (-2,2) {$e^-$};
+    \vertex (f1) at (2,2) {$e^-$};
+    \vertex (i2) at (-2,-2) {$e^-$};
+    \vertex (f2) at (2,-2) {$e^-$};
+    \diagram* {
+      (i1) -- [fermion] (a) -- [fermion] (f1),
+      (i2) -- [fermion] (b) -- [fermion] (f2),
+      (a) -- [photon, edge label=$\gamma$] (b),
+    };
+  \end{feynman}
+\end{tikzpicture}

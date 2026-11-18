@@ -1,0 +1,105 @@
+---
+title: "Images"
+description: "Include an image file, size it without distortion, rotate it, and crop it."
+summary: "Insert images in LaTeX with \\includegraphics: size them without distortion, keep the aspect ratio, rotate, trim, and clip, and the formats each engine reads."
+keywords: ["\\includegraphics","graphicx","\\graphicspath","width","height","scale","angle","keepaspectratio","trim","clip","picture","photo","PNG","JPEG","PDF","EPS","SVG","resize","rotate","crop","draft mode"]
+---
+
+# Images
+
+After this page you can put an image file into a document, size it without distorting it, rotate it, and crop it.
+
+## Include an image
+
+Load the `graphicx` package in the preamble, then name the file in `\includegraphics`. Leave the extension off: LaTeX tries the formats your engine can read.
+
+```latex
+\usepackage{graphicx}
+```
+
+```latex-example
+\includegraphics[width=4cm]{example-image}
+```
+
+`example-image` is a placeholder that ships with TeX Live, used throughout these lessons. Put your own file name in its place. An image placed this way behaves like one big letter: it sits in the line of text where you wrote it. To give it a caption and a number, wrap it in a figure, as [Figures and captions](/learn/figures-and-captions) shows.
+
+## Set the size
+
+Without options, an image appears at its natural size, which is rarely what you want. Set `width` or `height`, or multiply the natural size with `scale`.
+
+```latex-example
+\includegraphics[width=0.3\linewidth]{example-image-a}
+\includegraphics[height=1.5cm]{example-image-b}
+\includegraphics[scale=0.15]{example-image-c}
+```
+
+Prefer lengths that follow the layout over fixed ones. `\linewidth` is the width of the current line, so `width=0.8\linewidth` still fits when the image moves into a column, a list, or a minipage. `\textwidth` is always the full text block, which is too wide in those places.
+
+## Keep the aspect ratio
+
+Give only one of `width` and `height` and the other follows in proportion. Give both and the image is stretched to match, unless you add `keepaspectratio`, which makes it as large as possible inside that box.
+
+```latex-example
+\includegraphics[width=4cm,height=1.5cm]{example-image-a}
+\includegraphics[width=4cm,height=1.5cm,keepaspectratio]{example-image-a}
+```
+
+## Rotate
+
+`angle` turns the image counterclockwise by a number of degrees. Options are applied from left to right, so the order changes the result: size then turn, or turn then size.
+
+```latex-example
+\includegraphics[width=2.4cm,angle=90]{example-image-a}
+\includegraphics[angle=90,width=2.4cm]{example-image-a}
+```
+
+The first image is made 2.4 cm wide and then turned, so it ends up 2.4 cm tall. The second is turned first and then made 2.4 cm wide.
+
+## Trim and clip
+
+`trim` removes a margin from each side, in the order left, bottom, right, top. It only moves the edges of the box. Add `clip` to hide what falls outside them.
+
+```latex-example
+\includegraphics[width=3cm]{example-image-a}
+\includegraphics[width=3cm,trim=80bp 60bp 80bp 60bp,clip]{example-image-a}
+```
+
+The trim lengths are measured on the original image, before any scaling. This one is 320 by 240 bp, so the second copy keeps the middle half in each direction and is then enlarged to 3 cm.
+
+## Tell LaTeX where the images are
+
+A path in `\includegraphics` is relative to the main document, not to the file you are typing in. To avoid repeating a folder name, list your image folders once in the preamble. Each folder gets its own braces and ends with a slash.
+
+```latex
+\graphicspath{{figures/}{plots/2024/}}
+
+% later: finds figures/setup.pdf or plots/2024/setup.pdf
+\includegraphics[width=\linewidth]{setup}
+```
+
+## Formats each engine reads
+
+| Engine | Reads | Notes |
+| --- | --- | --- |
+| pdfLaTeX, LuaLaTeX | PDF, PNG, JPEG | The usual choice. |
+| XeLaTeX | PDF, PNG, JPEG, BMP | EPS only where Ghostscript is installed. |
+| LaTeX (DVI output) | EPS | The original route, rarely needed now. |
+
+Use PDF for anything drawn with lines and text, such as plots and diagrams: it stays sharp at every size. Use PNG for screenshots and JPEG for photographs. SVG, GIF, TIFF, and WebP are not read by any engine, so convert them first (SVG and EPS to PDF, the rest to PNG).
+
+<Callout type="tip" title="Faster compiles with many images">
+  In Eneles, set **Compile mode** to **Draft** and each image is drawn as an empty box of the right size, which makes a long document compile much faster. See [Compiling](/docs/compiling#draft-mode).
+</Callout>
+
+## Common mistakes
+
+- **A wrong name or path.** TeX stops with ``! LaTeX Error: File `plot' not found.`` Check the folder, the spelling, and the capital letters: `Plot.PNG` and `plot.png` are different files on the compiler. Avoid spaces in file names.
+- **An unsupported format.** `! LaTeX Error: Unknown graphics extension: .svg.` means the engine cannot read that format. Convert the file to PDF or PNG.
+- **Both `width` and `height` set.** The image comes out squashed. Remove one, or add `keepaspectratio`.
+- **`width=\textwidth` inside a column or minipage.** The image sticks out into the margin and the log reports an `Overfull \hbox`. Use `\linewidth`.
+
+## Next
+
+- [Figures and captions](/learn/figures-and-captions)
+- [Drawing with TikZ](/learn/drawing-with-tikz)
+- [Colors](/learn/colors)

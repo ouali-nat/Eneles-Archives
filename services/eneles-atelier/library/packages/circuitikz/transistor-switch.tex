@@ -1,0 +1,12 @@
+% Name: Transistor switch
+% Description: An NPN transistor switching an LED on when the input is high.
+% Tags: transistor, npn, switch, LED
+
+\usepackage{circuitikz}
+
+\begin{circuitikz}
+  \draw (0,0) node[npn] (Q) {};
+  \draw (Q.C) to[leD, l=LED] ++(0,1.6) to[R, l=$R_C$] ++(0,1.6) node[vcc] {$+5\,\mathrm{V}$};
+  \draw (Q.B) to[R, l_=$R_B$, -o] ++(-2.4,0) node[left] {$V_{in}$};
+  \draw (Q.E) node[ground] {};
+\end{circuitikz}

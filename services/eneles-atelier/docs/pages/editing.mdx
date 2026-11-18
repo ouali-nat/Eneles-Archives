@@ -1,0 +1,81 @@
+---
+title: "Editing"
+description: "Editor settings, spell check, word count, and saving a project as a template."
+summary: "Configure the Eneles LaTeX editor: editor settings, the spell checker, word count, and saving a project as a template you can start new projects from."
+keywords: ["settings","autocomplete","brackets","syntax checking","spell check","dictionary","language","word count","template"]
+---
+
+# Editing
+
+The settings that shape how the editor behaves, the spell checker, word count, and saving a project as a template.
+
+## Editor settings
+
+Click the gear icon (**Project settings**) at the right end of the project toolbar. The **Editor** tab has two sections.
+
+Under **Editing**:
+
+- **Auto-complete** suggests commands, environments, citation keys, and labels as you type. When it is off, press `Ctrl + Space` to open the suggestions yourself.
+- **Auto-close brackets** adds the closing bracket or quote when you type an opening one.
+- **Smart indentation** indents new lines according to how deeply environments are nested.
+
+Under **Checking**:
+
+- **Syntax checking** marks LaTeX syntax errors in the editor as you type, before you compile.
+- **Spell check** sets the spell checker's language, or turns it **Off**. See below.
+- **Dictionary**: **Manage words…** opens your personal dictionary.
+
+Auto-complete, Auto-close brackets, Syntax checking, and the spell check language are saved to your account and apply in every project. Smart indentation is saved in the browser you set it in.
+
+The **Compiler** tab holds the project's compile settings, described in [Compiling](/docs/compiling).
+
+## Spell check
+
+Choose a language under **Spell check**: English (US), which is the default, English (UK), French, German, Italian, Portuguese (Brazil), or Spanish. Choose **Off** to turn checking off.
+
+Misspelled words get a wavy red underline. Only prose is checked: commands, math, comments, verbatim, and code are skipped, and so are arguments that hold names rather than text, such as those of `\label`, `\cite`, `\ref`, and `\usepackage`. The word you are typing is not checked until the cursor leaves it.
+
+Right-click an underlined word to open its menu:
+
+- Click a suggested spelling to replace the word.
+- **Add “word” to dictionary** saves the word to your personal dictionary, so it is not flagged again in any project. This option appears in projects you can edit.
+- **Ignore in this session** stops flagging the word until you reload the page.
+
+To see or change your dictionary, open **Settings**, then **Editor**, and click **Manage words…** next to **Dictionary**. Type a word and press `Enter` to add it, or click the bin icon next to a word to remove it.
+
+## Word count
+
+Choose **File**, then **Word count**. The count starts from the [main document](/docs/compiling#main-document) and follows `\input`, `\include`, and `\subfile` into the files they name.
+
+The dialog shows **Total words**, made up of words in the text, in headings, in captions, and in footnotes, and also the number of headings, inline equations, and displayed equations. Commands, math, and comments are not counted as words. Verbatim and code listings, TikZ pictures, and a `thebibliography` list are left out.
+
+If the document includes a file that is not in the project, the dialog lists it under "Not counted, not in the project".
+
+## Templates
+
+A template is a copy of a project's text files that you, or others, can start new projects from.
+
+### Save a project as a template
+
+1. Open the project and choose **File**, then **Save as template…**. You need edit access to the project.
+2. Enter a **Name** and, if you like, a **Description**.
+3. Leave **Share with everyone** off to keep the template private, or turn it on to offer it to everyone.
+4. Click **Save template**.
+
+Templates hold text files only. Images and other uploads are left out, and Eneles tells you how many were.
+
+<Callout type="note" title="Shared templates are reviewed first">
+  A template you share is checked by a reviewer before anyone else can see it. Until it is approved, it is visible only to you. Editing a shared template later sends it back for review.
+</Callout>
+
+### Use and manage templates
+
+The [Templates](/templates) page has two tabs. **Shared** lists approved templates from everyone. **Yours** lists your own, each marked **Private**, **Waiting for review**, **Shared**, or **Not approved**. A template that was not approved shows the reviewer's note.
+
+Click **Use template** to create a new project from a copy of the template's files. On your own templates, **Share** sends a private template for review and **Stop sharing** makes a shared one private again.
+
+## Related
+
+- [Visual mode](/docs/visual-mode): edit with headings, equations, and images drawn in place.
+- [References and citations](/docs/references): add `.bib` entries and complete `\cite` keys.
+- [Keyboard shortcuts](/docs/keyboard-shortcuts): every binding in the editor.

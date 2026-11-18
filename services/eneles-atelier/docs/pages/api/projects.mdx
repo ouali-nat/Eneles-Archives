@@ -1,0 +1,161 @@
+---
+title: "Projects"
+description: "Create projects, manage files, compile, and export."
+summary: "The Eneles REST API for projects: create and manage LaTeX projects, read and write the file tree, compile, and export, with request and response examples."
+keywords: ["project","files","compile","export","zip","history"]
+method: GET
+---
+
+# Projects
+
+Create and manage LaTeX projects. Each project contains a file tree, compilation settings, and collaboration metadata.
+
+## Overview
+
+All list endpoints return paginated responses with `data` and `meta` fields. Pass `?page=1&limit=50` as query parameters to control pagination.
+
+The `meta` object includes `page`, `limit`, `total`, `totalPages`, `hasNext`, and `hasPrev` fields so you can build navigation controls easily.
+
+Error responses follow a consistent format:
+
+```json
+{
+  "error": "not_found",
+  "message": "Project not found or you do not have access"
+}
+```
+
+---
+
+### GET /projects
+
+List all projects belonging to the authenticated user. Results are paginated.
+
+**Auth:** Bearer token or API key
+
+```bash
+curl https://api.texer.org/projects \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+```json
+{
+  "data": [
+    {
+      "uid": "prj_x9k2m4",
+      "title": "Research Paper",
+      "template": "article",
+      "created_at": "2025-06-01T10:30:00Z",
+      "updated_at": "2025-06-14T08:12:00Z"
+    }
+  ],
+  "meta": { "page": 1, "limit": 50, "total": 1, "totalPages": 1, "hasNext": false, "hasPrev": false }
+}
+```
+
+---
+
+### POST /projects
+
+Create a new project. Optionally specify a template to pre-populate the file tree.
+
+**Auth:** Bearer token or API key
+
+```bash
+curl -X POST https://api.texer.org/projects \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "My Thesis", "template": "thesis"}'
+```
+
+```json
+{
+  "uid": "prj_n7w3q8",
+  "title": "My Thesis",
+  "template": "thesis",
+  "files": [{ "name": "main.tex", "size": 1240 }],
+  "created_at": "2025-06-15T09:00:00Z"
+}
+```
+
+---
+
+### GET /projects/:uid
+
+Retrieve full details of a project including its file tree and collaborators.
+
+**Auth:** Bearer token or API key
+
+```bash
+curl https://api.texer.org/projects/prj_n7w3q8 \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+```json
+{
+  "uid": "prj_n7w3q8",
+  "title": "My Thesis",
+  "files": [
+    { "name": "main.tex", "size": 1240 },
+    { "name": "refs.bib", "size": 430 }
+  ],
+  "collaborators": [],
+  "created_at": "2025-06-15T09:00:00Z"
+}
+```
+
+---
+
+### PUT /projects/:uid
+
+Update a project's title or settings.
+
+**Auth:** Bearer token or API key
+
+```bash
+curl -X PUT https://api.texer.org/projects/prj_n7w3q8 \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "My Updated Thesis"}'
+```
+
+```json
+{
+  "uid": "prj_n7w3q8",
+  "title": "My Updated Thesis",
+  "updated_at": "2025-06-15T12:30:00Z"
+}
+```
+
+---
+
+### DELETE /projects/:uid
+
+Permanently delete a project and all associated files. This action cannot be undone.
+
+**Auth:** Bearer token or API key
+
+```bash
+curl -X DELETE https://api.texer.org/projects/prj_n7w3q8 \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+```json
+{ "message": "Project prj_n7w3q8 deleted" }
+```
+
+---
+
+### GET /projects/:uid/export
+
+Download the entire project as a ZIP archive containing all files.
+
+**Auth:** Bearer token or API key
+
+```bash
+curl https://api.texer.org/projects/prj_n7w3q8/export \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -o project.zip
+```
+
+Returns a binary ZIP file with `Content-Type: application/zip`.

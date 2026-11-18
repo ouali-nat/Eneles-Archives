@@ -1,0 +1,15 @@
+% Name: Inverting amplifier
+% Description: An op-amp with input and feedback resistors, for a gain of minus R_f over R_1.
+% Tags: op-amp, amplifier, inverting
+
+\usepackage{circuitikz}
+
+\begin{circuitikz}
+  \draw (0,0) node[op amp] (oa) {};
+  \draw (oa.-) to[short, -*] ++(-0.6,0) coordinate (inv)
+    to[R, l=$R_1$, -o] ++(-2.4,0) node[left] {$v_{in}$};
+  \draw (inv) -- ++(0,1.6) coordinate (top)
+    to[R, l=$R_f$] (top -| oa.out) to[short, -*] (oa.out);
+  \draw (oa.+) -- ++(-0.6,0) node[ground] {};
+  \draw (oa.out) to[short, -o] ++(1,0) node[right] {$v_{out}$};
+\end{circuitikz}

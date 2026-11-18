@@ -1,0 +1,132 @@
+---
+title: "Hyperlinks"
+description: "Link to web pages and to places in your document, style the links, and set the PDF's title and author."
+summary: "Hyperlinks in LaTeX with hyperref: link to web pages and to places in your document, style the links, and set the PDF's title and author metadata."
+keywords: ["hyperref","\\url","\\href","\\hyperref","\\hypertarget","\\hyperlink","\\hypersetup","colorlinks","hidelinks","linkcolor","urlcolor","citecolor","pdftitle","pdfauthor","\\texorpdfstring","PDF metadata","bookmarks","clickable links","link color","mailto"]
+---
+
+# Hyperlinks
+
+After this page you can link to web pages and to places inside your own document, control how links look, and set the title and author stored in the PDF.
+
+## What hyperref does
+
+Loading `hyperref` turns every cross-reference, citation, footnote mark, and table of contents entry into a link, with no other change to your source. It also builds the PDF's outline, the list of sections in the viewer's sidebar. Two commands add links to the web.
+
+```latex-document
+\documentclass[varwidth=11cm,border=10pt]{standalone}
+\usepackage[colorlinks=true, urlcolor=blue]{hyperref}
+\begin{document}
+The package archive is at \url{https://ctan.org/pkg}.
+Read the \href{https://www.latex-project.org/help/}{help
+pages of the LaTeX project}, or write to
+\href{mailto:editor@example.org}{the editor}.
+\end{document}
+```
+
+`\url` prints the address itself in a typewriter font and lets it break at slashes and dots. `\href{address}{text}` hides the address behind text of your choice, so use it only where readers will not need the address on paper. In both, characters such as `%`, `#`, `_`, and `~` are typed as they are.
+
+## Links inside the document
+
+`\ref` and its relatives are links already (see [Cross-references](/learn/cross-references)). To make your own words the link, use `\hyperref[label]{text}`. To link to a spot that has no number and so cannot take a label, mark it with `\hypertarget{name}{text}` and point to it with `\hyperlink{name}{text}`.
+
+```latex-document
+\documentclass[varwidth=11cm,border=10pt]{standalone}
+\usepackage[colorlinks=true, linkcolor=blue]{hyperref}
+\begin{document}
+\section{Safety rules}\label{sec:safety}
+\hypertarget{goggles}{Wear goggles} whenever the laser
+is switched on.
+
+\section{Procedure}
+Read \hyperref[sec:safety]{the safety rules} first,
+above all the rule about
+\hyperlink{goggles}{eye protection}.
+\end{document}
+```
+
+## How links look
+
+By default `hyperref` draws a colored box around each link. The boxes show on screen only and are not printed, but few people like them. The usual choices are colored text or no decoration at all.
+
+| Option | Effect |
+| --- | --- |
+| `colorlinks=true` | Color the link text instead of drawing a box. |
+| `linkcolor`, `citecolor`, `urlcolor` | The color of internal links, citations, and web links. |
+| `allcolors=blue` | Set all link colors at once. |
+| `hidelinks` | No color and no box. The links still work. |
+| `linktoc=all` | In the table of contents, link the page number as well as the title. |
+| `pdfusetitle` | Take the PDF's title and author from `\title` and `\author`. |
+
+Give options when loading the package or, at any later point in the preamble, with `\hypersetup`. Color names come from `xcolor` (see [Colors](/learn/colors)).
+
+```latex-document
+\documentclass[varwidth=11cm,border=10pt]{standalone}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  citecolor=green!45!black,
+  urlcolor=purple
+}
+\begin{document}
+\section{Data}\label{sec:data}
+Section~\ref{sec:data} uses the tables of
+Abbe~\cite{abbe}, mirrored at \url{https://example.org/data}.
+
+\begin{thebibliography}{9}
+\bibitem{abbe} C. Abbe. \emph{Rainfall Tables}. 1901.
+\end{thebibliography}
+\end{document}
+```
+
+Dark, muted colors like these stay readable when the document is printed in black and white.
+
+## PDF metadata
+
+A PDF stores a title, an author, and keywords that viewers, search engines, and reference managers read. Set them with `\hypersetup`.
+
+```latex
+\hypersetup{
+  pdftitle={Rainfall on the North Slope},
+  pdfauthor={Mira Haldane},
+  pdfsubject={Field report},
+  pdfkeywords={rainfall, sensors, calibration}
+}
+```
+
+## Headings with math
+
+Section titles are copied into the PDF outline, which holds plain text only. For a title that contains math or formatting, give a plain alternative with `\texorpdfstring{TeX version}{plain version}`.
+
+```latex-example
+\section{Decay by \texorpdfstring{$\alpha$}{alpha} emission}
+The outline in the PDF viewer reads
+``Decay by alpha emission''.
+```
+
+## Loading order
+
+`hyperref` redefines commands that belong to many other packages, so it has to see their final form.
+
+<Callout type="note" title="Load hyperref last, with few exceptions">
+  Put `\usepackage{hyperref}` at the end of your package list. A small number of packages are written to come after it, notably `cleveref` and `glossaries`.
+</Callout>
+
+Some classes, such as `beamer`, load `hyperref` themselves. Do not load it again with options there. Use `\hypersetup` to configure it.
+
+In Eneles's visual mode, `\href` and `\url` are drawn as links in the editor. See [Visual mode](/docs/visual-mode).
+
+## Common mistakes
+
+- **Math in a heading.** The log fills with ``Package hyperref Warning: Token not allowed in a PDF string (Unicode): removing `math shift'``. Wrap the math in `\texorpdfstring`.
+- **Options given twice.** `! LaTeX Error: Option clash for package hyperref.` means the class or another package loaded it first. Remove the options from `\usepackage` and use `\hypersetup`.
+- **`%` or `#` in a link inside another command.** Within `\footnote` or a heading, the characters are read before `\url` or `\href` can protect them. Write `\%` and `\#` there.
+- **An address that runs into the margin.** `\url` does not break at hyphens. Add `\PassOptionsToPackage{hyphens}{url}` before `hyperref` is loaded.
+
+## Next
+
+- [Cross-references](/learn/cross-references)
+- [Contents, lists, and indexes](/learn/contents-lists-and-indexes)
+- [Colors](/learn/colors)

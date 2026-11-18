@@ -1,0 +1,11 @@
+{
+  "name": "automata",
+  "description": "Draw finite automata, state machines, and Petri nets. Standard TikZ library for CS theory.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "automata",
+    "state machines",
+    "FSM",
+    "theory of computation"
+  ]
+}

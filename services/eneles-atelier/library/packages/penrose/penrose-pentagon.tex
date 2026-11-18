@@ -1,0 +1,12 @@
+% Name: Pentagon tiling
+% Description: Penrose's original tiling with pentagons, after two rounds of substitution.
+% Tags: penrose, pentagon, tiling
+
+\usetikzlibrary{tilings.penrose}
+
+\begin{tikzpicture}[
+  tiling step=6cm,
+  every tile/.style={draw, thin, fill=yellow!25},
+]
+  \TilingDecomposition{pentagon}{2}{P}
+\end{tikzpicture}

@@ -1,0 +1,10 @@
+{
+  "name": "tikz-nfold",
+  "description": "Lines made of n parallel strokes, as used for higher arrows in category theory, with matching arrow tips.",
+  "ctanUrl": "https://ctan.org/pkg/tikz-nfold",
+  "tags": [
+    "nfold",
+    "higher category theory",
+    "paths"
+  ]
+}

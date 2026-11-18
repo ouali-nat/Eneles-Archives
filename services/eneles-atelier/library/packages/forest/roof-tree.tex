@@ -1,0 +1,19 @@
+% Name: Constituency tree with triangles
+% Description: A parse tree that collapses a phrase under a roof, as linguistics papers draw it.
+% Tags: syntax, linguistics, parse tree, roof
+
+\usepackage[linguistics]{forest}
+
+\begin{forest}
+  for tree={font=\small}
+  [S
+    [NP
+      [Det [every]]
+      [N [student]]
+    ]
+    [VP
+      [V [read]]
+      [NP [two long papers, roof]]
+    ]
+  ]
+\end{forest}

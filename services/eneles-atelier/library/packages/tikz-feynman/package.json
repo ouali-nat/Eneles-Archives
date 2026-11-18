@@ -1,0 +1,10 @@
+{
+  "name": "tikz-feynman",
+  "description": "Feynman diagrams for particle physics: fermions, photons, and gluons. These examples place each vertex by hand, so they compile with pdfLaTeX.",
+  "ctanUrl": "https://ctan.org/pkg/tikz-feynman",
+  "tags": [
+    "feynman",
+    "particle physics",
+    "quantum field theory"
+  ]
+}

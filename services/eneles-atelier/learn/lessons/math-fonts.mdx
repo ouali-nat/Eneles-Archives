@@ -1,0 +1,119 @@
+---
+title: "Math fonts"
+description: "Use blackboard bold, calligraphic, Fraktur, bold, and upright letters, and define named operators."
+summary: "Math fonts in LaTeX: blackboard bold, calligraphic, Fraktur, bold, and upright letters, \\text or \\mathrm, and named operators with \\DeclareMathOperator."
+keywords: ["\\mathbb","\\mathcal","\\mathfrak","\\mathrm","\\mathbf","\\boldsymbol","\\bm","\\mathsf","\\mathtt","\\mathit","\\text","\\operatorname","\\DeclareMathOperator","blackboard bold","calligraphic","Fraktur","bold math","real numbers","vectors","argmax"]
+---
+
+# Math fonts
+
+Set number sets, vectors, operators, and other notation in the right alphabet, and know when to use `\text`, `\mathrm`, or a named operator for upright letters.
+
+## The math alphabets
+
+In math mode, a letter's shape carries meaning, so you change it with a math alphabet command, not a text command such as `\textbf`. Each one takes the letters as its argument.
+
+| Command | Look | Typical use |
+| --- | --- | --- |
+| `\mathbb` | blackboard bold, capitals only | number sets |
+| `\mathcal` | calligraphic, capitals only | families of sets, transforms, big O |
+| `\mathfrak` | Fraktur | Lie algebras, ideals |
+| `\mathrm` | upright roman | units, constants, labels |
+| `\mathbf` | upright bold | vectors and matrices |
+| `\boldsymbol` | bold, shape unchanged | bold Greek letters and symbols |
+| `\mathsf` | sans serif | tensors, categories |
+| `\mathtt` | typewriter | code and literal values |
+| `\mathit` | italic, spaced as a word | names of more than one letter |
+
+`\mathbb` and `\mathfrak` come from the `amssymb` package and `\boldsymbol` from `amsmath`. The rest are part of LaTeX.
+
+```latex-example
+\[
+  \mathbb{N} \subset \mathbb{Z} \subset \mathbb{Q}
+    \subset \mathbb{R} \subset \mathbb{C}
+  \qquad
+  \mathcal{F} \subseteq \mathcal{P}(X)
+  \qquad
+  \mathfrak{g} = \mathfrak{sl}_2
+\]
+```
+
+## Bold
+
+`\mathbf` switches to an upright bold font that has Latin letters and digits only. It leaves Greek letters and symbols such as `\nabla` unchanged. `\boldsymbol` makes whatever it is given bold and keeps its shape, so italic letters stay italic.
+
+```latex-example
+\[
+  \mathbf{v} = \mathbf{A}\mathbf{x}
+  \qquad
+  \mathbf{\alpha} \neq \boldsymbol{\alpha}
+  \qquad
+  \boldsymbol{\nabla} \times \boldsymbol{v}
+  \qquad
+  \boldsymbol{\mathcal{A}}
+\]
+```
+
+## Sans serif, typewriter, and italic words
+
+```latex-example
+\[
+  A^{\mathsf{T}}
+  \qquad
+  \mathsf{Set} \to \mathsf{Grp}
+  \qquad
+  \mathtt{0x1F} = 31
+  \qquad
+  diff \neq \mathit{diff}
+\]
+```
+
+Without `\mathit`, a name like `diff` is spaced as the product of four variables. Compare the gap between the two letters f.
+
+## Upright words: `\text` or `\mathrm`
+
+Both give upright letters in an ordinary paragraph, but they do different jobs. `\text` leaves math mode for a moment: it keeps the spaces you type and uses the font of the surrounding text, so inside an italic theorem it comes out italic. `\mathrm` stays in math mode: it ignores spaces and is upright everywhere.
+
+```latex-example
+\begin{theorem}
+Here $x_{\text{max}}$ is italic and $x_{\mathrm{max}}$ is upright.
+\[ x = 0 \mathrm{ if and only if } y = 0 \]
+\[ x = 0 \text{ if and only if } y = 0 \]
+\end{theorem}
+```
+
+Use `\text` for words and phrases that belong to the sentence. Use `\mathrm` for upright symbols that are part of the notation, such as the label in `T_{\mathrm{max}}` or the units in `\mathrm{kg}`.
+
+## Named operators
+
+Function names such as `\sin`, `\log`, `\det`, and `\max` are upright and get a thin space on each side. For a name LaTeX does not define, use `\operatorname` once, or declare a command in the preamble with `\DeclareMathOperator`. The starred form makes an operator whose subscript goes underneath in a display, like `\lim`.
+
+```latex-document
+\documentclass[varwidth=11cm,border=10pt]{standalone}
+\usepackage{amsmath}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\begin{document}
+\[
+  \rank A + \dim \ker A = n
+  \qquad
+  \hat{\theta} = \argmax_{\theta} L(\theta)
+\]
+Compare $rank A$, $\mathrm{rank} A$, and $\operatorname{rank} A$.
+\end{document}
+```
+
+Only the last of the three is right: the first is italic, and the second has no space before `A`.
+
+## Common mistakes
+
+- **Lowercase letters or digits in `\mathbb` or `\mathcal`.** These fonts have capitals only, so `\mathbb{k}` and `\mathcal{a}` print unrelated symbols without any error. For a blackboard bold 1, load a package such as `bbm` or `dsfont`.
+- **`\mathbf` on a Greek letter.** `\mathbf{\alpha}` compiles and is not bold. Use `\boldsymbol{\alpha}`.
+- **Stacking alphabets.** `\mathbf{\mathcal{A}}` gives a plain calligraphic A, because the inner command wins. Use `\boldsymbol{\mathcal{A}}`.
+- **`\DeclareMathOperator` in the document body.** It stops with `Can be used only in preamble`. Move it above `\begin{document}`, or use `\operatorname` on the spot.
+
+## Next
+
+- [Theorems and proofs](/learn/theorems-and-proofs)
+- [Spacing in math](/learn/spacing-in-math)
+- [Custom commands](/learn/custom-commands)

@@ -1,0 +1,123 @@
+---
+title: "Matrices"
+description: "Typeset matrices with any delimiter, add dots, draw augmented matrices, and fit small matrices into text."
+summary: "Matrices in LaTeX: pmatrix, bmatrix, and the other matrix environments, dots for a general matrix, augmented matrices, and small matrices in a line of text."
+keywords: ["matrix","pmatrix","bmatrix","Bmatrix","vmatrix","Vmatrix","smallmatrix","psmallmatrix","bmatrix*","array","augmented matrix","determinant","column vector","\\cdots","\\vdots","\\ddots","MaxMatrixCols","mathtools"]
+---
+
+# Matrices
+
+Typeset matrices with any kind of bracket, fill them with dots, draw the bar of an augmented matrix, and fit a small matrix into a line of text.
+
+## The matrix environments
+
+The `amsmath` package has one environment for each kind of delimiter. Inside all of them, `&` separates the entries of a row and `\\` ends the row. They work only in math mode.
+
+| Environment | Delimiters |
+| --- | --- |
+| `matrix` | none |
+| `pmatrix` | parentheses |
+| `bmatrix` | square brackets |
+| `Bmatrix` | braces |
+| `vmatrix` | single bars, for a determinant |
+| `Vmatrix` | double bars, for a norm |
+
+```latex-example
+\[
+  \begin{matrix} a & b \\ c & d \end{matrix}
+  \quad
+  \begin{pmatrix} a & b \\ c & d \end{pmatrix}
+  \quad
+  \begin{bmatrix} a & b \\ c & d \end{bmatrix}
+  \quad
+  \begin{Bmatrix} a & b \\ c & d \end{Bmatrix}
+  \quad
+  \begin{vmatrix} a & b \\ c & d \end{vmatrix}
+  \quad
+  \begin{Vmatrix} a & b \\ c & d \end{Vmatrix}
+\]
+```
+
+A matrix is a symbol like any other, so you can multiply matrices, set them equal, and write a column vector as a matrix with one column.
+
+```latex-example
+\[
+  \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}
+  \begin{pmatrix} x \\ y \end{pmatrix}
+  =
+  \begin{pmatrix} x + 2y \\ 3x + 4y \end{pmatrix},
+  \qquad
+  \begin{vmatrix} 1 & 2 \\ 3 & 4 \end{vmatrix} = -2
+\]
+```
+
+In Eneles, press `Shift + Space` and choose Matrix from the Math group to insert a two-by-two `bmatrix` to fill in.
+
+## Dots for a general matrix
+
+Use `\cdots` along a row, `\vdots` down a column, and `\ddots` on the diagonal.
+
+```latex-example
+\[
+  A =
+  \begin{bmatrix}
+    a_{11} & a_{12} & \cdots & a_{1n} \\
+    a_{21} & a_{22} & \cdots & a_{2n} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{m1} & a_{m2} & \cdots & a_{mn}
+  \end{bmatrix}
+\]
+```
+
+## Column alignment
+
+The matrix environments center every column, which looks uneven when some entries have a minus sign. The `mathtools` package adds starred versions that take an alignment letter: `l`, `c`, or `r`.
+
+```latex-example
+\[
+  \begin{bmatrix} 1 & -2 \\ -30 & 4 \end{bmatrix}
+  \qquad
+  \begin{bmatrix*}[r] 1 & -2 \\ -30 & 4 \end{bmatrix*}
+\]
+```
+
+## Augmented matrices
+
+The matrix environments cannot draw a vertical line. Use `array` instead, which takes a column specification like `tabular`: one letter per column, and `|` where you want a rule. `array` has no delimiters of its own, so add them with `\left[` and `\right]`.
+
+```latex-example
+\[
+  \left[
+  \begin{array}{rrr|r}
+    1 & 2 & -1 & 3 \\
+    0 & 1 & 4 & -2 \\
+    0 & 0 & 1 & 5
+  \end{array}
+  \right]
+\]
+```
+
+## Small matrices in text
+
+A full-size matrix in a paragraph forces the lines apart. `smallmatrix` sets the entries small enough to fit. It has no delimiters, so add your own, or use the `mathtools` variants `psmallmatrix`, `bsmallmatrix`, and `vsmallmatrix`.
+
+```latex-example
+A quarter turn is the matrix
+$\bigl(\begin{smallmatrix} 0 & -1 \\ 1 & 0 \end{smallmatrix}\bigr)$,
+or, with mathtools,
+$\begin{psmallmatrix} 0 & -1 \\ 1 & 0 \end{psmallmatrix}$.
+Its square is
+$\begin{psmallmatrix} -1 & 0 \\ 0 & -1 \end{psmallmatrix}$.
+```
+
+## Common mistakes
+
+- **A matrix outside math mode.** `\begin{pmatrix}` in plain text stops with `Missing $ inserted`. Put it inside `\[…\]`, `$…$`, or an equation environment.
+- **More than ten columns.** The matrix environments allow ten columns by default, and the eleventh `&` gives `Extra alignment tab has been changed to \cr`. Raise the limit in the preamble with `\setcounter{MaxMatrixCols}{12}`. The same message from an `array` means a row has more entries than the column specification.
+- **Rows that touch.** Tall entries such as fractions can crowd the row below. Give `\\` a length to add space after that row, for example `\\[6pt]`.
+
+## Next
+
+- [Brackets and delimiters](/learn/brackets-and-delimiters)
+- [Aligning equations](/learn/aligning-equations)
+- [Tables](/learn/tables)

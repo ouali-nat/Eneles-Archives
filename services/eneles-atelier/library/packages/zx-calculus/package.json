@@ -1,0 +1,10 @@
+{
+  "name": "zx-calculus",
+  "description": "ZX-calculus diagrams for quantum computing. Spiders, wires, and quantum circuit notation.",
+  "ctanUrl": "https://ctan.org/pkg/zx-calculus",
+  "tags": [
+    "ZX-calculus",
+    "quantum",
+    "spiders"
+  ]
+}

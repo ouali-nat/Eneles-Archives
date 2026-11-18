@@ -1,0 +1,14 @@
+% Name: Kite and dart tiling
+% Description: Four rounds of substitution starting from one triangle, with kites and darts in two colors.
+% Tags: penrose, tiling, aperiodic, kite and dart
+
+\usetikzlibrary{tilings.penrose}
+
+\begin{tikzpicture}[
+  tiling step=7cm,
+  every tile/.style={draw, thin},
+  every kite/.style={fill=blue!25},
+  every dart/.style={fill=orange!35},
+]
+  \TilingDecomposition{kite}{4}{T}
+\end{tikzpicture}

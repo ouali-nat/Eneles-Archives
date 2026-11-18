@@ -1,0 +1,12 @@
+{
+  "name": "Venn and Euler diagrams",
+  "description": "Set diagrams in plain TikZ, so any region can be shaded, labeled, or counted.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "venn",
+    "euler",
+    "sets",
+    "logic"
+  ],
+  "custom": true
+}

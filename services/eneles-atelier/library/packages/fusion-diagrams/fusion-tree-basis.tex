@@ -1,0 +1,13 @@
+% Name: Fusion tree basis
+% Description: Four anyons fused left to right through the intermediate charges x₁ and x₂ to a total charge c.
+% Tags: fusion tree, basis, anyons
+
+\begin{tikzpicture}[thick]
+  \draw (0,0) node[below] {$a_1$} -- (0.6,0.8);
+  \draw (1.2,0) node[below] {$a_2$} -- (0.6,0.8);
+  \draw (0.6,0.8) -- node[left] {$x_1$} (1.2,1.6);
+  \draw (2.4,0) node[below] {$a_3$} -- (1.2,1.6);
+  \draw (1.2,1.6) -- node[left] {$x_2$} (1.8,2.4);
+  \draw (3.6,0) node[below] {$a_4$} -- (1.8,2.4);
+  \draw (1.8,2.4) -- (1.8,3.2) node[above] {$c$};
+\end{tikzpicture}

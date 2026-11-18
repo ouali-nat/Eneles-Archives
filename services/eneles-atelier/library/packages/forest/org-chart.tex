@@ -1,0 +1,23 @@
+% Name: Organization chart
+% Description: A simple organizational hierarchy.
+% Tags: organization, hierarchy, chart
+
+\usepackage{forest}
+
+\begin{forest}
+  for tree={draw, align=center, s sep=1.5mm}
+  [CEO
+    [CTO
+      [Dev Team]
+      [QA Team]
+    ]
+    [CFO
+      [Accounting]
+      [Finance]
+    ]
+    [COO
+      [Operations]
+      [Logistics]
+    ]
+  ]
+\end{forest}

@@ -1,0 +1,98 @@
+---
+title: "Plans and billing"
+description: "What each plan includes, how usage is counted, and how to upgrade, change, or cancel."
+summary: "The Free, Pro, and Team plans in Eneles: what each one includes, how usage is counted, where to see it, and how to upgrade, change, or cancel a plan."
+keywords: ["pricing","free","pro","team","enterprise","limits","quota","snips","pdf pages","upload storage","usage","statistics","upgrade","subscription","cancel","invoice","payment","stripe"]
+---
+
+# Plans and billing
+
+Eneles has three plans: Free, Pro, and Team. This guide covers what differs between them, how usage is counted, where to see it, and how to upgrade, change, or cancel.
+
+## What each plan includes
+
+Most of Eneles is the same on every plan: real-time editing, comments and suggested changes, compiling, GitHub sync, ZIP and arXiv import, the TikZ tools, and the API. Projects and collaborators are unlimited on every plan, and a compile can take up to 100 seconds on every plan.
+
+The plans differ in four things:
+
+| | Free | Pro | Team |
+| --- | --- | --- | --- |
+| Image to LaTeX | 20 snips a month | 300 snips a month | Unlimited |
+| PDF to LaTeX | 40 pages a month | 200 pages a month | 2,000 pages a month |
+| Upload storage | 100 MB | 5 GB | 50 GB |
+| AI assistant and dictation | No | Yes | Yes |
+
+Prices are on the [Pricing](/pricing) page and on [Billing](/billing). For an Enterprise plan, click **Contact sales** on the Billing page.
+
+## How usage is counted
+
+### Snips and PDF pages
+
+- **Snips.** Each image you upload for [Image to LaTeX](/docs/image-to-latex) counts as one snip, at the moment you upload it.
+- **PDF pages.** Each page of a PDF you upload for [PDF extraction](/docs/pdf-extraction) counts as one page, at the moment you upload it. A PDF with more pages than you have left for the month is refused, and the message says how many pages you have used.
+
+Both are counted by calendar month. The counts start again from zero on the first day of each month, whatever day your subscription began. Allowance you did not use does not carry over.
+
+### Upload storage
+
+Upload storage is a total, not a monthly count. It is the size of everything of these kinds that you are keeping at the moment:
+
+- PDFs you uploaded for extraction.
+- Images you uploaded as snips.
+- Images and other files stored as they are in projects you own, and in reference papers you attached.
+
+Text files in projects never count. Deleting something frees its space at once. An upload that would take you past the allowance is refused with a message that names the allowance. See [Projects and files](/docs/projects-and-files#size-limits-and-upload-storage).
+
+### The assistant and dictation
+
+These are on or off with the plan. They belong to the person, not to the project: on Pro or Team you can use the assistant in any project you can edit, including one owned by someone on Free. See [Assistant and dictation](/docs/assistant).
+
+## See your usage
+
+The [Statistics](/statistics) page, in the sidebar, has a **Usage statistics** card with:
+
+- **Upload storage**, as the amount used out of your allowance.
+- **Snips this month** and **PDF pages this month**, each as the number used out of the month's allowance.
+- The number of snips and PDFs you have in total.
+
+Below it, **Monthly activity** charts your snips and PDF pages for the past ten months.
+
+The [Billing](/billing) page shows the month's snips and PDF pages too, under **Monthly usage**.
+
+## Upgrade
+
+1. Open **Billing** from the account menu: click your name in the sidebar.
+2. Choose **Monthly** or **Annual** with the switch above the plans. Annual billing costs less for the year than twelve monthly payments.
+3. Click **Upgrade** on Pro or Team.
+4. Pay on the checkout page that opens. Payments are handled by Stripe.
+
+After payment you are returned to the Billing page, which confirms with "Subscription activated successfully". If you leave the checkout without paying, you are returned with "Checkout was canceled", and nothing changes.
+
+The plan you are on is shown under **Current plan** and has **Current plan** on its button.
+
+## Change or cancel
+
+On a paid plan, these buttons on the Billing page open the billing portal, which is also run by Stripe:
+
+- **Manage subscription**, on the Free plan's card.
+- **Manage payment method**, on the **Payment method** card, which also shows the card on file.
+- **View all invoices**, under **Payment history**.
+
+The portal is where the subscription, the payment method, and past invoices are managed. Leaving it returns you to the Billing page.
+
+**Payment history** on the Billing page lists your most recent payments with the date, description, amount, and status.
+
+<Callout type="note" title="Moving to a smaller plan">
+  Nothing you have is deleted when your plan's allowances get smaller. If you are then using more upload storage than the plan allows, your files stay, but new uploads are refused until you are back under the allowance. The monthly allowances for snips and PDF pages become those of the new plan.
+</Callout>
+
+<Callout type="warning" title="Before you delete your account">
+  Deleting an account does not cancel a subscription. Cancel a paid plan first. See [Account and security](/docs/account-and-security#delete-your-account).
+</Callout>
+
+## Related
+
+- [Account and security](/docs/account-and-security): sign-in, sessions, and deleting your account.
+- [Projects and files](/docs/projects-and-files): what counts toward upload storage.
+- [Assistant and dictation](/docs/assistant): what Pro and Team add to the editor.
+- [Usage](/docs/api/usage): read the same numbers through the API.

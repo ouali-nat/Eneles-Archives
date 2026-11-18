@@ -1,0 +1,85 @@
+---
+title: "Compiling"
+description: "Engines, the main document, bibliographies, draft mode, errors, and jumping from the PDF to the source."
+summary: "How Eneles compiles LaTeX to PDF: engines, the main document, bibliographies and indexes, draft mode, time limits, reading errors, and jumping to the source."
+keywords: ["compile","pdflatex","xelatex","lualatex","engine","main document","bibtex","biber","makeindex","glossaries","draft","errors","log","synctex","timeout"]
+---
+
+# Compiling
+
+Eneles compiles your project on its servers and shows the PDF beside the source. This guide covers how to start a compile, the settings that change it, and how to find what went wrong.
+
+## Compile your project
+
+A compile always uses what is in the editor: anything you typed since the last save is saved first.
+
+Click **Recompile** at the top of the PDF preview, or press `Ctrl + Enter` (`⌘ + Enter` on Mac) in the editor. The button reads **Compiling** while the compile runs, then **Compiled** or **Failed** for a moment. The PDF you had stays on screen until the new one replaces it.
+
+The arrow next to **Recompile** opens the compile options. **Compile mode** switches between Normal and Draft, the same setting as in the settings dialog described below.
+
+## Compiler settings
+
+Click the gear icon (**Project settings**) at the right end of the project toolbar, then open the **Compiler** tab. These settings belong to the project, so they apply to everyone who works on it. Changing them needs edit access.
+
+### Main document
+
+**Main document** is the file every compile starts from. A new project uses `main.tex`. The list offers every `.tex` file in the project, so pick the one that holds `\documentclass` and `\begin{document}`. Other files reach the PDF through `\input` or `\include` in the main document.
+
+### Engine
+
+**Compiler** chooses the TeX engine:
+
+- **pdfLaTeX**: most documents. This is the default.
+- **XeLaTeX**: documents that use `fontspec` or rely on Unicode input.
+- **LuaLaTeX**: documents written for LuaLaTeX that do not call Lua code directly (see below).
+
+Shell escape is turned off for every engine. A file that contains `\write18`, `\directlua`, or a `luacode` environment is refused with "Forbidden LaTeX command detected: shell escape commands are not allowed".
+
+### Draft mode
+
+Set **Compile mode** to **Draft** to compile faster. Images included with `\includegraphics` are drawn as empty boxes of the right size, which is where most of a long document's compile time goes. Everything else compiles as normal. Switch back to **Normal** for the final PDF.
+
+Draft mode applies when the main document's path uses only letters, digits, `_`, `-`, `.` and `/`.
+
+## Bibliographies, indexes, and glossaries
+
+You do not run any tools yourself. After the first TeX pass, Eneles looks at what the document asked for and runs it:
+
+- **BibTeX** when the document uses `\bibliography`, including natbib and per-chapter bibliographies.
+- **Biber** when the document uses biblatex.
+- **makeindex** for each index made with `\makeindex` or imakeidx.
+- **makeindex** for glossaries made with `\makeglossaries`, and for nomencl.
+
+TeX then runs again until cross-references and citations settle, up to five TeX passes in all. Warnings from BibTeX and Biber, such as a citation with no matching entry, are listed first in the log.
+
+<Callout type="note" title="Two things Biber and glossaries cannot do here">
+  Biber does not fetch remote bibliography files: upload the `.bib` file to the project and load it with `\addbibresource{name.bib}`. Glossaries are sorted with makeindex only, so use `\makeglossaries` without the `xindy` option.
+</Callout>
+
+## Time and size limits
+
+Each compile has 100 seconds in total, shared by every TeX pass and every tool it runs. A tool that no longer fits is skipped, and the log says so. If a long document runs out of time, try draft mode.
+
+Each file in the project can be at most 10 MB.
+
+## Read errors and warnings
+
+When a compile fails, the preview shows **Compilation errors** instead of the PDF, and the **Logs** panel opens below the editor. Open or close the panel at any time with the **Logs panel** button in the toolbar, or by clicking the **Logs** bar.
+
+Errors name the file and the line, for example `chapters/intro.tex, line 42: Undefined control sequence.` Open that file and go to that line to fix it. TeX stops at the first error, so after fixing it, compile again to see whether anything else is wrong.
+
+A package that the compiler does not have is reported as a missing package, with its file name, rather than as a raw TeX error.
+
+After a failed compile, the full TeX log follows the errors in the Logs panel, with the output of BibTeX, Biber, and makeindex after it. After a successful compile, the panel shows the number of warnings and up to ten of them. Use **Copy logs** to copy everything in the panel, and **Clear logs** to empty it.
+
+## Jump from the PDF to the source
+
+Double-click anywhere in the PDF preview. Eneles opens the file that produced that spot and moves the cursor to the line, using the SyncTeX data from the last compile. If SyncTeX cannot place the click, Eneles searches the source for the text you double-clicked instead.
+
+Jumps go from the PDF to the source. There is no jump from a line of source to its place in the PDF.
+
+## Related
+
+- [Editing](/docs/editing): editor settings, spell check, and word count.
+- [References and citations](/docs/references): add `.bib` entries and cite them.
+- [Keyboard shortcuts](/docs/keyboard-shortcuts): every binding in the editor.

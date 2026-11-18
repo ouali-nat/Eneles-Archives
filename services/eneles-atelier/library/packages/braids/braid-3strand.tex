@@ -1,0 +1,15 @@
+% Name: Horizontal three-strand braid
+% Description: Three colored strands running left to right.
+% Tags: braid, strand
+
+\usetikzlibrary{braids}
+
+\begin{tikzpicture}
+  \pic[
+    rotate=90,
+    braid/.cd,
+    strand 1/.style={red},
+    strand 2/.style={blue},
+    strand 3/.style={green}
+  ] {braid={s_1 s_2^{-1} s_1}};
+\end{tikzpicture}

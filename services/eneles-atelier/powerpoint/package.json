@@ -1,0 +1,43 @@
+{
+  "name": "texer.ppt",
+  "version": "1.0.0",
+  "description": "LaTeX for Microsoft PowerPoint. No cloud, no server, no account — renders with the TeX you already have installed.",
+  "license": "MIT",
+  "homepage": "https://eneles.example",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Eneles-org/ppt.git"
+  },
+  "private": true,
+  "scripts": {
+    "build": "webpack --mode production",
+    "build:dev": "webpack --mode development",
+    "dev-server": "webpack serve --mode development",
+    "start": "office-addin-debugging start manifest.xml",
+    "stop": "office-addin-debugging stop manifest.xml",
+    "validate": "office-addin-manifest validate manifest.xml",
+    "cert:install": "office-addin-dev-certs install",
+    "cert:verify": "office-addin-dev-certs verify",
+    "server": "npm start --prefix local-server",
+    "icons": "node assets/make-icons.js",
+    "release": "npm run build && npm run build:exe --prefix app && node scripts/make-release.js"
+  },
+  "dependencies": {
+    "core-js": "^3.38.0"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "@types/office-js": "^1.0.470",
+    "copy-webpack-plugin": "^12.0.2",
+    "html-webpack-plugin": "^5.6.0",
+    "office-addin-debugging": "^5.1.5",
+    "office-addin-dev-certs": "^1.13.0",
+    "office-addin-manifest": "^1.13.5",
+    "source-map-loader": "^5.0.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.5.4",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.1.0"
+  }
+}

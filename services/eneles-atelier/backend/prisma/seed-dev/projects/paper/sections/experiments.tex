@@ -1,0 +1,32 @@
+\section{Experiments}
+\label{sec:experiments}
+
+\subsection{Setup}
+
+We initialize from BART-large~\citep{lewis2020bart}, replace encoder self-attention with \model{}, and extend the position embeddings to 4{,}096 tokens by copying. Models are fine-tuned for 50{,}000 steps with a batch size of 8 and a peak learning rate of $3 \times 10^{-5}$. We report ROUGE~\citep{lin2004rouge} on the test sets of arXiv, PubMed, and GovReport.
+
+\subsection{Main results}
+
+Table~\ref{tab:main} shows that reading more of the document helps on every dataset, and that learned block selection is better than a fixed global pattern at the same budget.
+
+\begin{table}[t]
+  \centering
+  \caption{ROUGE-L on the test sets. Memory is the peak during training at batch size 1.}
+  \label{tab:main}
+  \small
+  \begin{tabular}{lcccc}
+    \toprule
+    Model & arXiv & PubMed & GovRep. & Mem. \\
+    \midrule
+    BART (1{,}024) & 39.8 & 40.1 & 50.2 & 11\,GB \\
+    Full attn. (4{,}096) & 41.5 & 41.9 & 53.0 & 38\,GB \\
+    Longformer & 41.2 & 41.6 & 52.4 & 24\,GB \\
+    BigBird & 41.3 & 41.8 & 52.7 & 26\,GB \\
+    \model{} (ours) & \textbf{41.6} & \textbf{42.3} & \textbf{53.4} & 23\,GB \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Ablations}
+
+Removing the learned selection and attending to $r$ random blocks costs 0.7 ROUGE-L on arXiv. Halving the local window to $w = 128$ costs a further 0.4 points, which suggests that local and global context are complementary.

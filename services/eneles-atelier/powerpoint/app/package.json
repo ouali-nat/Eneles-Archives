@@ -1,0 +1,30 @@
+{
+  "name": "texer.ppt.server",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Eneles-org/ppt.git",
+    "directory": "app"
+  },
+  "description": "LaTeX for Microsoft PowerPoint, no server required. Renders with the TeX you already have installed and drops it straight onto the slide.",
+  "main": "server.js",
+  "bin": "server.js",
+  "scripts": {
+    "prepare-assets": "node scripts/copy-assets.js",
+    "start": "npm run prepare-assets && node server.js",
+    "build:exe": "npm run prepare-assets && pkg . --targets node18-win-x64 --output release/Eneles-PPT.exe"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.1"
+  },
+  "pkg": {
+    "assets": ["public/**/*", "certs/**/*"],
+    "targets": ["node18-win-x64"],
+    "outputPath": "release"
+  }
+}

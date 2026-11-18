@@ -1,0 +1,1165 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/*
+ * Eneles's design tokens.
+ *
+ * Every color, radius, shadow and duration a component uses comes from here.
+ * Tailwind's own palette is switched off, so a literal color cannot be written
+ * as a class; components read roles (bg-surface, text-muted-foreground,
+ * border-line, text-hue-teal). Two palettes, dark (default) and light, each
+ * define the full set. The root carries data-mode (dark | light) and
+ * data-motion (full | reduced | off), both applied before first paint.
+ */
+
+@theme {
+  --color-*: initial;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  /* Grounds, from the page up. */
+  --color-background: var(--background);
+  --color-panel: var(--panel);
+  --color-card: var(--card);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  /* Ink and lines. */
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-line: var(--line);
+  --color-focus: var(--focus);
+  /* The one accent, and the ink drawn on it. */
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  /* Status only. */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-on-danger: var(--on-danger);
+  --color-on-success: var(--on-success);
+  /* System. */
+  --color-overlay: var(--overlay);
+  --color-selection: var(--selection);
+  --color-selection-foreground: var(--selection-foreground);
+  /* A printed page is white in every theme. */
+  --color-paper: var(--paper);
+  --color-paper-ink: var(--paper-ink);
+  /* Categorical color: labels, chart series, file kinds. Never status. */
+  --color-hue-grey: var(--hue-grey);
+  --color-hue-red: var(--hue-red);
+  --color-hue-orange: var(--hue-orange);
+  --color-hue-amber: var(--hue-amber);
+  --color-hue-green: var(--hue-green);
+  --color-hue-teal: var(--hue-teal);
+  --color-hue-blue: var(--hue-blue);
+  --color-hue-indigo: var(--hue-indigo);
+  --color-hue-purple: var(--hue-purple);
+  --color-hue-pink: var(--hue-pink);
+  /* The one hue a single-series chart is drawn in. Its own step per theme, checked against the card surface (lightness band and 3:1 contrast). */
+  --color-chart: var(--chart);
+
+  /* Radius tiers (see "Radius" below). rounded-md and friends keep working as the leaf. */
+  --radius-sm: var(--radius-inset);
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius);
+  --radius-xl: var(--radius-card);
+  --radius-2xl: var(--radius-surface);
+  --radius-leaf: var(--radius);
+  --radius-item: var(--radius-item);
+  --radius-inset: var(--radius-inset);
+  --radius-popover: var(--radius-popover);
+  --radius-tray: var(--radius-tray);
+  --radius-card: var(--radius-card);
+  --radius-surface: var(--radius-surface);
+
+  /* Lit shadows: every raised or recessed thing reads the one light. */
+  --shadow-xs: var(--lit-drop);
+  --shadow-sm: var(--lit-drop);
+  --shadow-md: var(--lit-drop-hover);
+  --shadow-lg: var(--popover-shadow);
+  --shadow-xl: var(--modal-shadow);
+  --shadow-2xl: var(--modal-shadow);
+  --shadow-lit-drop: var(--lit-drop);
+  --shadow-lit-raised: var(--lit-raised);
+  --shadow-lit-recessed: var(--lit-recessed);
+  --shadow-lit-well: var(--lit-well);
+  --shadow-lit-pressed: var(--lit-pressed);
+  --shadow-popover: var(--popover-shadow);
+  --shadow-modal: var(--modal-shadow);
+
+  --ease-out: var(--motion-ease);
+  --default-transition-duration: var(--motion-control-duration);
+  --default-transition-timing-function: var(--motion-ease);
+
+  --animate-caret-blink: caret-blink 1.2s ease-out infinite;
+}
+
+/* Variants keyed on the root: light: and dark: on the mode, motion-*: on the motion level. */
+@custom-variant light (&:where([data-mode="light"], [data-mode="light"] *));
+@custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
+@custom-variant motion-full (&:where([data-motion="full"], [data-motion="full"] *));
+@custom-variant motion-reduced (&:where([data-motion="reduced"], [data-motion="reduced"] *));
+@custom-variant motion-off (&:where([data-motion="off"], [data-motion="off"] *));
+@custom-variant motion-still (&:where([data-motion="reduced"], [data-motion="reduced"] *, [data-motion="off"], [data-motion="off"] *));
+
+/*
+ * Palettes. Greys carry no hue (oklch(L 0 none)), so mixing one with a color
+ * in oklch never drifts the result. Foreground and muted text clear 4.5:1 on
+ * every ground in both palettes.
+ */
+:root,
+:root[data-mode="dark"],
+[data-palette="dark"] {
+  color-scheme: dark;
+  --background: oklch(0.15 0 none);
+  --panel: oklch(0.188 0 none);
+  --card: oklch(0.188 0 none);
+  --surface: oklch(0.238 0 none);
+  --surface-hover: oklch(0.278 0 none);
+  --foreground: oklch(0.972 0 none);
+  --muted-foreground: oklch(0.725 0 none);
+  --line: oklch(0.312 0 none);
+  --focus: oklch(0.86 0 none);
+  /* The primary is the other palette's ground: the light ground here, ink on it. */
+  --accent: oklch(0.958 0 none);
+  --on-accent: oklch(0.15 0 none);
+  --success: oklch(0.76 0.15 154);
+  --warning: oklch(0.82 0.14 80);
+  --danger: oklch(0.72 0.165 26);
+  --on-danger: oklch(0.17 0.02 26);
+  --on-success: oklch(0.17 0.03 154);
+  --control-highlight: rgb(255 255 255 / 0.1);
+  --control-shadow: rgb(0 0 0 / 0.42);
+  --overlay: rgb(0 0 0 / 0.62);
+  --selection: oklch(0.42 0 none);
+  --selection-foreground: var(--foreground);
+  --scrollbar: oklch(0.36 0 none);
+  --hue-grey: oklch(0.74 0 none);
+  --hue-red: oklch(0.73 0.16 24);
+  --hue-orange: oklch(0.77 0.15 52);
+  --hue-amber: oklch(0.83 0.14 84);
+  --hue-green: oklch(0.77 0.15 150);
+  --hue-teal: oklch(0.79 0.11 188);
+  --hue-blue: oklch(0.74 0.12 248);
+  --hue-indigo: oklch(0.7 0.15 280);
+  --hue-purple: oklch(0.73 0.16 308);
+  --hue-pink: oklch(0.76 0.15 352);
+  --chart: oklch(0.66 0.13 250);
+}
+
+:root[data-mode="light"],
+[data-palette="light"] {
+  color-scheme: light;
+  --background: oklch(0.958 0 none);
+  --panel: oklch(0.982 0 none);
+  --card: oklch(1 0 none);
+  --surface: oklch(1 0 none);
+  --surface-hover: oklch(0.962 0 none);
+  --foreground: oklch(0.17 0 none);
+  --muted-foreground: oklch(0.48 0 none);
+  --line: oklch(0.875 0 none);
+  --focus: oklch(0.3 0 none);
+  /* The primary is the dark palette's ground, with the light ground on it. */
+  --accent: oklch(0.15 0 none);
+  --on-accent: oklch(0.958 0 none);
+  --success: oklch(0.51 0.13 152);
+  --warning: oklch(0.6 0.13 72);
+  --danger: oklch(0.52 0.18 27);
+  --on-danger: oklch(1 0 none);
+  --on-success: oklch(1 0 none);
+  --control-highlight: rgb(255 255 255 / 0.95);
+  --control-shadow: rgb(0 0 0 / 0.11);
+  --overlay: rgb(0 0 0 / 0.5);
+  --selection: oklch(0.86 0 none);
+  --selection-foreground: var(--foreground);
+  --scrollbar: oklch(0.8 0 none);
+  --hue-grey: oklch(0.5 0 none);
+  --hue-red: oklch(0.54 0.19 25);
+  --hue-orange: oklch(0.6 0.16 50);
+  --hue-amber: oklch(0.6 0.14 78);
+  --hue-green: oklch(0.54 0.15 150);
+  --hue-teal: oklch(0.54 0.1 192);
+  --hue-blue: oklch(0.52 0.16 252);
+  --hue-indigo: oklch(0.5 0.18 280);
+  --hue-purple: oklch(0.53 0.19 308);
+  --hue-pink: oklch(0.57 0.19 352);
+  --chart: oklch(0.52 0.16 252);
+}
+
+:root {
+  /* Paper: a compiled page, a snip's capture, a library preview. White in every theme. */
+  --paper: oklch(1 0 none);
+  --paper-ink: oklch(0.2 0 none);
+  --preview-black: oklch(0.13 0 none);
+
+  /*
+   * Radius. One leaf value sets every corner. A plate is as round as what it
+   * holds plus its inset (padding + 1px border), capped at twice the leaf, so
+   * nested arcs run parallel. Pick a plate's tier by its own padding.
+   */
+  --radius: 7px;
+  --radius-item: var(--radius);
+  --radius-popover: min(calc(var(--radius) * 2), calc(var(--radius) + 5px)); /* p-1 */
+  --radius-tray: min(calc(var(--radius) * 2), calc(var(--radius) + 9px)); /* p-2 */
+  --radius-card: min(calc(var(--radius) * 2), calc(var(--radius) + 13px)); /* p-3 */
+  --radius-surface: min(calc(var(--radius) * 2), calc(var(--radius) + 17px)); /* p-4+ */
+  --radius-inset: max(calc(var(--radius) * 0.6), calc(var(--radius) - 4px)); /* inside a leaf */
+
+  --control-height: 36px;
+
+  /* Motion: durations and the easing every transition uses. Reduced and Off shrink them. */
+  --motion-control-duration: 120ms;
+  --motion-fade-duration: 180ms;
+  --motion-pane-duration: 220ms;
+  --motion-distance: 6px;
+  --motion-ease: cubic-bezier(0.2, 0.9, 0.3, 1);
+
+  --overlay-blur: 6px;
+}
+
+:root[data-motion="reduced"] {
+  --motion-control-duration: 80ms;
+  --motion-fade-duration: 80ms;
+  --motion-pane-duration: 0ms;
+  --motion-distance: 0px;
+}
+:root[data-motion="off"] {
+  --motion-control-duration: 0ms;
+  --motion-fade-duration: 0ms;
+  --motion-pane-duration: 0ms;
+  --motion-distance: 0px;
+}
+/* Reduced keeps the fade of menus, dialogs, and popovers but drops their zoom and slide. */
+:root[data-motion="reduced"] .animate-in,
+:root[data-motion="reduced"] .animate-out {
+  --tw-enter-scale: 1 !important;
+  --tw-exit-scale: 1 !important;
+  --tw-enter-translate-x: 0 !important;
+  --tw-enter-translate-y: 0 !important;
+  --tw-exit-translate-x: 0 !important;
+  --tw-exit-translate-y: 0 !important;
+  --tw-enter-rotate: 0 !important;
+  --tw-exit-rotate: 0 !important;
+}
+/* Off means off, including library keyframes that do not read the tokens. */
+:root[data-motion="off"] *,
+:root[data-motion="off"] *::before,
+:root[data-motion="off"] *::after {
+  animation-duration: 0s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0s !important;
+  scroll-behavior: auto !important;
+}
+/* Reduced keeps brief feedback but nothing travels or loops. */
+:root[data-motion="reduced"] *,
+:root[data-motion="reduced"] *::before,
+:root[data-motion="reduced"] *::after {
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+}
+
+/*
+ * Light. One key light at --light-angle (clockwise from the top) and an
+ * optional rim opposite it. Every raised, recessed or shadowed thing reads
+ * these, so turning the angle relights everything. Declared on every element
+ * so an element that sets its own angle recomputes its own edges.
+ */
+@property --light-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+@property --light-rim {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+*,
+::before,
+::after,
+::backdrop {
+  --light-x: calc(sin(var(--light-angle)) * -1px);
+  --light-y: calc(cos(var(--light-angle)) * 1px);
+  --lit-lower-edge: color-mix(in srgb, var(--control-shadow) 25%, transparent);
+  --lit-rim-edge: color-mix(in srgb, var(--control-highlight) calc(var(--light-rim) * 100%), var(--lit-lower-edge));
+  --lit-raised:
+    inset var(--light-x) var(--light-y) 0 var(--control-highlight),
+    inset calc(var(--light-x) * -1) calc(var(--light-y) * -1) 0 var(--lit-rim-edge);
+  --lit-recessed:
+    inset var(--light-x) var(--light-y) 3px color-mix(in srgb, var(--control-shadow) 60%, transparent),
+    inset calc(var(--light-x) * -1) calc(var(--light-y) * -1) 0 color-mix(in srgb, var(--control-highlight) 50%, transparent);
+  --lit-well: inset var(--light-x) var(--light-y) 2px color-mix(in srgb, var(--control-shadow) 60%, transparent);
+  --lit-pressed: inset var(--light-x) var(--light-y) 2px var(--control-shadow);
+  --lit-drop: var(--light-x) var(--light-y) 2px var(--control-shadow);
+  --lit-drop-hover: calc(var(--light-x) * 2) calc(var(--light-y) * 2) 5px var(--control-shadow);
+  --popover-shadow: var(--lit-drop), calc(var(--light-x) * 10) calc(var(--light-y) * 10) 28px var(--control-shadow);
+  --modal-shadow: calc(var(--light-x) * 12) calc(var(--light-y) * 12) 44px rgb(0 0 0 / 0.32);
+}
+
+@layer base {
+  * {
+    border-color: var(--line);
+    outline-color: var(--focus);
+  }
+  html {
+    scroll-behavior: smooth;
+    scrollbar-color: var(--scrollbar) transparent;
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-size: 14px;
+    /* The stage for layers portaled here (dialogs, sheets, menus): their container queries measure the body. */
+    container-type: inline-size;
+  }
+  /* Menus and dialogs lock scrolling by setting overflow: hidden on the body. Because the body is a container, that overflow no longer propagates to the viewport: the body would become its own clipped box, the sticky header would scroll away with it, and the page would jump. Lock the root instead and leave the body alone. */
+  html:has(> body[data-scroll-locked]) {
+    overflow: hidden;
+  }
+  html > body[data-scroll-locked] {
+    overflow: visible !important;
+  }
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  /* Fields keep their own stroke and halo instead of the offset ring. */
+  input:focus-visible,
+  textarea:focus-visible,
+  [contenteditable]:focus-visible {
+    outline: none;
+  }
+  ::selection {
+    background: var(--selection);
+    color: var(--selection-foreground);
+  }
+}
+
+/* The type scale. One face for the interface; sizes come only from here. */
+@utility type-micro {
+  font-size: 11px;
+  line-height: 16px;
+}
+@utility type-tiny {
+  font-size: 12px;
+  line-height: 16px;
+}
+@utility type-small {
+  font-size: 13px;
+  line-height: 18px;
+}
+@utility type-base {
+  font-size: 14px;
+  line-height: 20px;
+}
+@utility type-large {
+  font-size: 16px;
+  line-height: 24px;
+}
+@utility type-lead {
+  font-size: 17px;
+  line-height: 26px;
+}
+
+/* A field: the control surface, recessed, its stroke taking the focus color with a halo. */
+@utility field {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--lit-recessed);
+  transition:
+    border-color var(--motion-control-duration) var(--motion-ease),
+    box-shadow var(--motion-control-duration) var(--motion-ease);
+  &:focus-within,
+  &:focus-visible {
+    border-color: color-mix(in srgb, var(--focus) 55%, transparent);
+    box-shadow:
+      var(--lit-recessed),
+      0 0 0 3px color-mix(in srgb, var(--focus) 10%, transparent);
+  }
+  &[aria-invalid="true"] {
+    border-color: var(--danger);
+  }
+}
+
+@layer utilities {
+  /* The page column every non-editor page shares (the header, the home page, Features, Pricing, the Library, Learn, Docs, and the other public pages; the legal pages narrow it to a reading measure). Its content is 72rem (Tailwind's 6xl) wide: the side padding sits outside that, so it is added to the maximum. */
+  .container {
+    --container-pad: clamp(1.5rem, 4cqi, 2rem);
+    width: 100%;
+    max-width: calc(72rem + 2 * var(--container-pad));
+    margin-inline: auto;
+    padding-inline: var(--container-pad);
+  }
+  .scrollbar-hidden {
+    scrollbar-width: none;
+  }
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-modern {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar) transparent;
+  }
+}
+
+/* Status pieces (components/ui/status.tsx): a state fading in with a small rise, a check drawing itself, and the saved check settling from green to the muted text. */
+@keyframes status-in {
+  from {
+    opacity: 0;
+    translate: 0 2px;
+  }
+}
+@keyframes status-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes status-settle {
+  to {
+    color: var(--muted-foreground);
+  }
+}
+/* A thin bar that keeps moving while work of unknown length runs (a compile). */
+@keyframes indeterminate {
+  from {
+    translate: -100% 0;
+  }
+  to {
+    translate: 350% 0;
+  }
+}
+
+/* Feature demos: a scan line passing over an image being converted, and the level bars of a dictation. */
+@keyframes demo-scan {
+  from {
+    translate: 0 -100%;
+  }
+  to {
+    translate: 0 420%;
+  }
+}
+@keyframes demo-level {
+  0%,
+  100% {
+    height: 4px;
+  }
+  50% {
+    height: 14px;
+  }
+}
+
+/* The placeholder ball of a crumpled paper reveal (components/motion/CrumpledPaperReveal.tsx) while its crumple is being solved. */
+@keyframes crumple-breathe {
+  50% {
+    scale: 0.97;
+  }
+}
+
+/* The caret of a one-time-code field. */
+@keyframes caret-blink {
+  0%,
+  70%,
+  100% {
+    opacity: 1;
+  }
+  20%,
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ── Theme reveal ──────────────────────────────────────────────────────────
+   Switching palette (components/essential/layout/ModeToggle.tsx): the new palette is clipped to a circle that grows from the button that was pressed. The clip is set here, on the snapshot's first paint, and animated here, so no frame shows the new palette unclipped while a script catches up. The old palette stays put underneath. */
+html[data-theme-transition]::view-transition-group(root) {
+  animation-duration: var(--theme-reveal-duration);
+}
+html[data-theme-transition]::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  z-index: 0;
+}
+html[data-theme-transition]::view-transition-new(root) {
+  mix-blend-mode: normal;
+  z-index: 1;
+  clip-path: var(--theme-reveal-from);
+  animation: theme-reveal var(--theme-reveal-duration) var(--motion-ease) both;
+}
+@keyframes theme-reveal {
+  from {
+    clip-path: var(--theme-reveal-from);
+  }
+  to {
+    clip-path: var(--theme-reveal-to);
+  }
+}
+
+/* The toggle's glyph: a sun and a moon in one drawing. Each part turns about the drawing's centre. The moon waits small, turned away, and unseen; on the light palette (data-active) the sun sets the other way as the moon turns in. On hover the rays turn a step and the moon rocks. Reduced motion only fades; Off switches at once. */
+.mode-glyph {
+  overflow: visible;
+  --mode-turn: calc(var(--motion-fade-duration) * 1.6);
+}
+.mode-glyph * {
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+  transition:
+    opacity var(--mode-turn) var(--motion-ease),
+    rotate var(--mode-turn) var(--motion-ease),
+    scale var(--mode-turn) var(--motion-ease);
+}
+.mode-glyph [data-part="moon"] {
+  opacity: 0;
+  scale: 0.5;
+  rotate: -90deg;
+}
+.mode-glyph[data-active] [data-part="sun"] {
+  opacity: 0;
+  scale: 0.5;
+  rotate: 90deg;
+}
+.mode-glyph[data-active] [data-part="moon"] {
+  opacity: 1;
+  scale: 1;
+  rotate: 0deg;
+}
+@media (hover: hover) {
+  html:not([data-motion="reduced"], [data-motion="off"]) button:hover:not(:disabled, [aria-disabled="true"]) .mode-glyph [data-part="rays"] {
+    animation: mode-rays 700ms var(--motion-ease) 1;
+  }
+  html:not([data-motion="reduced"], [data-motion="off"]) button:hover:not(:disabled, [aria-disabled="true"]) .mode-glyph[data-active] [data-part="moon"] {
+    animation: mode-rock 700ms var(--motion-ease) 1;
+  }
+}
+[data-motion="reduced"] .mode-glyph *,
+[data-motion="off"] .mode-glyph * {
+  scale: 1;
+  rotate: 0deg;
+  transition: opacity var(--mode-turn) var(--motion-ease);
+}
+[data-motion="off"] .mode-glyph * {
+  transition: none;
+}
+@keyframes mode-rays {
+  to {
+    rotate: 90deg;
+  }
+}
+@keyframes mode-rock {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+  35% {
+    rotate: -16deg;
+  }
+  70% {
+    rotate: 8deg;
+  }
+}
+
+.markdown-rendered .katex-display {
+  margin: 1.25em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25em 0;
+}
+.markdown-rendered .katex-display > .katex {
+  white-space: normal;
+}
+.markdown-rendered .katex {
+  font-size: 1.05em;
+}
+.markdown-rendered > *:first-child {
+  margin-top: 0;
+}
+
+/* The copy glyph (components/ui/copy-button.tsx): the front sheet slides onto
+   the back one, both fold away, and the check draws itself. */
+.copy-glyph [data-part] {
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+  transition:
+    opacity 200ms var(--motion-ease),
+    transform 320ms var(--motion-ease),
+    stroke-dashoffset 360ms var(--motion-ease) 140ms;
+}
+.copy-glyph [data-part="check"] {
+  opacity: 0;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.copy-glyph[data-copied] [data-part="front"] {
+  opacity: 0;
+  transform: translate(5px, 5px) scale(0.55);
+}
+.copy-glyph[data-copied] [data-part="back"] {
+  opacity: 0;
+  transform: scale(0.55);
+  transition-delay: 60ms;
+}
+.copy-glyph[data-copied] [data-part="check"] {
+  opacity: 1;
+  stroke-dashoffset: 0;
+}
+@media (hover: hover) {
+  .copy-button:hover .copy-glyph:not([data-copied]) [data-part="front"] {
+    transform: translate(-1px, -1px);
+  }
+}
+[data-motion="reduced"] .copy-glyph [data-part] {
+  transform: none !important;
+  transition-property: opacity, stroke-dashoffset;
+}
+[data-motion="off"] .copy-glyph [data-part] {
+  transition: none;
+}
+
+/* ───────────────────────── Editor dock: start ─────────────────────────
+   The editor screen's dockable workspace (components/editor/workspace). The dock library draws groups, tab strips, dividers, and drop indicators; this block maps every color and size it reads to the tokens above, so both palettes apply, and trims its tab strip to the editor's own quiet, square look. */
+.dockview-theme-texer {
+  --dv-tabs-and-actions-container-height: 40px;
+  --dv-tabs-and-actions-container-font-size: 14px;
+  --dv-tab-font-size: 14px;
+  --dv-group-view-background-color: var(--background);
+  --dv-tabs-and-actions-container-background-color: var(--background);
+  --dv-activegroup-visiblepanel-tab-background-color: var(--panel);
+  --dv-activegroup-hiddenpanel-tab-background-color: transparent;
+  --dv-inactivegroup-visiblepanel-tab-background-color: var(--panel);
+  --dv-inactivegroup-hiddenpanel-tab-background-color: transparent;
+  --dv-activegroup-visiblepanel-tab-color: var(--foreground);
+  --dv-activegroup-hiddenpanel-tab-color: var(--muted-foreground);
+  --dv-inactivegroup-visiblepanel-tab-color: var(--foreground);
+  --dv-inactivegroup-hiddenpanel-tab-color: var(--muted-foreground);
+  --dv-tab-divider-color: var(--line);
+  --dv-separator-border: var(--line);
+  --dv-paneview-header-border-color: var(--line);
+  --dv-paneview-active-outline-color: var(--focus);
+  --dv-sash-color: transparent;
+  --dv-active-sash-color: color-mix(in srgb, var(--focus) 45%, transparent);
+  --dv-active-sash-transition-duration: var(--motion-control-duration);
+  --dv-active-sash-transition-delay: 0.15s;
+  --dv-drag-over-background-color: color-mix(in srgb, var(--focus) 14%, transparent);
+  --dv-drag-over-border-color: var(--focus);
+  --dv-drag-over-border: 1px solid color-mix(in srgb, var(--focus) 60%, transparent);
+  --dv-edge-dock-indicator-color: var(--focus);
+  --dv-tabs-container-scrollbar-color: var(--scrollbar);
+  --dv-scrollbar-background-color: var(--scrollbar);
+  --dv-icon-hover-background-color: var(--surface-hover);
+  --dv-context-menu-background-color: var(--panel);
+  --dv-context-menu-color: var(--foreground);
+  --dv-floating-box-shadow: var(--popover-shadow);
+  --dv-floating-border: 1px solid var(--line);
+  --dv-floating-group-border: none;
+  --dv-floating-group-dragging-opacity: 0.5;
+  --dv-floating-titlebar-height: 22px;
+  --dv-floating-titlebar-background-color: var(--panel);
+  --dv-floating-titlebar-border-bottom: 1px solid var(--line);
+  /* Under the app's menus, dialogs, and toasts (z-50), over everything inside a panel. */
+  --dv-overlay-z-index: 40;
+  --dv-border-radius: 0px;
+  --dv-tab-border-radius: 0px;
+  --dv-sash-border-radius: 0px;
+  --dv-dropdown-border-radius: var(--radius-popover);
+  --dv-tab-margin: 0;
+  --dv-spacing-padding: 0px;
+  --dv-tab-close-icon-size: 12px;
+  --dv-tab-group-line-height: 0px;
+  --dv-tab-group-line-opacity: 0;
+}
+
+/* The Thry editor theme's colors (lib/editor/thry-theme.ts), named for what they color. Dark first; the light mode deepens each hue toward the ink, so it holds on a pale ground. */
+.cm-thry {
+  --thry-command: var(--hue-blue);
+  --thry-structure: var(--hue-purple);
+  --thry-name: var(--hue-teal);
+  --thry-reference: var(--hue-pink);
+  --thry-citation: var(--hue-green);
+  --thry-math: var(--hue-orange);
+  --thry-math-text: color-mix(in oklch, var(--hue-orange) 62%, var(--foreground));
+  --thry-operator: var(--hue-amber);
+  --thry-string: var(--hue-green);
+  --thry-comment: var(--muted-foreground);
+  --thry-bracket: color-mix(in oklch, var(--foreground) 45%, var(--muted-foreground));
+  --thry-gutter: color-mix(in oklch, var(--muted-foreground) 70%, transparent);
+  --thry-active-line: color-mix(in oklch, var(--surface) 55%, transparent);
+  --thry-selection: color-mix(in oklch, var(--hue-blue) 32%, transparent);
+  --thry-selection-match: color-mix(in oklch, var(--hue-blue) 16%, transparent);
+  --thry-search: color-mix(in oklch, var(--hue-amber) 28%, transparent);
+  --thry-search-edge: color-mix(in oklch, var(--hue-amber) 55%, transparent);
+  --thry-search-current: color-mix(in oklch, var(--hue-amber) 50%, transparent);
+  --thry-bracket-match: color-mix(in oklch, var(--foreground) 12%, transparent);
+}
+:root[data-mode="light"] .cm-thry {
+  --thry-command: color-mix(in oklch, var(--hue-blue) 78%, var(--foreground));
+  --thry-structure: color-mix(in oklch, var(--hue-purple) 78%, var(--foreground));
+  --thry-name: color-mix(in oklch, var(--hue-teal) 72%, var(--foreground));
+  --thry-reference: color-mix(in oklch, var(--hue-pink) 76%, var(--foreground));
+  --thry-citation: color-mix(in oklch, var(--hue-green) 72%, var(--foreground));
+  --thry-math: color-mix(in oklch, var(--hue-orange) 78%, var(--foreground));
+  --thry-math-text: color-mix(in oklch, var(--hue-orange) 48%, var(--foreground));
+  --thry-operator: color-mix(in oklch, var(--hue-amber) 70%, var(--foreground));
+  --thry-string: color-mix(in oklch, var(--hue-green) 72%, var(--foreground));
+  --thry-active-line: color-mix(in oklch, var(--foreground) 4%, transparent);
+  --thry-selection: color-mix(in oklch, var(--hue-blue) 22%, transparent);
+}
+
+/* The bar under a dock tab that holds a panel's controls (the editor's formatting bar, the PDF's Recompile bar). Panels sit side by side, so every such bar is exactly this tall, border included: one a pixel off shows as a step in the line across the workspace. */
+.editor-bar {
+  box-sizing: border-box;
+  height: 52px;
+}
+
+/* A panel's content fills its group; what is inside decides its own scrolling. */
+.dockview-theme-texer .dock-content,
+.dock-host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* The tab strip: a hairline under it, which the tab in front interrupts so it reads as one surface with its panel. */
+.dockview-theme-texer .dv-tabs-and-actions-container {
+  box-shadow: inset 0 -1px 0 var(--line);
+}
+.dockview-theme-texer .dv-tab {
+  padding: 0;
+  transition: color var(--motion-control-duration) var(--motion-ease);
+}
+.dockview-theme-texer .dv-tab .dock-tab {
+  height: 100%;
+}
+.dockview-theme-texer .dv-tabs-container > .dv-tab.dv-inactive-tab:hover {
+  color: var(--foreground);
+}
+/* The tab in front is marked by a line along its top and by sharing its panel's ground. There are no hairlines between tabs: a divider on one side of a tab and not the other read as a broken border wherever the tab met the edge of its group. */
+.dockview-theme-texer .dv-tabs-container > .dv-tab.dv-active-tab {
+  box-shadow: inset 0 2px 0 var(--foreground);
+}
+.dockview-theme-texer .dv-tabs-container.dv-horizontal .dv-tab::before,
+.dockview-theme-texer .dv-tabs-container.dv-horizontal .dv-tab.dv-active-tab::before {
+  display: none;
+}
+/* Every tab, in every group, is its name with the same padding and height whether it is in front or not, so nothing shifts when the front tab changes. A tab has no close button: closing is in its right-click menu. */
+.dockview-theme-texer .dv-tab {
+  flex: none;
+}
+.dockview-theme-texer .dv-tab .dock-tab-label {
+  padding-inline: 14px;
+  white-space: nowrap;
+}
+/* A tab that does not fit its strip whole is not drawn at all (components/editor/workspace/tabs.ts), so a name is never cut off; it is listed in the menu at the strip's end. It stays focusable, so the arrow keys still reach it and bring it in. */
+.dockview-theme-texer .dv-tab.dock-tab-clipped {
+  opacity: 0;
+  pointer-events: none;
+}
+/* The strip scrolls without a scrollbar. */
+.dockview-theme-texer .dv-tabs-and-actions-container .dv-scrollable .dv-scrollbar {
+  display: none;
+}
+.dockview-theme-texer .dv-tabs-container {
+  scrollbar-width: none;
+}
+.dockview-theme-texer .dv-tabs-container::-webkit-scrollbar {
+  display: none;
+}
+.dockview-theme-texer .dock-strip-end {
+  height: 100%;
+}
+/* Keyboard focus on a tab: the app's ring, drawn inside so the strip does not clip it. */
+.dockview-theme-texer .dv-tab:focus-visible::after,
+.dockview-theme-texer .dv-tab:has(:focus-visible)::after {
+  outline: 2px solid var(--focus) !important;
+  outline-offset: -2px;
+}
+.dockview-theme-texer .dv-tabs-overflow-dropdown-default {
+  color: var(--muted-foreground);
+  padding: 0 8px;
+}
+.dockview-theme-texer .dv-tabs-overflow-container {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-popover);
+  background: var(--panel);
+  box-shadow: var(--popover-shadow);
+}
+/* Dividers: a hairline at rest, a wider band of the focus color while hovered or dragged. */
+.dockview-theme-texer .dv-split-view-container .dv-sash-container .dv-sash {
+  z-index: 30;
+}
+.dockview-theme-texer .dv-split-view-container .dv-sash-container .dv-sash:focus-visible {
+  outline: none;
+  background-color: var(--focus);
+}
+/* The outline of where a dragged panel will land. */
+.dockview-theme-texer .dv-drop-target-container .dv-drop-target-anchor,
+.dockview-theme-texer .dv-drop-target > .dv-drop-target-dropzone > .dv-drop-target-selection {
+  box-sizing: border-box;
+}
+/* The tab that follows the pointer during a drag. */
+.dockview-theme-texer .dv-tab-ghost-drag,
+.dv-tab-ghost-drag.dockview-theme-texer {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--foreground);
+  box-shadow: var(--popover-shadow);
+}
+/* ───────────────────────── Editor dock: end ───────────────────────── */
+
+/* ───────────────────────── Comments over the text: start ─────────────────────────
+   The comment card and the "Comment" button beside a selection (components/editor/review/CommentLayer.tsx). Each is placed on its passage every frame through `translate`; until it has a place, or while its passage is scrolled out of the editor, it is hidden. It rises in as it appears, and a press outside a new comment that has text in it gives the card a brief nudge instead of closing it. */
+.comment-float {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 45;
+}
+.comment-float[data-hidden] {
+  visibility: hidden;
+}
+.comment-float > * {
+  transition:
+    opacity var(--motion-fade-duration) var(--motion-ease),
+    translate var(--motion-fade-duration) var(--motion-ease);
+  @starting-style {
+    opacity: 0;
+    translate: 0 var(--motion-distance);
+  }
+}
+.comment-card[data-nudge] {
+  animation: comment-nudge 260ms var(--motion-ease);
+}
+@keyframes comment-nudge {
+  25% {
+    translate: -4px 0;
+  }
+  50% {
+    translate: 4px 0;
+  }
+  75% {
+    translate: -2px 0;
+  }
+}
+[data-motion="reduced"] .comment-card[data-nudge],
+[data-motion="off"] .comment-card[data-nudge] {
+  animation: none;
+}
+[data-motion="off"] .comment-float > * {
+  transition: none;
+}
+/* ───────────────────────── Comments over the text: end ───────────────────────── */
+
+/* ───────────────────────── People: faces: start ─────────────────────────
+   Generated pictures (components/people/Avatar.tsx) in one of the ten hues: a deep shade for the ground, a bright one for what is lit, and a middle one between them, in both themes. The mixes with black and white are the lighting of the picture, not new colors. */
+.avatar-face {
+  --face: var(--hue-blue);
+  --face-ground: color-mix(in oklch, var(--face) 30%, black);
+  --face-lit: color-mix(in oklch, var(--face), white 8%);
+  --face-mid: color-mix(in oklch, var(--face) 62%, black);
+}
+:root[data-mode="light"] .avatar-face {
+  --face-ground: color-mix(in oklch, var(--face) 58%, black);
+  --face-lit: color-mix(in oklch, var(--face), white 42%);
+  --face-mid: color-mix(in oklch, var(--face), white 8%);
+}
+.avatar-face[data-hue="grey"] { --face: var(--hue-grey); }
+.avatar-face[data-hue="red"] { --face: var(--hue-red); }
+.avatar-face[data-hue="orange"] { --face: var(--hue-orange); }
+.avatar-face[data-hue="amber"] { --face: var(--hue-amber); }
+.avatar-face[data-hue="green"] { --face: var(--hue-green); }
+.avatar-face[data-hue="teal"] { --face: var(--hue-teal); }
+.avatar-face[data-hue="blue"] { --face: var(--hue-blue); }
+.avatar-face[data-hue="indigo"] { --face: var(--hue-indigo); }
+.avatar-face[data-hue="purple"] { --face: var(--hue-purple); }
+.avatar-face[data-hue="pink"] { --face: var(--hue-pink); }
+/* ───────────────────────── People: faces: end ───────────────────────── */
+
+/* ───────────────────────── Assistant (components/editor/assistant): start ───────────────────────── */
+/* An answer's Markdown: reading size, headings a step up, code and math in their own faces. */
+.assistant-md {
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--foreground);
+  overflow-wrap: anywhere;
+}
+.assistant-md > :first-child,
+.assistant-md > .assistant-md-block:first-child > :first-child {
+  margin-top: 0;
+}
+.assistant-md > :last-child,
+.assistant-md > .assistant-md-block:last-child > :last-child {
+  margin-bottom: 0;
+}
+/* An answer renders block by block (finished blocks are not parsed again while the rest streams); the wrappers take no part in layout. */
+.assistant-md-block {
+  display: contents;
+}
+.assistant-md p,
+.assistant-md ul,
+.assistant-md ol,
+.assistant-md blockquote,
+.assistant-md .assistant-md-code,
+.assistant-md .assistant-md-table,
+.assistant-md .katex-display {
+  margin: 0 0 10px;
+}
+.assistant-md h1,
+.assistant-md h2,
+.assistant-md h3,
+.assistant-md h4 {
+  margin: 16px 0 6px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+.assistant-md h1 {
+  font-size: 17px;
+  line-height: 26px;
+}
+.assistant-md h2 {
+  font-size: 16px;
+  line-height: 24px;
+}
+.assistant-md h3,
+.assistant-md h4 {
+  font-size: 14px;
+  line-height: 22px;
+}
+.assistant-md ul,
+.assistant-md ol {
+  padding-inline-start: 20px;
+}
+.assistant-md ul {
+  list-style: disc;
+}
+.assistant-md ol {
+  list-style: decimal;
+}
+.assistant-md li + li {
+  margin-top: 3px;
+}
+.assistant-md li > ul,
+.assistant-md li > ol {
+  margin: 3px 0 0;
+}
+.assistant-md li::marker {
+  color: var(--muted-foreground);
+}
+.assistant-md strong {
+  font-weight: 600;
+}
+.assistant-md a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.assistant-md blockquote {
+  border-inline-start: 2px solid var(--line);
+  padding-inline-start: 12px;
+  color: var(--muted-foreground);
+}
+.assistant-md hr {
+  margin: 14px 0;
+  border-color: var(--line);
+}
+.assistant-md :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 1px 5px;
+  border-radius: var(--radius-inset);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.assistant-md-code {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--background);
+}
+.assistant-md-code pre {
+  overflow-x: auto;
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 20px;
+}
+.assistant-md-code pre {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar) transparent;
+}
+/* Copy sits over the code's top corner on its own plate, shown while the block is hovered or focused, so it never covers the text at rest. */
+.assistant-md-code-copy {
+  position: absolute;
+  inset-inline-end: 4px;
+  top: 4px;
+  background: var(--background);
+  opacity: 0;
+  transition: opacity var(--motion-control-duration) var(--motion-ease);
+}
+.assistant-md-code:hover .assistant-md-code-copy,
+.assistant-md-code:focus-within .assistant-md-code-copy,
+.assistant-md-code-copy[data-state="copied"] {
+  opacity: 1;
+}
+@media (hover: none) {
+  .assistant-md-code-copy {
+    opacity: 1;
+  }
+}
+.assistant-md-table {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+.assistant-md-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 20px;
+}
+.assistant-md-table th,
+.assistant-md-table td {
+  padding: 6px 10px;
+  text-align: start;
+  border-bottom: 1px solid var(--line);
+}
+.assistant-md-table th {
+  font-weight: 600;
+  background: var(--surface);
+}
+.assistant-md-table tr:last-child td {
+  border-bottom: 0;
+}
+.assistant-md .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 0;
+}
+/* While an answer is being revealed, its last block ends in a soft caret. */
+.assistant-md-live > .assistant-md-block:last-child > :not(ul, ol, .assistant-md-code, .assistant-md-table, .katex-display):last-child::after,
+.assistant-md-live > .assistant-md-block:last-child > :is(ul, ol):last-child > li:last-child::after {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 14px;
+  margin-inline-start: 3px;
+  vertical-align: -2px;
+  border-radius: 2px;
+  background: var(--muted-foreground);
+  opacity: 0.6;
+}
+/* The waiting line: a light that sweeps across muted text, under Full motion only. */
+.assistant-shimmer {
+  color: var(--muted-foreground);
+}
+:root[data-motion="full"] .assistant-shimmer {
+  background: linear-gradient(90deg, var(--muted-foreground) 0%, var(--muted-foreground) 35%, var(--foreground) 50%, var(--muted-foreground) 65%, var(--muted-foreground) 100%) 0 0 / 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: assistant-shimmer 1.8s linear infinite;
+}
+@keyframes assistant-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}
+:root[data-motion="full"] .assistant-breathe {
+  animation: assistant-breathe 1.6s var(--motion-ease) infinite alternate;
+}
+@keyframes assistant-breathe {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* The recording dot: it pulses under Full motion and holds still otherwise. */
+.dictation-dot {
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--danger) 22%, transparent);
+}
+:root[data-motion="full"] .dictation-dot {
+  animation: dictation-pulse 1.4s var(--motion-ease) infinite;
+}
+@keyframes dictation-pulse {
+  50% {
+    box-shadow: 0 0 0 5px color-mix(in oklch, var(--danger) 10%, transparent);
+    opacity: 0.75;
+  }
+}
+/* The floating dock rises into place when it opens into a card. */
+:root[data-motion="full"] .assistant-dock[data-open] {
+  animation: assistant-dock-open var(--motion-pane-duration) var(--motion-ease);
+}
+@keyframes assistant-dock-open {
+  from {
+    opacity: 0.6;
+    translate: 0 var(--motion-distance);
+  }
+}
+/* ───────────────────────── Assistant: end ───────────────────────── */
+/* ───────────────────────── Search and manual navigation ───────────────────────── */
+/* The site header's height (64px and its 1px rule), which the manuals' sticky columns sit under. */
+:root {
+  --header-height: calc(4rem + 1px);
+}
+/* A manual's navigation column (Docs, Learn, the Library): it stays under the header while the page scrolls and is exactly as tall as the window below the header, so a long tree scrolls inside itself. */
+.manual-nav {
+  position: sticky;
+  top: var(--header-height);
+  align-self: flex-start;
+  height: calc(100dvh - var(--header-height));
+}
+/* ───────────────────────── Search and manual navigation: end ───────────────────────── */
+/* ───────────────────────── Placeholders and status pages ───────────────────────── */
+/* A skeleton (components/ui/skeleton.tsx): a block in the foreground at a low strength, so it reads on every ground of both palettes. Under Full motion one soft band of light crosses the window; it is fixed to the viewport, so every skeleton on the page is lit by the same band at the same moment instead of each one pulsing on its own. Reduced and Off hold the plain block. */
+@layer components {
+  .skeleton {
+    background-color: color-mix(in oklab, var(--foreground) 7%, transparent);
+  }
+  :root[data-motion="full"] .skeleton {
+    background-image: linear-gradient(100deg, transparent 38%, color-mix(in oklab, var(--foreground) 6%, transparent) 50%, transparent 62%);
+    background-size: 200vw 100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    animation: skeleton-sweep 2.2s linear infinite;
+  }
+}
+@keyframes skeleton-sweep {
+  from {
+    background-position: 100vw 0;
+  }
+  to {
+    background-position: -100vw 0;
+  }
+}
+/* The loading page's bar (components/essential/status/LoadingScreen.tsx): it waits a moment so a fast load never shows it, then a short segment runs along a hairline track. Reduced and Off show the segment still, in the middle of the track. */
+.loading-mark {
+  animation: loading-appear var(--motion-fade-duration) var(--motion-ease) 300ms both;
+}
+.loading-track > span {
+  translate: 128% 0;
+}
+:root[data-motion="full"] .loading-track > span {
+  animation: indeterminate 1.4s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+@keyframes loading-appear {
+  from {
+    opacity: 0;
+  }
+}
+/* ───────────────────────── Placeholders and status pages: end ───────────────────────── */
+
+/* The desktop app (desktop/src/shim.js) marks the page with data-desktop before it paints: it is the platform without the site around it, so what is about the product rather than part of it (data-marketing) is left out. On the website nothing changes. */
+:root[data-desktop] [data-marketing] {
+  display: none !important;
+}

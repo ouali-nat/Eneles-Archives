@@ -1,0 +1,13 @@
+% Name: Wide network
+% Description: Network with more neurons per layer.
+% Tags: wide, layers
+
+\usepackage{neuralnetwork}
+
+\begin{neuralnetwork}[height=5, nodespacing=6mm, layerspacing=15mm]
+  \inputlayer[count=5]
+  \hiddenlayer[count=6]
+  \linklayers
+  \outputlayer[count=3]
+  \linklayers
+\end{neuralnetwork}

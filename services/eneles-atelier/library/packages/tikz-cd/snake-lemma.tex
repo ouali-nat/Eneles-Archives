@@ -1,0 +1,18 @@
+% Name: Snake lemma
+% Description: The two exact rows, the kernels and cokernels, and the connecting map that snakes between them.
+% Tags: snake lemma, homological algebra, exact sequence
+
+\usepackage{tikz-cd}
+\usetikzlibrary{calc}
+
+\begin{tikzcd}[column sep=2em, row sep=2.2em]
+  & \ker a \arrow[r] \arrow[d] & \ker b \arrow[r] \arrow[d] & \ker c \arrow[d]
+    \arrow[dddll, rounded corners, to path={
+      -- ([xshift=3ex]\tikztostart.east)
+      |- ($(\tikztostart)!0.5!(\tikztotarget)$) node[pos=0.3, right] {$\partial$}
+      -| ([xshift=-3ex]\tikztotarget.west)
+      -- (\tikztotarget)}] \\
+  & A \arrow[r] \arrow[d, "a", near start] & B \arrow[r] \arrow[d, "b", near start] & C \arrow[r] \arrow[d, "c", near start] & 0 \\
+  0 \arrow[r] & A' \arrow[r] \arrow[d] & B' \arrow[r] \arrow[d] & C' \arrow[d] \\
+  & \operatorname{coker} a \arrow[r] & \operatorname{coker} b \arrow[r] & \operatorname{coker} c
+\end{tikzcd}

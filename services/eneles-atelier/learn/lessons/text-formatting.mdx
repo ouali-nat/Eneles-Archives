@@ -1,0 +1,93 @@
+---
+title: "Text formatting"
+description: "Bold, italic, typewriter, small caps, and font sizes, and how far each change reaches."
+summary: "Format text in LaTeX: bold, italic, typewriter, and small caps, emphasis, combined styles, font sizes, and how far each change reaches, with examples."
+keywords: ["bold","\\textbf","italic","italics","\\textit","emphasis","\\emph","underline","\\underline","typewriter","monospace","\\texttt","small caps","\\textsc","sans serif","\\textsf","slanted","\\textsl","\\bfseries","\\itshape","\\ttfamily","\\scshape","\\normalfont","font size","\\tiny","\\small","\\large","\\Large","\\huge","scope","group","braces","declaration"]
+---
+
+# Text formatting
+
+Make text bold, italic, monospaced, or a different size, combine those styles, and control exactly how far each change reaches.
+
+## Bold, italic, and the other styles
+
+Each style has a command that takes the text to change in braces.
+
+```latex-example
+\textbf{Bold}, \textit{italic}, \texttt{typewriter}, \textsc{Small Caps}, \textsf{sans serif}, and \underline{underlined}.
+```
+
+Most styles also have a declaration: a command with no argument that switches the style on from that point. You will see how far a declaration reaches in the section on scope below.
+
+| Command | Declaration | Result |
+| --- | --- | --- |
+| `\textbf{...}` | `\bfseries` | Bold |
+| `\textit{...}` | `\itshape` | Italic |
+| `\emph{...}` | `\em` | Emphasis: italic in upright text, upright in italic text |
+| `\texttt{...}` | `\ttfamily` | Typewriter (monospace) |
+| `\textsc{...}` | `\scshape` | Small caps |
+| `\textsf{...}` | `\sffamily` | Sans serif |
+| `\textsl{...}` | `\slshape` | Slanted |
+| `\underline{...}` | none | Underline |
+| `\textnormal{...}` | `\normalfont` | The document's default font, whatever surrounds it |
+
+In Eneles, select text and press `Ctrl + B` for `\textbf` or `Ctrl + I` for `\textit`. Pressing it again removes the command. [Visual mode](/docs/visual-mode) draws these styles in place.
+
+## Emphasis or italic
+
+`\emph` marks text as stressed and lets LaTeX choose how to show it. Inside italic text it switches to upright, so the stress stays visible. `\textit` always gives italic.
+
+```latex-example
+The result was \emph{not} significant.
+
+\textit{The result was \emph{not} significant.}
+```
+
+Use `\emph` for stress. Use `\textit` for things that are italic by convention, such as book titles and species names.
+
+## Combine styles
+
+Nest one command inside another. The order does not matter.
+
+```latex-example
+\textbf{\textit{Bold italic}}, \textsf{\textbf{bold sans serif}}, and \emph{stressed with one \textbf{bold} word}.
+```
+
+## Font sizes
+
+Size commands are declarations. From smallest to largest: `\tiny`, `\scriptsize`, `\footnotesize`, `\small`, `\normalsize`, `\large`, `\Large`, `\LARGE`, `\huge`, and `\Huge`. They are relative to the base size of the document, so `\large` is bigger in a 12pt document than in a 10pt one.
+
+```latex-example
+{\footnotesize footnotesize} {\small small} normal {\large large} {\Large Large} {\LARGE LARGE} {\huge huge}
+```
+
+## Scope: how far a change reaches
+
+A command with an argument changes only its argument. A declaration changes everything up to the end of the current group. A pair of braces makes a group, and so does every environment.
+
+```latex-example
+Normal, {\bfseries bold until the brace closes}, and normal again.
+
+{\itshape\large Two declarations, one group.} Both end here.
+
+\begin{center}
+  \scshape Small caps until the environment ends.
+\end{center}
+```
+
+The braces go around the declaration and the text together: `{\bfseries text}`, not `\bfseries{text}`. The second form compiles, but the braces only group the word, and the bold carries on after it.
+
+Prefer the argument form for a few words, because its end is visible. Use declarations for whole blocks, such as a `\small` table or a `\centering` figure.
+
+## Common mistakes
+
+- **Forgetting the braces.** `\textbf word` makes only the "w" bold, because a command without braces takes the next single character. Write `\textbf{word}`.
+- **A declaration with no group.** `\large` or `\bfseries` on its own changes the rest of the document. Wrap it in braces, or use the argument form.
+- **A smaller size with the old line spacing.** Line spacing is set when a paragraph ends. In `{\small A long paragraph.}` the group closes first, so small text sits on lines spaced for normal text. End the paragraph inside the group: `{\small A long paragraph.\par}`.
+- **A combination the font does not have.** Bold small caps and bold typewriter do not exist in the default font. LaTeX prints a "Font shape undefined" warning and substitutes the nearest style. Choose a font that has the shape; see [Fonts and sizes](/learn/fonts-and-sizes).
+
+## Next
+
+- [Paragraphs and line breaks](/learn/paragraphs-and-line-breaks)
+- [Fonts and sizes](/learn/fonts-and-sizes)
+- [Colors](/learn/colors)

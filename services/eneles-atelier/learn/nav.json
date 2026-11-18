@@ -1,0 +1,76 @@
+{
+  "tracks": [
+    {
+      "id": "start",
+      "title": "Getting started",
+      "description": "What LaTeX is, your first document, and the basics of text, structure, packages, and fixing errors.",
+      "lessons": [
+        "what-is-latex",
+        "first-document",
+        "text-formatting",
+        "paragraphs-and-line-breaks",
+        "sections-and-structure",
+        "lists",
+        "special-characters",
+        "packages-and-the-preamble",
+        "errors-and-debugging",
+        "multi-file-projects"
+      ]
+    },
+    {
+      "id": "math",
+      "title": "Mathematics",
+      "description": "Typeset formulas, from a single inline symbol to aligned, numbered, and cross-referenced equations, matrices, theorems, and proofs.",
+      "lessons": [
+        "math-basics",
+        "fractions-roots-and-exponents",
+        "symbols-and-greek-letters",
+        "aligning-equations",
+        "matrices",
+        "brackets-and-delimiters",
+        "sums-integrals-and-limits",
+        "math-fonts",
+        "theorems-and-proofs",
+        "numbering-and-referencing-equations",
+        "spacing-in-math"
+      ]
+    },
+    {
+      "id": "figures-and-references",
+      "title": "Figures, tables, and references",
+      "description": "Place images and tables, number and cite them, and build bibliographies, links, contents, and indexes.",
+      "lessons": [
+        "images",
+        "figures-and-captions",
+        "tables",
+        "advanced-tables",
+        "cross-references",
+        "bibliography-with-bibtex",
+        "bibliography-with-biblatex",
+        "footnotes-and-margin-notes",
+        "hyperlinks",
+        "contents-lists-and-indexes"
+      ]
+    },
+    {
+      "id": "layout-and-more",
+      "title": "Layout, slides, and drawing",
+      "description": "Page layout, fonts, color, and spacing, then code listings, your own commands, slides, diagrams, plots, a thesis, and other languages.",
+      "lessons": [
+        "page-layout",
+        "headers-and-footers",
+        "fonts-and-sizes",
+        "colors",
+        "spacing",
+        "columns",
+        "code-listings",
+        "custom-commands",
+        "presentations-with-beamer",
+        "drawing-with-tikz",
+        "plots-with-pgfplots",
+        "thesis-structure",
+        "languages-and-unicode"
+      ]
+    }
+  ]
+}

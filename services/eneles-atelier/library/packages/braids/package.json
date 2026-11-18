@@ -1,0 +1,10 @@
+{
+  "name": "braids",
+  "description": "Braid diagrams with PGF/TikZ. For knot theory and braid groups.",
+  "ctanUrl": "https://ctan.org/pkg/braids",
+  "tags": [
+    "braids",
+    "knot theory",
+    "topology"
+  ]
+}

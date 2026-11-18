@@ -1,0 +1,13 @@
+% Name: Horizontal four-strand braid
+% Description: Four strands running left to right, with one inverse crossing.
+% Tags: braid, four strand
+
+\usetikzlibrary{braids}
+
+\begin{tikzpicture}
+  \pic[
+    rotate=90,
+    braid/.cd,
+    every strand/.style={thick}
+  ] {braid={s_1 s_2 s_3^{-1} s_2}};
+\end{tikzpicture}

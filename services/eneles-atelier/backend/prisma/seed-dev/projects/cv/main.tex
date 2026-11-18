@@ -1,0 +1,73 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\definecolor{accent}{HTML}{1F4E79}
+\titleformat{\section}{\large\bfseries\color{accent}}{}{0pt}{}[\titlerule]
+\titlespacing{\section}{0pt}{10pt}{6pt}
+\setlist[itemize]{leftmargin=1.2em, itemsep=1pt, topsep=2pt}
+
+\newcommand{\entry}[4]{\textbf{#1} \hfill #2 \\ \textit{#3} \hfill \textit{#4} \par\vspace{2pt}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE \textbf{Razz}} \\[4pt]
+  Institute for Computational Linguistics \\
+  \href{mailto:razz@texer.org}{razz@texer.org} \quad \textbullet \quad \href{https://texer.org}{texer.org}
+\end{center}
+
+\section{Education}
+
+\entry{Ph.D. in Computer Science}{2022 -- present}{Institute for Computational Linguistics}{Advisor: Prof. Lena Fischer}
+Thesis: \emph{Spectral Methods for Learning on Large Sparse Graphs}.
+
+\vspace{4pt}
+\entry{M.Sc. in Mathematics}{2020 -- 2022}{Faculty of Mathematics}{Graduated with distinction}
+Thesis on randomized numerical linear algebra.
+
+\vspace{4pt}
+\entry{B.Sc. in Mathematics and Computer Science}{2017 -- 2020}{Faculty of Mathematics}{}
+
+\section{Research Interests}
+
+Graph learning, efficient attention mechanisms, randomized numerical linear algebra, and tools for scientific writing.
+
+\section{Publications}
+
+\begin{enumerate}[leftmargin=1.5em, itemsep=2pt]
+  \item \textbf{Razz}, K. Watanabe, and A. Nakamura. ``Block-Sparse Attention for Long-Document Summarization.'' Under review, 2026.
+  \item \textbf{Razz} and L. Fischer. ``Sketched Spectral Embeddings with Gap-Dependent Guarantees.'' \emph{Workshop on Graph Learning}, 2025.
+  \item A. Nakamura and \textbf{Razz}. ``A Note on Chebyshev Filters for Sparse Graphs.'' Technical report, 2024.
+\end{enumerate}
+
+\section{Experience}
+
+\entry{Research Intern}{Summer 2025}{Applied Machine Learning Group}{Remote}
+\begin{itemize}
+  \item Built a sparse-attention summarizer for documents of up to 16{,}000 tokens.
+  \item Reduced peak training memory by 40\% with no loss in ROUGE.
+\end{itemize}
+
+\entry{Teaching Assistant}{2022 -- 2025}{Institute for Computational Linguistics}{}
+\begin{itemize}
+  \item Measure Theory (Autumn 2023, 2024), Algorithms (Spring 2023, 2024, 2025).
+  \item Wrote and maintained the lecture notes and weekly problem sets.
+\end{itemize}
+
+\section{Skills}
+
+\textbf{Languages:} Python, TypeScript, Rust, and \LaTeX. \quad \textbf{Tools:} PyTorch, JAX, PostgreSQL, and Docker.
+
+\section{Awards}
+
+Best Student Paper, Workshop on Graph Learning (2025). \quad Faculty Teaching Award (2024).
+
+\end{document}

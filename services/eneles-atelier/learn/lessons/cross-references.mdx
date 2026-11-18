@@ -1,0 +1,131 @@
+---
+title: "Cross-references"
+description: "Refer to sections, figures, tables, and equations by label so that numbers and pages stay correct."
+summary: "Cross-references in LaTeX: \\label and \\ref for sections, figures, tables, and equations, why it takes two compiles, hyperref links, and cleveref."
+keywords: ["\\label","\\ref","\\pageref","\\eqref","\\autoref","\\nameref","\\cref","\\Cref","cleveref","hyperref","??","undefined reference","multiply defined","aux file","two compiles","label names","fig:","sec:","eq:"]
+---
+
+# Cross-references
+
+After this page you can refer to any numbered part of a document by name and let LaTeX fill in the number, the page, and a clickable link.
+
+## Label and reference
+
+Never type a number such as "Section 3" by hand. Mark the target with `\label{name}` and print its number with `\ref{name}`. When you add, remove, or reorder material, every reference follows.
+
+```latex-example
+\section{Method}\label{sec:method}
+A spring that is stretched by a distance $x$ from its
+rest length stores the energy
+\begin{equation}
+  E = \tfrac{1}{2} k x^2 . \label{eq:energy}
+\end{equation}
+Section~\ref{sec:method} derives
+equation~\eqref{eq:energy} on page~\pageref{eq:energy}.
+```
+
+`\pageref` prints the page the label is on. `\eqref` from `amsmath` adds the parentheses that equations are cited with. The `~` is a space that cannot break, so the word and its number stay on one line.
+
+## What a label points to
+
+A label has no type of its own. It records the number most recently assigned at the place where it stands, so its position decides what you get.
+
+| To refer to | Put `\label` |
+| --- | --- |
+| A chapter or section | Directly after the heading command. |
+| An equation, or one row of `align` | Inside the environment, on that row. |
+| A figure or table | After `\caption`, inside the float. |
+| An item of an `enumerate` list | After `\item`. |
+| A theorem, lemma, or definition | After `\begin` of the environment. |
+| A footnote | Inside the footnote text. |
+
+```latex-example
+\begin{theorem}\label{thm:compact}
+Every bounded sequence of real numbers has a
+convergent subsequence.
+\end{theorem}
+\begin{enumerate}
+  \item Pick a bounded sequence. \label{step:pick}
+  \item Apply Theorem~\ref{thm:compact}.
+  \item Return to step~\ref{step:pick}.
+\end{enumerate}
+```
+
+Things without a number, such as `\section*` or `equation*`, cannot be referred to with `\ref`. A label placed there silently takes the last number assigned before it.
+
+## Why it takes two compiles
+
+TeX reads a document once from top to bottom, so at a `\ref` it may not have seen the label yet. Each compile therefore writes all labels to the `.aux` file, and the next compile reads them back. After the first pass a reference prints as `??`. After the second it is correct.
+
+```latex-example
+The setup is shown in Figure~\ref{fig:setpu}.
+```
+
+In Eneles you do not rerun anything yourself: a compile repeats TeX until the references settle. A `??` that remains, as above, means the label does not exist, usually because of a typo. To avoid that, type `\ref{` and pick from the list of every label in the project. See [References and citations](/docs/references#complete-labels).
+
+## Names and links with hyperref
+
+Load `hyperref` and every reference becomes a link to its target. It also adds `\autoref`, which prints the kind of thing together with the number, and `\nameref`, which prints the title.
+
+```latex-example
+\section{Calibration}\label{sec:calibration}
+The gain of the amplifier is the ratio of the voltage
+at its output to the voltage at its input,
+\begin{equation}
+  g = V_{\text{out}} / V_{\text{in}} . \label{eq:gain}
+\end{equation}
+The gain in \autoref{eq:gain} is introduced in
+\autoref{sec:calibration}, ``\nameref{sec:calibration}''.
+```
+
+The names come from commands that you can redefine, for example `\renewcommand{\sectionautorefname}{Section}`.
+
+## Smarter references with cleveref
+
+The `cleveref` package goes further. `\cref` works out the name from the kind of target, accepts several labels at once, and sorts and compresses them into ranges. `\Cref` is the form for the start of a sentence.
+
+```latex-document
+\documentclass[varwidth=11cm,border=10pt]{standalone}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\begin{document}
+\begin{equation} m = \rho V \label{eq:mass}  \end{equation}
+\begin{equation} F = m a    \label{eq:force} \end{equation}
+\begin{equation} W = F d    \label{eq:work}  \end{equation}
+
+\Cref{eq:mass} gives the mass. The work follows
+from \cref{eq:work,eq:mass,eq:force}, and
+\cref{eq:mass,eq:work} share a factor.
+\end{document}
+```
+
+<Callout type="note" title="Load cleveref last">
+  `cleveref` must be loaded after `hyperref`, and `hyperref` after almost everything else. In the wrong order the links or the names are lost. The `noabbrev` option prints "equation" and "figure" instead of "eq." and "fig."
+</Callout>
+
+## Name your labels
+
+Keep labels to letters, digits, colons, and hyphens. The widespread convention is a prefix for the kind of target, then a short description of the content.
+
+| Prefix | Target | Example |
+| --- | --- | --- |
+| `ch:`, `sec:` | Chapter, section | `sec:method` |
+| `fig:`, `tab:` | Figure, table | `fig:rainfall` |
+| `eq:` | Equation | `eq:energy` |
+| `thm:`, `lem:`, `def:` | Theorem, lemma, definition | `thm:compact` |
+
+Name the content, not the position: `fig:3` is wrong as soon as another figure is added before it. LaTeX ignores the prefix, so it is there only to help you and your co-authors.
+
+## Common mistakes
+
+- **`??` in the PDF.** The log says ``LaTeX Warning: Reference `fig:setpu' on page 1 undefined``. Correct the name, or add the missing `\label`.
+- **The same label twice.** ``LaTeX Warning: Label `eq:energy' multiply defined`` appears, and references may point to the wrong target. This often comes from copying a figure or an equation. Rename one.
+- **The wrong number.** A reference to a figure prints the section number when `\label` comes before `\caption` or sits outside the float. Move it after the caption.
+- **A line break between word and number.** Write `Figure~\ref{fig:rainfall}`, not `Figure \ref{fig:rainfall}`.
+
+## Next
+
+- [Hyperlinks](/learn/hyperlinks)
+- [Numbering and referencing equations](/learn/numbering-and-referencing-equations)
+- [Bibliography with BibTeX](/learn/bibliography-with-bibtex)

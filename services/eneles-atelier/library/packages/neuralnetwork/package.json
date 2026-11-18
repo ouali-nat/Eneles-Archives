@@ -1,0 +1,10 @@
+{
+  "name": "neuralnetwork",
+  "description": "Neural network diagrams: layers, nodes, connections.",
+  "ctanUrl": "https://ctan.org/pkg/neuralnetwork",
+  "tags": [
+    "neural network",
+    "machine learning",
+    "layers"
+  ]
+}

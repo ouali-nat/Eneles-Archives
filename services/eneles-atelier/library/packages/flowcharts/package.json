@@ -1,0 +1,12 @@
+{
+  "name": "Flowcharts",
+  "description": "Process and decision flowcharts in plain TikZ, with the shapes, positioning, and arrows.meta libraries.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "flowchart",
+    "process",
+    "decision",
+    "algorithm"
+  ],
+  "custom": true
+}

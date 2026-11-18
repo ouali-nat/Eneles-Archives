@@ -1,0 +1,10 @@
+% Name: Deutsch-Jozsa algorithm
+% Description: A register of n qubits and one ancilla, an oracle U_f, and a measurement that tells constant from balanced.
+% Tags: Deutsch-Jozsa, oracle, algorithm
+
+\usepackage{quantikz}
+
+\begin{quantikz}
+  \lstick{$|0\rangle^{\otimes n}$} & \qwbundle{n} & \gate{H^{\otimes n}} & \gate[2]{U_f} & \gate{H^{\otimes n}} & \meter{} \\
+  \lstick{$|1\rangle$} & \qw & \gate{H} & \qw & \qw & \qw
+\end{quantikz}

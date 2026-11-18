@@ -1,0 +1,35 @@
+% Name: Pentagon equation with fusion trees
+% Description: The five splitting trees of four anyons with total charge e on a regular pentagon, joined by F-moves; the arrows carry the F-symbols whose product is the same along both routes.
+% Tags: pentagon equation, F-move, fusion tree, coherence
+
+\usetikzlibrary{arrows.meta}
+
+\begin{tikzpicture}[x=0.62cm, y=0.62cm, >={Stealth}, font=\footnotesize,
+    leaves/.pic={\foreach \x/\leaf in {-1.5/a,-0.5/b,0.5/c,1.5/d} \node[above] at (\x,1) {$\leaf$};
+      \node[below] at (0,-1) {$e$}; \draw (-1.5,1) -- (0,-0.5) -- (1.5,1) (0,-0.5) -- (0,-1);}]
+  \begin{scope}[shift={(162:3.9cm)}, local bounding box=A]
+    \pic {leaves}; \draw (-0.5,1) -- (-1,0.5) (0.5,1) -- (-0.5,0);
+    \node[below left] at (-0.75,0.25) {$f$}; \node[below left] at (-0.25,-0.25) {$g$};
+  \end{scope}
+  \begin{scope}[shift={(90:3.9cm)}, local bounding box=B]
+    \pic {leaves}; \draw (-0.5,1) -- (-1,0.5) (0.5,1) -- (1,0.5);
+    \node[below left] at (-0.5,0) {$f$}; \node[below right] at (0.5,0) {$l$};
+  \end{scope}
+  \begin{scope}[shift={(18:3.9cm)}, local bounding box=C]
+    \pic {leaves}; \draw (0.5,1) -- (1,0.5) (-0.5,1) -- (0.5,0);
+    \node[below right] at (0.75,0.25) {$l$}; \node[below right] at (0.25,-0.25) {$k$};
+  \end{scope}
+  \begin{scope}[shift={(234:3.9cm)}, local bounding box=D]
+    \pic {leaves}; \draw (-0.5,1) -- (0,0.5) -- (0.5,1) (0,0.5) -- (-0.5,0);
+    \node[below right] at (-0.25,0.25) {$h$}; \node[below left] at (-0.25,-0.25) {$g$};
+  \end{scope}
+  \begin{scope}[shift={(306:3.9cm)}, local bounding box=E]
+    \pic {leaves}; \draw (-0.5,1) -- (0,0.5) -- (0.5,1) (0,0.5) -- (0.5,0);
+    \node[below left] at (0.25,0.25) {$h$}; \node[below right] at (0.25,-0.25) {$k$};
+  \end{scope}
+  \draw[->] (A) -- node[above left, font=\small] {$F^{fcd}_e$} (B);
+  \draw[->] (B) -- node[above right, font=\small] {$F^{abl}_e$} (C);
+  \draw[->] (A) -- node[left, font=\small] {$F^{abc}_g$} (D);
+  \draw[->] (D) -- node[below, font=\small] {$F^{ahd}_e$} (E);
+  \draw[->] (E) -- node[right, font=\small] {$F^{bcd}_k$} (C);
+\end{tikzpicture}

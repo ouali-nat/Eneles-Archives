@@ -1,0 +1,16 @@
+% Name: Set difference
+% Description: A minus B: the part of A outside B is shaded.
+% Tags: venn, difference, complement, sets
+
+\begin{tikzpicture}[thick]
+  \begin{scope}
+    \clip (-0.75,0) circle (1.4);
+    \fill[orange!35] (-3,-2) rectangle (3,2);
+    \fill[white] (0.75,0) circle (1.4);
+  \end{scope}
+  \draw (-0.75,0) circle (1.4) (0.75,0) circle (1.4);
+  \draw (-2.8,-1.9) rectangle (2.8,1.9);
+  \node at (-1.95,1.3) {$A$};
+  \node at (1.95,1.3) {$B$};
+  \node[below] at (0,-1.9) {$A \setminus B$};
+\end{tikzpicture}

@@ -1,0 +1,21 @@
+% Name: Sprint plan with progress
+% Description: Two weeks of tasks, each bar filled to show how much is done, and a line for today.
+% Tags: gantt, sprint, progress
+
+\usepackage{pgfgantt}
+
+\begin{ganttchart}[
+  hgrid, vgrid={*6{draw=none}, *1{dotted}},
+  x unit=5mm, y unit chart=6mm, y unit title=6mm, title height=1,
+  title label font=\small, bar label font=\small,
+  today=7, today label=Today, today label font=\small,
+  bar/.append style={fill=green!45!black},
+  bar incomplete/.append style={fill=gray!20},
+]{1}{14}
+  \gantttitle{Sprint 12}{14} \\
+  \gantttitlelist{1,...,14}{1} \\
+  \ganttbar[progress=100]{Design review}{1}{3} \\
+  \ganttbar[progress=60]{API endpoints}{3}{8} \\
+  \ganttbar[progress=20]{Front end}{6}{12} \\
+  \ganttbar[progress=0]{Release notes}{12}{14}
+\end{ganttchart}

@@ -1,0 +1,58 @@
+---
+title: "Visual mode"
+description: "Edit with headings, equations, images, and citations drawn in place."
+summary: "Visual mode in Eneles draws headings, equations, images, and citations in place while the file stays plain LaTeX source. Switch modes and edit what is drawn."
+keywords: ["visual","wysiwyg","rich text","preview","katex","code mode"]
+---
+
+# Visual mode
+
+Visual mode draws LaTeX markup as what it means, in the same editor and on the same file. Headings are large, bold text is bold, equations are typeset, and images show. The file itself does not change: it is the same LaTeX source either way.
+
+## Switch modes
+
+Use the **Code** and **Visual** switch at the left end of the toolbar above the editor. **Code** shows the plain source. **Visual** draws it. Your choice is remembered in this browser and applies to every project.
+
+## What visual mode draws
+
+- **Headings**: `\part`, `\chapter`, and `\section` down to `\subparagraph` become headings, sized by level.
+- **Text styles**: `\textbf`, `\textit`, `\emph`, `\textsl`, `\underline`, `\texttt`, and `\textsc` show as bold, italic, underlined, monospace, or small caps text.
+- **Lists**: items in `itemize`, `enumerate`, and `description` lists get bullets, numbers, or their label in bold.
+- **Inline math**: `$…$` and `\(…\)` are typeset.
+- **Displayed math**: `\[…\]`, `$$…$$`, and the `equation`, `align`, `gather`, `multline`, `flalign`, and `eqnarray` environments, starred, or not, are typeset and centred on their own line.
+- **Images**: `\includegraphics` of a PNG, JPEG, GIF, or WebP file in the project shows the image.
+- **Citations**: `\cite` and its variants become a chip with the key in brackets, such as `[knuth1984literate]`.
+- **References**: `\ref`, `\eqref`, `\autoref`, `\cref`, and `\pageref` become a chip with an arrow and the label.
+- **Labels**: `\label` becomes a chip with `#` and the label.
+- **Footnotes and captions**: the text shows, marked "Note:" or "Caption:".
+- **Links**: `\href` and `\url` show as link-styled text.
+
+The preamble, everything before `\begin{document}`, is shown small and faded. `\begin`, `\end`, and other commands stay visible as small grey text, so you can still see the document's structure.
+
+## Edit what is drawn
+
+Click into anything that is drawn, or select across it, and its LaTeX source appears in its place so you can edit it. Move the cursor away and it is drawn again. For example, click a typeset equation to edit its TeX.
+
+## What stays as source
+
+Some content is not drawn:
+
+- Tables: their rows stay as source, with `\begin` and `\end` in grey.
+- TikZ pictures (`tikzpicture`, `tikzcd`), `verbatim`, `lstlisting`, `minted`, and `comment` environments.
+- Comments starting with `%`.
+- Images in other formats, such as PDF or EPS, and images that are not in the project. These show as a chip with the file name.
+
+<Callout type="note">
+  Equations in visual mode are drawn in the browser, not by TeX. A command the browser renderer does not know, such as a macro you defined in the preamble, may not draw correctly. This affects only the view: the compiled PDF is unaffected.
+</Callout>
+
+Very large files, over 400,000 characters, are shown as plain source.
+
+## Collaboration, comments, and suggestions
+
+Visual mode is a different view of the same live document. Collaborators' edits, [comments and suggestions](/docs/review) work exactly as in code mode, and collaborators can use either mode independently.
+
+## Related
+
+- [Editing](/docs/editing): editor settings, spell check, and word count.
+- [Compiling](/docs/compiling): turn the source into a PDF.

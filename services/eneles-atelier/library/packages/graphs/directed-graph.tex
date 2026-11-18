@@ -1,0 +1,23 @@
+% Name: Directed graph
+% Description: Five vertices on a pentagon with directed edges, a curved pair, and a self-loop.
+% Tags: directed graph, digraph, loop
+
+\usetikzlibrary{arrows.meta}
+
+\begin{tikzpicture}[
+  >={Stealth[length=2.5mm]},
+  vertex/.style={circle, draw, thick, minimum size=8mm},
+]
+  \foreach \i in {1,...,5}
+    \node[vertex] (v\i) at ({90 + 72*(\i-1)}:2cm) {$v_{\i}$};
+  \path[->, thick]
+    (v1) edge (v2)
+    (v2) edge (v3)
+    (v3) edge (v4)
+    (v4) edge (v5)
+    (v5) edge (v1)
+    (v1) edge (v3)
+    (v2) edge[bend left=15] (v5)
+    (v5) edge[bend left=15] (v2)
+    (v4) edge[loop below] (v4);
+\end{tikzpicture}

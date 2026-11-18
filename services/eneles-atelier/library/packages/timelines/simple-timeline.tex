@@ -1,0 +1,11 @@
+% Name: Simple timeline
+% Description: A line with five dated events above it, using only the drawing basics.
+% Tags: timeline, events
+
+\begin{tikzpicture}
+  \draw[thick, ->] (0,0) -- (10,0);
+  \foreach \x/\year/\event in {1/2021/Founded, 3/2022/First hire, 5/2023/Launch, 7/2024/Funding, 9/2025/Expansion} {
+    \draw (\x,0.15) -- (\x,-0.15) node[below] {\year};
+    \node[above] at (\x,0.2) {\event};
+  }
+\end{tikzpicture}

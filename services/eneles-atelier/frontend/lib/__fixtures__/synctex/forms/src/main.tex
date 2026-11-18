@@ -1,0 +1,14 @@
+\documentclass{article}
+\newsavebox{\formbox}
+\begin{document}
+Plain text before the form.
+
+\setbox\formbox\hbox{Text inside a reusable form}
+\pdfxform\formbox
+\edef\theform{\the\pdflastxform}
+First use: \pdfrefxform\theform
+
+Second use further down: \pdfrefxform\theform
+
+Text after the forms.
+\end{document}

@@ -1,0 +1,39 @@
+---
+title: "PDF extraction"
+description: "Pull LaTeX, equations, and structure out of a PDF."
+summary: "Upload a PDF to Eneles and extract its text, equations, and structure back into editable LaTeX source: how it works, what is extracted, and the API."
+keywords: ["pdf","extract","scan","paper","import"]
+---
+
+# PDF extraction
+
+Upload an existing PDF and extract its content back into editable LaTeX source code.
+
+## How it works
+
+1. Go to **PDFs** in the dashboard sidebar
+2. Upload your file, which supports up to 50 MB and 100 pages
+3. Click **Extract LaTeX**: the engine parses document structure, headings, lists, equations, and figures
+4. Review the extracted `.tex` file in the preview
+5. Download it directly, or import into a new project with one click
+
+## What gets extracted
+
+- **Document structure**: sections, subsections, paragraphs
+- **Math**: inline and display equations, aligned environments
+- **Lists**: ordered and unordered
+- **Tables**: basic table structures
+- **Figures**: placeholder references for images
+
+## Best practices
+
+- **LaTeX-generated PDFs** produce the most accurate results since the structure is already well-defined
+- **Word-generated PDFs** work well for text and basic formatting
+- **Scanned PDFs** go through an additional OCR step, so results depend on scan quality
+- **Multi-column layouts** may need manual cleanup after extraction
+
+> **Note:** Extraction uses your monthly page quota. The free tier includes 40 pages per month. See [Pricing](/pricing) for higher limits.
+
+## Using the API
+
+Automate PDF extraction via the REST API. See [PDFs API](/docs/api/pdfs) for endpoints and examples.

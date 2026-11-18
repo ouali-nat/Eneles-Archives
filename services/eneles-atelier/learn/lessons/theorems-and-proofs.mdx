@@ -1,0 +1,164 @@
+---
+title: "Theorems and proofs"
+description: "Declare theorem, lemma, and definition environments, style and number them, and write proofs."
+summary: "Theorems and proofs in LaTeX: declare theorem, lemma, and definition environments with amsthm, number and style them, write proofs, and refer to them."
+keywords: ["\\newtheorem","\\theoremstyle","amsthm","theorem","lemma","corollary","proposition","definition","remark","proof","\\qedhere","\\qed","QED","shared counter","numbered within section"]
+---
+
+# Theorems and proofs
+
+Declare numbered theorems, lemmas, and definitions, control how they are numbered and styled, write proofs that end with the usual square, and refer to a result by its number.
+
+## Declare a theorem environment
+
+LaTeX has no built-in theorem environment. You declare each kind once in the preamble with `\newtheorem`, giving the environment's name and the heading to print. Load the `amsthm` package as well: it adds styles and the `proof` environment.
+
+```latex-document
+\documentclass[varwidth=11cm,border=10pt]{standalone}
+\usepackage{amsmath, amsthm}
+\newtheorem{theorem}{Theorem}
+\begin{document}
+\begin{theorem}[Pythagoras]
+In a right triangle with legs $a$ and $b$ and
+hypotenuse $c$, we have $a^2 + b^2 = c^2$.
+\end{theorem}
+\end{document}
+```
+
+The optional argument after `\begin{theorem}` is a name or a source, printed in parentheses after the number.
+
+## Numbering
+
+Three variations of `\newtheorem` control the numbers:
+
+- A counter in brackets at the end, as in `[section]`, restarts the numbering in each section and prefixes it: Theorem 2.1, Theorem 2.2.
+- An existing environment in brackets in the middle, as in `[theorem]`, shares that environment's counter, so lemmas and theorems run in one sequence. Readers find Lemma 1.2 faster when it sits between Theorem 1.1 and Theorem 1.3.
+- A star, `\newtheorem*`, makes an unnumbered environment.
+
+```latex-document
+\documentclass[varwidth=11cm,border=10pt]{standalone}
+\usepackage{amsmath, amsthm}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem*{claim}{Claim}
+\begin{document}
+\section{Primes}
+\begin{lemma}
+Every integer greater than $1$ has a prime factor.
+\end{lemma}
+\begin{theorem}
+There are infinitely many primes.
+\end{theorem}
+\begin{claim}
+The same holds for primes of the form $4k + 3$.
+\end{claim}
+\end{document}
+```
+
+## Styles
+
+`\theoremstyle` sets the look of every `\newtheorem` that follows it. `amsthm` has three styles:
+
+| Style | Heading | Body | Use for |
+| --- | --- | --- | --- |
+| `plain` (the default) | bold | italic | theorems, lemmas, propositions, corollaries |
+| `definition` | bold | upright | definitions, examples, exercises |
+| `remark` | italic | upright | remarks, notes |
+
+```latex-document
+\documentclass[varwidth=11cm,border=10pt]{standalone}
+\usepackage{amsmath, amsthm}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\begin{document}
+\begin{definition}
+An integer $n$ is \emph{even} if $n = 2k$ for some integer $k$.
+\end{definition}
+\begin{theorem}
+The sum of two even integers is even.
+\end{theorem}
+\begin{remark}
+The same is true of the product.
+\end{remark}
+\end{document}
+```
+
+## Proofs
+
+The `proof` environment prints "Proof." at the start and a square at the end of the last line. An optional argument replaces the heading.
+
+```latex-example
+\begin{theorem}
+The square of an odd integer is odd.
+\end{theorem}
+\begin{proof}
+Write the integer as $2k + 1$. Then
+$(2k + 1)^2 = 2(2k^2 + 2k) + 1$, which is odd.
+\end{proof}
+\begin{proof}[Second proof]
+A product of two odd integers has no factor $2$.
+\end{proof}
+```
+
+## Proofs that end with a display
+
+When a proof ends with a displayed equation or a list, the square lands on an empty line below it. Put `\qedhere` at the end of that last line to place the square there.
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath, amsthm}
+\begin{document}
+\begin{minipage}{9cm}
+\begin{proof}[Without]
+The first $n$ odd numbers add up to
+\[
+  \sum_{k=1}^{n} (2k - 1) = n(n + 1) - n = n^2.
+\]
+\end{proof}
+\begin{proof}[With]
+The first $n$ odd numbers add up to
+\[
+  \sum_{k=1}^{n} (2k - 1) = n(n + 1) - n = n^2. \qedhere
+\]
+\end{proof}
+\end{minipage}
+\end{document}
+```
+
+The `minipage` only gives this preview a fixed width. You do not need it in your document.
+
+## Refer to a theorem
+
+Put a `\label` inside the environment and cite it with `\ref`, which prints the number only, so write the word yourself. A tie, `~`, keeps the word and the number on the same line. [Cross-references](/learn/cross-references) covers labels in general.
+
+```latex-example
+\begin{lemma} \label{lem:even-sum}
+The sum of two even integers is even.
+\end{lemma}
+\begin{theorem} \label{thm:four}
+The sum of four even integers is even.
+\end{theorem}
+\begin{proof}
+Apply Lemma~\ref{lem:even-sum} twice.
+\end{proof}
+Theorem~\ref{thm:four} extends to any number of terms.
+```
+
+In Eneles, type `\ref{` to pick from the labels in your project. The insert palette (`Shift + Space`) has empty Theorem, Lemma, Definition, Corollary, and Proof blocks in its Math group. They insert only the environment, so the matching `\newtheorem` line must be in your preamble.
+
+## Common mistakes
+
+- **Using an environment you did not declare.** `\begin{corollary}` without a `\newtheorem{corollary}` stops with `Environment corollary undefined`. Add the declaration to the preamble.
+- **Declaring a name twice.** A second `\newtheorem{theorem}`, or a name a class already defines, gives `Command \theorem already defined`. Keep one declaration, and check what your document class provides.
+- **The label outside the environment.** A `\label` placed before `\begin{theorem}` picks up the section number instead. Put it after `\begin`.
+- **Forgetting `amsthm`.** Without it, `\theoremstyle` is an `Undefined control sequence` and `proof` is an undefined environment.
+
+## Next
+
+- [Numbering and referencing equations](/learn/numbering-and-referencing-equations)
+- [Cross-references](/learn/cross-references)
+- [Sections and structure](/learn/sections-and-structure)

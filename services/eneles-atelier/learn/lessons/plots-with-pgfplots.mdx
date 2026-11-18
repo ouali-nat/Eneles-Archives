@@ -1,0 +1,174 @@
+---
+title: "Plots with pgfplots"
+description: "Graphs of functions and data with pgfplots: the axis environment, labels, legends, several plots, and styling."
+summary: "Plot functions and data in LaTeX with pgfplots: the axis environment, function and data plots, labels, legends, several plots on one axis, and styling."
+keywords: ["pgfplots","plot","plots","graph","chart","axis","\\addplot","\\addlegendentry","\\pgfplotsset","compat","domain","samples","coordinates","table","csv","data file","xlabel","ylabel","title","legend","legend pos","grid","xmin","xmax","ymin","ymax","xtick","only marks","scatter","mark","smooth","ybar","bar chart","symbolic x coords","semilogyaxis","loglogaxis","log scale","axis lines","function plot","sin(deg(x))"]
+---
+
+# Plots with pgfplots
+
+Plot functions and data directly in LaTeX with `pgfplots`, so that graphs use the fonts of your document and update when the numbers change.
+
+## The axis environment
+
+`pgfplots` builds on TikZ. A plot is an `axis` environment inside a `tikzpicture`, and each `\addplot` command adds one curve. Like every TikZ command, `\addplot` ends with a semicolon.
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}
+    \addplot[blue, thick, domain=-2:2, samples=50] {x^2};
+  \end{axis}
+\end{tikzpicture}
+\end{document}
+```
+
+The `\pgfplotsset{compat=1.18}` line belongs in every preamble. It tells the package which version's defaults to use, so the plot looks the same after a future update. Without it, you get a warning and the layout of an old version.
+
+## Plot a function
+
+Write the function of `x` in braces. `domain` sets the range of `x`, and `samples` sets how many points are computed. The usual operators and functions work: `+`, `-`, `*`, `/`, `^`, `sqrt`, `exp`, `ln`, `abs`, `sin`, `cos`.
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+      axis lines=middle,
+      xlabel={$x$}, ylabel={$y$},
+      domain=-2.2:2.2, samples=80,
+      width=8cm, height=5.5cm,
+    ]
+    \addplot[red, thick] {x^3 - 3*x};
+    \addplot[gray, dashed] {exp(-x^2)};
+  \end{axis}
+\end{tikzpicture}
+\end{document}
+```
+
+Options on the `axis` apply to every plot inside it. `axis lines=middle` draws the axes through the origin, as in a textbook, instead of as a box.
+
+## Plot data points
+
+Give measurements as a list of coordinates, or as a small table with a header row. `only marks` plots the points without joining them.
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+      xlabel={Time (h)},
+      ylabel={Water level (m)},
+      width=8cm, height=5.5cm,
+    ]
+    \addplot[only marks, mark=*, blue] table {
+      t   level
+      0   1.9
+      2   3.1
+      4   3.8
+      6   3.2
+      8   2.0
+      10  1.1
+      12  1.8
+    };
+  \end{axis}
+\end{tikzpicture}
+\end{document}
+```
+
+For real data, keep the numbers in a file in your project and name the columns to plot. The plot then follows the file.
+
+```latex
+\addplot table[x=t, y=level, col sep=comma] {data/tide.csv};
+```
+
+## Several plots, labels, and a legend
+
+Add one `\addplot` per series. `\addlegendentry` after a plot names it in the legend, and `legend pos` moves the legend to a corner. `title`, `xlabel`, and `ylabel` take ordinary LaTeX, including math.
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+      title={Cooling of a cup of tea},
+      xlabel={Time (min)},
+      ylabel={Temperature (\textdegree C)},
+      legend pos=north east,
+      grid=major,
+      width=8.5cm, height=6cm,
+    ]
+    \addplot[only marks, mark=*, blue] coordinates {
+      (0,90) (5,71) (10,58) (15,48) (20,41) (30,31)
+    };
+    \addlegendentry{Measured}
+    \addplot[red, thick, domain=0:30, samples=60] {20 + 70*exp(-0.062*x)};
+    \addlegendentry{Model}
+  \end{axis}
+\end{tikzpicture}
+\end{document}
+```
+
+## Styling and other plot types
+
+| Option | Where | Effect |
+| --- | --- | --- |
+| `width`, `height` | `axis` | Size of the whole plot |
+| `xmin`, `xmax`, `ymin`, `ymax` | `axis` | Fix the visible range |
+| `grid=major` | `axis` | Grid lines at the labelled ticks |
+| `xtick={0,5,10}` | `axis` | Choose the tick positions |
+| `legend pos=south east` | `axis` | Legend corner |
+| `axis lines=left` | `axis` | Only the left and bottom axes, with arrows |
+| `thick`, `dashed`, `red` | `\addplot` | Line style, as in TikZ |
+| `mark=*`, `mark=square`, `mark=x`, `no marks` | `\addplot` | Point markers |
+| `only marks` | `\addplot` | A scatter plot |
+| `smooth` | `\addplot` | Round the corners between data points |
+
+Other plot types are options too. `ybar` draws bars, and `symbolic x coords` lets the horizontal axis hold names instead of numbers. For a logarithmic scale, replace `axis` with `semilogyaxis`, `semilogxaxis`, or `loglogaxis`.
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+      ybar,
+      symbolic x coords={Mon, Tue, Wed, Thu, Fri},
+      xtick=data,
+      ylabel={Visitors},
+      ymin=0, ymax=250,
+      nodes near coords,
+      width=8.5cm, height=5.5cm,
+    ]
+    \addplot[fill=teal!50] coordinates {
+      (Mon,120) (Tue,95) (Wed,140) (Thu,160) (Fri,210)
+    };
+  \end{axis}
+\end{tikzpicture}
+\end{document}
+```
+
+Eneles's [Library](/library/pgfplots) has more pgfplots examples to copy, including a scatter plot, a histogram, a polar plot, and a 3D surface.
+
+## Common mistakes
+
+- Plotting `sin(x)` and getting an almost flat line. Trigonometric functions take degrees. Write `sin(deg(x))` when `x` is in radians.
+- Leaving out the `compat` line. The log warns that pgfplots is "running in backwards compatibility mode" and labels are placed by old rules. Add `\pgfplotsset{compat=1.18}`.
+- Forgetting the semicolon after `\addplot`. pgfplots reads on looking for it, so the error, such as "File ended while scanning use of …", points far from the cause. Check the `\addplot` lines first.
+- Asking for thousands of samples or plotting large data files. TeX computes every point at each compile, which is slow and can hit the compile time limit. Use the fewest samples that look smooth, and thin out large data sets before plotting.
+
+## Next
+
+- [Drawing with TikZ](/learn/drawing-with-tikz)
+- [Figures and captions](/learn/figures-and-captions)
+- [Tables](/learn/tables)

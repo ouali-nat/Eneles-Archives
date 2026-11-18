@@ -1,0 +1,19 @@
+% Name: Simple tree
+% Description: A root with two children and four leaves, using TikZ's child syntax with default styling.
+% Tags: tree, hierarchy
+
+\begin{tikzpicture}[
+  level distance=12mm,
+  level 1/.style={sibling distance=30mm},
+  level 2/.style={sibling distance=15mm},
+]
+  \node {Root}
+    child { node {A}
+      child { node {A1} }
+      child { node {A2} }
+    }
+    child { node {B}
+      child { node {B1} }
+      child { node {B2} }
+    };
+\end{tikzpicture}

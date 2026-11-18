@@ -1,0 +1,16 @@
+% Name: Vertical braid with colored strands
+% Description: Four vertical strands, each in its own color, so you can follow where each one ends.
+% Tags: braid, colored strands, vertical
+
+\usetikzlibrary{braids}
+
+\begin{tikzpicture}
+  \pic[
+    braid/.cd,
+    every strand/.style={ultra thick},
+    strand 1/.style={blue!70!black},
+    strand 2/.style={orange!85!black},
+    strand 3/.style={green!50!black},
+    strand 4/.style={red!70!black},
+  ] {braid={s_1 s_3 s_2^{-1} s_1 s_3}};
+\end{tikzpicture}

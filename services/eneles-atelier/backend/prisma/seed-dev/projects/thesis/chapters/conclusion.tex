@@ -1,0 +1,12 @@
+\chapter{Conclusion}
+\label{ch:conclusion}
+
+This thesis showed that a small randomized sketch of the graph Laplacian is enough to recover the spectral information that node-classification models use, with an error controlled by the spectral gap and a cost that is linear in the number of edges.
+
+\section{Limitations}
+
+The guarantees depend on a gap between $\lambda_k$ and $\lambda_{k+1}$. Graphs with a slowly decaying spectrum, such as grids and road networks, have no such gap, and there the sketch needs many more power iterations. The experiments are also limited to node classification on static graphs.
+
+\section{Future work}
+
+Two directions seem most promising: extending the analysis to directed graphs, whose Laplacians are not symmetric, and updating the sketch incrementally as edges arrive in a stream.

@@ -1,0 +1,13 @@
+% Name: Fusion tree basis, time going down
+% Description: Four anyons entering at the top and fused left to right through the intermediate charges x₁ and x₂ to a total charge c below.
+% Tags: fusion tree, basis, anyons, time going down
+
+\begin{tikzpicture}[thick]
+  \draw (0,3.2) node[above] {$a_1$} -- (0.6,2.4);
+  \draw (1.2,3.2) node[above] {$a_2$} -- (0.6,2.4);
+  \draw (0.6,2.4) -- node[left] {$x_1$} (1.2,1.6);
+  \draw (2.4,3.2) node[above] {$a_3$} -- (1.2,1.6);
+  \draw (1.2,1.6) -- node[left] {$x_2$} (1.8,0.8);
+  \draw (3.6,3.2) node[above] {$a_4$} -- (1.8,0.8);
+  \draw (1.8,0.8) -- (1.8,0) node[below] {$c$};
+\end{tikzpicture}

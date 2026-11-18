@@ -1,0 +1,6 @@
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Sparse attention.} Longformer~\citep{beltagy2020longformer} combines a sliding window with a few global tokens, and BigBird~\citep{zaheer2020bigbird} adds random connections. Both fix the pattern before training; ours is learned per input.
+
+\paragraph{Long-document summarization.} Hierarchical encoders summarize sections separately and then combine them, and extract-then-abstract pipelines first select salient sentences. \model{} keeps a single encoder and lets attention perform the selection.

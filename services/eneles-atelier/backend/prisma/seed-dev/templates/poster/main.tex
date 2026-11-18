@@ -1,0 +1,54 @@
+\documentclass[20pt]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage[a2paper, portrait, margin=2cm]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage{booktabs}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\columnsep}{2cm}
+\definecolor{accent}{HTML}{1F4E79}
+\newcommand{\block}[1]{\vspace{0.6em}{\Large\bfseries\color{accent} #1}\par\vspace{0.2em}{\color{accent}\hrule height 2pt}\vspace{0.5em}}
+
+\begin{document}
+
+\begin{center}
+  {\Huge \textbf{Block-Sparse Attention for Long-Document Summarization}} \\[0.5em]
+  {\Large Razz, Kenji Watanabe, and Aria Nakamura} \\[0.2em]
+  {\large Institute for Computational Linguistics}
+\end{center}
+\vspace{1em}
+
+\begin{multicols}{2}
+
+\block{Problem}
+Self-attention costs $O(n^2)$ in the sequence length $n$, so summarizers truncate long documents and never read most of them.
+
+\block{Idea}
+Each token attends to a local window and to the summaries of the $r$ blocks it scores highest:
+\[
+  s_{ij} = \frac{q_i^\top \bar{k}_j}{\sqrt{d}} .
+\]
+The selection is trained end to end with a relaxed top-$r$ operator.
+
+\block{Results}
+\begin{center}
+  \begin{tabular}{lcc}
+    \toprule
+    Model & arXiv & PubMed \\
+    \midrule
+    BART & 39.8 & 40.1 \\
+    Longformer & 41.2 & 41.6 \\
+    Ours & \textbf{41.6} & \textbf{42.3} \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\block{Conclusion}
+Learned global connections beat fixed ones at the same memory budget.
+
+\end{multicols}
+
+\end{document}

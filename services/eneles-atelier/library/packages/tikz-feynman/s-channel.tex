@@ -1,0 +1,21 @@
+% Name: Electron-positron annihilation
+% Description: An electron and a positron annihilate into a virtual photon that produces a muon pair (s-channel).
+% Tags: scattering, QED, s-channel, annihilation
+
+\usepackage[compat=1.1.0]{tikz-feynman}
+
+\begin{tikzpicture}
+  \begin{feynman}
+    \vertex (a) at (0,0);
+    \vertex (b) at (2.4,0);
+    \vertex (i1) at (-1.6,1.5) {$e^-$};
+    \vertex (i2) at (-1.6,-1.5) {$e^+$};
+    \vertex (f1) at (4,1.5) {$\mu^-$};
+    \vertex (f2) at (4,-1.5) {$\mu^+$};
+    \diagram* {
+      (i1) -- [fermion] (a) -- [fermion] (i2),
+      (a) -- [photon, edge label=$\gamma$] (b),
+      (f2) -- [fermion] (b) -- [fermion] (f1),
+    };
+  \end{feynman}
+\end{tikzpicture}

@@ -1,0 +1,85 @@
+{
+  "groups": [
+    {
+      "title": "Introduction",
+      "pages": [
+        {
+          "slug": "",
+          "title": "Overview",
+          "description": "What Eneles does and where to start.",
+          "keywords": [
+            "docs",
+            "home",
+            "index",
+            "introduction"
+          ],
+          "builtIn": true
+        },
+        "getting-started"
+      ]
+    },
+    {
+      "title": "Guides",
+      "pages": [
+        "projects-and-files",
+        "importing",
+        "editing",
+        "visual-mode",
+        "compiling",
+        "references",
+        "reference-papers",
+        "assistant",
+        "ai-tools",
+        "collaboration",
+        "review",
+        "github-sync",
+        "image-to-latex",
+        "pdf-extraction",
+        "tikz-diagrams"
+      ]
+    },
+    {
+      "title": "Account",
+      "pages": [
+        "account-and-security",
+        "plans-and-billing"
+      ]
+    },
+    {
+      "title": "Reference",
+      "pages": [
+        "keyboard-shortcuts",
+        "troubleshooting",
+        "self-hosting"
+      ]
+    },
+    {
+      "title": "API",
+      "pages": [
+        {
+          "slug": "api",
+          "title": "API overview",
+          "description": "Base URL, authentication, pagination, errors, and rate limits.",
+          "keywords": [
+            "rest",
+            "base url",
+            "pagination",
+            "errors",
+            "rate limit",
+            "curl"
+          ],
+          "builtIn": true
+        },
+        "api/authentication",
+        "api/projects",
+        "api/snips",
+        "api/pdfs",
+        "api/compilation",
+        "api/templates",
+        "api/users",
+        "api/api-keys",
+        "api/usage"
+      ]
+    }
+  ]
+}

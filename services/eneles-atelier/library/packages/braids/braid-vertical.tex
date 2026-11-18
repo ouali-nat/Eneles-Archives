@@ -1,0 +1,9 @@
+% Name: Vertical braid
+% Description: Three strands running from top to bottom, which is how the braids package draws them by default.
+% Tags: braid, vertical, braid group
+
+\usetikzlibrary{braids}
+
+\begin{tikzpicture}
+  \pic[braid/.cd, every strand/.style={thick}] {braid={s_1 s_2^{-1} s_1}};
+\end{tikzpicture}

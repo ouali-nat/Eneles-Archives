@@ -1,0 +1,154 @@
+---
+title: "Contents, lists, and indexes"
+description: "Print a table of contents and lists of figures and tables, choose what they include, and add an index and a glossary."
+summary: "Print a table of contents in LaTeX, choose its depth, add lists of figures and tables, and build an index and a glossary, with examples that compile."
+keywords: ["\\tableofcontents","tocdepth","secnumdepth","\\listoffigures","\\listoftables","\\addcontentsline","\\phantomsection","\\section*","makeidx","\\makeindex","\\index","\\printindex","glossaries","\\gls","\\newglossaryentry","\\newacronym","\\printglossaries","TOC","table of contents","glossary","acronyms"]
+---
+
+# Contents, lists, and indexes
+
+After this page you can print a table of contents and lists of figures and tables, decide what goes into them, and add an index and a glossary.
+
+## Table of contents
+
+`\tableofcontents` prints an entry for every numbered heading, with its page. You write nothing else: the entries come from the `\section` commands themselves.
+
+```latex-example
+\tableofcontents
+
+\section{Introduction}
+\subsection{Motivation}
+\section{Method}
+```
+
+For a long title, give a short form for the contents and running headers in the optional argument: `\section[Field work]{Field work on the north slope, 2019 to 2023}`.
+
+<Callout type="note" title="Contents are one compile behind">
+  Headings are collected in a `.toc` file during one compile and printed by the next, so a new heading appears in the contents only on the second pass. Eneles repeats the compile for you until the contents, lists, and page numbers settle.
+</Callout>
+
+## Choose the depth
+
+Each heading has a level number. Two counters use it: `tocdepth` is the deepest level listed in the contents, and `secnumdepth` is the deepest level that gets a number.
+
+| Level | Heading |
+| --- | --- |
+| -1 | `\part` |
+| 0 | `\chapter` |
+| 1 | `\section` |
+| 2 | `\subsection` |
+| 3 | `\subsubsection` |
+| 4 | `\paragraph` |
+| 5 | `\subparagraph` |
+
+Both counters start at 3 in `article` and at 2 in `report` and `book`. Set them in the preamble, or just before `\tableofcontents`.
+
+```latex-example
+\setcounter{tocdepth}{1}
+\tableofcontents
+
+\section{Introduction}
+\subsection{Motivation}
+\section{Method}
+\subsection{Sampling}
+```
+
+## Unnumbered headings in the contents
+
+Starred headings such as `\section*{Preface}` have no number and are left out of the contents. Add the entry yourself with `\addcontentsline`, directly after the heading. Its arguments are the list (`toc`), the level of the entry, and the text.
+
+```latex-example
+\tableofcontents
+
+\section*{Preface}
+\addcontentsline{toc}{section}{Preface}
+\section{Introduction}
+\section{Method}
+```
+
+The same command adds a bibliography or an index to the contents. If the document uses `hyperref`, put `\phantomsection` on the line before `\addcontentsline` so that the link in the contents jumps to the right place.
+
+## Lists of figures and tables
+
+`\listoffigures` and `\listoftables` work like the contents, built from the captions. The optional argument of `\caption` gives the short text for the list.
+
+```latex-example
+\listoftables
+
+\begin{table}[htbp]
+  \centering
+  \caption[Sample sizes]{Number of samples taken at
+    each site in the two years of the study.}
+  \begin{tabular}{lrr}
+    North & 40 & 52 \\
+    South & 25 & 31 \\
+  \end{tabular}
+\end{table}
+```
+
+## An index
+
+An index needs three things: `\makeindex` in the preamble, an `\index` command at each place worth finding, and `\printindex` where the index should appear. `\index` prints nothing where it stands.
+
+```latex
+\documentclass{article}
+\usepackage{makeidx}
+\makeindex
+\begin{document}
+A float\index{float} is placed by rules\index{float!placement}
+that the placement letters\index{placement letters|see{float}}
+adjust.
+\newpage
+Figures\index{figure} and tables\index{table} are
+floats\index{float|textbf}.
+
+\printindex
+\end{document}
+```
+
+This produces an alphabetical, two-column index on a new page: "float, 1, **2**" with the subentry "placement, 1" beneath it, and "placement letters, *see* float". The punctuation inside `\index` controls the entry.
+
+| Write | Entry |
+| --- | --- |
+| `\index{float}` | A plain entry with the page number. |
+| `\index{float!placement}` | "placement" as a subentry of "float". |
+| `\index{alpha@$\alpha$}` | Printed as the symbol, sorted as "alpha". |
+| `\index{float\|textbf}` | The page number in bold, for the main discussion. |
+| `\index{figure\|see{float}}` | A pointer to another entry, without a page. |
+| `\index{float\|(}` and `\index{float\|)}` | The start and end of a page range. |
+
+During a compile, the entries are written to an `.idx` file, the `makeindex` program sorts them, and the next pass prints the result. Eneles runs `makeindex` for you whenever the document uses `\makeindex`. See [Compiling](/docs/compiling#bibliographies-indexes-and-glossaries).
+
+## A glossary
+
+The `glossaries` package keeps a list of terms and abbreviations. Define each one in the preamble and use it with `\gls`. An abbreviation is written out the first time and shortened after that, and only the terms you use are listed.
+
+```latex-document
+\documentclass[varwidth=11cm,border=10pt]{standalone}
+\usepackage{glossaries}
+\makeglossaries
+\newglossaryentry{float}{name=float,
+  description={an object that LaTeX may move to
+    another place, such as a figure}}
+\newacronym{lof}{LoF}{list of figures}
+\begin{document}
+Every \gls{float} with a caption appears in the
+\gls{lof}. The \gls{lof} is built from the captions.
+
+\printglossaries
+\end{document}
+```
+
+In Eneles, glossaries are sorted with `makeindex`, so use `\makeglossaries` without the `xindy` option.
+
+## Common mistakes
+
+- **`\makeindex` or `\makeglossaries` left out of the preamble.** There is no error: the index or glossary is simply empty. Add the command.
+- **`\addcontentsline` before the heading.** If a page break falls between the two, the contents show the wrong page. Put it directly after `\section*`.
+- **Expecting `\section*` in the contents.** Starred headings are never listed automatically. Use `\addcontentsline`, or keep the heading numbered.
+
+## Next
+
+- [Sections and structure](/learn/sections-and-structure)
+- [Hyperlinks](/learn/hyperlinks)
+- [Thesis structure](/learn/thesis-structure)
