@@ -65,3 +65,8 @@ Ne pas fusionner le backend TeXeR avec Supabase ni faire pointer le compilateur 
 L’instance de test actuelle est démarrée dans un Vercel Sandbox temporaire, avec une base PostgreSQL dédiée, Redis, un émulateur S3 de développement et le compilateur TeX Live. Les comptes et projets de démonstration proviennent du seed backend/prisma/seed-dev.ts. Elle ne réutilise ni la base ni le stockage d’Eneles et n’est pas une instance de production. Le plan Hobby limite la durée d’une session Sandbox active ; le lien d’essai de l’accueil n’est donc pas une adresse permanente.
 
 Pour une mise en service durable, il reste à provisionner des services persistants, configurer l’envoi des codes e-mail et valider le comportement de compilation longue durée. Aucun raccordement d’identité, de documents, de droits ou de stockage Eneles n’est activé.
+
+
+## Accès depuis l’accueil Eneles
+
+Le lien d’accueil ouvre directement /dashboard. TeXeR redirige automatiquement les visiteurs non connectés vers /login?redirect=/dashboard, puis revient au tableau de bord après authentification. La page marketing publique de TeXeR reste disponible à la racine /.
