@@ -1,6 +1,6 @@
-/* TeXeR — entrée isolée dans l'administration Eneles.
-   Aucun appel API, aucune lecture de données utilisateur et aucune modification métier.
-   Ce module prépare uniquement le point d'entrée et la cartographie de l'architecture. */
+/* TeXeR — point d'accès isolé depuis l'administration Eneles.
+   Aucun appel API ni accès aux données utilisateur : l'éditeur s'ouvre sur son
+   domaine officiel et conserve sa propre authentification. */
 (function () {
   'use strict';
 
