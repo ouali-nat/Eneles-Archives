@@ -1,0 +1,34 @@
+/* TeXeR administration shell — styles scoped to the new module only. */
+#adminDetail > .eneles-texer-panel { max-width:1180px; margin:0 auto; padding:18px 0 32px; }
+.etx-header { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; padding:22px 24px; border:1px solid color-mix(in srgb,currentColor 10%,transparent); border-radius:20px; background:color-mix(in srgb,currentColor 2.5%,transparent); }
+.etx-kicker { display:block; color:var(--gris); font-size:.62rem; font-weight:850; letter-spacing:.12em; }
+.etx-header h3 { margin:5px 0 4px; font-size:1.5rem; line-height:1.15; }
+.etx-header p { max-width:660px; margin:0; color:var(--gris); font-size:.78rem; line-height:1.55; }
+.etx-header-actions { display:flex; align-items:center; justify-content:flex-end; gap:10px; flex-wrap:wrap; }
+.etx-status { display:inline-flex; align-items:center; gap:8px; flex:0 0 auto; padding:8px 11px; border:1px solid color-mix(in srgb,currentColor 12%,transparent); border-radius:999px; color:var(--gris); font-size:.66rem; font-weight:750; white-space:nowrap; }
+.etx-status-dot { width:7px; height:7px; border-radius:50%; background:#27865d; }
+.etx-open-link { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:40px; padding:0 15px; border:1px solid transparent; border-radius:12px; background:var(--violet,#6750a4); color:#fff; font-size:.72rem; font-weight:800; text-decoration:none; box-shadow:0 4px 12px color-mix(in srgb,var(--violet,#6750a4) 20%,transparent); }
+.etx-open-link:hover { filter:brightness(1.06); }
+.etx-open-link:focus-visible { outline:3px solid color-mix(in srgb,var(--violet,#6750a4) 40%,transparent); outline-offset:3px; }
+.etx-notice { display:grid; gap:4px; margin-top:14px; padding:14px 16px; border:1px solid color-mix(in srgb,#c48b36 28%,transparent); border-radius:15px; background:color-mix(in srgb,#c48b36 7%,transparent); }
+.etx-notice strong { font-size:.76rem; }
+.etx-notice span { color:var(--gris); font-size:.7rem; line-height:1.5; }
+.etx-section-head { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin:24px 2px 11px; }
+.etx-section-head h4 { margin:0; font-size:.92rem; }
+.etx-section-head > span { color:var(--gris); font-size:.65rem; }
+.etx-service-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.etx-service-card { min-width:0; padding:17px; border:1px solid color-mix(in srgb,currentColor 10%,transparent); border-radius:16px; background:color-mix(in srgb,currentColor 2%,transparent); }
+.etx-service-index { color:var(--gris); font-size:.58rem; font-weight:850; letter-spacing:.1em; }
+.etx-service-card h5 { margin:8px 0 6px; font-size:.87rem; }
+.etx-service-card p { min-height:88px; margin:0; color:var(--gris); font-size:.69rem; line-height:1.55; }
+.etx-service-card a { display:inline-flex; margin-top:12px; color:var(--violet,#6750a4); font-size:.67rem; font-weight:750; text-decoration:none; }
+.etx-service-card a:hover { text-decoration:underline; }
+.etx-feature-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+.etx-feature { display:grid; gap:4px; padding:13px 15px; border:1px solid color-mix(in srgb,currentColor 9%,transparent); border-radius:13px; }
+.etx-feature strong { font-size:.73rem; }
+.etx-feature span { color:var(--gris); font-size:.66rem; line-height:1.5; }
+.etx-footer-note { display:grid; gap:5px; margin-top:18px; padding:15px 17px; border-radius:14px; background:color-mix(in srgb,currentColor 3%,transparent); }
+.etx-footer-note strong { font-size:.72rem; }
+.etx-footer-note span { color:var(--gris); font-size:.68rem; line-height:1.55; }
+@media(max-width:760px) { .etx-header { flex-direction:column; padding:18px; } .etx-service-grid { grid-template-columns:1fr; } .etx-service-card p { min-height:0; } }
+@media(max-width:560px) { #adminDetail > .eneles-texer-panel { padding:12px 0 24px; } .etx-feature-list { grid-template-columns:1fr; } .etx-header-actions { justify-content:flex-start; width:100%; } .etx-status { white-space:normal; } .etx-open-link { flex:1 1 100%; } .etx-section-head { align-items:flex-start; flex-direction:column; gap:3px; } }
