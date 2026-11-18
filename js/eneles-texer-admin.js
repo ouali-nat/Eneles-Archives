@@ -44,12 +44,17 @@
           <h3>TeXeR</h3>
           <p>Édition LaTeX, collaboration, conversion et compilation de documents PDF.</p>
         </div>
-        <span class="etx-status"><span class="etx-status-dot"></span> Intégration en préparation</span>
+        <div class="etx-header-actions">
+          <span class="etx-status"><span class="etx-status-dot"></span> Services vérifiés en ligne</span>
+          <a class="etx-open-link" href="https://texer.org/" target="_blank" rel="noopener noreferrer">
+            Ouvrir TeXeR <span aria-hidden="true">↗</span>
+          </a>
+        </div>
       </div>
 
       <div class="etx-notice" role="status">
-        <strong>Phase actuelle : reproduction de l’architecture</strong>
-        <span>Les dépôts sources officiels sont étudiés séparément. Aucun compte, fichier ou service Eneles n’est encore raccordé à TeXeR.</span>
+        <strong>Accès direct à l’éditeur en production</strong>
+        <span>L’interface, l’API et le compilateur TeXeR sont accessibles. L’ouverture se fait dans un nouvel onglet et conserve la connexion TeXeR indépendante. Le raccordement des comptes et des documents Eneles reste une phase séparée.</span>
       </div>
 
       <div class="etx-section-head">
@@ -92,7 +97,7 @@
 
       <div class="etx-footer-note">
         <strong>Règle d’intégration</strong>
-        <span>Conserver d’abord le comportement et les frontières techniques de TeXeR. Le frontend TeXeR interdit actuellement l’affichage en iframe et utilise sa propre authentification. Son lancement restera séparé; les raccordements à l’identité Eneles, aux comptes, au stockage et aux documents ne seront étudiés qu’après vérification de chaque composant.</span>
+        <span>Conserver d’abord le comportement et les frontières techniques de TeXeR. La politique de sécurité actuellement servie par texer.org n’autorise pas l’intégration depuis le domaine Eneles dans une iframe. L’ouverture séparée protège cette frontière; les raccordements à l’identité Eneles, aux comptes, au stockage et aux documents seront étudiés après des tests dédiés.</span>
       </div>
     `;
     return panel;

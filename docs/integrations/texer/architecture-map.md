@@ -33,11 +33,21 @@
 - Les appels du backend au Compiler utilisent un secret interne; les clés de clients externes sont prévues pour rester côté serveur.
 - Le panneau admin est contrôlé par l’API et son accès est limité aux comptes administrateurs.
 
+## Vérification de la production publique — 18 novembre 2026
+
+Les contrôles HTTP exécutés depuis Termux ont obtenu les résultats suivants :
+
+- `https://texer.org/` : HTTP 200.
+- `https://api.texer.org/health` : HTTP 200, état `healthy`, base de données indiquée `connected`.
+- `https://compile.texer.org/health` : HTTP 200, état `ok`; moteurs `pdflatex`, `xelatex`, `lualatex` et `latex`; 0 compilation active, 0 en attente, capacité annoncée de 8.
+
+Le contrôle est ponctuel et ne remplace pas une supervision durable. Aucun identifiant, secret ou jeton de production n’a été lu ni modifié.
+
 ## Frontière d’intégration avec Eneles
 
-Eneles Archives est une application web statique organisée autour de `index.html`, CSS et JavaScript. TeXeR est une application Next.js distincte, avec une API et un compilateur séparés. Pour conserver son architecture et éviter de réécrire l’éditeur dans l’application Archives, la voie privilégiée est un service TeXeR autonome accessible depuis une entrée de l’administration.
+Eneles Archives est une application web statique organisée autour de `index.html`, CSS et JavaScript. TeXeR est une application Next.js distincte, avec une API et un compilateur séparés. Pour conserver son architecture et éviter de réécrire l’éditeur dans l’application Archives, la voie retenue est un service TeXeR autonome accessible depuis une entrée de l’administration. Le panneau Eneles ouvre maintenant `https://texer.org/` dans un nouvel onglet.
 
-Le `next.config.mjs` de TeXeR impose `X-Frame-Options: DENY` et `frame-ancestors 'none'` dans sa politique CSP : l’intégration ne doit donc pas reposer sur un iframe sans modification explicite de sa politique de sécurité. L’authentification TeXeR (code e-mail, JWT et cookie HttpOnly) est distincte de l’authentification Supabase d’Eneles; aucun partage de session ne doit être supposé.
+La politique CSP observée sur la production de `texer.org` annonce `frame-ancestors 'self' https://t.texer.org`; le domaine Eneles n’y figure pas. L’intégration ne doit donc pas reposer sur un iframe sans modification explicite et auditée de cette politique. L’authentification TeXeR (code e-mail, JWT et cookie HttpOnly) est distincte de l’authentification Supabase d’Eneles; aucun partage de session ne doit être supposé.
 
 ## État de la récupération
 
