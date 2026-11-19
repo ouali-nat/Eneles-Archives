@@ -1,3 +1,5 @@
+SET search_path TO atelier, public;
+
 -- A project can be a reference paper attached to another project.
 ALTER TABLE "projects" ADD COLUMN "referenceOfId" INTEGER;
 ALTER TABLE "projects" ADD COLUMN "arxivId" TEXT;
