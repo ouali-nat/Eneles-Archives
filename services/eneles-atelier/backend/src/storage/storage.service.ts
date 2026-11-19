@@ -19,11 +19,20 @@ export class StorageService {
   }
 
   private initAssetsClient() {
-    const region = this.configService.get<string>('ASSETS_BUCKET_REGION');
-    const accessKeyId = this.configService.get<string>('ASSETS_BUCKET_ACCESS_KEY_ID');
-    const secretAccessKey = this.configService.get<string>('ASSETS_BUCKET_SECRET_ACCESS_KEY');
-    const bucket = this.configService.get<string>('ASSETS_BUCKET_NAME');
-    const endpoint = this.configService.get<string>('ASSETS_BUCKET_ENDPOINT_URL');
+    // Eneles R2 is the canonical store. Keep the previous per-bucket
+    // variables as fallbacks to allow a gradual migration without downtime.
+    const accountId = this.configService.get<string>('R2_ACCOUNT_ID');
+    const region = this.configService.get<string>('ASSETS_BUCKET_REGION') ||
+      this.configService.get<string>('R2_REGION') || 'auto';
+    const accessKeyId = this.configService.get<string>('ASSETS_BUCKET_ACCESS_KEY_ID') ||
+      this.configService.get<string>('R2_ACCESS_KEY_ID');
+    const secretAccessKey = this.configService.get<string>('ASSETS_BUCKET_SECRET_ACCESS_KEY') ||
+      this.configService.get<string>('R2_SECRET_ACCESS_KEY');
+    const bucket = this.configService.get<string>('ASSETS_BUCKET_NAME') ||
+      this.configService.get<string>('R2_BUCKET_NAME');
+    const endpoint = this.configService.get<string>('ASSETS_BUCKET_ENDPOINT_URL') ||
+      this.configService.get<string>('R2_ENDPOINT_URL') ||
+      (accountId ? `https://${accountId}.r2.cloudflarestorage.com` : undefined);
 
     if (!region || !accessKeyId || !secretAccessKey || !bucket) {
       this.logger.warn('Assets Storage configuration is missing.');
@@ -41,11 +50,18 @@ export class StorageService {
   }
 
   private initBuildsClient() {
-    const region = this.configService.get<string>('BUILDS_BUCKET_REGION');
-    const accessKeyId = this.configService.get<string>('BUILDS_BUCKET_ACCESS_KEY_ID');
-    const secretAccessKey = this.configService.get<string>('BUILDS_BUCKET_SECRET_ACCESS_KEY');
-    const bucket = this.configService.get<string>('BUILDS_BUCKET_NAME');
-    const endpoint = this.configService.get<string>('BUILDS_BUCKET_ENDPOINT_URL');
+    const accountId = this.configService.get<string>('R2_ACCOUNT_ID');
+    const region = this.configService.get<string>('BUILDS_BUCKET_REGION') ||
+      this.configService.get<string>('R2_REGION') || 'auto';
+    const accessKeyId = this.configService.get<string>('BUILDS_BUCKET_ACCESS_KEY_ID') ||
+      this.configService.get<string>('R2_ACCESS_KEY_ID');
+    const secretAccessKey = this.configService.get<string>('BUILDS_BUCKET_SECRET_ACCESS_KEY') ||
+      this.configService.get<string>('R2_SECRET_ACCESS_KEY');
+    const bucket = this.configService.get<string>('BUILDS_BUCKET_NAME') ||
+      this.configService.get<string>('R2_BUCKET_NAME');
+    const endpoint = this.configService.get<string>('BUILDS_BUCKET_ENDPOINT_URL') ||
+      this.configService.get<string>('R2_ENDPOINT_URL') ||
+      (accountId ? `https://${accountId}.r2.cloudflarestorage.com` : undefined);
 
     if (!region || !accessKeyId || !secretAccessKey || !bucket) {
       this.logger.warn('Builds Storage configuration is missing.');
