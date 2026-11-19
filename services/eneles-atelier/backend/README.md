@@ -1,6 +1,6 @@
 # Eneles Atelier — API
 
-API NestJS 11 avec PostgreSQL/Prisma, Redis, stockage objet compatible S3, collaboration WebSocket et sessions d’atelier. Le service de compilation TeX Live est séparé du backend.
+API NestJS 11 avec Supabase Postgres/Prisma (schéma privé `atelier`), Supabase Auth pour l’identité Eneles, Redis, Cloudflare R2 privé, collaboration WebSocket et sessions d’atelier. Le service de compilation TeX Live est séparé du backend.
 
 ## Développement
 
@@ -11,7 +11,7 @@ npm run start:dev
 
 ## Configuration requise
 
-Voir `.env.example`. Les variables indispensables en production incluent `DATABASE_URL`, `JWT_SECRET`, `ENELES_SUPABASE_URL`, `ENELES_SUPABASE_ANON_KEY`, `ALLOWED_ORIGINS`, les paramètres S3/R2 et `COMPILER_URL`. Configurez Redis selon le mode d’exécution. Ne jamais versionner de valeurs secrètes.
+Voir `.env.example`. Les variables indispensables en production incluent `DATABASE_URL` (Supabase session pooler, port 5432, `schema=atelier`), `JWT_SECRET`, `ENELES_SUPABASE_URL`, `ENELES_SUPABASE_ANON_KEY`, `ALLOWED_ORIGINS`, les paramètres `R2_*` et `COMPILER_URL`. Configurez Redis selon le mode d’exécution. Utilisez un bucket R2 privé dédié aux fichiers Atelier ; ne réutilisez pas le bucket public de documents publiés pour les fichiers personnels. Ne jamais versionner de valeurs secrètes.
 
 ## Authentification Eneles
 
@@ -23,4 +23,4 @@ Toutes les fonctionnalités sont ouvertes sans abonnement. Les quotas commerciau
 
 ## Base de données
 
-Appliquer les migrations Prisma avec `npx prisma migrate deploy` avant de lancer le service. Le dossier de stockage éphémère du conteneur ne doit jamais être la seule copie des projets ou PDF.
+Appliquer les migrations Prisma avec `npx prisma migrate deploy` avant de lancer le service. Elles créent les tables dans le schéma privé `atelier`, non exposé au Data API public. Le schéma `atelier` doit exister avant le premier `migrate deploy`. Le dossier de stockage éphémère du conteneur ne doit jamais être la seule copie des projets ou PDF.
