@@ -359,6 +359,7 @@ app.post("/compile", async (req, res) => {
     ? (req.headers["x-request-source"] || "").toLowerCase()
     : "";
   const isTikzPreview = source === "tikz-preview";
+  const isEnelesApi = isTrustedInternal && source === "eneles-api";
   const isPrebuild =
     source === "latex-templates-prebuild" ||
     source === "tikz-components-prebuild";
