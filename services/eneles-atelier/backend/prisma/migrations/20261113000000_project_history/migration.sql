@@ -1,3 +1,5 @@
+SET search_path TO atelier, public;
+
 -- Project-wide history: who changed each snapshot (several people when they edited together), the saver's name, the lines added and removed against the previous version, the time of the last write to a snapshot, the version a restore came from, and the record of renames that tells a renamed file from a deleted one. Rows from before this have no authors and are shown as "Unknown"; their line counts are filled in when they are first listed.
 -- AlterTable
 ALTER TABLE "file_history" ADD COLUMN     "linesAdded" INTEGER,
