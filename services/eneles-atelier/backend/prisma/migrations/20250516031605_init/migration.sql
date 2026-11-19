@@ -1,6 +1,6 @@
-CREATE SCHEMA IF NOT EXISTS atelier AUTHORIZATION postgres;
+CREATE SCHEMA IF NOT EXISTS atelier;
 REVOKE ALL ON SCHEMA atelier FROM PUBLIC;
-GRANT USAGE, CREATE ON SCHEMA atelier TO postgres;
+GRANT USAGE, CREATE ON SCHEMA atelier TO atelier_app;
 SET search_path TO atelier, public;
 
 -- CreateEnum
