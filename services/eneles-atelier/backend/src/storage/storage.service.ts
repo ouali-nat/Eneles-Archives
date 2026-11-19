@@ -34,6 +34,12 @@ export class StorageService {
       this.configService.get<string>('R2_ENDPOINT_URL') ||
       (accountId ? `https://${accountId}.r2.cloudflarestorage.com` : undefined);
 
+    const usingR2 = !!(this.configService.get<string>('R2_BUCKET_NAME') ||
+      this.configService.get<string>('R2_ACCESS_KEY_ID'));
+    if (usingR2 && !endpoint) {
+      this.logger.warn('Cloudflare R2 endpoint is missing. Set R2_ACCOUNT_ID or R2_ENDPOINT_URL.');
+      return;
+    }
     if (!region || !accessKeyId || !secretAccessKey || !bucket) {
       this.logger.warn('Assets Storage configuration is missing.');
       return;
@@ -63,6 +69,12 @@ export class StorageService {
       this.configService.get<string>('R2_ENDPOINT_URL') ||
       (accountId ? `https://${accountId}.r2.cloudflarestorage.com` : undefined);
 
+    const usingR2 = !!(this.configService.get<string>('R2_BUCKET_NAME') ||
+      this.configService.get<string>('R2_ACCESS_KEY_ID'));
+    if (usingR2 && !endpoint) {
+      this.logger.warn('Cloudflare R2 endpoint is missing. Set R2_ACCOUNT_ID or R2_ENDPOINT_URL.');
+      return;
+    }
     if (!region || !accessKeyId || !secretAccessKey || !bucket) {
       this.logger.warn('Builds Storage configuration is missing.');
       return;
