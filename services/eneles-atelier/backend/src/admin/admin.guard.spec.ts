@@ -15,7 +15,7 @@ type Account = {
 
 const account = (over: Partial<Account> = {}): Account => ({
   id: 7,
-  email: 'ops@texer.org',
+  email: 'ops@eneles.org',
   name: 'Ops',
   accountStatus: 'active',
   verified: true,
@@ -58,7 +58,7 @@ describe('AdminGuard', () => {
     await expect(guard.canActivate(context)).resolves.toBe(true);
     expect(request.admin).toEqual({
       id: 7,
-      email: 'ops@texer.org',
+      email: 'ops@eneles.org',
       name: 'Ops',
       root: false,
     });
@@ -67,7 +67,7 @@ describe('AdminGuard', () => {
   it('lets the root account in, whatever the letter case of its address', async () => {
     const { guard, context, request } = setup(
       account({ email: 'Admin@Eneles.org' }),
-      { ADMIN_EMAIL: 'admin@texer.org' },
+      { ADMIN_EMAIL: 'admin@eneles.org' },
     );
     await expect(guard.canActivate(context)).resolves.toBe(true);
     expect(request.admin).toMatchObject({ root: true });
@@ -103,9 +103,9 @@ describe('RootAdmin', () => {
 
   it('knows its address whatever the letter case or spaces', () => {
     const root = make({ ADMIN_EMAIL: ' Admin@Eneles.org ' });
-    expect(root.email).toBe('admin@texer.org');
-    expect(root.isRoot('ADMIN@texer.org ')).toBe(true);
-    expect(root.isRoot('someone@texer.org')).toBe(false);
+    expect(root.email).toBe('admin@eneles.org');
+    expect(root.isRoot('ADMIN@eneles.org ')).toBe(true);
+    expect(root.isRoot('someone@eneles.org')).toBe(false);
   });
 
   it('is no one when ADMIN_EMAIL is unset', () => {

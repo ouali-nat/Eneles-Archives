@@ -71,7 +71,9 @@ export class AuthController {
     private readonly usersService: UsersService,
     private readonly redisService: RedisService,
   ) {
-    setInterval(() => this.cleanupStalePendingSignups(), 10 * 60 * 1000);
+    const cleanupTimer = setInterval(() => this.cleanupStalePendingSignups(), 10 * 60 * 1000);
+    // Do not keep short-lived test processes alive solely for this maintenance task.
+    cleanupTimer.unref?.();
   }
 
   // ─── Pending Signup Redis Helpers ─────────────────────────────

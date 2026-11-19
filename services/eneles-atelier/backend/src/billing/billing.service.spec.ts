@@ -177,7 +177,7 @@ describe('BillingService while plans are paused', () => {
     const db = prisma();
     const s = stripe(true);
     const billing = new BillingService(db, s, config({ NODE_ENV: 'development' }));
-    await expect(billing.createCheckoutSession(9, { plan: 'pro' })).rejects.toThrow('Paid plans are not available yet');
+    await expect(billing.createCheckoutSession(9, { plan: 'pro' })).rejects.toThrow('Eneles does not sell subscriptions. All product features are available without a paid plan.');
     expect(db.client.user.update).not.toHaveBeenCalled();
     expect(db.client.$transaction).not.toHaveBeenCalled();
     expect(s.createCheckoutSession).not.toHaveBeenCalled();
@@ -186,7 +186,7 @@ describe('BillingService while plans are paused', () => {
   it('refuses restarting a canceled plan', async () => {
     const db = prisma({ id: 1, stripeSubscriptionId: 'sub_1' });
     const billing = new BillingService(db, stripe(false), config({ NODE_ENV: 'production' }));
-    await expect(billing.reactivateSubscription(9)).rejects.toThrow('Paid plans are not available yet');
+    await expect(billing.reactivateSubscription(9)).rejects.toThrow('Eneles does not sell subscriptions. All product features are available without a paid plan.');
     expect(db.client.subscription.update).not.toHaveBeenCalled();
   });
 
@@ -194,7 +194,7 @@ describe('BillingService while plans are paused', () => {
     const db = prisma();
     const s = stripe(false);
     const billing = new BillingService(db, s, config({ NODE_ENV: 'production' }));
-    await expect(billing.createPortalSession(9)).rejects.toThrow('Paid plans are not available yet');
+    await expect(billing.createPortalSession(9)).rejects.toThrow('Eneles does not sell subscriptions. All product features are available without a paid plan.');
     expect(await billing.getPaymentMethods(9)).toEqual([]);
     expect(await billing.getSubscription(9)).toMatchObject({ subscriptionType: 'free', plansActive: false });
     expect(s.createCustomer).not.toHaveBeenCalled();
