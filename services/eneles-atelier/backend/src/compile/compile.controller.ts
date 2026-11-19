@@ -137,6 +137,7 @@ export class CompileController {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-Request-Source': 'eneles-api',
           ...(secret ? { 'X-Internal-Token': secret } : {}),
         },
         body: JSON.stringify({
