@@ -1,3 +1,5 @@
+SET search_path TO atelier, public;
+
 -- GitHub sync for projects.
 CREATE TABLE "project_github_links" (
     "id" SERIAL NOT NULL,
