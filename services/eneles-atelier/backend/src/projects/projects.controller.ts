@@ -1033,7 +1033,13 @@ export class ProjectsController {
       while (true) {
         response = await fetch(`${compilerUrl}/compile`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Request-Source': 'eneles-api',
+            ...(process.env.COMPILER_INTERNAL_SECRET
+              ? { 'X-Internal-Token': process.env.COMPILER_INTERNAL_SECRET }
+              : {}),
+          },
           body: JSON.stringify(compilePayload),
           signal: AbortSignal.timeout(COMPILER_TIMEOUT_MS),
         });
