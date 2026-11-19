@@ -1,3 +1,8 @@
+CREATE SCHEMA IF NOT EXISTS atelier AUTHORIZATION postgres;
+REVOKE ALL ON SCHEMA atelier FROM PUBLIC;
+GRANT USAGE, CREATE ON SCHEMA atelier TO postgres;
+SET search_path TO atelier, public;
+
 -- CreateEnum
 CREATE TYPE "SubscriptionType" AS ENUM ('free', 'pro', 'team', 'enterprise');
 
