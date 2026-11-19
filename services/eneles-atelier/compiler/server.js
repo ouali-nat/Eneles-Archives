@@ -51,6 +51,7 @@ const TOOL_TIMEOUT_MS = 30000;
 const MAX_ENGINE_PASSES = 5;
 const CLEANUP_AGE_MS = 60 * 60 * 1000; // 1 hour
 const INTERNAL_SECRET = process.env.COMPILER_INTERNAL_SECRET || "";
+const REQUIRE_INTERNAL_AUTH = process.env.COMPILER_REQUIRE_INTERNAL_AUTH === "true";
 
 /**
  * Named client keys for external projects.
@@ -368,6 +369,16 @@ app.post("/compile", async (req, res) => {
   // not an error, it just means the request is treated as anonymous and gets
   // the anonymous limit, so a typo cannot be told apart from having no key.
   const clientName = identifyClient(req.headers["x-compiler-key"]);
+  // On a hosted instance, reject anonymous requests before they can consume TeX CPU.
+  if (REQUIRE_INTERNAL_AUTH && !isTrustedInternal && !clientName) {
+    return res.status(401).json({
+      success: false,
+      log: "",
+      errors: ["Authentication required."],
+      pdf: null,
+      duration: 0,
+    });
+  }
   // Say which client the key was recognized as, so a client can tell a wrong key (no header, the anonymous limit) from its own budget running out.
   if (clientName) res.setHeader("X-Compiler-Client", clientName);
   else if (req.headers["x-compiler-key"]) res.setHeader("X-Compiler-Client", "unrecognized");
