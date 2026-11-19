@@ -98,7 +98,7 @@ export class StorageService {
   private resolveObjectKey(type: 'assets' | 'builds', key: string): string {
     const sharesBucket = !!this.assetsBucket && this.assetsBucket === this.buildsBucket;
     if (!sharesBucket) return key;
-    const relativeKey = key.replace(/^\\/+/, '');
+    const relativeKey = key.startsWith('/') ? key.slice(1) : key;
     return `atelier/${type}/${relativeKey}`;
   }
 
