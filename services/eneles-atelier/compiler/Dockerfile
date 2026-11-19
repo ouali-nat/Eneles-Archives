@@ -423,6 +423,6 @@ ENV NODE_ENV=production
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s \
-    CMD curl -f http://localhost:3500/health || exit 1
+    CMD sh -c 'curl -f "http://localhost:${PORT:-3500}/health" || exit 1'
 
 CMD ["node", "server.js"]
