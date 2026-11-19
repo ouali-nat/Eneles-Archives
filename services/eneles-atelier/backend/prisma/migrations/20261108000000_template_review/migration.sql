@@ -1,3 +1,5 @@
+SET search_path TO atelier, public;
+
 -- Shared templates are reviewed before other people can see them.
 CREATE TYPE "TemplateReview" AS ENUM ('none', 'pending', 'approved', 'rejected');
 
