@@ -48,3 +48,19 @@ Toutes les fonctionnalités commerciales et quotas d’abonnement sont désactiv
 4. Déployer le compilateur et vérifier le secret interne.
 5. Tester la connexion Google, la création d’un projet, l’enregistrement, la compilation PDF, les liens temporaires de téléchargement et la récupération des fichiers après redéploiement.
 6. Vérifier qu’aucun PDF personnel n’est accessible par une URL publique permanente.
+
+
+## Worker Cloudflare de stockage privé
+
+Le Worker `eneles-atelier-storage` sert de passerelle R2 facultative pour les opérations directes du navigateur. Son bucket attaché est `eneles-atelier-private`, sans domaine public `r2.dev`.
+
+- URL de contrôle : `https://eneles-atelier-storage.oualikevin9.workers.dev/health`.
+- Objets : `GET`, `HEAD`, `PUT` et `DELETE` sur `/v1/objects/{chemin-relatif}`.
+- Authentification : jeton d'accès Supabase signé avec une clé asymétrique publiée par le JWKS du projet. Les jetons HS256 ou non vérifiables sont refusés.
+- Isolation : la clé physique est préfixée automatiquement par `users/{auth.uid}/`; un utilisateur ne peut donc adresser que son propre espace.
+- Taille maximale acceptée par objet : 100 MiB.
+- CORS limité aux origines Eneles configurées dans le Worker.
+
+**Vérification avant raccordement frontend :** ouvrir `/health` et vérifier `authKeys: "available"`. Si la réponse indique `no_asymmetric_keys`, le projet Supabase n'expose pas de clé JWKS asymétrique ; il faudra choisir une vérification serveur adaptée avant d'utiliser cette passerelle. Ne pas modifier la clé de signature JWT de production sans plan de rotation et de test des sessions.
+
+Le backend NestJS conserve son accès direct S3 à R2 pour les fichiers gérés côté serveur. Cette passerelle Worker est distincte et ne remplace pas encore les appels du backend.
