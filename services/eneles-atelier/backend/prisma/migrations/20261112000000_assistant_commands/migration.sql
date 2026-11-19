@@ -1,3 +1,5 @@
+SET search_path TO atelier, public;
+
 -- A person's own slash commands for the assistant ("/name" sends the stored prompt).
 CREATE TABLE "assistant_commands" (
     "id" SERIAL NOT NULL,
