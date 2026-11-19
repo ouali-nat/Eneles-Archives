@@ -1,3 +1,5 @@
+SET search_path TO atelier, public;
+
 -- Comments on project files, and the project chat.
 CREATE TABLE "comment_threads" (
     "id" SERIAL NOT NULL,
