@@ -400,6 +400,11 @@ app.post("/compile", async (req, res) => {
       const firstKey = tikzCache.keys().next().value;
       if (firstKey) tikzCache.delete(firstKey);
     }
+  } else if (isEnelesApi) {
+    // The authenticated Eneles API applies its own request throttles before
+    // reaching this service. Do not apply the shared anonymous per-IP limit
+    // to every signed-in user behind the same API server.
+    console.log(`[compile] source=eneles-api engine=${engine} files=${files.length}`);
   } else if (clientName) {
     // 1b. Named client: its own per-minute budget, independent of IP, so one
     // project cannot starve another and a shared NAT cannot starve anyone.
