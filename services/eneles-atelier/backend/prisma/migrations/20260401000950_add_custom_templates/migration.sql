@@ -1,3 +1,5 @@
+SET search_path TO atelier, public;
+
 -- CreateTable
 CREATE TABLE "templates" (
     "id" SERIAL NOT NULL,
