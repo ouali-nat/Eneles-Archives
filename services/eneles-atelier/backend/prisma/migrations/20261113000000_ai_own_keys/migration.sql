@@ -1,3 +1,5 @@
+SET search_path TO atelier, public;
+
 -- People's own model keys (sealed), their assistant preferences, platform-wide settings, and whose key paid for each AI call.
 CREATE TABLE "ai_provider_keys" (
     "id" SERIAL NOT NULL,
