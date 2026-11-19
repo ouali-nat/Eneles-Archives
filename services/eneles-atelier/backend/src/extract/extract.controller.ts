@@ -13,6 +13,8 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { AiService } from '../ai/ai.service';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 
+type UploadedPdfFile = { buffer: Buffer; originalname?: string; mimetype?: string };
+
 @Controller('extract')
 @UseGuards(ThrottlerGuard)
 export class ExtractController {
@@ -29,7 +31,7 @@ export class ExtractController {
   )
   async extractPdf(
     @CurrentUser() userId: number,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: UploadedPdfFile,
     @Body('service_id') serviceId?: string,
   ) {
     if (!file) {
