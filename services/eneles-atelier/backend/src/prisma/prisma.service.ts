@@ -80,7 +80,7 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
   private async checkMigrated() {
     try {
       const { rows } = await this.pool.query<{ users: string | null; migrations: string | null }>(
-        "select to_regclass('public.users') as users, to_regclass('public._prisma_migrations') as migrations",
+        "select to_regclass('atelier.users') as users, to_regclass('atelier._prisma_migrations') as migrations",
       );
       if (!rows[0]?.users) {
         this.logger.error(
@@ -91,7 +91,7 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
       }
       if (rows[0]?.migrations) {
         const pending = await this.pool.query<{ n: string }>(
-          'select count(*)::text as n from _prisma_migrations where finished_at is null and rolled_back_at is null',
+          'select count(*)::text as n from atelier._prisma_migrations where finished_at is null and rolled_back_at is null',
         );
         if (Number(pending.rows[0]?.n) > 0) {
           this.logger.error('A migration started but did not finish. Check `npx prisma migrate status`.');
