@@ -1,3 +1,5 @@
+SET search_path TO atelier, public;
+
 -- How much of the paid models each person uses: counts and sizes only, never the content.
 CREATE TABLE "ai_usage" (
     "id" SERIAL NOT NULL,
