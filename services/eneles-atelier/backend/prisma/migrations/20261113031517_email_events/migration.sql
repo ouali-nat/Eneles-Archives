@@ -1,3 +1,5 @@
+SET search_path TO atelier, public;
+
 -- CreateTable
 CREATE TABLE "email_messages" (
     "id" SERIAL NOT NULL,
