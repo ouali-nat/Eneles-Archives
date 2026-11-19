@@ -11,6 +11,7 @@
     "node_modules",
     "test",
     "dist",
-    "**/*spec.ts"
+    "**/*spec.ts",
+    "src/test-utils.ts"
   ]
 }
