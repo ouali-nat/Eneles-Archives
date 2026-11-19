@@ -1,3 +1,5 @@
+SET search_path TO atelier, public;
+
 -- Optimistic-locking counter for project files.
 -- Existing rows start at 0; clients that omit `expectedVersion` are unaffected.
 ALTER TABLE "project_files" ADD COLUMN "version" INTEGER NOT NULL DEFAULT 0;
