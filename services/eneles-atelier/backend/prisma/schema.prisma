@@ -5,6 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  schemas  = ["atelier"]
 }
 
 model User {
@@ -52,6 +53,7 @@ model User {
   chatMessages         ProjectChatMessage[]
 
   @@map("users")
+  @@schema("atelier")
 }
 
 model Session {
@@ -73,6 +75,7 @@ model Session {
   @@index([userId])
   @@index([userId, isActive])
   @@map("sessions")
+  @@schema("atelier")
 }
 
 model Subscription {
@@ -89,6 +92,7 @@ model Subscription {
   user                   User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("subscriptions")
+  @@schema("atelier")
 }
 
 model Payment {
@@ -105,6 +109,7 @@ model Payment {
 
   @@index([userId])
   @@map("payments")
+  @@schema("atelier")
 }
 
 model Snip {
@@ -123,6 +128,7 @@ model Snip {
 
   @@index([userId])
   @@map("snips")
+  @@schema("atelier")
 }
 
 model PDF {
@@ -141,6 +147,7 @@ model PDF {
 
   @@index([userId])
   @@map("pdfs")
+  @@schema("atelier")
 }
 
 model OTP {
@@ -152,6 +159,7 @@ model OTP {
   user      User     @relation(fields: [userId], references: [id])
 
   @@map("otps")
+  @@schema("atelier")
 }
 
 model UsageRecord {
@@ -169,6 +177,7 @@ model UsageRecord {
   @@unique([userId, month, year])
   @@index([userId])
   @@map("usage_records")
+  @@schema("atelier")
 }
 
 /// One use of a paid model on the user's behalf: an assistant message or a dictated clip. It records how much was used, never what was said.
@@ -195,6 +204,7 @@ model AiUsage {
   @@index([userId, createdAt])
   @@index([createdAt])
   @@map("ai_usage")
+  @@schema("atelier")
 }
 
 model ApiKey {
@@ -211,6 +221,7 @@ model ApiKey {
   @@index([userId])
   @@index([keyHash])
   @@map("api_keys")
+  @@schema("atelier")
 }
 
 model Project {
@@ -250,6 +261,7 @@ model Project {
   @@index([uid])
   @@index([referenceOfId])
   @@map("projects")
+  @@schema("atelier")
 }
 
 model ProjectFile {
@@ -274,6 +286,7 @@ model ProjectFile {
   @@unique([projectId, path])
   @@index([projectId])
   @@map("project_files")
+  @@schema("atelier")
 }
 
 model ProjectCollaborator {
@@ -288,6 +301,7 @@ model ProjectCollaborator {
   @@unique([projectId, userId])
   @@index([userId])
   @@map("project_collaborators")
+  @@schema("atelier")
 }
 
 model ProjectInvitation {
@@ -308,6 +322,7 @@ model ProjectInvitation {
   @@index([email])
   @@index([email, status])
   @@map("project_invitations")
+  @@schema("atelier")
 }
 
 enum SubscriptionType {
@@ -315,6 +330,7 @@ enum SubscriptionType {
   pro
   team
   enterprise
+  @@schema("atelier")
 }
 
 enum Status {
@@ -322,6 +338,7 @@ enum Status {
   processing
   completed
   error
+  @@schema("atelier")
 }
 
 enum SubscriptionStatus {
@@ -330,17 +347,20 @@ enum SubscriptionStatus {
   past_due
   incomplete
   trialing
+  @@schema("atelier")
 }
 
 enum CollaboratorRole {
   viewer
   editor
+  @@schema("atelier")
 }
 
 enum InvitationStatus {
   pending
   accepted
   declined
+  @@schema("atelier")
 }
 
 enum AccountStatus {
@@ -348,12 +368,14 @@ enum AccountStatus {
   deleted
   /// Disabled by an administrator: cannot sign in, and every session ended when it was set. Undone from the admin panel.
   suspended
+  @@schema("atelier")
 }
 
 enum ProjectAccess {
   private
   view
   edit
+  @@schema("atelier")
 }
 
 model EditorSettings {
@@ -373,6 +395,7 @@ model EditorSettings {
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("editor_settings")
+  @@schema("atelier")
 }
 
 model ProjectSettings {
@@ -391,6 +414,7 @@ model ProjectSettings {
   project          Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@map("project_settings")
+  @@schema("atelier")
 }
 
 model UserDictionary {
@@ -401,6 +425,7 @@ model UserDictionary {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_dictionaries")
+  @@schema("atelier")
 }
 
 /// Published checkpoints (e.g. from "Publish" action). Delta-based: stores diff from previous revision.
@@ -419,6 +444,7 @@ model ProjectRevision {
   @@index([projectId])
   @@index([projectId, createdAt])
   @@map("project_revisions")
+  @@schema("atelier")
 }
 
 /// Undo stack: last 50 operations per project. Reverts working state.
@@ -437,6 +463,7 @@ model UndoEntry {
   @@index([projectId])
   @@index([projectId, sequence])
   @@map("undo_entries")
+  @@schema("atelier")
 }
 
 /// User macro overrides. Only stores macros that differ from the universal defaults.
@@ -452,6 +479,7 @@ model UserMacro {
   @@unique([userId, name])
   @@index([userId])
   @@map("user_macros")
+  @@schema("atelier")
 }
 
 /// A slash command a person added to the assistant: "/name" in the composer sends `prompt`. The built-in commands live in the frontend; only the person's own are stored.
@@ -469,6 +497,7 @@ model AssistantCommand {
   @@unique([userId, name])
   @@index([userId])
   @@map("assistant_commands")
+  @@schema("atelier")
 }
 
 /// A person's own API key for one model provider, for the assistant to call that provider on their behalf. The key is sealed with AES-256-GCM under AI_KEY_SECRET and is never sent back to the browser: only its last four characters are kept in the clear, to tell keys apart.
@@ -488,6 +517,7 @@ model AiProviderKey {
 
   @@unique([userId, provider])
   @@map("ai_provider_keys")
+  @@schema("atelier")
 }
 
 /// How a person likes the assistant set up: the model it uses by default, and optional settings sent with every request.
@@ -503,6 +533,7 @@ model AiPreference {
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("ai_preferences")
+  @@schema("atelier")
 }
 
 /// Settings for the whole platform, changed by the root administrator. One row per setting; `platform_ai` holds { enabled } (whether subscribers may use the platform's own model keys).
@@ -513,6 +544,7 @@ model PlatformSetting {
   updatedBy Int?
 
   @@map("platform_settings")
+  @@schema("atelier")
 }
 
 /// Per-file version history, Overleaf-style.
@@ -543,6 +575,7 @@ model FileHistory {
   @@index([projectId, id])
   @@index([expiresAt]) // for TTL cleanup queries
   @@map("file_history")
+  @@schema("atelier")
 }
 
 /// Who changed a file between one history snapshot and the one before it. Several people's live edits merge into one document, so a snapshot can have several authors; `edits` counts the changes each one's socket sent for this file since the previous snapshot (0 when the change did not come through the live session, e.g. a save with no socket, or a restore). People are kept by id with no foreign key, so their history outlives their membership and their account; `name` is the name they had then, shown if the account is gone.
@@ -557,6 +590,7 @@ model FileHistoryAuthor {
   @@id([historyId, userId])
   @@index([projectId, userId])
   @@map("file_history_authors")
+  @@schema("atelier")
 }
 
 /// A file or folder took a new path. History is kept under the path a file had when it was saved, so this is how the History panel tells a renamed file from a deleted one.
@@ -570,6 +604,7 @@ model FilePathMove {
 
   @@index([projectId, fromPath])
   @@map("file_path_moves")
+  @@schema("atelier")
 }
 
 /// Server-authoritative Yjs (CRDT) state, one row per project.
@@ -595,6 +630,7 @@ model YjsDocument {
 
   @@index([updatedAt])
   @@map("yjs_documents")
+  @@schema("atelier")
 }
 /// Immutable audit trail for security-relevant events.
 /// Structured so it can serve as evidence in a security review or incident
@@ -626,6 +662,7 @@ model AuditLog {
   @@index([createdAt])
   @@index([userId, createdAt])
   @@map("audit_logs")
+  @@schema("atelier")
 }
 
 /// Custom user-created templates. Users can save project layouts as reusable templates.
@@ -658,6 +695,7 @@ model Template {
   @@index([isPublic, name])
   @@index([isPublic, review])
   @@map("templates")
+  @@schema("atelier")
 }
 
 enum TemplateReview {
@@ -665,6 +703,7 @@ enum TemplateReview {
   pending
   approved
   rejected
+  @@schema("atelier")
 }
 
 /// A comment on a range of a project file, with its replies.
@@ -693,6 +732,7 @@ model CommentThread {
 
   @@index([projectId, path])
   @@map("comment_threads")
+  @@schema("atelier")
 }
 
 model CommentMessage {
@@ -707,6 +747,7 @@ model CommentMessage {
 
   @@index([threadId])
   @@map("comment_messages")
+  @@schema("atelier")
 }
 
 /// The project's chat, beside the editor.
@@ -721,6 +762,7 @@ model ProjectChatMessage {
 
   @@index([projectId, createdAt])
   @@map("project_chat_messages")
+  @@schema("atelier")
 }
 
 /// A project kept in step with a GitHub repository by the owner's pushes and pulls.
@@ -743,6 +785,7 @@ model ProjectGitHubLink {
   project       Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@map("project_github_links")
+  @@schema("atelier")
 }
 
 /// An email the API sent through Resend, and what has happened to it since (Resend's webhook, POST /email/webhook). The admin panel's Email page reads these. A sign-in code's subject is never kept (it holds the code), and any 4 to 8 digit number in a kept subject is masked.
@@ -771,6 +814,7 @@ model EmailMessage {
   @@index([createdAt])
   @@index([status, createdAt])
   @@map("email_messages")
+  @@schema("atelier")
 }
 
 /// One webhook event from Resend for an email. `webhookId` (Svix's message id) makes a retried delivery count once.
@@ -787,4 +831,5 @@ model EmailEvent {
 
   @@index([messageId, occurredAt])
   @@map("email_events")
+  @@schema("atelier")
 }
