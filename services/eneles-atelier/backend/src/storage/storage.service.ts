@@ -90,6 +90,18 @@ export class StorageService {
     this.logger.log(`Builds Storage initialized: ${bucket}`);
   }
 
+  /**
+   * When assets and builds share the same R2 bucket, keep their object keys
+   * in separate namespaces. The public API/database continues to store the
+   * logical key, so existing callers do not need to change.
+   */
+  private resolveObjectKey(type: 'assets' | 'builds', key: string): string {
+    const sharesBucket = !!this.assetsBucket && this.assetsBucket === this.buildsBucket;
+    if (!sharesBucket) return key;
+    const relativeKey = key.replace(/^\\/+/, '');
+    return `atelier/${type}/${relativeKey}`;
+  }
+
   // Default to Assets for backward compatibility
   async uploadFile(file: Buffer, key: string, contentType: string): Promise<string> {
     return this.uploadToBucket('assets', file, key, contentType);
@@ -110,7 +122,7 @@ export class StorageService {
     try {
       await client.send(new PutObjectCommand({
         Bucket: bucket,
-        Key: key,
+        Key: this.resolveObjectKey(type, key),
         Body: file,
         ContentType: contentType,
       }));
@@ -125,7 +137,7 @@ export class StorageService {
     const client = type === 'assets' ? this.assetsClient : this.buildsClient;
     const bucket = type === 'assets' ? this.assetsBucket : this.buildsBucket;
     if (!client || !bucket) throw new InternalServerErrorException(`${type} storage not configured`);
-    const response = await client.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
+    const response = await client.send(new GetObjectCommand({ Bucket: bucket, Key: this.resolveObjectKey(type, key) }));
     if (!response.Body) throw new InternalServerErrorException('Empty object body');
     return { Body: response.Body as NodeJS.ReadableStream, ContentType: response.ContentType };
   }
@@ -137,7 +149,7 @@ export class StorageService {
     if (!client || !bucket) throw new InternalServerErrorException(`${type} storage not configured`);
 
     try {
-      const command = new GetObjectCommand({ Bucket: bucket, Key: key });
+      const command = new GetObjectCommand({ Bucket: bucket, Key: this.resolveObjectKey(type, key) });
       return await getSignedUrl(client, command, { expiresIn });
     } catch (error: any) {
       this.logger.error(`Failed to sign URL: ${error.message}`);
@@ -152,7 +164,7 @@ export class StorageService {
     if (!client || !bucket) throw new InternalServerErrorException(`${type} storage not configured`);
 
     try {
-      await client.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
+      await client.send(new DeleteObjectCommand({ Bucket: bucket, Key: this.resolveObjectKey(type, key) }));
     } catch (error: any) {
       this.logger.error(`Failed to delete: ${error.message}`);
       throw new InternalServerErrorException(`Delete failed: ${error.message}`);
@@ -166,7 +178,7 @@ export class StorageService {
     if (!client || !bucket) return null;
 
     try {
-      const command = new HeadObjectCommand({ Bucket: bucket, Key: key });
+      const command = new HeadObjectCommand({ Bucket: bucket, Key: this.resolveObjectKey(type, key) });
       const response = await client.send(command);
       return response.ContentLength || null;
     } catch (error: any) {
