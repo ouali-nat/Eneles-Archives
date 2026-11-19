@@ -1,0 +1,17 @@
+{
+    "name": "compile.texer",
+    "version": "1.0.0",
+    "license": "MIT",
+    "description": "Eneles LaTeX compilation service: Express + TeX Live",
+    "main": "server.js",
+    "scripts": {
+        "start": "node --env-file-if-exists=.env server.js",
+        "dev": "node --env-file-if-exists=.env server.js"
+    },
+    "dependencies": {
+        "express": "^4.21.0",
+        "multer": "^1.4.5-lts.1",
+        "cors": "^2.8.5",
+        "uuid": "^10.0.0"
+    }
+}

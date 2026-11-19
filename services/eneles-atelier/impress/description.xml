@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description xmlns="http://openoffice.org/extensions/description/2006"
+             xmlns:d="http://openoffice.org/extensions/description/2006"
+             xmlns:l="http://libreoffice.org/extensions/description/2011"
+             xmlns:xlink="http://www.w3.org/1999/xlink">
+  <identifier value="org.texer.imp"/>
+  <!-- Kept in step with python/pythonpath/texer_imp/__init__.py by scripts/build.py -->
+  <version value="0.1.0"/>
+  <display-name>
+    <name lang="en">TeXeR (LaTeX for Impress)</name>
+  </display-name>
+  <publisher>
+    <name xlink:href="https://texer.org" lang="en">TeXeR</name>
+  </publisher>
+  <icon>
+    <default xlink:href="assets/icons/texer-dark-64.png"/>
+  </icon>
+  <extension-description>
+    <src xlink:href="description/description-en.txt" lang="en"/>
+  </extension-description>
+  <dependencies>
+    <l:LibreOffice-minimal-version value="7.0" d:name="LibreOffice 7.0"/>
+  </dependencies>
+</description>

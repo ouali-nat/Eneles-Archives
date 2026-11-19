@@ -1,0 +1,17 @@
+% Name: Parametric surface
+% Description: A torus drawn from its parametric equations, shaded by height.
+% Tags: 3D, surface, parametric, torus
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\begin{tikzpicture}
+  \begin{axis}[
+    width=9cm, view={35}{40}, axis equal image, hide axis,
+    colormap/cool, z buffer=sort,
+  ]
+    \addplot3[surf, shader=faceted interp, samples=36, samples y=18,
+      domain=0:360, domain y=0:360, line width=0.1pt]
+      ({(2 + cos(y))*cos(x)}, {(2 + cos(y))*sin(x)}, {sin(y)});
+  \end{axis}
+\end{tikzpicture}

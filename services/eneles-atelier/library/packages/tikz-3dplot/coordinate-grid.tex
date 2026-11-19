@@ -1,0 +1,16 @@
+% Name: 3D coordinate planes
+% Description: Three axes with the xy- and xz-planes shaded.
+% Tags: grid, coordinates, planes
+
+\usepackage{tikz-3dplot}
+
+\tdplotsetmaincoords{70}{120}
+\begin{tikzpicture}[tdplot_main_coords, scale=1.2]
+  \fill[blue!12] (0,0,0) -- (2,0,0) -- (2,2,0) -- (0,2,0) -- cycle;
+  \fill[green!15] (0,0,0) -- (2,0,0) -- (2,0,2) -- (0,0,2) -- cycle;
+  \draw[->, thick] (0,0,0) -- (2.6,0,0) node[anchor=north east] {$x$};
+  \draw[->, thick] (0,0,0) -- (0,2.6,0) node[anchor=north west] {$y$};
+  \draw[->, thick] (0,0,0) -- (0,0,2.6) node[anchor=south] {$z$};
+  \node at (1,1,0) {$xy$};
+  \node at (1,0,1) {$xz$};
+\end{tikzpicture}

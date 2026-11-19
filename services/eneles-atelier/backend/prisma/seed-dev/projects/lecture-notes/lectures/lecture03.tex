@@ -1,0 +1,36 @@
+\section{Convergence theorems}
+
+\emph{Lecture 3, 21 September.}
+
+\begin{lemma}[Fatou]
+For measurable $f_n \ge 0$,
+\[
+  \int \liminf_{n \to \infty} f_n \, d\mu \le \liminf_{n \to \infty} \int f_n \, d\mu .
+\]
+\end{lemma}
+
+\begin{proof}
+Let $g_n = \inf_{m \ge n} f_m$. Then $g_n$ increases to $\liminf f_n$, and $g_n \le f_n$. Apply Theorem~\ref{thm:mct} to $g_n$.
+\end{proof}
+
+\begin{theorem}[Dominated convergence]
+Let $f_n$ be measurable with $f_n \to f$ pointwise, and suppose $|f_n| \le g$ for an integrable function $g$. Then $f$ is integrable and
+\[
+  \lim_{n \to \infty} \int |f_n - f| \, d\mu = 0 .
+\]
+\end{theorem}
+
+\begin{proof}
+Apply Fatou's lemma to the nonnegative functions $2g - |f_n - f|$.
+\end{proof}
+
+\begin{corollary}
+If $\sum_n \int |f_n| \, d\mu < \infty$, then $\sum_n f_n$ converges almost everywhere and may be integrated term by term.
+\end{corollary}
+
+\subsection*{Exercises}
+\begin{enumerate}
+  \item Show that every countable subset of $\R$ has Lebesgue measure zero.
+  \item Compute $\lim_{n \to \infty} \int_0^1 \frac{n x}{1 + n^2 x^2} \, dx$ and justify the exchange of limit and integral.
+  \item Give an example in which the inequality in Fatou's lemma is strict.
+\end{enumerate}

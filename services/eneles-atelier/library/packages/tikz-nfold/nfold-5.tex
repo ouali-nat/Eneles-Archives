@@ -1,0 +1,9 @@
+% Name: Five-fold arrow
+% Description: A curved arrow made of five strokes, with an arrow tip that fits all of them.
+% Tags: nfold, arrow, curve
+
+\usetikzlibrary{nfold, arrows.meta}
+
+\begin{tikzpicture}
+  \draw[double distance=6pt, nfold=5, arrows=-Implies] (0,0) to[bend left=30] (3,0);
+\end{tikzpicture}

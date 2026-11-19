@@ -1,0 +1,83 @@
+\documentclass[9pt,landscape,a4paper]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1cm]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{multicol}
+\usepackage{enumitem}
+\usepackage{titlesec}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\columnsep}{14pt}
+\setlist{nosep, leftmargin=1.2em}
+\titleformat{\section}{\normalsize\bfseries}{}{0pt}{}[\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titlespacing{\section}{0pt}{6pt}{3pt}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\renewcommand{\P}{\mathbb{P}}
+
+\begin{document}
+\begin{multicols*}{3}
+
+\begin{center}
+  {\large \textbf{Probability Cheat Sheet}} \\ Razz, Autumn 2026
+\end{center}
+
+\section{Basics}
+$\P(A \cup B) = \P(A) + \P(B) - \P(A \cap B)$ \\
+$\P(A \mid B) = \P(A \cap B) / \P(B)$ \\
+Bayes: $\P(A \mid B) = \dfrac{\P(B \mid A)\,\P(A)}{\P(B)}$ \\
+Total probability: $\P(B) = \sum_i \P(B \mid A_i)\,\P(A_i)$ \\
+Independence: $\P(A \cap B) = \P(A)\,\P(B)$
+
+\section{Expectation and variance}
+$\E[aX + bY] = a\,\E[X] + b\,\E[Y]$ \\
+$\Var(X) = \E[X^2] - \E[X]^2$ \\
+$\Var(aX + b) = a^2 \Var(X)$ \\
+$\Cov(X, Y) = \E[XY] - \E[X]\,\E[Y]$ \\
+$\Var(X + Y) = \Var(X) + \Var(Y) + 2\Cov(X, Y)$ \\
+Tower rule: $\E[X] = \E\bigl[\E[X \mid Y]\bigr]$ \\
+Total variance: $\Var(X) = \E[\Var(X \mid Y)] + \Var(\E[X \mid Y])$
+
+\section{Discrete distributions}
+\textbf{Bernoulli}$(p)$: mean $p$, variance $p(1-p)$ \\
+\textbf{Binomial}$(n, p)$: $\binom{n}{k} p^k (1-p)^{n-k}$, mean $np$, variance $np(1-p)$ \\
+\textbf{Geometric}$(p)$: $(1-p)^{k-1} p$, mean $1/p$, variance $(1-p)/p^2$ \\
+\textbf{Poisson}$(\lambda)$: $e^{-\lambda} \lambda^k / k!$, mean $\lambda$, variance $\lambda$
+
+\section{Continuous distributions}
+\textbf{Uniform}$(a, b)$: density $\frac{1}{b-a}$, mean $\frac{a+b}{2}$, variance $\frac{(b-a)^2}{12}$ \\
+\textbf{Exponential}$(\lambda)$: density $\lambda e^{-\lambda x}$, mean $1/\lambda$, variance $1/\lambda^2$ \\
+\textbf{Normal}$(\mu, \sigma^2)$: density $\frac{1}{\sigma\sqrt{2\pi}} e^{-(x-\mu)^2 / 2\sigma^2}$ \\
+\textbf{Gamma}$(\alpha, \beta)$: density $\frac{\beta^\alpha}{\Gamma(\alpha)} x^{\alpha-1} e^{-\beta x}$, mean $\alpha/\beta$
+
+\section{Inequalities}
+Markov: $\P(X \ge a) \le \E[X] / a$ for $X \ge 0$ \\
+Chebyshev: $\P(|X - \mu| \ge k\sigma) \le 1/k^2$ \\
+Jensen: $\varphi(\E[X]) \le \E[\varphi(X)]$ for convex $\varphi$ \\
+Cauchy--Schwarz: $\E[XY]^2 \le \E[X^2]\,\E[Y^2]$ \\
+Union bound: $\P\bigl(\bigcup_i A_i\bigr) \le \sum_i \P(A_i)$ \\
+Hoeffding: for independent $X_i \in [0, 1]$, $\P\bigl(\bar{X} - \E[\bar{X}] \ge t\bigr) \le e^{-2nt^2}$
+
+\section{Limit theorems}
+\textbf{Law of large numbers.} For i.i.d.\ $X_i$ with mean $\mu$, $\bar{X}_n \to \mu$ almost surely. \\[2pt]
+\textbf{Central limit theorem.} If also $\Var(X_i) = \sigma^2 < \infty$, then
+\[
+  \sqrt{n}\,\frac{\bar{X}_n - \mu}{\sigma} \xrightarrow{d} \mathcal{N}(0, 1).
+\]
+
+\section{Generating functions}
+MGF: $M_X(t) = \E[e^{tX}]$, and $\E[X^k] = M_X^{(k)}(0)$ \\
+Sum of independent variables: $M_{X+Y} = M_X M_Y$ \\
+Normal: $M(t) = e^{\mu t + \sigma^2 t^2 / 2}$ \\
+Poisson: $M(t) = e^{\lambda(e^t - 1)}$
+
+\section{Convergence}
+Almost surely $\Rightarrow$ in probability $\Rightarrow$ in distribution. \\
+In $L^p$ $\Rightarrow$ in probability. \\
+Slutsky: $X_n \xrightarrow{d} X$ and $Y_n \xrightarrow{p} c$ imply $X_n + Y_n \xrightarrow{d} X + c$.
+
+\end{multicols*}
+\end{document}

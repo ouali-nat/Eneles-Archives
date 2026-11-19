@@ -1,0 +1,26 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+
+\title{A Benchmark for Long-Context Language Models}
+\author{Kenji Watanabe \and Razz \and Omar Haddad}
+\date{Draft of \today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Reported context lengths of language models have grown from thousands to millions of tokens, but it is unclear how much of that context models actually use. We propose a benchmark of twelve tasks whose answers depend on information placed at controlled positions in the input, and we evaluate nine models on inputs from 4{,}000 to 512{,}000 tokens.
+\end{abstract}
+
+\input{sections/tasks}
+\input{sections/results}
+
+\section{Discussion}
+
+Accuracy falls with distance for every model, and the fall is steepest for tasks that need two pieces of evidence far apart. We will release the task generators so that the benchmark can be extended to longer inputs as models improve.
+
+\end{document}

@@ -1,0 +1,117 @@
+---
+title: "Fractions, roots, and exponents"
+description: "Write superscripts, subscripts, fractions, roots, and binomial coefficients at the size you want."
+summary: "Fractions, roots, and exponents in LaTeX: superscripts and subscripts, \\frac, \\dfrac, and \\tfrac, \\sqrt, and binomial coefficients, at the size you want."
+keywords: ["superscript","subscript","power","index","^","_","\\frac","\\dfrac","\\tfrac","\\cfrac","\\sqrt","nth root","square root","\\binom","\\dbinom","\\tbinom","prime","Double superscript"]
+---
+
+# Fractions, roots, and exponents
+
+Write powers, indices, fractions, roots, and binomial coefficients, and control how large a fraction is set.
+
+## Superscripts and subscripts
+
+`^` raises what follows and `_` lowers it. Each one applies to a single character or command, so wrap anything longer in braces.
+
+```latex-example
+\[
+  x^{10} \quad\text{but}\quad x^10
+  \qquad
+  a_{ij} \quad\text{but}\quad a_ij
+\]
+```
+
+A symbol can carry both, in either order, and scripts can nest. A prime is a plain apostrophe. To put scripts before a symbol, attach them to an empty group, `{}`.
+
+```latex-example
+\[
+  x_i^2 = x^2_i
+  \qquad
+  e^{-x^2}
+  \qquad
+  2^{2^n}
+  \qquad
+  f''(x_0)
+  \qquad
+  {}^{14}_{6}\mathrm{C}
+\]
+```
+
+## Fractions
+
+`\frac` takes the numerator and then the denominator, each in braces. Fractions nest, and each level is set a size smaller.
+
+```latex-example
+\[
+  \frac{a + b}{2}
+  \qquad
+  \frac{\partial f}{\partial x}
+  \qquad
+  \frac{1}{1 + \frac{1}{x}}
+\]
+In a line of text, $\frac{a+b}{2}$ is small. A slash,
+$(a+b)/2$, is often easier to read.
+```
+
+## Choosing the size
+
+TeX picks the size of a fraction from where it stands: full size in a display, smaller inline and inside another fraction. The `amsmath` package adds two commands that override the choice. `\dfrac` is always display size and `\tfrac` is always text size.
+
+```latex-example
+Inline: $\frac{1}{2}$ by default, $\dfrac{1}{2}$ when forced.
+\[
+  E = \tfrac{1}{2} m v^2
+  \qquad
+  \frac{1}{1 + \dfrac{1}{x}}
+  \qquad
+  x^{\frac{1}{2}} = x^{1/2}
+\]
+```
+
+Use `\tfrac` for small numeric coefficients in a display. Use `\dfrac` inline sparingly, because it pushes the lines of the paragraph apart. In an exponent, prefer a slash.
+
+## Roots
+
+`\sqrt` draws a square root whose bar grows with its contents. An optional argument in square brackets sets the index for other roots.
+
+```latex-example
+\[
+  \sqrt{2}
+  \qquad
+  \sqrt{x^2 + y^2}
+  \qquad
+  \sqrt[3]{27} = 3
+  \qquad
+  \sqrt[n]{\frac{a}{b}}
+  \qquad
+  \sqrt{1 + \sqrt{x}}
+\]
+```
+
+## Binomial coefficients
+
+`\binom` stacks two entries inside parentheses, with no fraction bar. Like fractions, it has forced sizes: `\dbinom` and `\tbinom`.
+
+```latex-example
+\[
+  \binom{n}{k} = \frac{n!}{k!\,(n-k)!}
+  \qquad
+  (x + y)^n = \sum_{k=0}^{n} \binom{n}{k} x^{n-k} y^k
+\]
+There are $\binom{5}{2} = 10$ ways to pick two items from five.
+```
+
+In Eneles, press `Shift + Space` and choose Fraction from the Math group to insert an empty `\frac{}{}`.
+
+## Common mistakes
+
+- **Leaving out the braces.** `x^10` raises only the `1`, and `\sqrt xy` covers only the `x`. Nothing is reported, so the output is the only clue. Write `x^{10}` and `\sqrt{xy}`.
+- **Two scripts in a row.** `x^a^b` stops with `Double superscript`, and `x_a_b` with `Double subscript`, because TeX cannot tell which grouping you mean. Write `x^{a^b}` for a power of a power, or `{x^a}^b` to raise the whole of `x^a`.
+- **Using `\over`.** `{a \over b}` is plain TeX. With `amsmath` it draws a warning, `Foreign command \over`, and it cannot be resized. Use `\frac{a}{b}`.
+- **Parentheses around a tall fraction.** `(\frac{a}{b})` leaves the parentheses at normal height. [Brackets and delimiters](/learn/brackets-and-delimiters) shows how to make them grow.
+
+## Next
+
+- [Symbols and Greek letters](/learn/symbols-and-greek-letters)
+- [Brackets and delimiters](/learn/brackets-and-delimiters)
+- [Sums, integrals, and limits](/learn/sums-integrals-and-limits)

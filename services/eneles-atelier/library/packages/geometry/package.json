@@ -1,0 +1,12 @@
+{
+  "name": "Geometry",
+  "description": "Euclidean figures with TikZ's angles and quotes libraries: triangles, circles, vectors, and proofs.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "geometry",
+    "triangles",
+    "circles",
+    "vectors"
+  ],
+  "custom": true
+}

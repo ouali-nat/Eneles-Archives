@@ -1,0 +1,23 @@
+\chapter{Introduction}
+\label{ch:introduction}
+
+A graph is the natural description of data whose structure lies in its relations: who cites whom, which proteins interact, which products are bought together. Spectral graph theory studies such data through the eigenvalues and eigenvectors of matrices associated with the graph~\cite{chung1997spectral}, and it underlies some of the most widely used algorithms in machine learning, from spectral clustering~\cite{vonluxburg2007tutorial} to graph convolutional networks~\cite{kipf2017semi}.
+
+\section{Motivation}
+
+The difficulty is one of scale. For a graph with $n$ nodes the Laplacian is an $n \times n$ matrix, and a full eigendecomposition costs $O(n^3)$ time and $O(n^2)$ memory. For $n = 10^6$ this is out of reach on any single machine. Practitioners therefore truncate: they keep the $k \ll n$ eigenvectors with the smallest eigenvalues and hope that the rest do not matter.
+
+This thesis asks when that hope is justified, and what to do when it is not.
+
+\section{Contributions}
+
+The main contributions are the following.
+\begin{enumerate}
+  \item An error bound for spectral embeddings computed from a randomized sketch of the Laplacian (Theorem~\ref{thm:sketch}), which depends on the spectral gap rather than on $n$.
+  \item A polynomial filtering scheme that approximates any smooth spectral filter with sparse matrix--vector products only (Chapter~\ref{ch:methods}).
+  \item An empirical study on six node-classification benchmarks showing that the filtered models match dense baselines while using an order of magnitude less memory (Chapter~\ref{ch:experiments}).
+\end{enumerate}
+
+\section{Outline}
+
+Chapter~\ref{ch:background} fixes notation and recalls the facts about graph Laplacians that the rest of the thesis uses. Chapter~\ref{ch:methods} develops the sketching and filtering methods. Chapter~\ref{ch:experiments} reports the experiments, and Chapter~\ref{ch:conclusion} discusses limitations and open questions.

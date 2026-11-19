@@ -1,0 +1,10 @@
+{
+  "name": "chronology",
+  "description": "Horizontal timelines with per-day granularity.",
+  "ctanUrl": "https://ctan.org/pkg/chronology",
+  "tags": [
+    "timeline",
+    "chronology",
+    "history"
+  ]
+}

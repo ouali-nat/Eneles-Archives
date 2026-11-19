@@ -1,0 +1,17 @@
+% Name: Logic gates
+% Description: AND, NOT, and OR ports combined into Y = AB + C̄.
+% Tags: logic, gates, digital
+
+\usepackage{circuitikz}
+
+\begin{circuitikz}
+  \draw (0,1) node[and port] (and) {};
+  \draw (0,-1) node[not port] (not) {};
+  \draw (3.4,0) node[or port] (or) {};
+  \draw (and.in 1) -- (and.in 1 -| -2,0) node[left] {$A$};
+  \draw (and.in 2) -- (and.in 2 -| -2,0) node[left] {$B$};
+  \draw (not.in) -- (not.in -| -2,0) node[left] {$C$};
+  \draw (and.out) -- ++(0.3,0) |- (or.in 1);
+  \draw (not.out) -- ++(0.3,0) |- (or.in 2);
+  \draw (or.out) -- ++(0.5,0) node[right] {$Y$};
+\end{circuitikz}

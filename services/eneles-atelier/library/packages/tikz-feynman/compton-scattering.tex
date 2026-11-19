@@ -1,0 +1,21 @@
+% Name: Compton scattering
+% Description: A photon scatters off an electron: absorbed at one vertex and emitted at the next.
+% Tags: Compton, QED, photon
+
+\usepackage[compat=1.1.0]{tikz-feynman}
+
+\begin{tikzpicture}
+  \begin{feynman}
+    \vertex (a) at (0,0);
+    \vertex (b) at (2.2,0);
+    \vertex (i1) at (-1.6,-1.4) {$e^-$};
+    \vertex (i2) at (-1.6,1.4) {$\gamma$};
+    \vertex (f1) at (3.8,-1.4) {$e^-$};
+    \vertex (f2) at (3.8,1.4) {$\gamma$};
+    \diagram* {
+      (i1) -- [fermion] (a) -- [fermion] (b) -- [fermion] (f1),
+      (i2) -- [photon] (a),
+      (b) -- [photon] (f2),
+    };
+  \end{feynman}
+\end{tikzpicture}

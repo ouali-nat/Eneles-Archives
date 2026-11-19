@@ -1,0 +1,11 @@
+{
+  "name": "Trees",
+  "description": "Trees drawn with TikZ's own child syntax: probability trees, search trees, and heaps.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "trees",
+    "probability",
+    "data structures"
+  ],
+  "custom": true
+}

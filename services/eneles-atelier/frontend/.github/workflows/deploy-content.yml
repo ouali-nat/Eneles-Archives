@@ -1,0 +1,34 @@
+# Rebuilds and deploys the site when a guide, a lesson, or a library example changes. The docs, learn, and library repositories send the `content-updated` event after a push to main (their .github/workflows/publish.yml); the build on Railway then clones all three and bakes them in (scripts/sync-content.mjs).
+#
+# Needs one repository secret: RAILWAY_TOKEN, a project token for the production environment (Railway → project → Settings → Tokens).
+# Needs one repository variable: RAILWAY_SERVICE, the frontend service's name in that project.
+name: Deploy content
+
+on:
+  repository_dispatch:
+    types: [content-updated]
+  workflow_dispatch:
+
+# A second change while a deploy is running replaces it: only the newest content needs to go out.
+concurrency:
+  group: deploy-content
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_SERVICE: ${{ vars.RAILWAY_SERVICE }}
+        # --ci follows the build and fails this job if the build fails, so a page that breaks the site shows up here.
+        run: npx -y @railway/cli@latest up --ci --service "$RAILWAY_SERVICE"

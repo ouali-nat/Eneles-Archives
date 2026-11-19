@@ -1,0 +1,86 @@
+---
+title: "Reference papers"
+description: "Attach arXiv papers to a project, read their source, and compile them."
+summary: "Attach arXiv papers to a Eneles project, read their LaTeX source beside your own, open one in the editor to compile it, and let the assistant use it as context."
+keywords: ["references panel","arxiv","attach paper","paper source","read source","context","reference for","remove reference","limit"]
+---
+
+# Reference papers
+
+Attach papers from arXiv to a project and keep their LaTeX source beside your own work. You can read a paper's source, open the paper in the editor to compile it, and have the assistant use it as context.
+
+<Callout type="note" title="Not the bibliography">
+  A reference paper is a paper's source kept with your project. To add a paper to your `.bib` file and cite it, see [References and citations](/docs/references).
+</Callout>
+
+## Attach a paper
+
+Open the **References** panel in the editor. If it is not on screen, choose **View**, then **Panels**, then **References**.
+
+1. Type the paper's arXiv ID in the box at the top of the panel, for example `1706.03762`. An `arXiv:` prefix or a link to the paper's page on arxiv.org is accepted too.
+2. Click the plus button (**Attach paper**), or press `Enter`.
+
+The panel reports "Fetching from arXiv", then counts the files as it saves them. When it finishes, the paper is in the list with its files showing.
+
+Attaching a paper needs edit access to the project. Two things can stop it:
+
+- **The paper has several versions.** The panel says how many and asks you to name one. Add `v` and the version number to the ID, as in `1706.03762v7`, and attach again.
+- **"That paper is already attached."** The project already has a paper with that ID.
+
+## What is stored
+
+Eneles downloads the paper's source from arXiv and stores all of it with your project, in the same way as an [arXiv import](/docs/importing#from-arxiv):
+
+- Text files, such as `.tex`, `.bib`, and `.sty` files, are stored as text.
+- Figures and other files are stored as they are. They count toward the [upload storage](/docs/projects-and-files#size-limits-and-upload-storage) of the person who attached the paper.
+- The paper's main document is found automatically, saved as `main.tex`, and marked **main** in the list.
+
+The same files are left out as in an import, such as a file larger than 10 MB. If any were, Eneles says "Attached, but" with the number of files left out, and gives the reason for the first.
+
+The paper is kept apart from your own files. It is not in the **Files** panel, and it is not compiled with your project.
+
+## Read a paper's source
+
+Click a paper in the panel to show or hide its files. Click a text file to read it: the file opens in a dialog that you can scroll but not edit.
+
+- **Copy source** copies the whole file.
+- **Open paper in the editor** opens the paper in a new tab, as described below.
+
+Figures and other files that are not text are grayed out in the list. They open with the paper in the editor.
+
+## Open a paper in the editor
+
+Hover over a paper and click the arrow button (**Open in the editor to compile**). The paper opens in a new tab as a project of its own, with the full editor, so you can compile it and see its PDF.
+
+Next to the title, **Reference for** and the name of your project links back to the project the paper is attached to. The back arrow at the left end of the toolbar goes there too.
+
+Access to the paper follows your project. Anyone who can open your project can open the paper, and anyone who can edit your project can edit the paper's files. A reference paper cannot have reference papers of its own.
+
+## Remove a paper
+
+Hover over a paper and click the bin button (**Remove reference**). Click **Remove** to confirm, or **Keep** to leave it.
+
+Removing a paper deletes the stored copy and frees the storage its figures used. Changes made to the paper's files in the editor go with it. Deleting a project deletes its reference papers too.
+
+## Limits and permissions
+
+- A project can hold up to 30 reference papers.
+- Attaching and removing papers needs edit access. Everyone who can open the project can see the papers, read their source, and open them in the editor.
+- Reference papers do not appear on the [Projects](/projects) page.
+- Reference papers are not part of [GitHub sync](/docs/github-sync). A push sends only your project's own files.
+- Reference papers are not in the ZIP you get from **Download ZIP**.
+
+## The assistant and reference papers
+
+When you ask the [assistant](/docs/assistant) for something in a project with papers attached, it can read the text files of those papers. That makes requests such as "use the notation from the attached paper" possible.
+
+The assistant only reads reference papers. It never proposes a change to one: every change it proposes is to your project's own files.
+
+With many long papers attached, the assistant is given their text files up to a total of about two million characters, starting with the paper that was attached first.
+
+## Related
+
+- [Importing a project](/docs/importing): turn an arXiv paper into a project of its own.
+- [Assistant and dictation](/docs/assistant): ask for changes that draw on the attached papers.
+- [References and citations](/docs/references): add entries to your bibliography and cite them.
+- [Projects and files](/docs/projects-and-files): upload storage and file limits.

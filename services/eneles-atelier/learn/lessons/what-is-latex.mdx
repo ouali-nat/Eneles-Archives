@@ -1,0 +1,85 @@
+---
+title: "What LaTeX is"
+description: "How a LaTeX source file becomes a PDF, how to read the source, and why people write this way."
+summary: "What LaTeX is and how it works: how a plain text source file is compiled into a typeset PDF, how to read LaTeX source, and why people write this way."
+keywords: ["introduction","overview","source","output","compile","compiling","engine","pdflatex","xelatex","lualatex","tex","tex live","command","environment","comment","why latex","what is latex"]
+---
+
+# What LaTeX is
+
+LaTeX turns a plain text file into a typeset PDF. After this page you will know how to read a LaTeX source file, what compiling does to it, and why people choose to write this way.
+
+## Source and output
+
+You write the source: your words, mixed with commands that say what each piece of text is. LaTeX reads the source and produces the output, a PDF. You never place anything on the page by hand. You say "this is a heading" or "this is an equation", and LaTeX decides the fonts, the spacing, and the line breaks.
+
+```latex-example
+\section*{Tidal locking}
+The Moon turns once on its axis for each orbit of the Earth, so we always see the \emph{same} face.
+\[
+  T_{\text{spin}} = T_{\text{orbit}} \approx 27.3 \text{ days}
+\]
+```
+
+## How to read the source
+
+Three pieces of syntax cover almost everything:
+
+- A **command** starts with a backslash, such as `\emph`. What it acts on goes in braces: `\emph{same}`. Optional settings go in square brackets before the braces.
+- An **environment** wraps a longer stretch of the document between `\begin{name}` and `\end{name}`.
+- A **comment** runs from `%` to the end of the line. LaTeX ignores it.
+
+```latex-example
+% This line is a comment. It is not printed.
+Water boils at \textbf{100} degrees at sea level.
+\begin{quote}
+  Higher up, it boils sooner.
+\end{quote}
+```
+
+## Why people use it
+
+- **Mathematics.** Equations are typed as text and typeset to the standard of a printed textbook.
+- **Consistency.** Every heading, caption, and list is formatted by the same rule, so a 200-page thesis looks as even as a two-page note.
+- **Automatic numbering.** Sections, figures, equations, and citations are numbered for you, and references to them update when things move.
+- **Plain text.** The source opens in any editor, works with version control, and still compiles decades later.
+- **Templates.** Journals, conferences, and universities publish their formats as LaTeX classes. You change one line and the whole document follows their rules.
+
+The cost is that you do not see the result as you type. You compile to see it, and a typing mistake in a command stops the compile with an error.
+
+Numbering is the benefit you notice first. The equation below gets its number from LaTeX, and the reference to it is filled in from a label, not typed by hand:
+
+```latex-example
+Newton's second law is
+\begin{equation}
+  F = ma. \label{eq:newton}
+\end{equation}
+Equation~\eqref{eq:newton} keeps the right number, even if you add equations before it.
+```
+
+## What compiling means
+
+Compiling is running a program over the source to produce the PDF. The program reads the file from top to bottom, carries out each command, breaks the text into lines and pages, and writes the result. If it meets something it cannot carry out, it stops and reports the line.
+
+Some features need more than one pass. On one pass LaTeX writes down where each label ended up, and on the next pass it reads those notes back to fill in the references. That is how the equation number above reaches the sentence that mentions it.
+
+In Eneles, click **Recompile** or press `Ctrl + Enter`. The compile runs on the server, repeats passes as needed, and shows the PDF beside the source. See [Compiling](/docs/compiling).
+
+## TeX, LaTeX, and engines
+
+TeX is the typesetting program underneath. LaTeX is a large set of commands written on top of it, and it is what gives you `\section` and `\begin{equation}`. The engine is the actual program that runs: pdfLaTeX is the default, the fastest, and the one most documents are written for. XeLaTeX and LuaLaTeX are newer engines that can use the fonts installed on a computer and handle every script in Unicode. The source you write is almost the same for all three, so start with pdfLaTeX and switch only when a document needs fonts or languages it cannot handle.
+
+| Term | What it is |
+| --- | --- |
+| TeX | The underlying typesetting program and its low-level language. |
+| LaTeX | The commands most people write: sections, lists, equations, references. |
+| Engine | The program that compiles the source: pdfLaTeX, XeLaTeX, or LuaLaTeX. |
+| Class | The kind of document, such as `article`, `report`, or `beamer`. It sets the overall design. |
+| Package | An add-on that provides more commands, loaded with `\usepackage`. |
+| TeX Live | A distribution: the engines plus thousands of packages, installed together. |
+
+## Next
+
+- [Your first document](/learn/first-document)
+- [Text formatting](/learn/text-formatting)
+- [Math basics](/learn/math-basics)

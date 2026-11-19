@@ -1,0 +1,15 @@
+% Name: Triangle with marked angles
+% Description: A triangle with its vertices, sides, and three angles labeled and shaded.
+% Tags: triangle, angles, geometry
+
+\usetikzlibrary{angles, quotes}
+
+\begin{tikzpicture}[thick]
+  \coordinate[label=below left:$A$] (A) at (0,0);
+  \coordinate[label=below right:$B$] (B) at (5,0);
+  \coordinate[label=above:$C$] (C) at (1.6,3);
+  \pic[draw, angle radius=7mm, angle eccentricity=1.5, "$\alpha$"] {angle=B--A--C};
+  \pic[draw, angle radius=7mm, angle eccentricity=1.5, "$\beta$"] {angle=C--B--A};
+  \pic[draw, angle radius=6mm, angle eccentricity=1.6, "$\gamma$"] {angle=A--C--B};
+  \draw (A) -- node[below] {$c$} (B) -- node[above right] {$a$} (C) -- node[above left] {$b$} cycle;
+\end{tikzpicture}

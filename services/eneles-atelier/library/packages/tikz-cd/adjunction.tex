@@ -1,0 +1,11 @@
+% Name: Adjunction
+% Description: A pair of adjoint functors between two categories, with the turnstile between the arrows.
+% Tags: adjunction, functors, category theory
+
+\usepackage{tikz-cd}
+
+\begin{tikzcd}[column sep=large]
+  \mathcal{C} \arrow[r, bend left=35, "F"{name=F}] &
+  \mathcal{D} \arrow[l, bend left=35, "G"{name=G}]
+  \arrow[phantom, from=F, to=G, "\dashv" rotate=-90]
+\end{tikzcd}

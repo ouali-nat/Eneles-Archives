@@ -1,0 +1,10 @@
+{
+  "name": "tikz-3dplot",
+  "description": "Draw 3D coordinate systems and geometric figures. Great for physics and engineering illustrations.",
+  "ctanUrl": "https://ctan.org/pkg/tikz-3dplot",
+  "tags": [
+    "3D",
+    "coordinate systems",
+    "geometry"
+  ]
+}

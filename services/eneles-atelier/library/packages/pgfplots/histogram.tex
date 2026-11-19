@@ -1,0 +1,18 @@
+% Name: Histogram
+% Description: A simple histogram of data.
+% Tags: histogram, distribution, bar
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\begin{tikzpicture}
+\begin{axis}[
+  ybar,
+  ymin=0,
+  xlabel={Bin},
+  ylabel={Count},
+  symbolic x coords={A, B, C, D, E}
+]
+  \addplot coordinates {(A,5) (B,8) (C,3) (D,12) (E,6)};
+\end{axis}
+\end{tikzpicture}

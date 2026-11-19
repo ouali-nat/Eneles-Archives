@@ -1,0 +1,189 @@
+---
+title: "Advanced tables"
+description: "Merge cells, wrap text in columns, adjust spacing, color rows, and handle tables that are too long or too wide."
+summary: "Advanced LaTeX tables: merge cells with \\multicolumn and \\multirow, wrap text in columns, color rows, and handle tables too long or too wide for a page."
+keywords: ["\\multicolumn","\\multirow","\\cmidrule","tabularx","X column","p{}","m{}","\\raggedright","\\arraybackslash","\\tabcolsep","\\arraystretch","\\rowcolor","\\rowcolors","\\cellcolor","colortbl","longtable","\\endhead","\\rotatebox","landscape","pdflscape","merge cells","wrap text","multi-page table","wide table"]
+---
+
+# Advanced tables
+
+After this page you can merge cells, wrap long text inside a column, adjust spacing, shade rows, let a table run over several pages, and turn a wide table on its side.
+
+## Cells that span columns and rows
+
+`\multicolumn{n}{spec}{text}` replaces `n` cells with one, formatted by its own column letter. `\cmidrule{a-b}` from `booktabs` draws a rule under columns `a` to `b` only. For a cell that spans rows, the `multirow` package provides `\multirow{n}{*}{text}`: put it in the first row and leave the cells below it empty.
+
+```latex-example
+\begin{tabular}{@{}llrr@{}}
+  \toprule
+      &            & \multicolumn{2}{c}{Hours} \\
+  \cmidrule(l){3-4}
+  Lab & Instrument & 2023 & 2024 \\
+  \midrule
+  \multirow{2}{*}{North} & Microscope & 40 & 52 \\
+                         & Centrifuge & 12 & 9  \\
+  \addlinespace
+  South                  & Microscope & 25 & 31 \\
+  \bottomrule
+\end{tabular}
+```
+
+The `(l)` after `\cmidrule` trims the rule slightly on the left, which keeps neighboring rules apart. Use `(r)` or `(lr)` for the other sides. `\multicolumn{1}{c}{text}` is also the way to change the alignment of a single cell, such as a centered header over a right-aligned column.
+
+## Columns that wrap
+
+`l`, `c`, and `r` columns never break a line, so one long cell makes the whole table too wide. A `p{4cm}` column is 4 cm wide and wraps its text. With the `array` package, `m{4cm}` and `b{4cm}` do the same but align the cell with its row at the middle or the bottom instead of the top.
+
+Working out widths by hand is tedious. The `tabularx` package takes the total width of the table and shares what is left among the `X` columns.
+
+```latex-document
+\documentclass[varwidth=11cm,border=10pt]{standalone}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\begin{document}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+  \toprule
+  Term  & Meaning \\
+  \midrule
+  Float & An object that LaTeX may move to a place
+          where it fits, such as a figure or a table. \\
+  Rule  & A straight line. In a table, rules separate
+          the header from the body. \\
+  \bottomrule
+\end{tabularx}
+\end{document}
+```
+
+Narrow wrapped columns are justified, which leaves wide gaps between words. Set them ragged right by putting a declaration in front of the column: `>{\raggedright\arraybackslash}p{4cm}` or `>{\raggedright\arraybackslash}X`.
+
+## Spacing
+
+Two settings control the density of every table. `\tabcolsep` is the padding on each side of a column (6 pt by default), and `\arraystretch` multiplies the row height. Change them inside braces to keep the effect local.
+
+```latex-example
+\begin{tabular}{lr}
+  Oak   & 31 \\
+  Maple & 7  \\
+\end{tabular}
+\qquad
+{\setlength{\tabcolsep}{14pt}%
+\renewcommand{\arraystretch}{1.5}%
+\begin{tabular}{lr}
+  Oak   & 31 \\
+  Maple & 7  \\
+\end{tabular}}
+```
+
+For one row, add space after it with an optional length on the row end, `\\[4pt]`, or use `\addlinespace` from `booktabs`.
+
+## Color
+
+Load `xcolor` with the `table` option. `\rowcolor` shades one row, `\cellcolor` one cell, and `\rowcolors{2}{gray!12}{white}` colors odd rows gray and even rows white from row 2 onward.
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage[table]{xcolor}
+\begin{document}
+\rowcolors{2}{gray!12}{white}
+\begin{tabular}{lrr}
+  \rowcolor{blue!20}
+  Month    & In  & Out \\
+  January  & 120 & 95  \\
+  February & 80  & \cellcolor{orange!40}140 \\
+  March    & 110 & 102 \\
+\end{tabular}
+\end{document}
+```
+
+Use shading sparingly, and not together with `booktabs` rules: the space around those rules stays white and cuts through the color.
+
+## Tables longer than a page
+
+A `tabular` cannot break across pages. The `longtable` package provides an environment that can. It replaces both `table` and `tabular`, takes its own `\caption`, and lets you define what is repeated at each page break.
+
+```latex-document
+\documentclass{article}
+\usepackage[paperwidth=9cm,paperheight=6.5cm,margin=8mm]{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\begin{document}
+\begin{longtable}{@{}lr@{}}
+  \caption{Rainfall in June.} \\
+  \toprule
+  Day & Rain (mm) \\
+  \midrule
+  \endfirsthead
+  \toprule
+  Day & Rain (mm) \\
+  \midrule
+  \endhead
+  \midrule
+  \multicolumn{2}{r@{}}{\emph{continued}} \\
+  \endfoot
+  \bottomrule
+  \endlastfoot
+  1 June & 0.0 \\
+  2 June & 2.4 \\
+  3 June & 11.8 \\
+  4 June & 0.6 \\
+  5 June & 0.0 \\
+  6 June & 7.1 \\
+  7 June & 3.3 \\
+  8 June & 0.0 \\
+  9 June & 5.9 \\
+  10 June & 1.2 \\
+\end{longtable}
+\end{document}
+```
+
+Everything before `\endfirsthead` opens the table, and everything before `\endhead` opens each later page. `\endfoot` closes every page except the last, which `\endlastfoot` closes. The rows follow. The page here is made small with `geometry` so that the break shows.
+
+<Callout type="note" title="longtable needs more than one compile">
+  The column widths are carried from one compile to the next, so a `longtable` can look uneven until TeX has run again. Eneles runs the extra passes for you.
+</Callout>
+
+## Wide tables
+
+To save width, turn the header cells with `\rotatebox` from `graphicx`.
+
+```latex-example
+\begin{tabular}{@{}lccc@{}}
+  \toprule
+  Student & \rotatebox{60}{Algebra}
+          & \rotatebox{60}{Geometry}
+          & \rotatebox{60}{Statistics} \\
+  \midrule
+  Amira   & A & B & A \\
+  Jonas   & B & B & C \\
+  \bottomrule
+\end{tabular}
+```
+
+If the table is still too wide, give it a landscape page. The `landscape` environment of the `pdflscape` package starts a new page, sets its content sideways, and turns that page in the PDF viewer so that it reads normally on screen.
+
+```latex
+\usepackage{pdflscape}
+
+\begin{landscape}
+  \begin{table}
+    \centering
+    \caption{Results for all twelve sites.}
+    \begin{tabular}{lrrrrrrrrrrrr}
+      % a wide table
+    \end{tabular}
+  \end{table}
+\end{landscape}
+```
+
+## Common mistakes
+
+- **`\raggedright` in a column without `\arraybackslash`.** `\raggedright` changes what `\\` means, so the row end fails with `! Misplaced \noalign.` or an extra-alignment error. Always write `>{\raggedright\arraybackslash}`.
+- **A `\multicolumn` that loses a rule or `@{}`.** Its `spec` replaces the column's whole definition for that cell. Repeat any `|` or `@{}` the column had, as in `\multicolumn{2}{r@{}}{…}`.
+- **A `longtable` inside `table`.** A float cannot break across pages, so the table runs off the bottom. Use `longtable` on its own.
+- **Shrinking a table with `\resizebox`.** It fits, but the text is a different size from the rest of the document. Wrap text, abbreviate headers, or rotate the table instead.
+
+## Next
+
+- [Cross-references](/learn/cross-references)
+- [Colors](/learn/colors)
+- [Page layout](/learn/page-layout)

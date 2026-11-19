@@ -1,0 +1,438 @@
+{
+  "categories": [
+    {
+      "title": "Diagrams",
+      "packages": [
+        {
+          "id": "flowcharts",
+          "examples": [
+            "simple-flowchart",
+            "algorithm-flowchart",
+            "troubleshooting",
+            "build-pipeline",
+            "swimlane"
+          ]
+        },
+        {
+          "id": "block-diagrams",
+          "examples": [
+            "feedback-loop",
+            "pid-controller",
+            "state-space",
+            "communication-system"
+          ]
+        },
+        {
+          "id": "trees",
+          "examples": [
+            "simple-tree",
+            "probability-tree",
+            "binary-search-path",
+            "binary-heap"
+          ]
+        },
+        {
+          "id": "forest",
+          "examples": [
+            "syntax-tree",
+            "binary-tree",
+            "org-chart",
+            "decision-tree",
+            "file-tree",
+            "roof-tree",
+            "red-black-tree"
+          ]
+        },
+        {
+          "id": "timelines",
+          "examples": [
+            "simple-timeline",
+            "project-milestones",
+            "vertical-timeline"
+          ]
+        },
+        {
+          "id": "pgfgantt",
+          "examples": [
+            "gantt-chart",
+            "gantt-progress"
+          ]
+        },
+        {
+          "id": "mindmap",
+          "examples": [
+            "concept-map",
+            "thesis-mindmap"
+          ]
+        },
+        {
+          "id": "chronology",
+          "examples": [
+            "timeline",
+            "timeline-span",
+            "timeline-dense"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Plots",
+      "packages": [
+        {
+          "id": "pgfplots",
+          "examples": [
+            "sin-cos",
+            "scatter-plot",
+            "bar-chart",
+            "histogram",
+            "error-bars",
+            "stacked-bars",
+            "box-plot",
+            "log-log",
+            "group-plots",
+            "parametric-curve",
+            "polar-plot",
+            "confidence-band",
+            "heat-map",
+            "filled-contour",
+            "3d-surface",
+            "torus-surface"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Mathematics",
+      "packages": [
+        {
+          "id": "calculus",
+          "examples": [
+            "simple-axes",
+            "function-graph",
+            "integral-area",
+            "riemann-sum",
+            "tangent-secant"
+          ]
+        },
+        {
+          "id": "geometry",
+          "examples": [
+            "right-triangle",
+            "triangle-angles",
+            "unit-circle",
+            "vector-addition",
+            "inscribed-angle",
+            "pythagoras"
+          ]
+        },
+        {
+          "id": "tikz-cd",
+          "examples": [
+            "basic-square",
+            "exact-sequence",
+            "pullback",
+            "pushout",
+            "fiber-product",
+            "long-exact",
+            "commutative-cube",
+            "adjunction",
+            "natural-transformation",
+            "snake-lemma"
+          ]
+        },
+        {
+          "id": "set-diagrams",
+          "examples": [
+            "symmetric-difference",
+            "set-difference",
+            "venn-counts",
+            "euler-diagram"
+          ]
+        },
+        {
+          "id": "venndiagram",
+          "examples": [
+            "venn-2",
+            "venn-2-union",
+            "venn-3",
+            "venn-3-fill"
+          ]
+        },
+        {
+          "id": "matrices",
+          "examples": [
+            "block-matrix",
+            "matrix-multiplication"
+          ]
+        },
+        {
+          "id": "string-diagrams",
+          "examples": [
+            "morphism",
+            "composition-tensor",
+            "cup-cap",
+            "snake-identity",
+            "braiding",
+            "twist",
+            "trace"
+          ]
+        },
+        {
+          "id": "braids",
+          "examples": [
+            "braid-vertical",
+            "braid-relation",
+            "braid-vertical-colored",
+            "braid-simple",
+            "braid-3strand",
+            "braid-4strand"
+          ]
+        },
+        {
+          "id": "knots",
+          "examples": [
+            "trefoil",
+            "hopf-link"
+          ]
+        },
+        {
+          "id": "tikz-nfold",
+          "examples": [
+            "nfold-path",
+            "nfold-5",
+            "nfold-circle"
+          ]
+        },
+        {
+          "id": "dynkin-diagrams",
+          "examples": [
+            "dynkin-a2",
+            "dynkin-b2"
+          ]
+        },
+        {
+          "id": "tensormatrix",
+          "examples": [
+            "tensor-matrix",
+            "tensor-metric",
+            "tensor-mixed"
+          ]
+        },
+        {
+          "id": "polyhedra",
+          "examples": [
+            "polyhedron-axes",
+            "polyhedron-triangle",
+            "polyhedron-cone"
+          ]
+        },
+        {
+          "id": "penrose",
+          "examples": [
+            "penrose-simple",
+            "penrose-rhomb",
+            "penrose-pentagon"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Computer Science",
+      "packages": [
+        {
+          "id": "graphs",
+          "examples": [
+            "simple-graph",
+            "directed-graph",
+            "weighted-graph",
+            "shortest-path",
+            "bipartite-graph",
+            "dependency-dag",
+            "graph-coloring"
+          ]
+        },
+        {
+          "id": "automata",
+          "examples": [
+            "dfa",
+            "nfa",
+            "fsm-simple",
+            "traffic-light",
+            "markov-chain",
+            "pushdown-automaton",
+            "turing-machine"
+          ]
+        },
+        {
+          "id": "neural-networks",
+          "examples": [
+            "perceptron",
+            "feed-forward",
+            "rnn-unrolled",
+            "cnn-pipeline",
+            "attention",
+            "transformer-encoder"
+          ]
+        },
+        {
+          "id": "software-diagrams",
+          "examples": [
+            "architecture-boxes",
+            "sequence-diagram",
+            "class-diagram",
+            "er-diagram"
+          ]
+        },
+        {
+          "id": "systems",
+          "examples": [
+            "network-topology",
+            "memory-layout",
+            "stack-frames",
+            "cpu-pipeline"
+          ]
+        },
+        {
+          "id": "digital-logic",
+          "examples": [
+            "karnaugh-map",
+            "half-adder",
+            "timing-diagram",
+            "sorting-network"
+          ]
+        },
+        {
+          "id": "neuralnetwork",
+          "examples": [
+            "nn-simple",
+            "nn-wide",
+            "nn-deep"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Physics",
+      "packages": [
+        {
+          "id": "circuitikz",
+          "examples": [
+            "voltage-divider",
+            "rc-filter",
+            "rlc-series",
+            "opamp-circuit",
+            "transistor-switch",
+            "logic-gates",
+            "bridge-rectifier",
+            "common-emitter"
+          ]
+        },
+        {
+          "id": "quantikz",
+          "examples": [
+            "bell-state",
+            "ghz-state",
+            "swap-gate",
+            "toffoli",
+            "teleportation",
+            "qft",
+            "qft-three",
+            "deutsch-jozsa",
+            "phase-estimation"
+          ]
+        },
+        {
+          "id": "zx-calculus",
+          "examples": [
+            "zx-simple",
+            "zx-phase",
+            "zx-cnot",
+            "zx-spider-fusion",
+            "zx-hadamard",
+            "zx-bialgebra",
+            "zx-hopf"
+          ]
+        },
+        {
+          "id": "fusion-diagrams",
+          "examples": [
+            "fusion-vertex",
+            "fusion-vertex-down",
+            "fusion-tree-basis",
+            "fusion-tree-basis-down",
+            "f-move",
+            "f-move-down",
+            "r-move",
+            "r-move-down",
+            "pentagon-equation",
+            "hexagon-equation",
+            "pentagon-equation-trees",
+            "pentagon-equation-trees-down",
+            "hexagon-equation-trees"
+          ]
+        },
+        {
+          "id": "tikz-feynman",
+          "examples": [
+            "feynman-simple",
+            "s-channel",
+            "moller-scattering",
+            "compton-scattering",
+            "gluon-emission"
+          ]
+        },
+        {
+          "id": "optikz",
+          "examples": [
+            "optics-setup",
+            "optics-mirror",
+            "optics-two-lenses"
+          ]
+        },
+        {
+          "id": "tikzorbital",
+          "examples": [
+            "orbital-p",
+            "orbital-py",
+            "orbital-pz"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Chemistry",
+      "packages": [
+        {
+          "id": "chemfig",
+          "examples": [
+            "benzene",
+            "ethanol",
+            "acetic-acid",
+            "alanine",
+            "glucose",
+            "aspirin",
+            "caffeine",
+            "reaction-arrow",
+            "esterification"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "3D",
+      "packages": [
+        {
+          "id": "tikz-3dplot",
+          "examples": [
+            "spherical-coords",
+            "coordinate-grid",
+            "cross-product",
+            "cube",
+            "cone",
+            "spherical-sphere"
+          ]
+        }
+      ]
+    }
+  ]
+}

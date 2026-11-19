@@ -335,3 +335,13 @@
     if (!client?.auth?.signOut) throw new Error('Le moteur de déconnexion Google nest pas disponible.');
     return client.auth.signOut({ scope: 'local' });
   };
+
+
+// Read-only bridge for Eneles Atelier. This reuses the existing Google/Supabase
+// session and does not change the PKCE sign-in or sign-out flow above.
+window.enelesGetSupabaseAccessToken = async function () {
+  const client = await assurerClientAuthGoogle();
+  const { data, error } = await client.auth.getSession();
+  if (error) throw error;
+  return data && data.session ? data.session.access_token : null;
+};

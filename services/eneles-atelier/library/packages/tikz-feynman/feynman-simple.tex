@@ -1,0 +1,18 @@
+% Name: Photon emission
+% Description: An electron emits a photon: the basic QED vertex.
+% Tags: vertex, photon, QED
+
+\usepackage[compat=1.1.0]{tikz-feynman}
+
+\begin{tikzpicture}
+  \begin{feynman}
+    \vertex (a) at (0,0);
+    \vertex (i) at (-1.8,-1.2) {$e^-$};
+    \vertex (f) at (1.8,-1.2) {$e^-$};
+    \vertex (p) at (1.6,1.4) {$\gamma$};
+    \diagram* {
+      (i) -- [fermion] (a) -- [fermion] (f),
+      (a) -- [photon] (p),
+    };
+  \end{feynman}
+\end{tikzpicture}

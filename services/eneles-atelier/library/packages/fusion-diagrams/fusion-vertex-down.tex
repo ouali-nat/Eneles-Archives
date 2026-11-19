@@ -1,0 +1,13 @@
+% Name: Fusion and splitting vertices, time going down
+% Description: The same two vertices read from top to bottom: a and b fuse into c below them, and c splits into a and b.
+% Tags: fusion, splitting, vertex, anyons, time going down
+
+\begin{tikzpicture}[thick]
+  \draw (0,2) node[above] {$a$} -- (0.7,1) -- (1.4,2) node[above] {$b$};
+  \draw (0.7,1) -- (0.7,0) node[below] {$c$};
+  \node at (0.7,-0.9) {fusion};
+
+  \draw (3,0) node[below] {$a$} -- (3.7,1) -- (4.4,0) node[below] {$b$};
+  \draw (3.7,1) -- (3.7,2) node[above] {$c$};
+  \node at (3.7,-0.9) {splitting};
+\end{tikzpicture}

@@ -1,0 +1,13 @@
+% Name: Twist
+% Description: A wire with a curl, which in a ribbon category is the twist θ on that object.
+% Tags: twist, ribbon category, curl
+
+\begin{tikzpicture}[thick, baseline=(current bounding box.center)]
+  \draw (0,0) -- (0,1) .. controls (0,2) and (1.2,2) .. (1.2,1.5);
+  \draw[white, line width=5pt] (1.2,1.5) .. controls (1.2,1) and (0,1.2) .. (0,2.2);
+  \draw (1.2,1.5) .. controls (1.2,1) and (0,1.2) .. (0,2.2) -- (0,3);
+  \node[below] at (0,0) {$A$};
+  \node at (1.9,1.5) {$=$};
+  \draw (2.6,0) node[below] {$A$} -- (2.6,3);
+  \node[draw, fill=white, minimum width=8mm, minimum height=6mm] at (2.6,1.5) {$\theta_A$};
+\end{tikzpicture}

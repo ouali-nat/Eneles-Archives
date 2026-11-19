@@ -1,0 +1,52 @@
+\documentclass[10pt,twocolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1.9cm]{geometry}
+\usepackage{times}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[numbers]{natbib}
+\usepackage[hidelinks]{hyperref}
+
+\title{Title of the Paper}
+\author{First Author\textsuperscript{1} \and Second Author\textsuperscript{2} \\[4pt] \textsuperscript{1}First affiliation \quad \textsuperscript{2}Second affiliation}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+One paragraph: the problem, what you did, and the main result with a number.
+\end{abstract}
+
+\input{sections/introduction}
+
+\section{Method}
+Describe the method. Number the equations you refer to:
+\begin{equation}
+  \hat{y} = \arg\max_{y} \; p_\theta(y \mid x).
+  \label{eq:decode}
+\end{equation}
+
+\section{Experiments}
+\begin{table}[t]
+  \centering
+  \caption{Main results.}
+  \begin{tabular}{lcc}
+    \toprule
+    Model & Metric A & Metric B \\
+    \midrule
+    Baseline & 0.0 & 0.0 \\
+    Ours & \textbf{0.0} & \textbf{0.0} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Conclusion}
+What the reader should remember.
+
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+\end{document}

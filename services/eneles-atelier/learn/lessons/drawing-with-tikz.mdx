@@ -1,0 +1,157 @@
+---
+title: "Drawing with TikZ"
+description: "Diagrams with TikZ: coordinates and paths, shapes, nodes and labels, arrows, styles, and a complete flowchart."
+summary: "Draw diagrams in LaTeX with TikZ: coordinates and paths, shapes and curves, nodes and labels, arrows and styles, and a complete flowchart, with examples."
+keywords: ["tikz","tikzpicture","pgf","\\draw","\\fill","\\filldraw","\\node","\\path","\\coordinate","\\usetikzlibrary","\\tikzset","diagram","drawing","figure","graphics","vector","line","circle","rectangle","ellipse","arc","grid","curve","bend left","controls","cycle","arrow","arrows.meta","Stealth","positioning","right=of","node distance","style","label","anchor","flowchart","graph","shapes.geometric","transform shape","standalone","forgot a semicolon"]
+---
+
+# Drawing with TikZ
+
+Draw diagrams inside your document with TikZ: lines and shapes placed by coordinates, text in nodes, arrows between them, and styles that keep a figure consistent.
+
+## A first picture
+
+Load `tikz` in the preamble and draw inside a `tikzpicture` environment. Each drawing command starts with `\draw`, `\fill`, or `\node`, describes a path, and ends with a semicolon. Coordinates are `(x,y)` pairs, in centimetres unless you give a unit.
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}
+  \draw[help lines] (0,0) grid (4,2);
+  \draw[thick] (0,0) -- (2,2) -- (4,0);
+  \draw[thick, red] (0,1) -- ++(1,0) -- ++(0,1);
+  \fill[blue] (3,1) circle [radius=2pt];
+\end{tikzpicture}
+\end{document}
+```
+
+`--` joins two points with a straight line. `++(1,0)` means "one unit right of the previous point", which saves arithmetic. `grid` with the `help lines` style gives a faint background grid: draw one while you work, and delete it at the end.
+
+The examples here use the `standalone` class, which crops the page to the picture. In an article, put the `tikzpicture` inside a `figure` with `\centering` and a `\caption`, exactly as you would an image.
+
+## Shapes and curves
+
+A path can also contain shapes. Options in brackets after the command set how the path is drawn.
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}
+  \draw (0,0) rectangle (2,1.2);
+  \draw[fill=yellow!40, rounded corners] (2.5,0) rectangle (4.5,1.2);
+  \fill[teal] (5.6,0.6) circle [radius=0.6];
+  \draw[dashed] (7.6,0.6) ellipse [x radius=1, y radius=0.6];
+  \draw[very thick, orange] (0,-1.4) -- (1,-0.6) -- (2,-1.4) -- cycle;
+  \draw[thick] (2.5,-1.4) to[bend left=40] (4.5,-1.4);
+  \draw[thick] (5,-1.4) arc [start angle=180, end angle=0, radius=0.6];
+  \draw[thick, blue] (6.8,-1.4) .. controls (7.4,0) and (7.8,-1.4) .. (8.6,-0.6);
+\end{tikzpicture}
+\end{document}
+```
+
+| Option | Effect |
+| --- | --- |
+| `thin`, `thick`, `very thick`, `line width=2pt` | Line thickness |
+| `dashed`, `dotted` | Line pattern |
+| `red`, `draw=red` | Line color. Any `xcolor` name or mix works |
+| `fill=blue!20` | Fill the inside of a closed path |
+| `rounded corners` | Round every corner of the path |
+| `opacity=0.5` | Make the path see-through |
+
+`-- cycle` closes a path back to its start, which gives a clean corner and lets you fill the shape.
+
+## Nodes and labels
+
+A node is a piece of text at a position, with an optional shape around it. Give a node a name in parentheses and you can draw to it later: TikZ stops the line at the node's border. A node placed inside a path, after `--`, becomes a label on that line.
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}
+  \node[draw, circle] (a) at (0,0) {$A$};
+  \node[draw, circle] (b) at (3,0) {$B$};
+  \node[draw, rectangle, fill=gray!15] (c) at (1.5,-1.6) {Store};
+  \draw (a) -- node[above] {5 km} (b);
+  \draw (a) -- node[left] {3 km} (c);
+  \draw (b) -- node[right] {4 km} (c);
+  \node[above] at (1.5,0.6) {\small Delivery route};
+\end{tikzpicture}
+\end{document}
+```
+
+Node text is ordinary LaTeX, so math and font commands work. `above`, `below`, `left`, and `right` shift a node off its position. Anchors such as `(c.north)` or `(a.east)` name specific points on a node's border.
+
+## Arrows and styles
+
+Add an arrow tip with `->`, `<-`, or `<->` in the options. The `arrows.meta` library provides better-looking tips such as `Stealth` and `Latex`.
+
+Repeating the same options on every node is tedious and hard to change. Define a style once in the options of the `tikzpicture` and use it by name.
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\begin{document}
+\begin{tikzpicture}[
+    >=Stealth,
+    state/.style={draw, thick, circle, fill=blue!10, minimum size=9mm},
+    flow/.style={->, thick},
+  ]
+  \node[state] (s) at (0,0) {$S$};
+  \node[state] (i) at (2.5,0) {$I$};
+  \node[state] (r) at (5,0) {$R$};
+  \draw[flow] (s) -- node[above] {$\beta$} (i);
+  \draw[flow] (i) -- node[above] {$\gamma$} (r);
+  \draw[flow, dashed] (r) to[bend left=35] node[below] {$\omega$} (s);
+\end{tikzpicture}
+\end{document}
+```
+
+`>=Stealth` sets the tip for every arrow in the picture. To share styles between pictures, put them in the preamble with `\tikzset`.
+
+## A complete diagram
+
+The `positioning` library places nodes relative to each other, so you do not have to work out coordinates. `right=of a` puts a node to the right of `a`, at the `node distance`. The `-|` operator draws a horizontal line and then a vertical one.
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric}
+\begin{document}
+\begin{tikzpicture}[
+    node distance=12mm,
+    >=Stealth,
+    stage/.style={draw, rounded corners, fill=blue!10, minimum height=8mm, inner xsep=3mm},
+    check/.style={draw, diamond, aspect=2, fill=orange!20, inner sep=1.5pt},
+  ]
+  \node[stage] (edit) {Edit source};
+  \node[stage, right=of edit] (compile) {Compile};
+  \node[check, right=of compile] (errors) {Errors?};
+  \node[stage, right=of errors] (read) {Read PDF};
+  \draw[->] (edit) -- (compile);
+  \draw[->] (compile) -- (errors);
+  \draw[->] (errors) -- node[above] {no} (read);
+  \draw[->] (errors.south) -- ++(0,-6mm) -| node[pos=0.25, below] {yes} (edit.south);
+\end{tikzpicture}
+\end{document}
+```
+
+## Start from an example
+
+Many diagrams are easier to adapt than to write from nothing. Eneles's [Library](/library) collects TikZ packages with rendered examples, from commutative diagrams to circuits, and each example shows its source with a copy button. In the editor, press `Shift + Space` to open the insert palette, which lists the same examples with previews and inserts the one you pick. The [TikZ diagrams](/docs/tikz-diagrams) guide covers the ways Eneles helps with TikZ.
+
+## Common mistakes
+
+- Leaving out the semicolon. TikZ reads on into the next command and stops with "Giving up on this path. Did you forget a semicolon?". Every `\draw`, `\fill`, and `\node` ends with `;`.
+- Using a library feature without loading the library. `right=of a` without `positioning`, or `Stealth` without `arrows.meta`, fails with an error such as "Unknown arrow tip kind 'Stealth'". Add the `\usetikzlibrary` line.
+- Scaling a picture with `scale=2` and finding that the text did not grow. `scale` moves coordinates only. Add `transform shape` to scale nodes too, or scale the finished picture with `\resizebox`.
+- Naming a style after an existing key, such as `step`, which sets the spacing of a grid. The collision produces puzzling errors such as "The key '/tikz/step' requires a value". Choose names that say what the element is, such as `state` or `stage`.
+
+## Next
+
+- [Plots with pgfplots](/learn/plots-with-pgfplots)
+- [Figures and captions](/learn/figures-and-captions)
+- [Colors](/learn/colors)

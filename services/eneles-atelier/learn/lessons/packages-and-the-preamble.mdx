@@ -1,0 +1,137 @@
+---
+title: "Packages and the preamble"
+description: "Loading packages, package and class options, the packages most documents need, and the order to load them in."
+summary: "Load LaTeX packages with \\usepackage, pass options to packages and the document class, the packages most documents need, and the order to load them in."
+keywords: ["\\usepackage","package","packages","options","\\documentclass","class options","10pt","11pt","12pt","a4paper","letterpaper","twocolumn","twoside","draft","geometry","fontenc","inputenc","babel","amsmath","amssymb","graphicx","xcolor","booktabs","enumitem","hyperref","cleveref","\\hypersetup","option clash","sty not found","load order","preamble"]
+---
+
+# Packages and the preamble
+
+Load packages, pass options to them and to the document class, and know which packages most documents need.
+
+## What a package is
+
+LaTeX on its own covers text, headings, lists, basic math, and simple tables. Everything else comes from packages: files of extra commands that you load in the preamble with `\usepackage`. Images, colors, links, better tables, and most of the mathematics you will write depend on one.
+
+```latex
+\documentclass{article}
+\usepackage{xcolor}     % adds \textcolor and color names
+\usepackage{amsmath}    % adds equation environments and \text
+
+\begin{document}
+```
+
+Once a package is loaded, its commands work anywhere in the body.
+
+```latex-example
+\textcolor{teal}{This sentence is teal} because the preamble loads \texttt{xcolor}.
+\[
+  \text{speed} = \dfrac{\text{distance}}{\text{time}}
+\]
+```
+
+Without the package, the same source stops with `Undefined control sequence`. That error on a command you copied from somewhere usually means a missing `\usepackage`.
+
+## Package options
+
+Options go in square brackets before the package name. Some are single words, and some are `key=value` pairs. Packages that take no options can share one `\usepackage`.
+
+```latex
+\usepackage[margin=2.5cm]{geometry}          % one key=value option
+\usepackage[colorlinks, linkcolor=blue]{hyperref}
+\usepackage{amsmath, amssymb, graphicx}      % three packages, no options
+```
+
+Many packages also have a setup command, so you can load them plainly and configure them afterwards: `\hypersetup{colorlinks}` and `\geometry{margin=2.5cm}` do the same as the options above.
+
+## Class options
+
+`\documentclass` takes options the same way. They set the basics of the whole document.
+
+```latex
+\documentclass[11pt, a4paper, twocolumn]{article}
+```
+
+| Option | Effect |
+| --- | --- |
+| `10pt`, `11pt`, `12pt` | The base font size. The default is 10pt. |
+| `a4paper`, `letterpaper` | The paper size. The default is US letter. |
+| `twocolumn` | Sets the text in two columns. |
+| `twoside` | Different margins on left and right pages, for printing on both sides. The default in `book`. |
+| `titlepage` | Puts the title on a page of its own. The default in `report` and `book`. |
+| `draft` | Marks lines that stick into the margin with a black bar. |
+| `fleqn` | Aligns displayed equations to the left instead of centering them. |
+
+Class options are passed on to every package you load. With `a4paper` on the class, `geometry` uses A4 without being told. With `draft`, `graphicx` draws an empty frame in place of each image.
+
+## Packages worth knowing
+
+| Package | What it adds | Lesson |
+| --- | --- | --- |
+| `geometry` | Page size and margins | [Page layout](/learn/page-layout) |
+| `fontenc` with `T1` | Real accented letters and correct hyphenation in pdfLaTeX | [Special characters](/learn/special-characters) |
+| `babel` | Hyphenation and fixed words, such as "Contents", in the document's language | [Languages and Unicode](/learn/languages-and-unicode) |
+| `amsmath`, `amssymb` | Equation environments and math symbols | [Math basics](/learn/math-basics) |
+| `graphicx` | `\includegraphics` for images | [Images](/learn/images) |
+| `xcolor` | Colored text, rules, and backgrounds | [Colors](/learn/colors) |
+| `booktabs` | Well-spaced horizontal rules for tables | [Tables](/learn/tables) |
+| `enumitem` | Labels and spacing of lists | [Lists](/learn/lists) |
+| `fancyhdr` | Page headers and footers | [Headers and footers](/learn/headers-and-footers) |
+| `listings` | Source code with syntax highlighting | [Code listings](/learn/code-listings) |
+| `biblatex` | Citations and the bibliography | [Bibliography with biblatex](/learn/bibliography-with-biblatex) |
+| `hyperref` | Clickable links, cross-references, and PDF bookmarks | [Hyperlinks](/learn/hyperlinks) |
+| `cleveref` | References that name their target, such as "Figure 3" | [Cross-references](/learn/cross-references) |
+| `tikz` | Drawings made in LaTeX | [Drawing with TikZ](/learn/drawing-with-tikz) |
+
+Older documents often load `inputenc` with the `utf8` option. It does no harm, but LaTeX has read UTF-8 by default since 2018, so new documents can leave it out.
+
+## A typical preamble
+
+Group the preamble by purpose and say in a comment why each unusual package is there. Six months later, you will want to know.
+
+```latex
+\documentclass[11pt, a4paper]{article}
+
+% Page and fonts
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+
+% Content
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+% Links: hyperref near the end, cleveref after it
+\usepackage[hidelinks]{hyperref}
+\usepackage{cleveref}
+
+\title{Field notes}
+\author{Mira Okafor}
+
+\begin{document}
+\maketitle
+\end{document}
+```
+
+## Order
+
+For most packages, the order of the `\usepackage` lines does not matter. Two rules cover the usual exceptions:
+
+- Load `hyperref` near the end. It changes commands that other packages define, so it has to come after them.
+- Load `cleveref` after `hyperref`.
+
+Your own definitions, such as `\newcommand`, go after the packages they rely on. See [Custom commands](/learn/custom-commands).
+
+## Common mistakes
+
+- **A package name that does not exist.** LaTeX stops with ``File `tikzz.sty' not found``. Check the spelling, including upper and lower case. In Eneles, the Logs panel reports a package the compiler does not have as a missing package, with its file name.
+- **`\usepackage` in the body.** LaTeX stops with `Can be used only in preamble`. Move the line above `\begin{document}`.
+- **The same package loaded twice with different options.** LaTeX stops with `Option clash for package geometry`. The first load is often hidden inside the class or another package. Keep one `\usepackage` line, or drop the options and use the package's setup command instead.
+- **Loading packages just in case.** Each one slows the compile, and some conflict with each other. Load what the document uses.
+
+## Next
+
+- [Errors and debugging](/learn/errors-and-debugging)
+- [Custom commands](/learn/custom-commands)
+- [Page layout](/learn/page-layout)

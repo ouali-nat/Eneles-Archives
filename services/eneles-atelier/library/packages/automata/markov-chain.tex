@@ -1,0 +1,19 @@
+% Name: Markov chain
+% Description: A simple 3-state Markov chain.
+% Tags: markov, probability, stochastic
+
+\usetikzlibrary{automata, positioning}
+
+\begin{tikzpicture}[shorten >=1pt, node distance=2.5cm, on grid, auto]
+  \node[state] (A) {$A$};
+  \node[state] (B) [right=of A] {$B$};
+  \node[state] (C) [right=of B] {$C$};
+
+  \path[->]
+    (A) edge[loop above] node{0.5} ()
+        edge[bend left] node{0.5} (B)
+    (B) edge[bend left] node{0.3} (A)
+        edge[bend left] node{0.7} (C)
+    (C) edge[loop above] node{0.2} ()
+        edge[bend left] node{0.8} (B);
+\end{tikzpicture}

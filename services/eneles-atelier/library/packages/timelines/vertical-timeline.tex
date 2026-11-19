@@ -1,0 +1,17 @@
+% Name: Vertical timeline
+% Description: Dates down a line with a short description beside each one.
+% Tags: timeline, history, vertical
+
+\begin{tikzpicture}[every node/.style={font=\small}]
+  \draw[very thick, gray!50] (0,0.5) -- (0,-5.3);
+  \foreach \y/\year/\event in {
+    0/1936/Turing describes a universal machine,
+    -1.6/1945/ENIAC runs its first program,
+    -3.2/1971/The first commercial microprocessor,
+    -4.8/1991/The World Wide Web goes public%
+  } {
+    \fill[blue!70!black] (0,\y) circle (3pt);
+    \node[anchor=east, font=\small\bfseries] at (-0.3,\y) {\year};
+    \node[anchor=west, text width=55mm] at (0.3,\y) {\event};
+  }
+\end{tikzpicture}

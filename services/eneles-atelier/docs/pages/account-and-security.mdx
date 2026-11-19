@@ -1,0 +1,127 @@
+---
+title: "Account and security"
+description: "Sign-in codes, two-factor authentication, sessions, your profile, data export, and deleting your account."
+summary: "Sign in to Eneles with an emailed code, add two-factor authentication, manage active sessions and your profile, export your data, or delete your account."
+keywords: ["login","sign in","code","otp","password","2fa","two-factor","authenticator","totp","sessions","devices","log out","profile","name","email","export data","gdpr","delete account"]
+---
+
+# Account and security
+
+Eneles has no passwords. You sign in with a code sent to your email address, and you can add an authenticator app as a second step. This guide covers signing in, two-factor authentication, sessions, your profile, exporting your data, and deleting your account.
+
+**Profile**, **Settings**, **Billing**, and **Log out** are in the account menu: click your name in the sidebar.
+
+## Sign in with an emailed code
+
+1. Go to [/login](/login), enter your **Email**, and click **Send code**.
+2. Enter the six-digit code from the email in the **Authentication code** dialog. The code is checked as soon as you type the sixth digit.
+
+About the code:
+
+- It works for 10 minutes, and only once.
+- **Didn't receive a code? Resend** sends a new one.
+- After five wrong codes, sign-in for the account pauses, and the dialog says how many minutes to wait.
+
+The sign-in page answers in the same way whether or not the address has an account, so that nobody can use it to find out who has one. If no code arrives, there may be no account for that address: see [Troubleshooting](/docs/troubleshooting#the-sign-in-code-does-not-arrive).
+
+### Create an account
+
+Go to [/signup](/signup), enter your **Name** and **Email**, tick the box to agree to the terms and the privacy policy, and click **Create account**. The account is created when you enter the code that is emailed to you. If the address already has an account, you are sent a sign-in code instead, and entering it signs you in to the account you have.
+
+### Staying signed in
+
+You stay signed in on a browser for seven days after you sign in there. After that, sign in again with a new code. **Log out** in the account menu ends the session on that browser sooner.
+
+## Two-factor authentication
+
+With two-factor authentication on, signing in takes the emailed code and then a code from an authenticator app.
+
+### Turn it on
+
+1. Open **Settings**. Under **Security**, next to **Two-factor authentication**, click **Enable**.
+2. Scan the QR code with an authenticator app. To type the key instead, click **Reveal** next to **Setup key**.
+3. Enter the six-digit code the app shows under **Verify code**, and click **Enable 2FA**.
+
+The badge next to **Two-factor authentication** changes from **Disabled** to **Enabled**. If you close the dialog before the last step, nothing changes.
+
+<Callout type="warning" title="Keep the setup key">
+  Eneles has no backup codes. If you lose the authenticator app and have no copy of the setup key, you cannot finish signing in. Before you click **Enable 2FA**, reveal the setup key and store it somewhere safe: entering it in a new authenticator app gives you the same codes.
+</Callout>
+
+### Sign in with it on
+
+After you enter the emailed code, the dialog changes to **Two-factor authentication**. Enter the six-digit code your authenticator app shows.
+
+### Turn it off
+
+Under **Security**, click **Disable**. Enter the current code from your authenticator app, and click **Disable 2FA**.
+
+## Active sessions
+
+Each time you sign in, Eneles records a session for that browser. **Settings** lists the ones that are still signed in under **Active sessions**, most recently used first, with the kind of device, the browser, the operating system, the country the connection came from, and when the session was last active. The country is worked out from the IP address on our own servers; the address is not sent to anyone else.
+
+- The session you are using right now is marked **Current**.
+- To end another session, click the bin button at the end of its row. That browser is signed out at once.
+
+A session you have logged out of can stay in the list for about a week before it is cleared.
+
+If you see a session you do not recognize, end it. Because sign-in codes go to your email address, also make sure nobody else can read that mailbox, and consider turning on two-factor authentication.
+
+## Profile details
+
+Open **Profile**, click **Edit profile**, change the fields, and click **Save changes**.
+
+| Field | Notes |
+| --- | --- |
+| **Full name** | The name collaborators see. From 2 to 30 characters. |
+| **Bio** | Up to 160 characters. |
+| **Affiliation** | Up to 50 characters. |
+| **Location** | Up to 50 characters. |
+
+**Email address** cannot be changed. It is where your sign-in codes are sent.
+
+## Export your data
+
+**One project.** On the [Projects](/projects) page, open a project's menu and choose **Download ZIP**, or in the editor choose **File**, then **Download ZIP**. The ZIP holds every file in the project, uploaded images included.
+
+**Everything.** There is no button for this in the app. The API has an endpoint that returns your data as one JSON file:
+
+1. In **Settings**, under **API keys**, click **Create API key**, give it a name, and copy the key. It is shown only once.
+2. Call the endpoint with the key:
+
+```bash
+curl https://api.texer.org/users/profile/export \
+  -H "x-api-key: YOUR_API_KEY" \
+  -o my-data.json
+```
+
+The file holds your profile, the projects you own with the text of their files, your snips and PDFs with the LaTeX they were converted to, your sessions, and the names of your API keys. It does not hold images or other uploaded files: download those project by project as ZIPs. See [Users](/docs/api/users#get-users-profile-export) in the API reference.
+
+## Delete your account
+
+1. Open **Profile**. Under **Danger zone**, click **Delete account**.
+2. Type `delete permanently` and click **Delete my account**.
+
+<Callout type="warning" title="Cancel a paid plan first">
+  Deleting your account does not cancel a subscription, and you cannot reach **Billing** once the account is closed. If you are on a paid plan, cancel it from [Billing](/billing) before you delete the account.
+</Callout>
+
+What happens, and when:
+
+| When | What happens |
+| --- | --- |
+| At once | You are signed out everywhere. Your API keys are deleted. Sign-in codes are no longer sent to your address. |
+| After 30 days | Your data is erased: the projects you own with their files and uploads, your snips and PDFs, your settings, and your personal dictionary. You are removed from projects that other people shared with you. Your name and email address are removed from the account record. |
+
+Payment records are kept after that, without your name or address.
+
+Deleting an account cannot be undone, and an account cannot be reopened during the 30 days. If you sign up again with the same address before they are over, the old data is erased straight away and you start with a new, empty account on the Free plan.
+
+Projects you own are erased for everyone they are shared with. If collaborators still need one, have them download it as a ZIP before the 30 days are up. Projects that other people own are not affected.
+
+## Related
+
+- [Plans and billing](/docs/plans-and-billing): change or cancel a subscription.
+- [Collaboration](/docs/collaboration): who owns a project, and what happens to shared projects.
+- [Troubleshooting](/docs/troubleshooting): what to do when a sign-in code does not arrive.
+- [API keys](/docs/api/api-keys): create and revoke keys.

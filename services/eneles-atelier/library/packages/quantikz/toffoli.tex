@@ -1,0 +1,11 @@
+% Name: Toffoli (CCNOT) gate
+% Description: Three-qubit controlled-controlled-NOT gate.
+% Tags: Toffoli, CCNOT, reversible
+
+\usepackage{quantikz}
+
+\begin{quantikz}
+  \lstick{$|a\rangle$} & \ctrl{2} & \qw \\
+  \lstick{$|b\rangle$} & \ctrl{1} & \qw \\
+  \lstick{$|c\rangle$} & \targ{} & \qw
+\end{quantikz}

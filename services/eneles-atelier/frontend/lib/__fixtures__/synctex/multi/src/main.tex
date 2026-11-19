@@ -1,0 +1,18 @@
+\documentclass{report}
+\usepackage{subfiles}
+\usepackage{localmacros}
+\begin{document}
+\tableofcontents
+
+\chapter{Opening}
+Text in the main file before any input.
+\input{shared}
+
+\input{chapters/intro}
+\include{chapters/methods}
+\subfile{sub/part}
+
+\chapter{Closing}
+\input{shared}
+Final words in the main file. \projectname{} ends here.
+\end{document}

@@ -1,0 +1,127 @@
+---
+title: "Brackets and delimiters"
+description: "Size parentheses, brackets, braces, bars, and angle brackets automatically or by hand."
+summary: "Brackets in LaTeX: size parentheses, brackets, braces, bars, and angle brackets with \\left and \\right or by hand, plus norms and paired delimiters."
+keywords: ["\\left","\\right","\\middle","\\big","\\Big","\\bigg","\\Bigg","\\bigl","\\bigr","\\lvert","\\rvert","\\lVert","\\rVert","\\langle","\\rangle","\\lfloor","\\rfloor","\\lceil","\\rceil","\\{","\\}","parentheses","absolute value","norm","floor","ceiling","evaluated at","\\DeclarePairedDelimiter","mathtools"]
+---
+
+# Brackets and delimiters
+
+Make parentheses, brackets, braces, bars, and angle brackets as tall as what they enclose, either automatically or at a size you choose.
+
+## Delimiters that grow
+
+Typed on their own, `(` and `)` stay at one size, however tall the contents. Put `\left` before the opening delimiter and `\right` before the closing one, and TeX stretches both to fit.
+
+```latex-example
+\[
+  ( \frac{a}{b} )^2
+  \quad\text{becomes}\quad
+  \left( \frac{a}{b} \right)^2
+\]
+```
+
+`\left` and `\right` work with every delimiter:
+
+| Delimiters | Commands |
+| --- | --- |
+| Parentheses, square brackets | `(` `)`, `[` `]` |
+| Braces | `\{` `\}` |
+| Angle brackets | `\langle` `\rangle` |
+| Bars, for absolute value | `\lvert` `\rvert` |
+| Double bars, for a norm | `\lVert` `\rVert` |
+| Floor | `\lfloor` `\rfloor` |
+| Ceiling | `\lceil` `\rceil` |
+
+```latex-example
+\[
+  \left[ \frac{x^3}{3} \right]_0^1
+  \quad
+  \left\{ \frac{1}{n} \right\}_{n \geq 1}
+  \quad
+  \left\langle \frac{u}{2}, v \right\rangle
+  \quad
+  \left\lfloor \frac{n}{2} \right\rfloor
+  \quad
+  \left\lceil \frac{n}{2} \right\rceil
+\]
+```
+
+## The invisible delimiter
+
+Every `\left` needs a `\right`, but the two do not have to match, and either can be a full stop, which prints nothing. Use `\left.` or `\right.` when you want a delimiter on one side only. For a bar in the middle that grows with the pair, such as the one in set notation, use `\middle`.
+
+```latex-example
+\[
+  \left. \frac{d}{dx}\, x^3 \right|_{x=2} = 12
+  \qquad
+  \left\{ x \in \mathbb{R} \,\middle|\, \frac{x}{2} > 1 \right\}
+\]
+```
+
+## Manual sizes
+
+Four commands set a fixed size, from smallest to largest: `\big`, `\Big`, `\bigg`, and `\Bigg`. Add `l` for an opening delimiter, `r` for a closing one, and `m` for one in the middle, as in `\bigl(` and `\bigr)`, so that TeX spaces each correctly.
+
+Choose the size yourself in three cases. Nested delimiters of the same height are easier to read when the outer pair is one step larger, and `\left` will not do that. Around a sum with limits, `\left` and `\right` grow taller than looks good. And a `\left` and `\right` pair cannot be split across an `&` or a `\\` in an aligned equation, while manual sizes can.
+
+```latex-example
+\[
+  \bigl( \quad \Bigl( \quad \biggl( \quad \Biggl(
+  \qquad
+  \bigl( (a + b)(c + d) \bigr)^2
+  \qquad
+  \left( \sum_{k=1}^{n} a_k \right)^2
+  \text{ or }
+  \biggl( \sum_{k=1}^{n} a_k \biggr)^2
+\]
+```
+
+## Absolute values, norms, and angle brackets
+
+The keyboard bar `|` is the same character on both sides, so TeX cannot tell opening from closing and sometimes spaces it wrongly: in `|-x|` the minus is set as a subtraction. `\lvert` and `\rvert` say which side is which. Angle brackets are `\langle` and `\rangle`, never the less-than and greater-than signs, which are relations and get spaced as such.
+
+```latex-example
+\[
+  |-x| \text{ or } \lvert -x \rvert
+  \qquad
+  \lVert u + v \rVert \leq \lVert u \rVert + \lVert v \rVert
+  \qquad
+  <u, v> \text{ or } \langle u, v \rangle
+\]
+```
+
+## Paired delimiters with mathtools
+
+Typing both halves every time is tedious. The `mathtools` package lets you declare a command that supplies the pair. The plain form uses normal size, the starred form adds `\left` and `\right`, and an optional argument takes a manual size.
+
+```latex-document
+\documentclass[varwidth=11cm,border=10pt]{standalone}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\begin{document}
+\[
+  \abs{x}
+  \qquad
+  \abs*{\frac{a}{b}}
+  \qquad
+  \norm[\big]{u + v}
+  \qquad
+  \abs[\Big]{\sum_{k} a_k}
+\]
+\end{document}
+```
+
+## Common mistakes
+
+- **A `\left` without its `\right`.** TeX reports `Missing \right. inserted`. A `\right` with no `\left` gives `Extra \right`. Add the missing half, using `\right.` if nothing should print.
+- **A pair split across lines.** `\left(` on one line of an `align` and `\right)` on the next gives `Extra }, or forgotten \right`, because each cell must be complete. Use `\Bigl(` and `\Bigr)`, which do not need each other.
+- **Bare braces.** `{` and `}` group without printing anything. Write `\{` and `\}`, or `\left\{` and `\right\}`.
+- **`\left` and `\right` everywhere.** Around contents of normal height they change nothing except to add a little space. Use them only where something tall is enclosed.
+
+## Next
+
+- [Sums, integrals, and limits](/learn/sums-integrals-and-limits)
+- [Matrices](/learn/matrices)
+- [Spacing in math](/learn/spacing-in-math)

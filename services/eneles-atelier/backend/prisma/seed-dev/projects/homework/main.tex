@@ -1,0 +1,86 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{CS 521: Algorithms}
+\chead{Homework 4}
+\rhead{Razz}
+\cfoot{\thepage}
+
+\newcounter{problem}
+\newcommand{\problem}[1]{\stepcounter{problem}\section*{Problem \theproblem: #1}}
+\newcommand{\bigO}{\mathcal{O}}
+
+\begin{document}
+
+\begin{center}
+  {\Large \textbf{Homework 4: Dynamic Programming and Greedy Algorithms}} \\[4pt]
+  Due Friday, 30 October 2026
+\end{center}
+
+\problem{Longest increasing subsequence}
+
+Given an array $a_1, \dots, a_n$ of integers, give an $\bigO(n \log n)$ algorithm that returns the length of a longest strictly increasing subsequence.
+
+\paragraph{Solution.} Maintain an array $t$ in which $t[\ell]$ is the smallest value that ends an increasing subsequence of length $\ell$ among the elements seen so far. The array $t$ is strictly increasing, so each new element can be placed by binary search.
+
+\begin{algorithm}[h]
+  \caption{Longest increasing subsequence}
+  \begin{algorithmic}[1]
+    \Function{LIS}{$a_1, \dots, a_n$}
+      \State $t \gets$ empty array
+      \For{$i \gets 1$ \textbf{to} $n$}
+        \State $\ell \gets$ the least index with $t[\ell] \ge a_i$, found by binary search
+        \If{no such index exists}
+          \State append $a_i$ to $t$
+        \Else
+          \State $t[\ell] \gets a_i$
+        \EndIf
+      \EndFor
+      \State \Return the length of $t$
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+\emph{Correctness.} By induction on $i$, after processing $a_i$ the entry $t[\ell]$ is the smallest possible last element of an increasing subsequence of length $\ell$ in $a_1, \dots, a_i$. \emph{Running time.} Each iteration performs one binary search on an array of length at most $n$, so the total is $\bigO(n \log n)$.
+
+\problem{Knapsack with repetition}
+
+There are $n$ item types with integer weights $w_i > 0$ and values $v_i$, and a knapsack of capacity $W$. Each type may be used any number of times.
+
+\paragraph{Solution.} Let $K(c)$ be the best value achievable with capacity $c$. Then $K(0) = 0$ and
+\[
+  K(c) = \max\Bigl( K(c - 1), \ \max_{i \,:\, w_i \le c} \bigl( K(c - w_i) + v_i \bigr) \Bigr) \qquad \text{for } c \ge 1 .
+\]
+Filling the table for $c = 1, \dots, W$ takes $\bigO(nW)$ time and $\bigO(W)$ space. This is pseudo-polynomial: $W$ is exponential in the length of its encoding.
+
+\problem{Interval scheduling}
+
+Prove that choosing, at each step, the compatible interval that finishes first yields a maximum set of pairwise disjoint intervals.
+
+\begin{proof}
+Let $g_1, \dots, g_k$ be the greedy choice and $o_1, \dots, o_m$ an optimal solution, both sorted by finishing time. We show by induction that $f(g_j) \le f(o_j)$ for every $j \le k$. The case $j = 1$ holds because greedy picks the interval that finishes first overall. If $f(g_{j-1}) \le f(o_{j-1})$, then $o_j$ starts after $g_{j-1}$ finishes, so $o_j$ was available to greedy, which therefore chose an interval finishing no later.
+
+If $m > k$, the interval $o_{k+1}$ starts after $f(o_k) \ge f(g_k)$ and would have been picked by greedy, a contradiction. Hence $m = k$.
+\end{proof}
+
+\problem{Huffman codes}
+
+For the frequencies $a\colon 45$, $b\colon 13$, $c\colon 12$, $d\colon 16$, $e\colon 9$, $f\colon 5$, a Huffman code assigns
+\begin{center}
+  \begin{tabular}{c|cccccc}
+    Symbol & $a$ & $b$ & $c$ & $d$ & $e$ & $f$ \\ \hline
+    Codeword & 0 & 101 & 100 & 111 & 1101 & 1100
+  \end{tabular}
+\end{center}
+with expected length $(45 \cdot 1 + 13 \cdot 3 + 12 \cdot 3 + 16 \cdot 3 + 9 \cdot 4 + 5 \cdot 4) / 100 = 2.24$ bits per symbol.
+
+\end{document}

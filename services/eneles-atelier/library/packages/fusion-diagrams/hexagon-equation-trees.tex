@@ -1,0 +1,24 @@
+% Name: Hexagon equation with fusion trees
+% Description: The splitting trees of a, b, and c with total charge u on a regular hexagon, as a moves past b and c; the edges p, q, and r are named as in Kitaev's paper.
+% Tags: hexagon equation, R-move, F-move, fusion tree, braiding
+
+\usetikzlibrary{arrows.meta}
+
+\begin{tikzpicture}[x=0.62cm, y=0.62cm, >={Stealth}, font=\footnotesize,
+    tree/.pic={\draw (-1,0.75) -- (0,-0.25) -- (1,0.75) (0,-0.25) -- (0,-0.75); \node[below] at (0,-0.75) {$u$};}]
+  \foreach \ang/\name/\side/\pa/\pb/\pc/\edge in {180/A/L/a/b/c/p, 120/B/L/b/a/c/p, 60/C/R/b/a/c/q,
+      0/D/R/b/c/a/q, 240/E/R/a/b/c/r, 300/F/L/b/c/a/r} {
+    \begin{scope}[shift={(\ang:3.8cm)}, local bounding box=\name]
+      \pic {tree};
+      \foreach \x/\leaf in {-1/\pa,0/\pb,1/\pc} \node[above] at (\x,0.75) {$\leaf$};
+      \if\side L \draw (0,0.75) -- (-0.5,0.25); \node[below left] at (-0.25,0) {$\edge$};
+      \else \draw (0,0.75) -- (0.5,0.25); \node[below right] at (0.25,0) {$\edge$}; \fi
+    \end{scope}
+  }
+  \draw[->] (A) -- node[above left, font=\small] {$R^{ab}_p$} (B);
+  \draw[->] (B) -- node[above, font=\small] {$F^{bac}_u$} (C);
+  \draw[->] (C) -- node[above right, font=\small] {$R^{ac}_q$} (D);
+  \draw[->] (A) -- node[below left, font=\small] {$F^{abc}_u$} (E);
+  \draw[->] (E) -- node[below, font=\small] {$R^{ar}_u$} (F);
+  \draw[->] (F) -- node[below right, font=\small] {$F^{bca}_u$} (D);
+\end{tikzpicture}

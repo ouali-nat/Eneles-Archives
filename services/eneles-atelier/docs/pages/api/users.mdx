@@ -1,0 +1,123 @@
+---
+title: "Users"
+description: "Read and update the profile, export or delete data."
+summary: "The Eneles REST API for users: read and update the profile and avatar, export the account's data, or delete it, with request and response examples."
+keywords: ["profile","avatar","export","gdpr","delete account"]
+method: GET
+---
+
+# Users
+
+Manage user profiles, avatars, and account data.
+
+---
+
+## GET /users/profile
+
+Retrieve the authenticated user's profile.
+
+**Auth:** Bearer token
+
+```bash
+curl https://api.texer.org/users/profile \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+```json
+{
+  "id": 1,
+  "email": "user@university.edu",
+  "name": "Jane Doe",
+  "bio": "PhD student in Mathematics",
+  "affiliation": "MIT",
+  "avatarUrl": "https://cdn.texer.org/avatars/usr_a1b2c3d4.png",
+  "subscriptionType": "pro",
+  "createdAt": "2025-01-15T10:00:00Z"
+}
+```
+
+---
+
+## PUT /users/profile
+
+Update the authenticated user's profile fields.
+
+**Auth:** Bearer token
+
+```bash
+curl -X PUT https://api.texer.org/users/profile \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Doe", "bio": "Postdoc at MIT", "affiliation": "MIT"}'
+```
+
+```json
+{
+  "id": 1,
+  "name": "Jane Doe",
+  "bio": "Postdoc at MIT",
+  "affiliation": "MIT",
+  "updatedAt": "2025-06-15T12:00:00Z"
+}
+```
+
+---
+
+## POST /users/profile/avatar
+
+Upload a profile avatar. Accepts PNG, JPEG, or WebP (max 2 MB).
+
+**Auth:** Bearer token
+
+```bash
+curl -X POST https://api.texer.org/users/profile/avatar \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "avatar=@photo.jpg"
+```
+
+```json
+{
+  "avatarUrl": "https://cdn.texer.org/avatars/usr_a1b2c3d4.png"
+}
+```
+
+---
+
+## GET /users/profile/export
+
+Export all user data as JSON (GDPR compliance).
+
+**Auth:** Bearer token
+
+```bash
+curl https://api.texer.org/users/profile/export \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -o my-data.json
+```
+
+```json
+{
+  "user": { "id": 1, "email": "user@university.edu", "name": "Jane Doe" },
+  "projects": [],
+  "snips": [],
+  "pdfs": [],
+  "settings": {}
+}
+```
+
+---
+
+## DELETE /users/profile
+
+Close the authenticated user's account. Sessions and API keys stop working at once; the account's data is erased 30 days later.
+
+**Auth:** Bearer token
+
+```bash
+curl -X DELETE https://api.texer.org/users/profile \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+```json
+{ "message": "Account deleted" }
+```

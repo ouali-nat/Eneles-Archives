@@ -1,0 +1,10 @@
+{
+  "name": "tikz-cd",
+  "description": "Create commutative diagrams with TikZ. Essential for category theory, algebra, and topology.",
+  "ctanUrl": "https://ctan.org/pkg/tikz-cd",
+  "tags": [
+    "commutative diagrams",
+    "category theory",
+    "algebra"
+  ]
+}

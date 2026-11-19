@@ -1,0 +1,49 @@
+\chapter{Sketched Spectral Embeddings}
+\label{ch:methods}
+
+\section{Randomized range finding}
+
+Instead of computing eigenvectors of $\Lap$ directly, we follow the randomized range finder of Halko, Martinsson, and Tropp~\cite{halko2011finding}. Draw a Gaussian test matrix $\Omega \in \R^{n \times (k+p)}$, where $p$ is a small oversampling parameter, and form
+\begin{equation}
+  Y = (2I - \Lap)^q \, \Omega ,
+  \label{eq:power-iteration}
+\end{equation}
+for a small number $q$ of power iterations. The shift $2I - \Lap$ turns the smallest eigenvalues of $\Lap$ into the largest, so that the range of $Y$ aligns with the eigenvectors we want. Each application costs one sparse matrix--vector product per column, that is $O(m)$ time.
+
+\begin{theorem}[Sketching error]
+\label{thm:sketch}
+Let $Q$ be an orthonormal basis of the range of $Y$ in~\eqref{eq:power-iteration}, and let $\gamma = (2 - \lambda_{k+1}) / (2 - \lambda_k) < 1$. Then, with probability at least $1 - 3p^{-p}$,
+\[
+  \norm{U_k U_k^\top - Q Q^\top U_k U_k^\top}_2 \le C \sqrt{\frac{n}{p}} \; \gamma^{q},
+\]
+where $C$ is an absolute constant.
+\end{theorem}
+
+The bound decays geometrically in $q$, at a rate set by the spectral gap. The proof is given in Appendix~\ref{app:proofs}.
+
+\section{Polynomial filters}
+
+A filter $g$ that is smooth on $[0, 2]$ is well approximated by a polynomial of low degree. We use the Chebyshev expansion
+\begin{equation}
+  g(\lambda) \approx \sum_{j=0}^{J} c_j \, T_j(\lambda - 1),
+\end{equation}
+where $T_j$ is the Chebyshev polynomial of the first kind. Because $T_j$ obeys a three-term recurrence, $g(\Lap) x$ is computed with $J$ sparse matrix--vector products and three vectors of working memory.
+
+\begin{lemma}
+\label{lem:chebyshev}
+If $g$ extends analytically to the Bernstein ellipse with parameter $\rho > 1$ and is bounded there by $M$, then the degree-$J$ Chebyshev approximation $g_J$ satisfies
+\[
+  \sup_{\lambda \in [0, 2]} |g(\lambda) - g_J(\lambda)| \le \frac{2M \rho^{-J}}{\rho - 1} .
+\]
+\end{lemma}
+
+\section{Algorithm}
+
+Combining the two ideas gives the following procedure.
+\begin{enumerate}
+  \item Draw $\Omega$ and compute $Y$ by~\eqref{eq:power-iteration}.
+  \item Orthonormalize $Y$ to obtain $Q$.
+  \item Form the small matrix $B = Q^\top \Lap Q$ and compute its eigendecomposition $B = W \Theta W^\top$.
+  \item Return the approximate eigenvectors $\tilde{U}_k = Q W_k$.
+\end{enumerate}
+The total cost is $O\left(q m (k + p) + n (k + p)^2\right)$ time and $O\left(n (k + p)\right)$ memory.

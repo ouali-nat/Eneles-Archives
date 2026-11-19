@@ -1,0 +1,11 @@
+% Name: Natural transformation
+% Description: Two parallel functors and a 2-cell between them.
+% Tags: natural transformation, 2-cell, category theory
+
+\usepackage{tikz-cd}
+
+\begin{tikzcd}[column sep=huge]
+  \mathcal{C} \arrow[r, bend left=50, "F"{name=U}] \arrow[r, bend right=50, "G"'{name=D}] &
+  \mathcal{D}
+  \arrow[Rightarrow, from=U, to=D, shorten=1.5mm, "\eta"]
+\end{tikzcd}

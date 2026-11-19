@@ -1,0 +1,15 @@
+% Name: 3D cube
+% Description: A labeled 3D cube with dashed hidden edges.
+% Tags: cube, geometry, solid
+
+\usepackage{tikz-3dplot}
+
+\tdplotsetmaincoords{70}{110}
+\begin{tikzpicture}[tdplot_main_coords, scale=2]
+  \draw[thick] (0,0,0) -- (1,0,0) -- (1,1,0) -- (0,1,0) -- cycle;
+  \draw[thick] (0,0,1) -- (1,0,1) -- (1,1,1) -- (0,1,1) -- cycle;
+  \draw[thick] (0,0,0) -- (0,0,1);
+  \draw[thick] (1,0,0) -- (1,0,1);
+  \draw[thick] (1,1,0) -- (1,1,1);
+  \draw[dashed] (0,1,0) -- (0,1,1);
+\end{tikzpicture}

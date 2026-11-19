@@ -1,0 +1,105 @@
+---
+title: "Math basics"
+description: "Write inline and display math, number an equation, and put words inside a formula."
+summary: "Write math in LaTeX: inline and display math, numbered equations with the equation environment, why not to use $, and text inside a formula."
+keywords: ["math mode","inline math","display math","$","$$","\\(","\\[","equation","equation*","\\text","amsmath","formula","Missing $ inserted"]
+---
+
+# Math basics
+
+Put a formula inside a sentence or on a line of its own, choose the right delimiters for each, and mix words into a formula without breaking its spacing.
+
+## Math mode
+
+LaTeX typesets formulas in math mode. Inside it, letters are variables and are set in italic, spaces in the source are ignored, and commands such as `\alpha` and `\frac` become available. You enter math mode with an opening delimiter and leave it with the matching closing one.
+
+Most of this track relies on the `amsmath` package, so load it once in the [preamble](/learn/packages-and-the-preamble):
+
+```latex
+\usepackage{amsmath}
+```
+
+## Inline math
+
+Inline math sits in the line of text. Wrap it in `$…$` or `\(…\)`. Both give the same output.
+
+```latex-example
+A right triangle with legs $a$ and $b$ has a hypotenuse of length
+\(c = \sqrt{a^2 + b^2}\), so $a = 3$ and $b = 4$ give $c = 5$.
+```
+
+`$…$` is shorter and is what most people type. `\(…\)` has different opening and closing forms, so a missing one is easier to find. Put every piece of math in math mode, single letters included: `$x$` is a variable, `x` is a letter of the alphabet.
+
+## Display math
+
+Display math gets a centered line of its own. Wrap it in `\[…\]`.
+
+```latex-example
+The roots of $ax^2 + bx + c = 0$ are
+\[
+  x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}.
+\]
+The sign of $b^2 - 4ac$ tells you how many of them are real.
+```
+
+A displayed formula is still part of its sentence, so the full stop goes inside the display. Do not leave a blank line before `\[`: a blank line starts a new paragraph and adds extra space above the formula.
+
+## Inline or display?
+
+The same formula is set differently in the two modes. Inline, TeX shrinks fractions and moves limits to the side so that the line spacing is not disturbed. Displayed, the formula gets full size.
+
+```latex-example
+Inline, $\sum_{k=1}^{n} \frac{1}{k^2}$ is squeezed to fit the line.
+Displayed, it has room:
+\[
+  \sum_{k=1}^{n} \frac{1}{k^2}
+\]
+```
+
+Keep short expressions inline. Display anything tall, anything long, and anything you will refer to later.
+
+## Numbered equations
+
+The `equation` environment is a display with a number. Give it a `\label` and cite it with `\eqref`, which prints the number in parentheses.
+
+```latex-example
+Euler's formula,
+\begin{equation}
+  e^{i\theta} = \cos\theta + i\sin\theta, \label{eq:euler}
+\end{equation}
+ties the exponential to the circle. Setting $\theta = \pi$
+in \eqref{eq:euler} gives $e^{i\pi} = -1$.
+```
+
+`equation*` is the unnumbered form and is equivalent to `\[…\]`. See [Numbering and referencing equations](/learn/numbering-and-referencing-equations) for the rest.
+
+In Eneles, `Shift + Space` opens the insert palette, whose Math group has an empty `equation` environment, and [visual mode](/docs/visual-mode) typesets inline and display math in the editor as you write.
+
+## Why not `$$`
+
+`$$…$$` is the display syntax of plain TeX, the system LaTeX is built on. It still produces a display, but it bypasses LaTeX's own setup: the space above and below the formula can come out uneven, and the `fleqn` class option, which sets equations flush left, has no effect on it. `\[…\]` has neither problem, so use it everywhere.
+
+## Text inside math
+
+Words typed in math mode are read as products of variables: the letters are italic and the spaces vanish. Wrap words in `\text{…}` to set them in the surrounding text font. Spaces inside `\text` are kept, so include the ones you need.
+
+```latex-example
+\[ speed = distance / time \]
+\[ \text{speed} = \text{distance} / \text{time} \]
+\[ f(x) = 0 \quad \text{if and only if } x = 1 \]
+```
+
+`\quad` adds a gap between the formula and the words. [Spacing in math](/learn/spacing-in-math) covers it.
+
+## Common mistakes
+
+- **A missing closing `$`.** TeX stays in math mode until the paragraph ends and then reports `Missing $ inserted`, often lines away from the cause. Check that every `$` has a partner.
+- **A blank line inside a display.** `\[…\]` and `equation` also stop with `Missing $ inserted`. Delete the blank line, or put a `%` on it if you want the visual break in the source.
+- **A math command in text.** `The angle \alpha is small` gives `Missing $ inserted` too. Write `The angle $\alpha$ is small`.
+- **Words without `\text`.** `$x > 0 for all x$` compiles, but prints the words as a run of italic variables with no spaces.
+
+## Next
+
+- [Fractions, roots, and exponents](/learn/fractions-roots-and-exponents)
+- [Symbols and Greek letters](/learn/symbols-and-greek-letters)
+- [Aligning equations](/learn/aligning-equations)

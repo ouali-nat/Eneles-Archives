@@ -1,0 +1,17 @@
+% Name: Polar plot
+% Description: Rose curve in polar coordinates.
+% Tags: polar, rose, trigonometry
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{polar}
+
+\begin{tikzpicture}
+\begin{polaraxis}[
+  width=6cm,
+  xlabel={$\theta$},
+  ylabel={$r$}
+]
+  \addplot[domain=0:360, samples=73, thick] {sin(4*x)};
+\end{polaraxis}
+\end{tikzpicture}

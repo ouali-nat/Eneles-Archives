@@ -1,0 +1,12 @@
+{
+  "name": "String diagrams",
+  "description": "The graphical calculus of monoidal, braided, and pivotal categories, drawn in plain TikZ: wires for objects, boxes for morphisms, read from bottom to top.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "string diagrams",
+    "graphical calculus",
+    "monoidal categories",
+    "category theory"
+  ],
+  "custom": true
+}

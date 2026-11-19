@@ -1,0 +1,152 @@
+---
+title: "Figures and captions"
+description: "Give an image a numbered caption, control where it is placed, and set figures side by side."
+summary: "Figures and captions in LaTeX: the figure environment, placement specifiers, caption and label order, side-by-side figures, and a list of figures."
+keywords: ["figure","\\caption","\\label","\\centering","float","placement","htbp","[H]","\\clearpage","subcaption","subfigure","minipage","\\listoffigures","side by side","float position"]
+---
+
+# Figures and captions
+
+After this page you can give an image a numbered caption, control where LaTeX places it, put two images side by side, and print a list of figures.
+
+## The figure environment
+
+A `figure` is a container with a caption and a number. It is a float: LaTeX moves it to a spot where it fits, usually the top of a page, instead of leaving a half-empty page where you typed it.
+
+```latex-example
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.45\linewidth]{example-image}
+  \caption{Daily rainfall at the field station.}
+  \label{fig:rainfall}
+\end{figure}
+
+Figure~\ref{fig:rainfall} shows the raw data.
+```
+
+Because a figure can move, never write "the figure below". Give it a `\label` and refer to it by number with `\ref`. Inside the environment, `\centering` centers the content without the extra vertical space that a `center` environment would add.
+
+In Eneles, press `Shift + Space`, open **Structure**, and choose **Figure** to insert this skeleton.
+
+## Placement specifiers
+
+The letters in the square brackets are permissions, not commands. They tell LaTeX where the figure is allowed to go.
+
+| Specifier | Allows the figure |
+| --- | --- |
+| `h` | Here, where it appears in the source, if it fits. |
+| `t` | At the top of a page. |
+| `b` | At the bottom of a page. |
+| `p` | On a separate page that holds only floats. |
+| `!` | Relax the limits on how much of a page floats may fill. |
+
+The order of the letters has no effect: `[htbp]` and `[pbth]` mean the same. LaTeX tries here first, then top, then bottom, then a float page. Without any brackets you get `[tbp]`.
+
+Figures always appear in the order you wrote them. A figure that cannot be placed therefore holds back every later one, and they all pile up at the end of the chapter or document. That is the usual result of a strict `[h]` or an image that is too tall. Allow more positions with `[htbp]`, or flush the waiting figures onto their own pages with `\clearpage`.
+
+To pin a figure exactly where you typed it, load the `float` package and use `[H]`. The figure then no longer floats, so a tall one can leave a large gap at the bottom of the previous page.
+
+## Caption first, then label
+
+`\label` records the last number that was assigned before it. Inside a figure that number comes from `\caption`, so the label must follow the caption. Put it earlier and it picks up the section number instead.
+
+```latex-example
+\setcounter{section}{3}
+\section{Results}
+\begin{figure}[htbp]
+  \centering
+  \label{fig:early}
+  \includegraphics[width=2.5cm]{example-image}
+  \caption{The apparatus.}
+  \label{fig:late}
+\end{figure}
+
+Early label: \ref{fig:early}. Late label: \ref{fig:late}.
+```
+
+Place the caption below the image for figures. That is the convention, and the standard classes space it for that position.
+
+## Side-by-side figures
+
+For parts of one figure, load `subcaption`. Each `subfigure` takes a width and gets its own letter and caption, and the outer `\caption` covers the whole. The `geometry` line only makes the page small enough to show here.
+
+```latex-document
+\documentclass{article}
+\usepackage[paperwidth=12cm,paperheight=9cm,margin=8mm]{geometry}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\pagestyle{empty}
+\begin{document}
+\begin{figure}[htbp]
+  \centering
+  \begin{subfigure}{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{example-image-a}
+    \caption{Before}
+    \label{fig:before}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{example-image-b}
+    \caption{After}
+    \label{fig:after}
+  \end{subfigure}
+  \caption{The sample before and after polishing.}
+  \label{fig:polish}
+\end{figure}
+
+Compare \ref{fig:before} with \ref{fig:after}.
+\end{document}
+```
+
+For two independent figures that share a row, each with its own number, no package is needed. Put each image and caption in a `minipage`.
+
+```latex-example
+\begin{figure}[htbp]
+  \begin{minipage}{0.47\linewidth}
+    \centering
+    \includegraphics[width=0.8\linewidth]{example-image-a}
+    \caption{Front view.}
+  \end{minipage}\hfill
+  \begin{minipage}{0.47\linewidth}
+    \centering
+    \includegraphics[width=0.8\linewidth]{example-image-b}
+    \caption{Side view.}
+  \end{minipage}
+\end{figure}
+```
+
+<Callout type="warning" title="No blank line between the two halves">
+  A blank line between two `subfigure` or `minipage` blocks starts a new paragraph, so the second one drops below the first. Separate them with `\hfill` or nothing at all, and make sure the widths add up to less than `\linewidth`.
+</Callout>
+
+## List of figures
+
+`\listoffigures` prints every caption with its number and page. A long caption makes a clumsy entry, so give a short version in square brackets for the list.
+
+```latex-example
+\listoffigures
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=2cm]{example-image}
+  \caption[Sensor layout]{Layout of the twelve
+    sensors on the north wall, seen from inside.}
+\end{figure}
+```
+
+The list is built from the previous compile, so it needs two passes to be up to date. See [Contents, lists, and indexes](/learn/contents-lists-and-indexes).
+
+## Common mistakes
+
+- **`\label` before `\caption`, or outside the figure.** No error, but `\ref` prints the section number. Move the label after the caption.
+- **Only `[h]`.** LaTeX reports ``LaTeX Warning: `h' float specifier changed to `ht'`` and may still push the figure pages later. Write `[htbp]`.
+- **Many figures and little text.** Figures queue up until TeX stops with `! LaTeX Error: Too many unprocessed floats.` Add `\clearpage` where the queue should be emptied.
+- **`\caption` outside a float.** `! LaTeX Error: \caption outside float.` A caption needs a `figure` or `table` around it.
+
+## Next
+
+- [Tables](/learn/tables)
+- [Cross-references](/learn/cross-references)
+- [Images](/learn/images)

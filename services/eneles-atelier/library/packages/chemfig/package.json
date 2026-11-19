@@ -1,0 +1,11 @@
+{
+  "name": "chemfig",
+  "description": "Draw chemical structural formulas and reaction schemes. Supports bonds, rings, and mechanisms.",
+  "ctanUrl": "https://ctan.org/pkg/chemfig",
+  "tags": [
+    "chemistry",
+    "molecules",
+    "structural formulas",
+    "organic chemistry"
+  ]
+}

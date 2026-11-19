@@ -1,0 +1,93 @@
+---
+title: "Authentication"
+description: "Sign in with a one-time code and use the resulting token."
+summary: "Authenticate with the Eneles REST API: register, sign in with an emailed one-time code, receive a JWT, and include it in every request you make after that."
+keywords: ["login","otp","token","jwt","bearer","session","2fa"]
+method: POST
+---
+
+# Authentication
+
+Register, log in, and manage access tokens. Eneles uses email-based OTP (one-time password) authentication. After verifying an OTP, you receive a JWT that must be included in all subsequent API requests.
+
+## Base URL
+
+All API requests use the following base URL:
+
+```bash
+https://api.texer.org
+```
+
+Include your token in the `Authorization` header:
+
+```bash
+Authorization: Bearer YOUR_TOKEN
+```
+
+---
+
+### POST /auth/signup
+
+Create a new account. An OTP will be sent to the provided email address.
+
+**Auth:** None required
+
+```bash
+curl -X POST https://api.texer.org/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@university.edu", "name": "Jane Doe"}'
+```
+
+```json
+{
+  "message": "Account created. OTP sent to user@university.edu",
+  "expires_in": 300
+}
+```
+
+---
+
+### POST /auth/login
+
+Request an OTP for an existing account. The code is valid for 5 minutes.
+
+**Auth:** None required
+
+```bash
+curl -X POST https://api.texer.org/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@university.edu"}'
+```
+
+```json
+{
+  "message": "OTP sent to user@university.edu",
+  "expires_in": 300
+}
+```
+
+---
+
+### POST /auth/verify-login
+
+Submit the OTP code to receive a JWT access token. This token is used for all authenticated endpoints.
+
+**Auth:** None required
+
+```bash
+curl -X POST https://api.texer.org/auth/verify-login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@university.edu", "otp": "482910"}'
+```
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIs...",
+  "user": {
+    "uid": "usr_a1b2c3d4",
+    "email": "user@university.edu",
+    "name": "Jane Doe",
+    "plan": "free"
+  }
+}
+```

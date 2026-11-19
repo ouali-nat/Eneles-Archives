@@ -1,0 +1,12 @@
+{
+  "name": "Block diagrams",
+  "description": "Signal-flow and control-system block diagrams: summing junctions, feedback paths, and labeled signals.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "block diagram",
+    "control systems",
+    "signal flow",
+    "engineering"
+  ],
+  "custom": true
+}

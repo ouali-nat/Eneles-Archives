@@ -1,0 +1,17 @@
+% Name: Vectors in space
+% Description: Two vectors in the xy-plane, the parallelogram they span, and their cross product.
+% Tags: vectors, cross product, linear algebra, 3D
+
+\usepackage{tikz-3dplot}
+\usetikzlibrary{arrows.meta}
+
+\tdplotsetmaincoords{65}{115}
+\begin{tikzpicture}[tdplot_main_coords, scale=1.5, >={Stealth}]
+  \fill[blue!12] (0,0,0) -- (1.6,0.3,0) -- (2,1.8,0) -- (0.4,1.5,0) -- cycle;
+  \draw[->] (0,0,0) -- (2.4,0,0) node[anchor=north east] {$x$};
+  \draw[->] (0,0,0) -- (0,2.4,0) node[anchor=north west] {$y$};
+  \draw[->] (0,0,0) -- (0,0,2.6) node[anchor=south] {$z$};
+  \draw[->, very thick, blue!70!black] (0,0,0) -- (1.6,0.3,0) node[anchor=north] {$\mathbf{a}$};
+  \draw[->, very thick, red!70!black] (0,0,0) -- (0.4,1.5,0) node[anchor=west] {$\mathbf{b}$};
+  \draw[->, very thick, green!50!black] (0,0,0) -- (0,0,2.2) node[anchor=east] {$\mathbf{a} \times \mathbf{b}$};
+\end{tikzpicture}

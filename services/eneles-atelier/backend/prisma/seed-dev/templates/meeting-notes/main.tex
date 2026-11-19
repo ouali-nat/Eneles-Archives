@@ -1,0 +1,41 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{enumitem}
+\usepackage{amssymb}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\newlist{todolist}{itemize}{1}
+\setlist[todolist]{label=$\square$, leftmargin=1.5em}
+
+\begin{document}
+
+{\Large \textbf{Research Meeting Notes}} \hfill \today
+
+\textbf{Present:} names \\
+\textbf{Agenda:} one line per topic
+
+\section*{Updates since last meeting}
+\begin{itemize}[leftmargin=1.5em]
+  \item What was done.
+  \item What did not work, and why.
+\end{itemize}
+
+\section*{Discussion}
+Notes on each agenda item. Record decisions, not the whole conversation.
+
+\section*{Decisions}
+\begin{enumerate}[leftmargin=1.5em]
+  \item Decision and who made it.
+\end{enumerate}
+
+\section*{Action items}
+\begin{todolist}
+  \item Task, owner, and date.
+  \item Task, owner, and date.
+\end{todolist}
+
+\textbf{Next meeting:} date and time
+
+\end{document}

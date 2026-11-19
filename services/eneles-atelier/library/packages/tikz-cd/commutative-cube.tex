@@ -1,0 +1,12 @@
+% Name: Commutative cube
+% Description: Two commutative squares joined into a cube, with the front edges crossing over the back.
+% Tags: cube, commutative diagram, crossing over
+
+\usepackage{tikz-cd}
+
+\begin{tikzcd}[row sep=1.6em, column sep=1.6em]
+  & A' \arrow[rr] \arrow[dd] & & B' \arrow[dd] \\
+  A \arrow[ur] \arrow[rr, crossing over] \arrow[dd] & & B \arrow[ur] \\
+  & C' \arrow[rr] & & D' \\
+  C \arrow[ur] \arrow[rr] & & D \arrow[ur] \arrow[from=uu, crossing over]
+\end{tikzcd}

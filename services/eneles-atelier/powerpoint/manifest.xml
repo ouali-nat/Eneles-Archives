@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OfficeApp
+  xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+  xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+  xsi:type="TaskPaneApp">
+
+  <!-- IMPORTANT: regenerate this if you ever fork the add-in for a different product. -->
+  <Id>8f2d3c1a-6b4e-4a2f-9c3d-1e7a5b8f2d40</Id>
+  <Version>1.0.4.0</Version>
+  <ProviderName>Eneles</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="Eneles" />
+  <Description DefaultValue="Render LaTeX (math, TikZ, chemfig, circuitikz, and more) with your local TeX installation and drop it straight onto the slide." />
+  <IconUrl DefaultValue="https://localhost:47821/assets/texer-dark-32.png" />
+  <HighResolutionIconUrl DefaultValue="https://localhost:47821/assets/texer-dark-80.png" />
+  <SupportUrl DefaultValue="https://eneles.example" />
+
+  <AppDomains>
+    <AppDomain>https://localhost:47821</AppDomain>
+  </AppDomains>
+
+  <Hosts>
+    <Host Name="Presentation" />
+  </Hosts>
+
+  <Requirements>
+    <Sets DefaultMinVersion="1.1">
+      <Set Name="TaskPaneApi" MinVersion="1.1" />
+      <Set Name="ImageCoercion" MinVersion="1.1" />
+    </Sets>
+  </Requirements>
+
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://localhost:47821/taskpane.html" />
+  </DefaultSettings>
+
+  <Permissions>ReadWriteDocument</Permissions>
+
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Hosts>
+      <Host xsi:type="Presentation">
+        <DesktopFormFactor>
+          <GetStarted>
+            <Title resid="GetStarted.Title" />
+            <Description resid="GetStarted.Description" />
+            <LearnMoreUrl resid="GetStarted.LearnMoreUrl" />
+          </GetStarted>
+          <FunctionFile resid="Commands.Url" />
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <OfficeTab id="TabHome">
+              <Group id="Eneles.Home.v3">
+                <Label resid="Eneles.Group1Label" />
+                <Icon>
+                  <bt:Image size="16" resid="Eneles.Dark.16" />
+                  <bt:Image size="32" resid="Eneles.Dark.32" />
+                  <bt:Image size="80" resid="Eneles.Dark.80" />
+                </Icon>
+                <Control xsi:type="Button" id="Eneles.TaskpaneButton">
+                  <Label resid="Eneles.TaskpaneButton.Label" />
+                  <Supertip>
+                    <Title resid="Eneles.TaskpaneButton.Label" />
+                    <Description resid="Eneles.TaskpaneButton.Tooltip" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Eneles.Dark.16" />
+                    <bt:Image size="32" resid="Eneles.Dark.32" />
+                    <bt:Image size="80" resid="Eneles.Dark.80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>Eneles.Taskpane</TaskpaneId>
+                    <SourceLocation resid="Taskpane.Url" />
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+
+    <Resources>
+      <bt:Images>
+        <bt:Image id="Eneles.Dark.16" DefaultValue="https://localhost:47821/assets/texer-dark-16.png" />
+        <bt:Image id="Eneles.Dark.32" DefaultValue="https://localhost:47821/assets/texer-dark-32.png" />
+        <bt:Image id="Eneles.Dark.80" DefaultValue="https://localhost:47821/assets/texer-dark-80.png" />
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="Commands.Url" DefaultValue="https://localhost:47821/commands.html" />
+        <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:47821/taskpane.html" />
+        <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://eneles.example" />
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="GetStarted.Title" DefaultValue="Eneles is ready" />
+        <bt:String id="Eneles.Group1Label" DefaultValue="Eneles" />
+        <bt:String id="Eneles.TaskpaneButton.Label" DefaultValue="Eneles" />
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="GetStarted.Description" DefaultValue="Click Eneles on the Home tab to render LaTeX and drop it onto the slide." />
+        <bt:String id="Eneles.TaskpaneButton.Tooltip" DefaultValue="Render LaTeX and insert it onto the current slide." />
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+</OfficeApp>

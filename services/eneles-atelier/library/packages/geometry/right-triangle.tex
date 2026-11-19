@@ -1,0 +1,11 @@
+% Name: Right triangle
+% Description: A right triangle with its sides labeled and the right angle marked.
+% Tags: triangle, right angle, geometry
+
+\begin{tikzpicture}[thick]
+  \draw (0,0) coordinate (A) -- (4,0) coordinate (B) -- (4,3) coordinate (C) -- cycle;
+  \draw (3.7,0) -- (3.7,0.3) -- (4,0.3);
+  \node[below] at (2,0) {$a$};
+  \node[right] at (4,1.5) {$b$};
+  \node[above left] at (2,1.5) {$c$};
+\end{tikzpicture}

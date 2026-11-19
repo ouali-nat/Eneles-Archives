@@ -1,0 +1,10 @@
+{
+  "name": "tikzorbital",
+  "description": "Atomic and molecular orbitals using TikZ.",
+  "ctanUrl": "https://ctan.org/pkg/tikzorbital",
+  "tags": [
+    "orbitals",
+    "atomic",
+    "chemistry"
+  ]
+}

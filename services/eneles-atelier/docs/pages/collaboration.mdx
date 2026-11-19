@@ -1,0 +1,59 @@
+---
+title: "Collaboration"
+description: "Share a project, edit together in real time, and manage roles."
+summary: "Share a LaTeX project in Eneles, edit it with co-authors in real time, give each person a role, manage who has access, and look back through version history."
+keywords: ["share","invite","crdt","yjs","presence","cursors","team","roles","history"]
+---
+
+# Collaboration
+
+Work on a LaTeX project with co-authors in real time. Everyone the project is shared with sees the same files, and edits appear for everyone as they are typed.
+
+## Invite collaborators
+
+Only the project owner can invite people.
+
+1. Open the project and click **Share** in the toolbar.
+2. Enter your collaborator's email address under **Add people by email address**.
+3. Choose **Can view** or **Can edit**.
+4. Click **Invite**.
+
+Eneles emails them a link to accept the invitation. They sign in, or create an account, with the address you invited, and the project then appears in their projects list. An invitation expires after seven days. Until it is accepted, it is listed under **People with access** as **Invited**; click the cross next to it to cancel it.
+
+## Roles
+
+- **Can view**: read the files, compile, comment, and use the project chat.
+- **Can edit**: everything **Can view** allows, plus edit files, suggest changes, accept or reject suggestions, and change the project's compiler settings.
+- **Owner**: everything **Can edit** allows, plus invite people, change their roles, remove them, and [sync with GitHub](/docs/github-sync). Each project has one owner, the person who created it.
+
+See [Review](/docs/review) for who can resolve and delete comments.
+
+## Real-time editing
+
+When several people have the project open:
+
+- **Live cursors and selections**: see where each collaborator is typing and what they have selected, labelled with their name.
+- **Who is here**: avatars in the toolbar show who has the project open; hover over one to see which file they are in.
+- **Instant sync**: edits appear for everyone as they are typed.
+- **No conflicts**: simultaneous edits, even in the same line, are merged automatically. Eneles keeps each file as a shared document using Yjs, a CRDT.
+
+Undo (`Ctrl + Z`) takes back only your own edits, never a collaborator's.
+
+## Managing access
+
+In the **Share** dialog, the owner can:
+
+- Change a collaborator's role between **Can view** and **Can edit**.
+- Remove a collaborator with the cross next to their name.
+- Cancel an invitation that has not been accepted.
+
+> **Note:** Real-time collaboration is on every plan, Free included, with no limit on projects or collaborators. See [Pricing](/pricing) for what the plans do differ on.
+
+## Version history
+
+Eneles keeps earlier versions of each file. Open **History** at the bottom of the files panel to see the versions of the file you have open, newest first.
+
+- A version is recorded when the file is saved, at most one a minute while you keep typing.
+- Versions are kept for 30 days.
+- Right-click a version and choose **Add label** to name it, for example "Before reviewer comments".
+- Click the restore icon next to an older version, then **Restore**, to put it back. The restored text is added as a new version, and the earlier versions stay in the list.

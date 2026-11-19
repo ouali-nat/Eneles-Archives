@@ -1,0 +1,18 @@
+% Name: Boxes and arrows
+% Description: Three components and the calls between them: the everyday architecture sketch.
+% Tags: architecture, components, boxes and arrows
+
+\usetikzlibrary{arrows.meta, positioning}
+
+\begin{tikzpicture}[
+  node distance=8mm and 16mm,
+  box/.style={draw, rounded corners, minimum width=24mm, minimum height=10mm},
+  every edge/.style={draw, -{Stealth}},
+]
+  \node[box] (client) {Client};
+  \node[box, right=of client] (api) {API};
+  \node[box, right=of api] (db) {Database};
+
+  \path (client) edge node[above] {HTTP} (api)
+        (api) edge node[above] {SQL} (db);
+\end{tikzpicture}

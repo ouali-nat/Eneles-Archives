@@ -1,0 +1,12 @@
+{
+  "name": "Software diagrams",
+  "description": "Sequence diagrams, UML class diagrams, and entity-relationship diagrams, drawn in plain TikZ.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "UML",
+    "software design",
+    "databases",
+    "sequence diagram"
+  ],
+  "custom": true
+}

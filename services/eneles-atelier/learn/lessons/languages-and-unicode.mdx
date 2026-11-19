@@ -1,0 +1,145 @@
+---
+title: "Languages and Unicode"
+description: "UTF-8 input, babel and language switching, hyphenation, quotation marks with csquotes, and right-to-left and CJK text."
+summary: "Write LaTeX in other languages: UTF-8 input, babel and language switching, hyphenation, quotation marks with csquotes, and right-to-left and CJK text."
+keywords: ["unicode","utf-8","utf8","inputenc","accents","accented letters","umlaut","diacritics","babel","\\selectlanguage","\\foreignlanguage","otherlanguage","french","german","ngerman","spanish","translation","\\today","hyphenation","\\hyphenation","\\-","\\mbox","csquotes","\\enquote","quotation marks","quotes","guillemets","polyglossia","\\setmainlanguage","\\setotherlanguage","\\textarabic","arabic","hebrew","right-to-left","rtl","bidi","chinese","japanese","korean","cjk","xeCJK","\\setCJKmainfont","Amiri","multilingual","unicode character not set up"]
+---
+
+# Languages and Unicode
+
+Write in languages other than English: type accented letters directly, get the right hyphenation, quotation marks, and fixed words such as "Chapter" with `babel`, and set right-to-left and CJK text with XeLaTeX or LuaLaTeX.
+
+## Type characters directly
+
+LaTeX reads source files as UTF-8, so you can type accented and special letters as they are. The accent commands still work and give the same output, which helps on a keyboard that lacks a letter.
+
+```latex-example
+Zoë, Søren, and François met in Kraków for crème brûlée.\par
+Zo\"e, S\o ren, and Fran\c{c}ois met in Krak\'ow for cr\`eme br\^ul\'ee.
+```
+
+Under pdfLaTeX, pair this with `\usepackage[T1]{fontenc}`, so that accented letters are real characters in the font and words that contain them can be hyphenated. Old documents also load `inputenc` with the `utf8` option. That has been the default since 2018 and is no longer needed.
+
+## Set the language with babel
+
+Loading `babel` with a language does three things: it switches to that language's hyphenation rules, translates the words LaTeX prints for you, and applies the language's typographic conventions.
+
+```latex-document
+\documentclass[varwidth=9cm, border=10pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\begin{document}
+\contentsname, \abstractname, \refname, \appendixname.\par
+Nous sommes le \today.
+\end{document}
+```
+
+The same change reaches every heading and caption that LaTeX generates: `\chapter` prints "Chapitre", `\tableofcontents` is titled "Table des matières", and the date follows French order.
+
+## Switch languages
+
+List every language you use. The last one is the main language of the document. `\selectlanguage` switches everything from that point, `\foreignlanguage` covers a short phrase, and the `otherlanguage` environment covers a longer passage.
+
+```latex-document
+\documentclass[varwidth=9cm, border=10pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman, french, english]{babel}
+\begin{document}
+English is the main language. Today is \today.
+
+\selectlanguage{french}
+Le français suit. Nous sommes le \today.
+
+\selectlanguage{english}
+A German title in passing:
+\foreignlanguage{ngerman}{\emph{Die Vermessung der Gezeiten}}.
+\end{document}
+```
+
+Mark foreign passages even when nothing visible changes. The hyphenation rules change with the language, and TeX breaks a German word badly if it applies English rules to it. The spell checker in Eneles is separate from `babel`: set its language under **Project settings**, on the **Editor** tab.
+
+## Hyphenation
+
+TeX hyphenates by rule, and the rules sometimes miss, mostly on technical compounds and names. `\-` marks the places where one occurrence of a word may break.
+
+```latex-example
+\parbox[t]{3.4cm}{We sealed the datalogger before launch.}\qquad
+\parbox[t]{3.4cm}{We sealed the data\-logger before launch.}
+```
+
+To fix a word everywhere, declare it once in the preamble. Separate several words with spaces.
+
+```latex
+\hyphenation{data-logger West-haven}
+```
+
+To stop a word from breaking at all, put it in a box: `\mbox{Westhaven}`.
+
+## Quotation marks with csquotes
+
+Quotation marks differ between languages, and typing them by hand ties the text to one convention. With the `csquotes` package you write `\enquote`, and the marks follow the current `babel` language. Nested quotes switch to the inner style on their own.
+
+```latex-document
+\documentclass[varwidth=10cm, border=10pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman, french, english]{babel}
+\usepackage[autostyle]{csquotes}
+\begin{document}
+\enquote{English quotes with \enquote{nested} ones.}
+
+\selectlanguage{french}
+\enquote{Des guillemets français.}
+
+\selectlanguage{ngerman}
+\enquote{Deutsche Anführungszeichen.}
+\end{document}
+```
+
+## Right-to-left and CJK text
+
+pdfLaTeX handles Latin, Greek, and Cyrillic scripts well. For Arabic, Hebrew, Chinese, Japanese, or Korean, compile with XeLaTeX or LuaLaTeX, which read Unicode natively and use OpenType fonts through `fontspec`. In Eneles, change the engine under **Project settings**, on the **Compiler** tab.
+
+For right-to-left scripts, `polyglossia` takes the place of `babel`. Declare the languages and give the script a font that contains it. `\textarabic` sets a phrase, and the `Arabic` environment sets whole paragraphs from right to left.
+
+```latex
+\documentclass{article}
+\usepackage{polyglossia}
+\setmainlanguage{english}
+\setotherlanguage{arabic}
+\newfontfamily\arabicfont[Script=Arabic]{Amiri}
+\begin{document}
+The Arabic word for ``welcome'' is \textarabic{مرحبا}.
+
+\begin{Arabic}
+هذه فقرة كاملة تُكتب من اليمين إلى اليسار.
+\end{Arabic}
+\end{document}
+```
+
+For Chinese, Japanese, and Korean under XeLaTeX, the `xeCJK` package assigns a font to CJK characters and breaks lines between them, so you can mix them freely with Latin text.
+
+```latex
+\documentclass{article}
+\usepackage{xeCJK}
+\setCJKmainfont{FandolSong-Regular.otf}
+\begin{document}
+Chinese and English on one line: 你好，世界 (hello, world).
+\end{document}
+```
+
+<Callout type="note" title="The font must exist where the document compiles">
+  Both examples name a font, and the compile fails if the machine does not have it. Eneles's compiler includes Amiri, so the Arabic example works there. It does not include `xeCJK` or a CJK font, so the CJK example needs a full TeX Live installation.
+</Callout>
+
+## Common mistakes
+
+- Typing a character the font setup does not cover under pdfLaTeX, such as a Greek letter in English text. TeX stops with "Unicode character α (U+03B1) not set up for use with LaTeX". Use the math command (`$\alpha$`), load the language with `babel`, or switch to XeLaTeX or LuaLaTeX.
+- Assuming the first language in the `babel` options is the main one. It is the last, so `[english, french]` gives a French document with "Table des matières". Put the main language last.
+- Typing straight double quotes. `"word"` prints straight or wrongly curled marks, and with German the `"` character is a shorthand that changes the next letter: `"o` prints "ö". Use `\enquote`.
+- Loading `inputenc` or `fontenc` in a XeLaTeX or LuaLaTeX document. They are for pdfLaTeX and can garble the output. Use `fontspec` alone.
+
+## Next
+
+- [Fonts and sizes](/learn/fonts-and-sizes)
+- [Special characters](/learn/special-characters)
+- [Text formatting](/learn/text-formatting)

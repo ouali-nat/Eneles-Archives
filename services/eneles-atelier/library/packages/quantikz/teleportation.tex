@@ -1,0 +1,11 @@
+% Name: Quantum teleportation
+% Description: The quantum teleportation protocol.
+% Tags: teleportation, protocol
+
+\usepackage{quantikz}
+
+\begin{quantikz}
+  \lstick{$|\psi\rangle$} & \qw & \ctrl{1} & \gate{H} & \meter{} & \cwbend{2} & \qw & \qw \\
+  \lstick{$|0\rangle$} & \gate{H} & \targ{} & \qw & \meter{} & \cwbend{1} & \qw & \qw \\
+  \lstick{$|0\rangle$} & \qw & \qw & \qw & \qw & \gate{X} & \gate{Z} & \rstick{$|\psi\rangle$}
+\end{quantikz}

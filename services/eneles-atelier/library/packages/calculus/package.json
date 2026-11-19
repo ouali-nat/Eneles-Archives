@@ -1,0 +1,12 @@
+{
+  "name": "Functions and calculus",
+  "description": "Graphs of functions on coordinate axes, areas under curves, Riemann sums, and tangent lines, in plain TikZ.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "calculus",
+    "functions",
+    "integrals",
+    "derivatives"
+  ],
+  "custom": true
+}

@@ -1,0 +1,164 @@
+---
+title: "Bibliography with BibTeX"
+description: "Keep sources in a .bib file, cite them by key, and print a reference list in the style you choose."
+summary: "Bibliographies with BibTeX: write a .bib file, cite sources with \\cite, choose a bibliography style, author-year citations with natbib, and what a compile does."
+keywords: ["BibTeX",".bib","\\cite","\\bibliography","\\bibliographystyle","\\nocite","natbib","\\citet","\\citep","plainnat","@article","@book","@inproceedings","@misc","thebibliography","\\bibitem",".bst",".bbl","references","citations","works cited","DOI","arXiv","citation key"]
+---
+
+# Bibliography with BibTeX
+
+After this page you can keep your sources in a `.bib` file, cite them by key, and have the reference list formatted and sorted for you in the style you choose.
+
+## The .bib file
+
+A `.bib` file is a plain-text database. Each entry has a type, a key that you choose, and a list of fields.
+
+```bibtex
+@article{knuth1984literate,
+  author  = {Knuth, Donald E.},
+  title   = {Literate Programming},
+  journal = {The Computer Journal},
+  volume  = {27},
+  number  = {2},
+  pages   = {97--111},
+  year    = {1984},
+}
+```
+
+Three rules cover most entries:
+
+- Separate fields with commas, and write each value in braces.
+- Join authors with the word `and`, never with commas: `{Knuth, Donald E. and Lamport, Leslie}`.
+- Styles may change the capitalization of titles. Put braces around letters that must stay as typed: `{B}ayesian`, `{LaTeX}`.
+
+| Entry type | For | Fields it needs |
+| --- | --- | --- |
+| `@article` | A journal paper | `author`, `title`, `journal`, `year` |
+| `@book` | A whole book | `author` or `editor`, `title`, `publisher`, `year` |
+| `@inproceedings` | A conference paper | `author`, `title`, `booktitle`, `year` |
+| `@incollection` | A chapter in an edited book | `author`, `title`, `booktitle`, `publisher`, `year` |
+| `@phdthesis`, `@mastersthesis` | A thesis | `author`, `title`, `school`, `year` |
+| `@misc` | Anything else, such as a preprint or a website | None. Use `howpublished` and `note`. |
+
+## Cite and print the list
+
+In the document, `\cite{key}` cites an entry. `\bibliographystyle` chooses the format, and `\bibliography` names the `.bib` file, without its extension, and prints the list at that spot.
+
+```latex-document
+\documentclass[varwidth=11cm,border=10pt]{standalone}
+\begin{filecontents}{references.bib}
+@article{knuth1984literate,
+  author  = {Knuth, Donald E.},
+  title   = {Literate Programming},
+  journal = {The Computer Journal},
+  volume  = {27},
+  number  = {2},
+  pages   = {97--111},
+  year    = {1984},
+}
+@book{lamport1994latex,
+  author    = {Lamport, Leslie},
+  title     = {{LaTeX}: A Document Preparation System},
+  edition   = {Second},
+  publisher = {Addison-Wesley},
+  year      = {1994},
+}
+\end{filecontents}
+\begin{document}
+Literate programming~\cite{knuth1984literate} is older
+than the second edition of the
+manual~\cite[p.~8]{lamport1994latex}.
+
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}
+```
+
+The `filecontents` block only writes `references.bib` so that this example is a single file. In a project, the entries live in their own file. Only works that you cite are listed. `\nocite{key}` lists one without citing it, and `\nocite{*}` lists the whole file.
+
+## Styles
+
+The style decides both how the list looks and what a citation prints.
+
+| Style | Citation | List |
+| --- | --- | --- |
+| `plain` | `[1]` | Sorted by author. |
+| `unsrt` | `[1]` | In order of first citation. |
+| `abbrv` | `[1]` | As `plain`, with first names as initials. |
+| `alpha` | `[Knu84]` | Sorted by author, labeled by name and year. |
+| `plainnat`, `abbrvnat`, `unsrtnat` | Author and year, or numbers | For use with `natbib`, below. |
+
+Journals often supply their own `.bst` file. Add it to the project and give its name, without the extension, to `\bibliographystyle`.
+
+## Author-year citations with natbib
+
+`\cite` alone cannot say "Knuth (1984) showed". The `natbib` package adds a textual form, `\citet`, and a parenthetical form, `\citep`.
+
+```latex-document
+\documentclass[varwidth=11cm,border=10pt]{standalone}
+\usepackage[round]{natbib}
+\begin{filecontents}{references.bib}
+@article{knuth1984literate,
+  author  = {Knuth, Donald E.},
+  title   = {Literate Programming},
+  journal = {The Computer Journal},
+  volume  = {27},
+  pages   = {97--111},
+  year    = {1984},
+}
+\end{filecontents}
+\begin{document}
+\citet{knuth1984literate} treats a program as an essay.
+The idea was influential \citep{knuth1984literate}
+and is argued at length \citep[see][p.~99]{knuth1984literate}.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+\end{document}
+```
+
+`\citeauthor` and `\citeyear` print one part only. The `round` option asks for parentheses. With `numbers` instead, the same commands print numbers, and `sort&compress` turns `[3, 1, 2]` into `[1–3]`.
+
+## What a compile does
+
+A bibliography takes four steps, because LaTeX and BibTeX pass files to each other.
+
+1. **LaTeX** writes the cited keys, the style, and the database name to the `.aux` file. Citations print as `[?]`.
+2. **BibTeX** reads the `.aux` file, formats the cited entries from the `.bib` file, and writes them to a `.bbl` file.
+3. **LaTeX** reads the `.bbl` file, so the list appears, and notes each entry's label.
+4. **LaTeX** runs once more and the citations get their labels.
+
+The `.bbl` file is ordinary LaTeX: a `thebibliography` environment with one `\bibitem` per work. For a very short list you can write one by hand.
+
+```latex-example
+See the manual~\cite{lamport}.
+
+\begin{thebibliography}{9}
+\bibitem{lamport} Leslie Lamport.
+  \emph{LaTeX: A Document Preparation System}.
+  Addison-Wesley, 2nd edition, 1994.
+\end{thebibliography}
+```
+
+<Callout type="tip" title="In Eneles, one compile does all four steps">
+  Eneles runs BibTeX whenever the document uses `\bibliography`, then repeats LaTeX until the citations settle. BibTeX's warnings are listed first in the log. See [Compiling](/docs/compiling#bibliographies-indexes-and-glossaries).
+</Callout>
+
+## Add and cite references in Eneles
+
+You do not have to type entries. Click the book icon (**Add a reference by DOI or arXiv ID**) in the toolbar above the editor, paste a DOI, an arXiv ID, or a link to either, and click **Look up**. Eneles shows the BibTeX entry for you to check, adds it to the `.bib` file you choose, and can insert `\cite{key}` at the cursor.
+
+Type `\cite{`, `\citet{`, or `\citep{` and a list of the keys in every `.bib` file in the project appears, each with its author, year, and title. See [References and citations](/docs/references).
+
+## Common mistakes
+
+- **`[?]` instead of a citation.** The log says ``LaTeX Warning: Citation `knuth84' on page 1 undefined``. The key is misspelled, or the entry is missing from the `.bib` file.
+- **A missing comma between fields.** BibTeX reports ``I was expecting a `,' or a `}'`` with a line number and skips the whole entry, so its citations are undefined too.
+- **Authors separated by commas.** `{A. Smith, B. Jones}` is read as one person, and the names come out scrambled. Write `{Smith, A. and Jones, B.}`.
+- **A title that lost its capitals.** The style lowercased "Bayesian". Protect the letter: `{B}ayesian`.
+
+## Next
+
+- [Bibliography with biblatex](/learn/bibliography-with-biblatex)
+- [Cross-references](/learn/cross-references)
+- [Hyperlinks](/learn/hyperlinks)

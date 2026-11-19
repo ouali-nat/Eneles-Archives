@@ -1,0 +1,170 @@
+---
+title: "Symbols and Greek letters"
+description: "Look up the commands for Greek letters, operators, relations, arrows, set and logic symbols, and dots."
+summary: "LaTeX commands for Greek letters, operators, relations, arrows, set and logic symbols, and dots, in tables with examples that compile on the page."
+keywords: ["\\alpha","\\beta","\\gamma","\\pi","\\varepsilon","\\varphi","\\vartheta","\\Omega","\\times","\\cdot","\\pm","\\leq","\\geq","\\neq","\\approx","\\equiv","\\to","\\rightarrow","\\Rightarrow","\\implies","\\iff","\\mapsto","\\xrightarrow","\\in","\\notin","\\subset","\\subseteq","\\cup","\\cap","\\setminus","\\emptyset","\\varnothing","\\forall","\\exists","\\dots","\\ldots","\\cdots","\\vdots","\\ddots","\\colon","\\mid","amssymb","symbol list","cheat sheet"]
+---
+
+# Symbols and Greek letters
+
+Find the command for the Greek letters, operators, relations, arrows, set symbols, and dots you need most often. Each table is followed by an example that prints its symbols in the same order.
+
+All of these commands work only in math mode. A few come from the `amssymb` package, noted where they appear, so load it next to `amsmath`:
+
+```latex
+\usepackage{amsmath, amssymb}
+```
+
+## Greek letters
+
+A Greek letter's command is its English name: lowercase for the small letter, capitalized for the capital. Capitals exist only where the letter differs from a Latin one, so there is `\Gamma` but no `\Alpha`: type `A`. For the same reason there is no `\omicron`: type `o`.
+
+Six small letters have a second shape, with the prefix `var`. Fields differ on which one they prefer. Pick one and stay with it.
+
+```latex-example
+\[ \alpha \quad \beta \quad \gamma \quad \delta \quad \epsilon \quad \zeta
+   \quad \eta \quad \theta \quad \iota \quad \kappa \quad \lambda \quad \mu \]
+\[ \nu \quad \xi \quad \pi \quad \rho \quad \sigma \quad \tau
+   \quad \upsilon \quad \phi \quad \chi \quad \psi \quad \omega \]
+\[ \Gamma \quad \Delta \quad \Theta \quad \Lambda \quad \Xi \quad \Pi
+   \quad \Sigma \quad \Upsilon \quad \Phi \quad \Psi \quad \Omega \]
+\[ \epsilon\,\varepsilon \quad \theta\,\vartheta \quad \phi\,\varphi
+   \quad \rho\,\varrho \quad \pi\,\varpi \quad \sigma\,\varsigma \]
+```
+
+## Operators
+
+Binary operators sit between two terms, and TeX puts a medium space on each side.
+
+| Command | Meaning | Command | Meaning |
+| --- | --- | --- | --- |
+| `\pm` | plus or minus | `\mp` | minus or plus |
+| `\times` | multiplication cross | `\cdot` | multiplication dot |
+| `\div` | division sign | `\circ` | composition |
+| `\oplus` | direct sum | `\otimes` | tensor product |
+
+```latex-example
+\[
+  a \pm b \quad a \mp b \quad a \times b \quad a \cdot b \quad
+  a \div b \quad f \circ g \quad U \oplus V \quad U \otimes V
+\]
+```
+
+## Relations
+
+Relations compare two sides and get a slightly wider space than operators.
+
+| Command | Meaning | Command | Meaning |
+| --- | --- | --- | --- |
+| `\leq` | less than or equal to | `\geq` | greater than or equal to |
+| `\neq` | not equal to | `\approx` | approximately equal to |
+| `\equiv` | identical or congruent to | `\sim` | similar to, distributed as |
+| `\cong` | isomorphic to | `\propto` | proportional to |
+| `\ll` | much less than | `\gg` | much greater than |
+| `\mid` | divides | `\perp` | perpendicular to |
+
+Put `\not` in front of a relation to strike it through. `amssymb` has better-drawn versions of the common ones, such as `\nmid`.
+
+```latex-example
+\[
+  a \leq b \quad a \geq b \quad a \neq b \quad a \approx b \quad
+  a \equiv b \quad a \sim b
+\]
+\[
+  A \cong B \quad y \propto x \quad a \ll b \quad a \gg b \quad
+  a \mid b \quad u \perp v \quad a \not\equiv b \quad a \nmid b
+\]
+```
+
+## Arrows
+
+| Command | Meaning | Command | Meaning |
+| --- | --- | --- | --- |
+| `\to` | right arrow, same as `\rightarrow` | `\gets` | left arrow, same as `\leftarrow` |
+| `\mapsto` | maps to | `\leftrightarrow` | two-way arrow |
+| `\Rightarrow` | implies | `\Leftrightarrow` | if and only if |
+| `\implies` | implies, longer and with more space | `\iff` | if and only if, longer and with more space |
+| `\hookrightarrow` | inclusion | `\longrightarrow` | long right arrow |
+
+`\xrightarrow` from `amsmath` stretches to fit a label written above it. When you name a function's domain and codomain, write `\colon` instead of `:` to get the right spacing.
+
+```latex-example
+\[
+  x \to 0 \quad a \gets b \quad x \mapsto x^2 \quad
+  A \leftrightarrow B \quad P \Rightarrow Q \quad P \Leftrightarrow Q
+\]
+\[
+  P \implies Q \quad P \iff Q \quad A \hookrightarrow B \quad
+  A \longrightarrow B \quad A \xrightarrow{\;f\;} B
+\]
+\[ f \colon \mathbb{R} \to \mathbb{R}, \quad x \mapsto x^2 \]
+```
+
+## Sets and logic
+
+| Command | Meaning | Command | Meaning |
+| --- | --- | --- | --- |
+| `\in` | is an element of | `\notin` | is not an element of |
+| `\subset` | subset | `\subseteq` | subset or equal |
+| `\cup` | union | `\cap` | intersection |
+| `\setminus` | set difference | `\emptyset` | empty set |
+| `\forall` | for all | `\exists` | there exists |
+| `\neg` | not | `\land`, `\lor` | and, or |
+
+`amssymb` adds `\varnothing`, a rounder empty set, and `\nexists`. Braces are grouping characters in LaTeX, so the braces of a set are written `\{` and `\}`. Number sets such as `\mathbb{R}` are covered in [Math fonts](/learn/math-fonts).
+
+```latex-example
+\[
+  x \in A \quad x \notin B \quad A \subset B \quad A \subseteq B \quad
+  A \cup B \quad A \cap B \quad A \setminus B \quad \emptyset
+\]
+\[
+  \forall x \; \exists y \quad \neg P \quad P \land Q \quad P \lor Q
+  \quad \varnothing \quad \nexists z
+\]
+\[ \{\, n \in \mathbb{N} \mid n \text{ is even} \,\} \]
+```
+
+## Dots
+
+| Command | Use |
+| --- | --- |
+| `\dots` | lets `amsmath` choose low or centered dots from the symbol that follows |
+| `\ldots` | low dots, for lists separated by commas |
+| `\cdots` | centered dots, between operators and relations |
+| `\vdots` | vertical dots |
+| `\ddots` | diagonal dots |
+
+```latex-example
+\[
+  x_1, x_2, \dots, x_n
+  \qquad
+  x_1 + x_2 + \dots + x_n
+\]
+\[
+  x_1, \ldots, x_n
+  \qquad
+  x_1 \cdots x_n
+  \qquad
+  \vdots
+  \qquad
+  \ddots
+\]
+```
+
+The last two are mostly used in [matrices](/learn/matrices).
+
+Eneles's autocomplete suggests most of these commands as you type, with the symbol or its name beside the suggestion.
+
+## Common mistakes
+
+- **Typing the keyboard version.** `<=`, `!=`, `->`, and `...` print exactly those characters. Use `\leq`, `\neq`, `\to`, and `\dots`.
+- **Asking for a capital that does not exist.** `\Alpha` and `\Beta` stop with `Undefined control sequence`. Use the Latin letters `A` and `B`.
+- **Bare braces for a set.** `{1, 2, 3}` prints no braces at all, because `{` and `}` only group. Write `\{1, 2, 3\}`.
+- **A plain bar for "divides" or "such that".** `|` gets no space around it. `\mid` is the same bar spaced as a relation.
+
+## Next
+
+- [Aligning equations](/learn/aligning-equations)
+- [Brackets and delimiters](/learn/brackets-and-delimiters)
+- [Math fonts](/learn/math-fonts)

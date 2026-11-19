@@ -1,0 +1,13 @@
+{
+  "name": "Fusion diagrams",
+  "description": "Anyon fusion and splitting, fusion trees, and the F and R moves of a fusion category, drawn in plain TikZ with the equations as LaTeX.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "fusion category",
+    "anyons",
+    "topological quantum computation",
+    "F-move",
+    "R-move"
+  ],
+  "custom": true
+}

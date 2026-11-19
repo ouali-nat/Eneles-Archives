@@ -1,0 +1,10 @@
+% Name: SWAP gate
+% Description: Swap two qubit states.
+% Tags: SWAP, two qubit
+
+\usepackage{quantikz}
+
+\begin{quantikz}
+  \lstick{$|a\rangle$} & \swap{1} & \rstick{$|b\rangle$} \\
+  \lstick{$|b\rangle$} & \targX{} & \rstick{$|a\rangle$}
+\end{quantikz}

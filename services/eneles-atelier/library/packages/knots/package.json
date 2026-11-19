@@ -1,0 +1,11 @@
+{
+  "name": "knots",
+  "description": "Knot and link diagrams with the knots TikZ library from spath3: draw the strands, and the library breaks them at the crossings.",
+  "ctanUrl": "https://ctan.org/pkg/spath3",
+  "tags": [
+    "knots",
+    "links",
+    "topology",
+    "knot theory"
+  ]
+}

@@ -1,0 +1,10 @@
+node_modules/
+dist/
+build/
+release/
+public/
+*.log
+.DS_Store
+
+# CA private key — never commit, never bundle. See ca-private/README.md.
+ca-private/ca.key

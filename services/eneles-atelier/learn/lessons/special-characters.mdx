@@ -1,0 +1,126 @@
+---
+title: "Special characters"
+description: "Reserved characters, quotation marks, dashes, accents, non-breaking spaces, and comments."
+summary: "Type special characters in LaTeX: reserved characters such as % and &, quotation marks, dashes, accents and Unicode, non-breaking spaces, and comments."
+keywords: ["escape","escaping","reserved characters","percent","\\%","dollar","\\$","ampersand","\\&","hash","\\#","underscore","\\_","braces","\\{","\\}","backslash","\\textbackslash","tilde","\\textasciitilde","caret","\\textasciicircum","quotes","quotation marks","dash","en dash","em dash","hyphen","minus","ellipsis","\\dots","\\ldots","accent","accents","umlaut","unicode","utf-8","fontenc","T1","non-breaking space","tie","~","comment","%"]
+---
+
+# Special characters
+
+Print the characters LaTeX reserves for itself, and get quotation marks, dashes, accents, and non-breaking spaces right.
+
+## Reserved characters
+
+Ten characters have a job in the LaTeX language, so typing them does not print them. Seven print when you put a backslash in front. The other three have a command.
+
+| Character | What LaTeX uses it for | To print it |
+| --- | --- | --- |
+| `%` | Starts a comment | `\%` |
+| `$` | Starts and ends math | `\$` |
+| `&` | Separates the columns of a table | `\&` |
+| `#` | Stands for an argument in a command definition | `\#` |
+| `_` | Subscript in math | `\_` |
+| `{` and `}` | Group text and hold arguments | `\{` and `\}` |
+| `\` | Starts a command | `\textbackslash` |
+| `^` | Superscript in math | `\textasciicircum` |
+| `~` | Non-breaking space | `\textasciitilde` |
+
+```latex-example
+A 15\% discount saves \$3 on item \#7 at Smith \& Sons.
+
+The file \texttt{report\_final.tex} is in \texttt{C:\textbackslash docs}.
+
+A set \{1, 2, 3\}, a tilde \textasciitilde, and a caret \textasciicircum.
+```
+
+`\\` does not print a backslash. It breaks the line.
+
+With pdfLaTeX, also put `\usepackage[T1]{fontenc}` in the preamble. Without it, `<`, `>`, and `|` typed in text come out as other symbols.
+
+## Quotation marks
+
+Open a quotation with backticks and close it with apostrophes: two of each for double quotes, one of each for single quotes. The `"` key gives the same mark at both ends, so it is wrong at the opening.
+
+```latex-example
+``Double quotes'' and `single quotes' use backticks and apostrophes.
+
+"The straight key" gives the same mark twice.
+```
+
+You can also paste curly quotes straight into the source. For quotes that follow the rules of the document's language, see [Languages and Unicode](/learn/languages-and-unicode).
+
+## Dashes and ellipses
+
+LaTeX has three dashes, typed as one, two, or three hyphens, and the minus sign is a fourth thing again.
+
+| You type | You get | Use it for |
+| --- | --- | --- |
+| `-` | Hyphen | Compound words: well-known |
+| `--` | En dash | Ranges: pages 10–20 |
+| `---` | Em dash | A break in a sentence |
+| `$-$` | Minus sign | Negative numbers and math |
+
+For an ellipsis, use `\dots`. Three typed periods are spaced too tightly.
+
+```latex-example
+A well-known result, pages 10--20, a pause---like this---and $-5$.
+
+Wait... or wait\dots{} and then $1, 2, \dots, n$.
+```
+
+## Accents and Unicode
+
+LaTeX reads UTF-8, so you can type accented letters directly. Every accent also has a command, which is useful when your keyboard lacks the letter.
+
+```latex-example
+Zoë Brontë met Señor Núñez in a café in Kraków.
+
+Zo\"e Bront\"e met Se\~nor N\'u\~nez in a caf\'e in Krak\'ow.
+```
+
+| You type | You get | You type | You get |
+| --- | --- | --- | --- |
+| `\'e` | é | `\c{c}` | ç |
+| `` \`e `` | è | `\v{s}` | š |
+| `\^o` | ô | `\o` | ø |
+| `\"u` | ü | `\aa` | å |
+| `\~n` | ñ | `\ss` | ß |
+
+pdfLaTeX knows the Latin letters of European languages. Greek, Cyrillic, Chinese, and other scripts need more setup; see [Languages and Unicode](/learn/languages-and-unicode).
+
+## Spaces that matter
+
+`~` is a space where the line may not break. Use it to keep a number with its unit, a title with a name, and a reference with its word.
+
+LaTeX also ends a command name at the first character that is not a letter, and it swallows the spaces after the name. After a command that prints text, add `{}` or a backslash followed by a space to keep the gap.
+
+```latex-example
+Dr.~Chen weighed the 5~kg sample shown in Figure~3.
+
+\LaTeX is fun. \LaTeX{} is fun. \LaTeX\ is fun.
+```
+
+LaTeX puts a little extra space after a period that ends a sentence. After an abbreviation in the middle of a sentence, write a backslash and a space, as in `e.g.\ three`, to get an ordinary space.
+
+## Comments
+
+Everything from `%` to the end of the line is ignored, including the line break itself. Use comments for notes to yourself and to switch lines off while you look for an error. In Eneles, `Ctrl + /` comments or uncomments the selected lines.
+
+```latex-example
+Profit rose 12\% this year. % TODO: check this figure
+This sentence continues % a comment can sit in the middle
+on the next source line.
+```
+
+## Common mistakes
+
+- **An unescaped `%`.** `a 15% discount` compiles, but the rest of the line vanishes without a warning. If the lost part held a closing brace, the error appears much later, as `Runaway argument` or `File ended while scanning use of`. Write `\%`.
+- **An unescaped `_` in text.** LaTeX stops with `Missing $ inserted`, because a subscript is only allowed in math. This is common in file names and identifiers. Write `\_`.
+- **An unescaped `&` or `#`.** LaTeX stops with `Misplaced alignment tab character &`, or with ``You can't use `macro parameter character #' in horizontal mode``. Write `\&` and `\#`.
+- **A character pdfLaTeX does not know.** A pasted Greek letter or symbol stops the compile with `Unicode character α (U+03B1) not set up for use with LaTeX`. Replace it with its command, such as `$\alpha$`. For whole passages in another script, see [Languages and Unicode](/learn/languages-and-unicode).
+
+## Next
+
+- [Packages and the preamble](/learn/packages-and-the-preamble)
+- [Languages and Unicode](/learn/languages-and-unicode)
+- [Symbols and Greek letters](/learn/symbols-and-greek-letters)

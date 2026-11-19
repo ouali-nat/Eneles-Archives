@@ -1,0 +1,80 @@
+name: Eneles Atelier validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "services/eneles-atelier/**"
+      - "atelier/**"
+      - "css/eneles-atelier-home.css"
+      - "index.html"
+      - "js/aurore-auth-bootstrap.js"
+      - "vercel.json"
+      - ".github/workflows/eneles-atelier-validation.yml"
+  push:
+    branches: [feat/eneles-atelier-integration]
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    name: Frontend — Next.js production build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/eneles-atelier/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: services/eneles-atelier/frontend/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: https://api.eneles-atelier.example
+          NEXT_PUBLIC_DOMAIN_NAME: eneles-atelier.example
+          NEXT_PUBLIC_ENELES_PARENT_ORIGINS: https://aurore-section-archivescom.vercel.app,https://aurore-section-archives.com,https://eneles-archives-ouali1.vercel.app
+
+  backend:
+    name: Backend — Prisma client and NestJS build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/eneles-atelier/backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: services/eneles-atelier/backend/package-lock.json
+      - run: npm ci --no-audit --no-fund
+        env:
+          DATABASE_URL: postgresql://ci:ci@localhost:5432/eneles_ci
+      - run: npx prisma validate
+        env:
+          DATABASE_URL: postgresql://ci:ci@localhost:5432/eneles_ci
+      - run: npm run build
+        env:
+          DATABASE_URL: postgresql://ci:ci@localhost:5432/eneles_ci
+          JWT_SECRET: ci-only-test-secret-not-for-production
+      - run: npm test -- --runInBand
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgresql://ci:ci@localhost:5432/eneles_ci
+          JWT_SECRET: ci-only-test-secret-not-for-production
+
+  source-checks:
+    name: Source and configuration checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node --check services/eneles-atelier/compiler/server.js
+      - run: node -e "JSON.parse(require('fs').readFileSync('vercel.json','utf8')); JSON.parse(require('fs').readFileSync('services/eneles-atelier/frontend/package.json','utf8')); JSON.parse(require('fs').readFileSync('services/eneles-atelier/backend/package.json','utf8')); console.log('JSON configuration is valid')"
+      - run: git diff --check

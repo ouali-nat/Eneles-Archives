@@ -1,0 +1,19 @@
+% Name: Deterministic finite automaton
+% Description: A DFA that accepts strings ending in 'ab'.
+% Tags: DFA, finite automaton, regular language
+
+\usetikzlibrary{automata, positioning}
+
+\begin{tikzpicture}[shorten >=1pt, node distance=2.5cm, on grid, auto]
+  \node[state, initial] (q0) {$q_0$};
+  \node[state] (q1) [right=of q0] {$q_1$};
+  \node[state, accepting] (q2) [right=of q1] {$q_2$};
+
+  \path[->]
+    (q0) edge[loop above] node{b} ()
+         edge node{a} (q1)
+    (q1) edge[loop above] node{a} ()
+         edge node{b} (q2)
+    (q2) edge[bend left] node{a} (q1)
+         edge[bend left=50] node[below]{b} (q0);
+\end{tikzpicture}

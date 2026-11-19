@@ -1,0 +1,19 @@
+\section{Results}
+\label{sec:results}
+
+Table~\ref{tab:results} reports exact-match accuracy averaged over positions. Retrieval is nearly solved at every length, whereas multi-hop accuracy halves between 32{,}000 and 512{,}000 tokens.
+
+\begin{table}[ht]
+  \centering
+  \caption{Exact-match accuracy (\%) of the best model in each family, by input length.}
+  \label{tab:results}
+  \begin{tabular}{lrrrr}
+    \toprule
+    Task family & 4k & 32k & 128k & 512k \\
+    \midrule
+    Retrieval & 99.1 & 98.4 & 96.0 & 91.7 \\
+    Aggregation & 88.5 & 79.3 & 64.8 & 47.2 \\
+    Multi-hop & 81.0 & 70.6 & 52.9 & 34.1 \\
+    \bottomrule
+  \end{tabular}
+\end{table}

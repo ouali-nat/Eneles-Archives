@@ -1,0 +1,12 @@
+% Name: Series RLC circuit
+% Description: A sinusoidal source driving a resistor, an inductor, and a capacitor in series.
+% Tags: RLC, AC circuit, resonance
+
+\usepackage{circuitikz}
+
+\begin{circuitikz}
+  \draw (0,0) to[sV, l=$v_s(t)$] (0,3)
+    to[R, l=$R$, i>^=$i(t)$] (3,3)
+    to[L, l=$L$] (6,3)
+    to[C, l=$C$] (6,0) -- (0,0);
+\end{circuitikz}

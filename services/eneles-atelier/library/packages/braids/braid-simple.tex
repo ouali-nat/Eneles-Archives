@@ -1,0 +1,14 @@
+% Name: Horizontal crossing
+% Description: One crossing of two strands, drawn left to right by rotating the braid.
+% Tags: braid, crossing, simple
+
+\usetikzlibrary{braids}
+
+\begin{tikzpicture}
+  \pic[
+    rotate=90,
+    braid/.cd,
+    strand 1/.style={blue},
+    strand 2/.style={red}
+  ] {braid={s_1}};
+\end{tikzpicture}

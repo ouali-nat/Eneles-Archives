@@ -1,0 +1,38 @@
+---
+title: "Image to LaTeX"
+description: "Turn photos of handwriting and screenshots into editable source."
+summary: "Convert photos of handwritten or printed math and screenshots into editable LaTeX with Eneles: supported input, how it works, tips, and the API."
+keywords: ["ocr","snip","handwriting","photo","camera","png","jpg"]
+---
+
+# Image to LaTeX
+
+Convert handwritten or printed math into clean, compilable LaTeX code using Eneles's AI-powered OCR engine.
+
+## Supported input
+
+- **Handwritten equations**: notes, whiteboard photos, paper scans
+- **Printed math**: textbook screenshots, PDF snippets, journal clippings
+- **Mixed content**: text paragraphs with embedded equations
+- **Formats**: PNG, JPG, WebP (max 10 MB per image)
+
+## How it works
+
+1. Navigate to **Snips** from the dashboard sidebar
+2. Drag and drop an image, or click to browse your files
+3. Click **Convert to LaTeX**: the OCR model runs server-side and returns results in 2–5 seconds
+4. Review the generated LaTeX in the preview pane
+5. Copy to clipboard, or insert directly into an open project
+
+## Tips for best results
+
+- Use **high contrast**: dark writing on a light background works best
+- Keep the image **focused**: crop to just the math, avoid large margins
+- **One expression per image** gives higher accuracy than full-page scans
+- If accuracy is low, try **cleaning up the image** (increase contrast, reduce noise) before re-uploading
+
+> **Tip:** The OCR engine handles equations, matrices, aligned environments, summations, integrals, and chemical formulas. For complex multi-line layouts, consider splitting into multiple images.
+
+## Using the API
+
+You can also convert images programmatically via the REST API. See [Snips API](/docs/api/snips) for details.

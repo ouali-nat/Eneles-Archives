@@ -1,0 +1,146 @@
+---
+title: "Columns"
+description: "Two-column documents, multicol for part of a page, column breaks and balancing, and full-width figures."
+summary: "Two-column documents in LaTeX, several columns for part of a page with multicol, column breaks and balancing, and figures that span the full width."
+keywords: ["twocolumn","two columns","\\twocolumn","\\onecolumn","multicol","multicols","multicols*","\\columnbreak","\\raggedcolumns","\\columnsep","\\columnseprule","\\columnwidth","balance","balancing","figure*","table*","full-width figure","spanning figure","column rule","three columns","newsletter","floats and marginpars not allowed"]
+---
+
+# Columns
+
+Set a whole document in two columns, switch to several columns for part of a page, control where columns break, and place figures that span the full width.
+
+## Two columns for the whole document
+
+The `twocolumn` class option sets everything in two columns. The title block made by `\maketitle` still spans the page.
+
+```latex-document
+\documentclass[twocolumn]{article}
+\usepackage[a5paper, margin=14mm]{geometry}
+\usepackage{lipsum}
+\title{Notes on river sediment}
+\author{L. Haddad}
+\date{}
+\begin{document}
+\maketitle
+\section{Method}
+\lipsum[1-3]
+\section{Results}
+\lipsum[4-6]
+\end{document}
+```
+
+Two lengths shape the columns. Set them in the preamble.
+
+```latex
+\setlength{\columnsep}{8mm}        % gap between columns
+\setlength{\columnseprule}{0.4pt}  % a vertical line in the gap (0pt by default)
+```
+
+In a `twocolumn` document, `\newpage` ends the current column, not the page. `\clearpage` ends the page.
+
+## Columns for part of a page with multicol
+
+The `multicol` package provides a `multicols` environment that takes the number of columns. It can start and stop anywhere, so one page can mix full-width text with two or three columns. The examples below sit in a `minipage` only to keep the preview small. In your document, use `multicols` directly in the text.
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage{multicol}
+\begin{document}
+\begin{minipage}{12cm}
+A full-width introduction comes first and runs across the whole text area.
+
+\begin{multicols}{3}
+The same text then continues in three columns. The package pours the text into the columns and makes them the same height, so the block ends evenly however much text there is.
+\end{multicols}
+
+Full-width text resumes below the columns.
+\end{minipage}
+\end{document}
+```
+
+That evening out is called balancing, and it is the main reason to prefer `multicols` over `twocolumn` for short blocks. The starred form, `multicols*`, turns it off: each column fills to the bottom of the page before the next begins.
+
+A long list of short items is a good use:
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage{multicol}
+\begin{document}
+\begin{minipage}{11cm}
+\begin{multicols}{3}
+\begin{itemize}
+  \item Tent
+  \item Sleeping bag
+  \item Stove
+  \item Matches
+  \item Map
+  \item Compass
+  \item Torch
+  \item Water filter
+  \item First-aid kit
+\end{itemize}
+\end{multicols}
+\end{minipage}
+\end{document}
+```
+
+## Headings, rules, and column breaks
+
+The optional argument of `multicols` holds material that spans all the columns and is kept on the same page as their first lines, which makes it the right place for a heading. `\columnbreak` forces the text after it into the next column.
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage{multicol}
+\setlength{\columnsep}{8mm}
+\setlength{\columnseprule}{0.4pt}
+\begin{document}
+\begin{minipage}{11cm}
+\begin{multicols}{2}[\subsection*{Two views of the same data}]
+\textbf{For.} The trend holds in every season we sampled, and the effect grows with depth.
+
+\columnbreak
+\textbf{Against.} Only three sites were sampled, all of them downstream of the weir.
+\end{multicols}
+\end{minipage}
+\end{document}
+```
+
+After `\columnbreak` the columns are no longer the same height. If the left column then looks stretched, add `\raggedcolumns` inside the environment so that TeX leaves the spare space at the bottom of a column instead of spreading it between paragraphs.
+
+## Full-width figures and tables
+
+In a `twocolumn` document, `figure` and `table` are one column wide. The starred forms, `figure*` and `table*`, span both columns. TeX places them at the top of a page, and never on the page where they appear in the source, so put them in the source a little earlier than where you want them.
+
+```latex
+\documentclass[twocolumn]{article}
+\usepackage{graphicx}
+\usepackage{lipsum}
+\begin{document}
+\lipsum[1-4]
+
+\begin{figure*}
+  \centering
+  \includegraphics[width=0.7\textwidth]{example-image}
+  \caption{A figure across both columns, at the top of the next page.}
+\end{figure*}
+
+\lipsum[5-12]
+\end{document}
+```
+
+Inside a column, size images with `\columnwidth` or `\linewidth`. `\textwidth` is still the width of the whole text area, so use it only in the starred floats.
+
+`multicols` does not accept ordinary floats at all. Inside it, use `figure*` or `table*` for a full-width float, or include the image directly without a `figure` environment.
+
+## Common mistakes
+
+- Putting a `figure` or `table` inside `multicols`. The log says "Floats and marginpars not allowed inside `multicols' environment!" and the float vanishes from the PDF. Use the starred form, or move the float outside the environment.
+- Sizing an image in a column with `width=\textwidth`. The image is as wide as the whole page and covers the next column. Use `\columnwidth`.
+- Expecting `figure*` to appear where you wrote it. It always moves to the top of a later page. Place it earlier in the source.
+- Narrow columns with long words or URLs. TeX cannot find good line breaks and reports "Overfull \hbox", with text sticking out into the gap. Use fewer columns, allow hyphenation, or wrap the passage in a `sloppypar` environment.
+
+## Next
+
+- [Page layout](/learn/page-layout)
+- [Figures and captions](/learn/figures-and-captions)
+- [Presentations with beamer](/learn/presentations-with-beamer)

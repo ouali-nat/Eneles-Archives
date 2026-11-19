@@ -1,0 +1,45 @@
+---
+title: "References and citations"
+description: "Add references by DOI or arXiv ID, and complete citation keys and labels."
+summary: "Add a reference to your bibliography from its DOI or arXiv ID, then cite it in Eneles with completion for every citation key and label in the project."
+keywords: ["bibtex","bib","doi","arxiv","cite","citation","ref","label","bibliography"]
+---
+
+# References and citations
+
+Add a paper to your bibliography from its DOI or arXiv ID, then cite it and refer to labels with completion that knows every key and label in the project.
+
+## Add a reference from a DOI or arXiv ID
+
+1. In a `.tex` file, put the cursor where the citation should go.
+2. Click the book icon (**Add a reference by DOI or arXiv ID**) in the toolbar above the editor. You need edit access to the project.
+3. Paste a DOI, an arXiv ID, or a link to either, and click **Look up**.
+4. Check the BibTeX entry that appears. It comes from the DOI registry or from arXiv, and you can edit it in the box before adding it.
+5. Under **Add to**, choose one of the project's `.bib` files, or **A new file** and its name (`references.bib` unless you change it).
+6. Leave **Cite it at the cursor** ticked to insert `\cite{key}` where the cursor was.
+7. Click **Add reference**.
+
+The entry is added to the end of the chosen file, and a new file is created if you picked one. If someone has that file open, the entry appears in their editor as an ordinary edit, so nobody's typing is overwritten.
+
+The citation key is made from the first author's surname, the year, and the first significant word of the title, for example `knuth1984literate`. If the file already has that key, a letter is added: `smith2020b`. If you edit the key to one the file already has, Eneles warns you and does not add the entry.
+
+<Callout type="tip" title="Load a new .bib file">
+  A new file is not part of the bibliography until the document loads it. Add `\bibliography{references}` for BibTeX, or `\addbibresource{references.bib}` in the preamble for biblatex. Compiling then runs BibTeX or Biber for you, as described in [Compiling](/docs/compiling#bibliographies-indexes-and-glossaries).
+</Callout>
+
+## Complete citation keys
+
+Type `\cite{` and a list of keys appears, taken from every `.bib` file in the project. Each key shows the first author's surname and the year, with the title alongside. The same list appears after `\citep{`, `\citet{`, `\parencite{`, `\textcite{`, `\autocite{`, `\nocite{` and the other citation commands.
+
+To cite several works, type a comma after a key and the list appears again for the next one.
+
+## Complete labels
+
+Type `\ref{` and a list of the labels defined with `\label` in every `.tex` file in the project appears. Each label shows the nearest heading or caption above it, and the file and line where it is defined. The same list appears after `\eqref{`, `\autoref{`, `\cref{`, `\Cref{`, `\pageref{`, `\nameref{` and `\vref{`.
+
+Both lists follow the **Auto-complete** setting. If it is off, press `Ctrl + Space` to open them. See [Editing](/docs/editing#editor-settings).
+
+## Related
+
+- [Compiling](/docs/compiling): how BibTeX and Biber run during a compile.
+- [Visual mode](/docs/visual-mode): citations and references drawn as chips.

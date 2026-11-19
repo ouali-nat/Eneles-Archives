@@ -1,0 +1,150 @@
+---
+title: "Code listings"
+description: "Verbatim text, highlighted and numbered code with the listings package, and why minted does not run here."
+summary: "Code listings in LaTeX: verbatim text, highlighted and numbered code with the listings package, styling, captions, and why minted does not run here."
+keywords: ["verbatim","\\verb","listings","lstlisting","\\lstinline","\\lstinputlisting","\\lstset","\\lstdefinestyle","\\lstlistoflistings","source code","code block","syntax highlighting","line numbers","numbers=left","breaklines","showstringspaces","basicstyle","keywordstyle","commentstyle","stringstyle","frame","caption","language","python","c","java","minted","pygments","shell escape","fragile","program listing"]
+---
+
+# Code listings
+
+Show source code exactly as typed, from a single command name in a sentence to a numbered, highlighted listing with a caption you can refer to.
+
+## Verbatim text
+
+Code is full of characters that mean something to LaTeX: backslashes, braces, underscores, percent signs. Verbatim mode switches those meanings off and prints every character as it is, in a monospaced font.
+
+For a short piece inside a sentence, use `\verb`. The character right after `\verb` is the delimiter, and the text runs up to the next occurrence of it. Any character that does not appear in the code will do. For whole lines, use the `verbatim` environment.
+
+```latex-example
+Type \verb|\frac{a}{b}| for a fraction, or set a path
+with \verb+C:\Users\me+ using a different delimiter.
+
+\begin{verbatim}
+for f in *.tex; do
+    echo "$f: 100% done"
+done
+\end{verbatim}
+```
+
+Verbatim text is never broken across lines and gets no highlighting. For anything longer than a few lines, use a listings package.
+
+## The listings package
+
+`listings` provides the `lstlisting` environment. Tell it the language and it sets keywords in bold and comments in italics, so that they stand out from the rest of the code.
+
+```latex-document
+\documentclass[varwidth=11cm, border=10pt]{standalone}
+\usepackage{listings}
+\begin{document}
+\begin{lstlisting}[language=Python]
+def mean(values):
+    # arithmetic mean of a list
+    total = sum(values)
+    return total / len(values)
+
+print(mean([3, 5, 10]))
+\end{lstlisting}
+\end{document}
+```
+
+The package knows most common languages, among them `C`, `C++`, `Java`, `Python`, `R`, `SQL`, `bash`, `HTML`, `Matlab`, and `TeX`. Two companions cover the other cases: `\lstinline|x = 1|` sets code inside a sentence, with a delimiter like `\verb`, and `\lstinputlisting` reads a file from your project, so the listing always matches the real code.
+
+```latex
+\lstinputlisting[language=C]{src/main.c}
+```
+
+## Styling
+
+The defaults are plain. `\lstset` in the preamble changes them for every listing. A named style, made with `\lstdefinestyle`, keeps the settings together.
+
+```latex-document
+\documentclass[varwidth=11cm, border=10pt]{standalone}
+\usepackage{xcolor}
+\usepackage{listings}
+\lstdefinestyle{clean}{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue!70!black},
+  commentstyle=\color{green!45!black}\itshape,
+  stringstyle=\color{red!65!black},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{gray!50},
+  backgroundcolor=\color{gray!6},
+}
+\lstset{style=clean}
+\begin{document}
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+
+int main(void) {
+    // greet three times
+    for (int i = 0; i < 3; i++) {
+        printf("Hello, %d\n", i);
+    }
+    return 0;
+}
+\end{lstlisting}
+\end{document}
+```
+
+| Key | Effect |
+| --- | --- |
+| `basicstyle` | Font and size of the whole listing. Start with `\ttfamily\small` |
+| `keywordstyle`, `commentstyle`, `stringstyle` | How each kind of token looks. The default typewriter font has no bold, so mark keywords with color |
+| `breaklines=true` | Wrap long lines instead of letting them run off the page |
+| `showstringspaces=false` | Print spaces inside strings as spaces, not as small open-box marks |
+| `frame=single` | A box around the listing. Also `lines`, `leftline`, `none` |
+| `tabsize=4` | Width of a tab character |
+| `columns=fullflexible` | Natural letter spacing, which also makes copied code cleaner |
+
+## Captions and line numbers
+
+Give a listing a `caption` and a `label`, and it is numbered and can be referenced like a figure. `numbers=left` adds line numbers.
+
+```latex-document
+\documentclass[varwidth=11cm, border=10pt]{standalone}
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue!70!black},
+  numbers=left,
+  numberstyle=\scriptsize\color{gray},
+  xleftmargin=2em,
+  frame=lines,
+}
+\begin{document}
+\begin{lstlisting}[language=Python, caption={Greatest common divisor}, label={lst:gcd}]
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+\end{lstlisting}
+
+Listing~\ref{lst:gcd} loops until the remainder on line 3 reaches zero.
+\end{document}
+```
+
+`\lstlistoflistings` prints a list of all captioned listings, like `\listoffigures`. To show part of a file, add `firstline` and `lastline` to `\lstinputlisting`.
+
+## minted
+
+The `minted` package produces richer highlighting by running an external program, Pygments, while the document compiles. That requires shell escape, a setting that lets TeX run commands on the machine.
+
+<Callout type="warning" title="minted does not compile on Eneles">
+  Eneles compiles every project with shell escape turned off, for every engine, so a document that loads `minted` fails. Use `listings` instead. See [Compiling](/docs/compiling) for the details.
+</Callout>
+
+## Common mistakes
+
+- Using `\verb` inside the argument of another command, such as `\section`, `\footnote`, or `\textbf`. TeX stops with "\verb illegal in argument". Use `\texttt` there and escape the special characters, as in `\texttt{\textbackslash frac}`.
+- Leaving `breaklines` off. A long line of code runs past the margin, and nothing warns you except an "Overfull \hbox" in the log. Set `breaklines=true`.
+- Putting accented or other non-ASCII characters in a listing under pdfLaTeX. TeX stops with "Invalid UTF-8 byte sequence", because `listings` reads the code one byte at a time. Keep listings in ASCII, or compile with XeLaTeX or LuaLaTeX.
+- Indenting the code inside `lstlisting` to match the surrounding LaTeX. The indent is printed too. Start the code at the left edge, or strip the indent with the `gobble` key.
+
+## Next
+
+- [Special characters](/learn/special-characters)
+- [Colors](/learn/colors)
+- [Custom commands](/learn/custom-commands)

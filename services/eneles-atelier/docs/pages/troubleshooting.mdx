@@ -1,0 +1,106 @@
+---
+title: "Troubleshooting"
+description: "Problems with compiling, saving, images, sharing, GitHub sync, and sign-in, with the cause and the fix for each."
+summary: "Fix common problems in Eneles: the compiler cannot be reached, compiles time out, images do not show, saving fails, GitHub refuses a push, or a code is late."
+keywords: ["problem","error","help","compiler","internal error","timeout","image missing","preview","save failed","cannot edit","read-only","push refused","sign-in code","not working","fix"]
+---
+
+# Troubleshooting
+
+Problems with Eneles itself, what causes each one, and what to do about it. For errors in your LaTeX, see [Read errors and warnings](/docs/compiling#read-errors-and-warnings) in the Compiling guide.
+
+## The compiler cannot be reached
+
+**Recompile** ends on **Failed**, and the preview shows **Compilation errors** with a message that is not about your LaTeX. The compile did not run, or did not finish.
+
+| The message | Why | What to do |
+| --- | --- | --- |
+| "An internal error occurred. Please try again later." | Eneles could not get an answer from its compile service, or the service answered with an error. | Wait a moment and click **Recompile**. Nothing in your project needs to change, and your files are saved whether or not compiles work. |
+| The same message, every time, in one project only | A project that uses a shell escape command is refused before it is compiled, and the refusal can show as this general message. | Remove the commands listed under [Engine](/docs/compiling#engine) in the Compiling guide. |
+| "ThrottlerException: Too Many Requests" | More than ten compiles were started within a minute. | Wait a minute, then compile again. |
+| A network error from your browser, such as "Failed to fetch" | Your browser could not reach Eneles at all. | Check your internet connection, then compile again. |
+
+On a server that is not running in production mode, the message names the cause instead: "Compiler service is not configured. Set COMPILER_URL environment variable." means the API has not been told where the compile service is, and "Failed to reach compiler service" means it is not answering at that address.
+
+## A compile runs out of time
+
+Every compile has 100 seconds in total, shared by every TeX pass and every tool that runs between passes. No single TeX pass may take longer than 60 seconds. The limits are the same on every plan, so changing plan does not raise them.
+
+| What you see | Why | What to do |
+| --- | --- | --- |
+| The compile fails after a minute or more, usually with "Compilation failed. Last log lines:" instead of an error that names a mistake | A TeX pass reached 60 seconds, or the 100 seconds ran out, and the compile was stopped. | Set **Compile mode** to **Draft**. Images are then drawn as empty boxes, and images are where most of a long document's compile time goes. See [Draft mode](/docs/compiling#draft-mode). |
+| An error that names a tool and ends "was not run: the compile ran out of time." | The TeX passes used up the time, so BibTeX, Biber, or makeindex was skipped. | Compile in **Draft** mode. Citations or the index may be out of date in this PDF. |
+| An error that names a tool and ends "took too long and was stopped." | That tool reached its own limit of 30 seconds. | Look at the tool's output at the end of the log for what it was working on. |
+
+## An image does not show in the PDF
+
+| What you see | Why | What to do |
+| --- | --- | --- |
+| An empty box where the image should be | The project is in draft mode. | Click the arrow next to **Recompile** and set **Compile mode** to **Normal**. |
+| The compile fails with "Missing package:" followed by the name of your image | TeX did not find a file at the path given to `\includegraphics`. The message says "package" for any file that TeX cannot find. | Give the image's path from the top level of the project, including its folders, with the same capital and small letters. Paths start at the top level even in a file that is inside a folder. |
+| The image is in the **Files** panel, but clicking it opens an empty file or shows no picture | The file is empty or is not an image. Cloning a project leaves its images empty. | Upload the image again by dragging it onto the **Files** panel. See [Upload images and other files](/docs/projects-and-files#upload-images-and-other-files). |
+| The image is not in the **Files** panel | It was never uploaded, it was left out of an import because it is larger than 10 MB, or the upload was refused because your upload storage is full. | Upload it. If storage is full, delete files you no longer need or change plan: see [Plans and billing](/docs/plans-and-billing). |
+
+## The preview is not updating
+
+The PDF changes only when a compile finishes. It does not follow your typing.
+
+| What you see | Why | What to do |
+| --- | --- | --- |
+| The PDF stays as it was while you type | No compile has run since your changes. | Click **Recompile**, or press `Ctrl + Enter` (`⌘ + Enter` on Mac). |
+| **Compilation errors** shows where the PDF was | The compile failed, so there is no new PDF. | Fix the first error and compile again. See [Read errors and warnings](/docs/compiling#read-errors-and-warnings). |
+| The PDF compiles, but changes to one file never appear | That file is not reached from the main document. | Check the **Main document** setting, and that the main document brings the file in. See [Main document](/docs/compiling#main-document). |
+
+## Save failed appears next to the title
+
+The status next to the project title reads **Save failed** when the last save did not go through. Your text is still in the editor.
+
+| What happened | Why | What to do |
+| --- | --- | --- |
+| A notice says "Someone else saved this file" | Another person, or another tab of yours, saved the file after your last save. | To keep what is in your editor, press `Ctrl + S` to save again. To take the other version instead, reload the page. |
+| No notice | The save request did not reach Eneles, or was refused. That happens when your connection drops, when you have been signed in for seven days and the session has ended, and when your access to the project has changed. | Check your connection and press `Ctrl + S`. Eneles also tries again three seconds after your next change. If it keeps failing, copy any text you cannot afford to lose, then reload the page and sign in again if asked. |
+
+## A collaborator cannot edit
+
+| Why | What to do |
+| --- | --- |
+| They were invited with **Can view**. | The owner opens **Share** and changes their role to **Can edit**. Within about half a minute, the collaborator's editor reloads by itself and they can edit. |
+| They have not accepted the invitation. Until they do, they can only view, and a bar at the top of the project reads "You've been invited to collaborate on this project. Accept to start editing." | They click **Accept invitation** in that bar. |
+| The invitation expired. Invitations last seven days. | The owner invites them again. |
+| They signed in with a different email address from the one that was invited. | They sign in with the invited address. |
+| The file has changes from the assistant waiting. Such a file cannot be typed in by anyone until the changes are accepted or rejected. | Someone with edit access accepts or rejects the proposal. See [Review a proposal](/docs/assistant#review-a-proposal). |
+| The file is an image or another uploaded file. These open as previews, not as text. | To change one, upload the new version. See [Upload images and other files](/docs/projects-and-files#upload-images-and-other-files). |
+
+See [Collaboration](/docs/collaboration) for what each role allows.
+
+## GitHub refuses a push
+
+| The message | Why | What to do |
+| --- | --- | --- |
+| "GitHub has commits this project has not pulled. Pull first, then push." | Someone committed to the branch on GitHub after your last sync. Eneles never overwrites commits on GitHub. | Click **Pull from GitHub**, check the result, then push again. |
+| "GitHub did not accept the token. Link GitHub again with a new one." | The token has expired or was revoked. | Click **Unlink**, create a new token on GitHub, and link the repository again. |
+| "The token cannot reach that repository, or cannot write to it. Give it read and write access to Contents." | The token does not cover this repository, or its **Contents** permission is not **Read and write**. | Fix the token's access on GitHub, or link again with a new token. |
+| "Only the project owner can push to GitHub" | Pushing and pulling are for the project's owner. | Ask the owner to push. |
+| "GitHub is limiting requests right now. Try again in a few minutes." | GitHub's own rate limit was reached. | Wait a few minutes, then push again. |
+
+The steps for tokens, linking, and pulling are in [GitHub sync](/docs/github-sync).
+
+## The sign-in code does not arrive
+
+| Why | What to do |
+| --- | --- |
+| There is no account for the address you entered. The sign-in page answers in the same way whether or not an account exists, so it does not tell you. | Check the address for typing mistakes. If you have not signed up yet, [create an account](/signup). |
+| The account for that address was deleted. No codes are sent to a deleted account. | Sign up again with the address. That starts a new, empty account. |
+| Too many requests. A code can be requested five times a minute, and resent three times a minute. | Wait a minute, then click **Didn't receive a code? Resend**. |
+| The code arrived but is refused. A code works for 10 minutes and only once. | Click **Didn't receive a code? Resend** and use the new code. |
+| After five wrong codes, sign-in for the account pauses. | Wait for the number of minutes the dialog gives, then request a new code. |
+
+If you were invited to a project, sign in with the address the invitation was sent to. See [Account and security](/docs/account-and-security#sign-in-with-an-emailed-code).
+
+## Related
+
+- [Compiling](/docs/compiling): engines, limits, and reading the log.
+- [Projects and files](/docs/projects-and-files): uploads, previews, and storage.
+- [Collaboration](/docs/collaboration): roles and invitations.
+- [GitHub sync](/docs/github-sync): link, push, and pull.
+- [Account and security](/docs/account-and-security): sign-in codes and sessions.

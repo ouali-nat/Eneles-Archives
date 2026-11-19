@@ -1,0 +1,23 @@
+% Name: Directory tree
+% Description: A directory structure visualization.
+% Tags: file system, directory, structure
+
+\usepackage[edges]{forest}
+
+\begin{forest}
+  for tree={
+    font=\ttfamily\small, grow'=0, folder,
+    inner sep=2pt, s sep=1pt, l sep'=5mm,
+    edge={gray, thick},
+  }
+  [project/
+    [src/
+      [main.ts]
+      [utils.ts]
+    ]
+    [docs/
+      [guide.md]
+    ]
+    [package.json]
+  ]
+\end{forest}

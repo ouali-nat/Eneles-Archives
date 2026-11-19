@@ -1,0 +1,123 @@
+---
+title: "Sections and structure"
+description: "Numbered and unnumbered headings, the table of contents, appendices, and the article, report, and book classes."
+summary: "Structure a LaTeX document: headings with \\section, unnumbered headings, the table of contents, appendices, and the article, report, and book classes."
+keywords: ["heading","headings","\\section","\\subsection","\\subsubsection","\\chapter","\\part","\\paragraph","\\subparagraph","\\section*","unnumbered","numbering","secnumdepth","tocdepth","\\tableofcontents","table of contents","toc","\\addcontentsline","\\appendix","appendix","article","report","book","\\frontmatter","\\mainmatter","\\backmatter","outline"]
+---
+
+# Sections and structure
+
+Divide a document into numbered sections, generate a table of contents from them, add appendices, and choose the class that fits the size of what you are writing.
+
+## Sectioning commands
+
+Give each heading to a sectioning command. LaTeX numbers it, sets its font and spacing, and keeps it on the same page as the text that follows.
+
+```latex-example
+\section{Methods}
+\subsection{Sampling}
+Soil cores were taken every ten metres.
+\subsubsection{Depth}
+Each core reached 30 cm.
+\paragraph{Exceptions} Rocky plots were skipped.
+```
+
+| Command | Level | Notes |
+| --- | --- | --- |
+| `\part` | Above the rest | Optional. Groups chapters or sections into parts. |
+| `\chapter` | 0 | Only in `report` and `book`. Starts a new page. |
+| `\section` | 1 | The top level in `article`. |
+| `\subsection` | 2 | Numbered within its section, such as 2.1. |
+| `\subsubsection` | 3 | Numbered in `article`, not in `report` or `book`. |
+| `\paragraph` | 4 | A bold heading on the same line as its text. Not numbered. |
+| `\subparagraph` | 5 | The same, indented. |
+
+Use the levels in order. A `\subsubsection` placed directly under a `\section` is numbered 1.0.1.
+
+In Eneles, [visual mode](/docs/visual-mode) draws each heading at a size that matches its level, so the outline is visible while you write.
+
+## Unnumbered headings
+
+Add a star for a heading with no number. A starred heading is also left out of the table of contents and does not advance the numbering.
+
+```latex-example
+\section*{Acknowledgements}
+Thanks to the field team.
+\section{Results}
+The first numbered section is still number 1.
+```
+
+To list a starred heading in the table of contents anyway, put `\addcontentsline{toc}{section}{Acknowledgements}` on the line after it.
+
+## How deep the numbering goes
+
+Two counters set the cut-off, using the levels from the table above. `secnumdepth` is the deepest level that gets a number, and `tocdepth` is the deepest level listed in the table of contents. Set them in the preamble.
+
+```latex
+\setcounter{secnumdepth}{2}  % number down to subsections
+\setcounter{tocdepth}{1}     % list only sections in the contents
+```
+
+## Table of contents
+
+Put `\tableofcontents` where the contents should appear. LaTeX builds it from the headings in the document.
+
+```latex-example
+\tableofcontents
+\section{Methods}
+\subsection{Sampling}
+\section{Results}
+```
+
+A long heading can have a short form for the contents and the running page headers: `\section[Short title]{The full title as printed in the text}`.
+
+The contents are read from a `.toc` file that LaTeX wrote during the previous pass, so they are always one pass behind the headings. If a new heading is missing from the table of contents, compile again.
+
+## Appendices
+
+`\appendix` changes the numbering of everything after it. In an `article`, the sections that follow are lettered A, B, C. In a `report` or `book`, the chapters are. Use it once, and keep using the same sectioning commands.
+
+```latex-example
+\section{Conclusion}
+\appendix
+\section{Raw data}
+\section{Survey questions}
+```
+
+## Article, report, or book
+
+The class decides which levels exist and how the title is set.
+
+| Class | Top level | Title | Pages | Use it for |
+| --- | --- | --- | --- | --- |
+| `article` | `\section` | At the top of the first page | One-sided | Papers, homework, and short reports |
+| `report` | `\chapter` | On its own page | One-sided | Long reports and most theses |
+| `book` | `\chapter` | On its own page | Two-sided, chapters open on a right-hand page | Books |
+
+`book` also has three commands that divide the whole document:
+
+```latex
+\documentclass{book}
+\begin{document}
+\frontmatter       % roman page numbers, unnumbered chapters
+\tableofcontents
+\chapter{Preface}
+\mainmatter        % arabic page numbers, numbered chapters
+\chapter{Origins}
+\appendix
+\chapter{Sources}
+\backmatter        % unnumbered chapters again, for the bibliography and index
+\end{document}
+```
+
+## Common mistakes
+
+- **`\chapter` in an article.** LaTeX stops with `Undefined control sequence`, because `article` has no chapters. Switch to `report` or `book`, or start from `\section`.
+- **A heading made by hand.** `\textbf{\large Results}` looks like a heading but has no number, no entry in the contents, and nothing to keep it from being stranded at the bottom of a page. Use a sectioning command, and change its look for the whole document if you need to.
+- **A table of contents that is empty or out of date.** It is one pass behind. Compile again.
+
+## Next
+
+- [Lists](/learn/lists)
+- [Cross-references](/learn/cross-references)
+- [Contents, lists, and indexes](/learn/contents-lists-and-indexes)

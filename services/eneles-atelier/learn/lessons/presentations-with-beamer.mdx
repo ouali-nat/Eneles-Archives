@@ -1,0 +1,163 @@
+---
+title: "Presentations with beamer"
+description: "Slides with the beamer class: frames, a title slide, step-by-step overlays, blocks, themes, and columns."
+summary: "Make slides in LaTeX with beamer: frames, a title slide, overlays that reveal content step by step, blocks, themes, and columns, with complete examples."
+keywords: ["beamer","slides","slide deck","presentation","talk","powerpoint","frame","\\frametitle","\\titlepage","\\pause","\\only","\\uncover","\\onslide","\\alert","\\item<","overlay","overlays","animation","reveal","block","alertblock","exampleblock","\\usetheme","\\usecolortheme","\\usefonttheme","Madrid","theme","columns","\\column","aspectratio","169","widescreen","fragile","\\setbeamertemplate","navigation symbols","\\setbeamercovered","\\institute","allowframebreaks"]
+---
+
+# Presentations with beamer
+
+Build a slide deck in LaTeX with the `beamer` class: frames, a title slide, content that appears step by step, highlighted blocks, themes, and side-by-side columns.
+
+## Frames
+
+A beamer document is a sequence of `frame` environments. Each frame is one slide, or several if its content is revealed in steps. The frame title goes in braces after `\begin{frame}`.
+
+```latex-document
+\documentclass[aspectratio=169]{beamer}
+\begin{document}
+\begin{frame}{Why measure tides?}
+  \begin{itemize}
+    \item Harbours need safe depths for every sailing.
+    \item Flood defences are sized from the highest levels.
+    \item Long records show how sea level is changing.
+  \end{itemize}
+\end{frame}
+\end{document}
+```
+
+`aspectratio=169` gives widescreen slides. Without it, slides are 4:3. Everything you know from other lessons works inside a frame: math, lists, tables, `\includegraphics`. Text is set in sans-serif, at a size meant for a projector.
+
+## The title slide
+
+Set the details in the preamble, then print them with `\titlepage` inside a frame.
+
+```latex-document
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\title{Tide gauges on a budget}
+\subtitle{Results from the first year}
+\author{L. Haddad}
+\institute{Coastal Lab}
+\date{12 May 2025}
+\begin{document}
+\begin{frame}
+  \titlepage
+\end{frame}
+\end{document}
+```
+
+`\section` and `\subsection` go between frames. They print nothing on a slide. They feed the outline, which `\tableofcontents` prints in a frame, and the navigation bars that some themes show.
+
+## Reveal content step by step
+
+Overlays split one frame into several slides. `\pause` hides everything after it until the next slide. For finer control, an overlay specification in angle brackets says on which slides something is shown: `<2>` is slide 2 only, `<2->` is slide 2 onward, and `<1,3>` is slides 1 and 3.
+
+```latex-document
+\documentclass[aspectratio=169]{beamer}
+\setbeamercovered{transparent}
+\begin{document}
+\begin{frame}{Method}
+  \begin{enumerate}
+    \item<1-> Mount the sensor above the highest tide.
+    \item<2-> Log the distance to the water every minute.
+    \item<3-> Subtract the readings from the mounting height.
+  \end{enumerate}
+  \uncover<3->{The result is the water level.}
+\end{frame}
+\end{document}
+```
+
+This frame becomes three slides, and the preview shows the first. `\setbeamercovered{transparent}` prints hidden content faintly instead of leaving it out, which is why you can see the later steps.
+
+| Command | Effect |
+| --- | --- |
+| `\pause` | Stop here. The rest appears on the next slide |
+| `\item<2->` | Show this item from slide 2 onward |
+| `\begin{itemize}[<+->]` | Reveal the items one per slide, with no numbers to maintain |
+| `\uncover<2->{…}` | Show from slide 2, but reserve the space on every slide |
+| `\only<2>{…}` | Insert on slide 2 only. No space is reserved on other slides |
+| `\alert<2>{…}` | Highlight on slide 2 |
+
+## Blocks
+
+Blocks set a statement apart in a titled box. There are three kinds, and the theme decides their colors.
+
+```latex-document
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\begin{document}
+\begin{frame}{Findings}
+  \begin{block}{Accuracy}
+    The gauge agrees with the reference to within 2\,cm.
+  \end{block}
+  \begin{alertblock}{Limitation}
+    Readings drift when the sensor is in direct sun.
+  \end{alertblock}
+  \begin{exampleblock}{Example}
+    On 3 March the error stayed below 1\,cm all day.
+  \end{exampleblock}
+\end{frame}
+\end{document}
+```
+
+`\alert` highlights a few words in running text. The `theorem`, `definition`, and `proof` environments are predefined and are drawn as blocks.
+
+## Themes
+
+One line changes the look of the whole deck. `\usetheme` picks the layout, and `\usecolortheme` changes the palette.
+
+```latex-document
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Singapore}
+\usecolortheme{beaver}
+\setbeamertemplate{navigation symbols}{}
+\begin{document}
+\section{Results}
+\begin{frame}{A different theme}
+  The content is the same. Only the preamble changed.
+  \begin{block}{Accuracy}
+    The gauge agrees with the reference to within 2\,cm.
+  \end{block}
+\end{frame}
+\end{document}
+```
+
+Themes that ship with beamer include `default`, `Madrid`, `Boadilla`, `Berlin`, `Singapore`, `Copenhagen`, `CambridgeUS`, and `Warsaw`. Color themes include `beaver`, `crane`, `dolphin`, `orchid`, `rose`, `seahorse`, and `whale`. The `\setbeamertemplate` line above removes the row of small navigation icons from the bottom corner.
+
+## Columns
+
+The `columns` environment places content side by side. Each `column` takes a width. The `[T]` option aligns the columns at the top.
+
+```latex-document
+\documentclass[aspectratio=169]{beamer}
+\begin{document}
+\begin{frame}{Site}
+  \begin{columns}[T]
+    \begin{column}{0.45\textwidth}
+      \includegraphics[width=\linewidth]{example-image}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item North pier, 4\,m above datum
+        \item Solar powered
+        \item Data sent every hour
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+\end{document}
+```
+
+## Common mistakes
+
+- Putting `verbatim` or `lstlisting` in a plain frame. TeX stops with a confusing error such as "File ended while scanning use of \@xverbatim", reported at the end of the file and not at the frame. Mark the frame as fragile: `\begin{frame}[fragile]`.
+- Expecting `\section` to print a heading. It prints nothing in beamer. Put the title on the frame, and use `\tableofcontents` if you want an outline slide.
+- Using `\only` for text in the middle of a slide. Content after it jumps when the text appears, because no space was reserved. Use `\uncover`.
+- Filling a slide until it overflows. Beamer does not break a frame across slides. The extra content runs off the bottom with only an "Overfull \vbox" warning. Split the frame, or add the `allowframebreaks` option for long lists such as references.
+
+## Next
+
+- [Drawing with TikZ](/learn/drawing-with-tikz)
+- [Colors](/learn/colors)
+- [Columns](/learn/columns)

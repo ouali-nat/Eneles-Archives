@@ -1,0 +1,23 @@
+% Name: Stacked bar chart
+% Description: Energy sources stacked per year, so each bar shows the parts and the total.
+% Tags: stacked bars, bar chart, composition
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\begin{tikzpicture}
+  \begin{axis}[
+    ybar stacked, bar width=18pt, ymin=0,
+    width=9cm, height=6cm,
+    symbolic x coords={2021, 2022, 2023, 2024, 2025},
+    xtick=data, ylabel={Energy (TWh)},
+    legend style={at={(1.02,1)}, anchor=north west, draw=none},
+    reverse legend, ymajorgrids, grid style={gray!20},
+  ]
+    \addplot[fill=gray!60, draw=none] coordinates {(2021,52) (2022,48) (2023,41) (2024,35) (2025,30)};
+    \addplot[fill=blue!60!black, draw=none] coordinates {(2021,20) (2022,22) (2023,23) (2024,24) (2025,24)};
+    \addplot[fill=green!50!black, draw=none] coordinates {(2021,15) (2022,19) (2023,25) (2024,31) (2025,37)};
+    \addplot[fill=orange!80!black, draw=none] coordinates {(2021,8) (2022,11) (2023,15) (2024,19) (2025,24)};
+    \legend{Gas, Hydro, Wind, Solar}
+  \end{axis}
+\end{tikzpicture}

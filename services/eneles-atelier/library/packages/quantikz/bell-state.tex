@@ -1,0 +1,10 @@
+% Name: Bell state preparation
+% Description: Circuit to create a Bell state |Φ+⟩.
+% Tags: bell state, entanglement, hadamard
+
+\usepackage{quantikz}
+
+\begin{quantikz}
+  \lstick{$|0\rangle$} & \gate{H} & \ctrl{1} & \qw \\
+  \lstick{$|0\rangle$} & \qw & \targ{} & \qw
+\end{quantikz}

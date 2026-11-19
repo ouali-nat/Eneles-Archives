@@ -1,0 +1,27 @@
+\section{Method}
+\label{sec:method}
+
+\subsection{Background}
+
+Given queries $Q$, keys $K$, and values $V$ in $\mathbb{R}^{n \times d}$, scaled dot-product attention computes
+\begin{equation}
+  \operatorname{Attn}(Q, K, V) = \softmax\!\left( \frac{Q K^\top}{\sqrt{d}} \right) V ,
+  \label{eq:attention}
+\end{equation}
+which needs $O(n^2)$ time and memory.
+
+\subsection{Block summaries}
+
+We partition the sequence into $B = \lceil n / b \rceil$ contiguous blocks of $b$ tokens and summarize block $j$ by the mean of its keys,
+\begin{equation}
+  \bar{k}_j = \frac{1}{b} \sum_{i \in \mathcal{B}_j} k_i .
+\end{equation}
+Each query $q_i$ scores every block by $s_{ij} = q_i^\top \bar{k}_j / \sqrt{d}$ and keeps the $r$ highest-scoring blocks. The token then attends to the tokens of its local window of width $w$ and to the summaries of the selected blocks.
+
+\subsection{Complexity}
+
+Scoring costs $O(nB)$, and attention costs $O(n(w + r))$. With $b = \sqrt{n}$ the total is $O(n\sqrt{n})$; with a fixed number of blocks it is $O(n)$. In all experiments we use $w = 256$, $b = 64$, and $r = 8$.
+
+\subsection{Training}
+
+Hard top-$r$ selection has zero gradient almost everywhere. During training we relax it with the perturbed-maximum estimator, adding Gumbel noise to the scores and annealing the temperature from $1.0$ to $0.1$ over the first 10{,}000 steps.

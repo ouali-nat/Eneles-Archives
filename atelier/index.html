@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="referrer" content="strict-origin">
+  <meta name="theme-color" content="#f7f7f7">
+  <title>Eneles Atelier</title>
+  <style>
+    :root{color-scheme:light dark;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}*{box-sizing:border-box}body{margin:0;background:#f7f7f7;color:#191919}.bar{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid #ddd;background:#fff}.brand{font-weight:700;letter-spacing:-.02em}.brand small{display:block;font-size:10px;font-weight:500;letter-spacing:.1em;color:#777}.back{color:inherit;text-decoration:none;font-size:13px}.frame{display:block;width:100%;height:calc(100dvh - 54px);border:0;background:#fff}.notice{position:fixed;inset:auto 16px 16px;z-index:2;margin:auto;max-width:520px;padding:14px 16px;border:1px solid #ddd;border-radius:14px;background:#fff;box-shadow:0 8px 32px #0001;font-size:13px;line-height:1.5}.notice[hidden]{display:none}@media(prefers-color-scheme:dark){body{background:#141414;color:#eee}.bar{background:#1d1d1d;border-color:#333}.notice{background:#222;border-color:#444}}</style>
+  <script crossorigin id="aurore-supabase-sdk" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" onerror="window.__AURORE_SUPABASE_SDK_FAILED=true"></script>
+  <script defer src="../js/aurore-auth-bootstrap.js?v=eneles-atelier-sso-1"></script>
+  <script src="./config.js?v=1"></script>
+</head>
+<body>
+  <header class="bar"><div class="brand">ENELES<small>ATELIER SCIENTIFIQUE</small></div><a class="back" href="/">Retour à Eneles</a></header>
+  <iframe id="atelierFrame" class="frame" title="Eneles Atelier — éditeur scientifique" allow="clipboard-read; clipboard-write; fullscreen; microphone" referrerpolicy="strict-origin"></iframe>
+  <div id="atelierNotice" class="notice" role="status">Préparation de votre espace de rédaction…</div>
+  <script>
+    (function(){
+      const frame=document.getElementById('atelierFrame');
+      const notice=document.getElementById('atelierNotice');
+      const url=String(window.ENELES_ATELIER_URL||'').trim().replace(/\/+$/,'');
+      if(!url||url.includes('REPLACE_WITH')){frame.hidden=true;notice.textContent='L’éditeur Eneles est prêt côté code. Son hébergement permanent doit encore être relié à cette page.';return;}
+      const origin=new URL(url).origin;
+      let sending=false;
+      async function sendSession(){
+        if(sending)return;sending=true;
+        try{
+          const debut=Date.now();
+          while(typeof window.enelesGetSupabaseAccessToken!=='function' && Date.now()-debut<8000) await new Promise(resolve=>setTimeout(resolve,100));
+          if(typeof window.enelesGetSupabaseAccessToken!=='function')throw new Error('Le module de connexion Eneles ne répond pas encore.');
+          const token=await window.enelesGetSupabaseAccessToken();
+          if(!token){notice.hidden=false;notice.textContent='Connectez-vous d’abord à votre compte Eneles, puis revenez dans l’atelier.';return;}
+          frame.contentWindow.postMessage({type:'ENELES_ATELIER_SSO',accessToken:token},origin);
+          notice.hidden=true;
+        }catch(error){notice.hidden=false;notice.textContent=error?.message||'Impossible de récupérer la session Eneles.';}
+        finally{sending=false;}
+      }
+      window.addEventListener('message',async function(event){
+        if(event.origin!==origin||event.source!==frame.contentWindow)return;
+        if(event.data?.type==='ENELES_ATELIER_READY')await sendSession();
+        if(event.data?.type==='ENELES_ATELIER_SIGNED_OUT'){
+          try{await window.auroreDeconnecterGoogle?.();}catch(_){}
+          window.location.assign('/');
+        }
+      });
+      frame.addEventListener('load',()=>{notice.hidden=true;});
+      frame.src=origin+'/sso?embedded=1';
+    })();
+  </script>
+</body>
+</html>

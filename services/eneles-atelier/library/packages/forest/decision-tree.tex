@@ -1,0 +1,20 @@
+% Name: Decision tree
+% Description: A simple decision tree for classification.
+% Tags: decision tree, ML, classification
+
+\usepackage{forest}
+
+\begin{forest}
+  for tree={draw, rounded corners}
+  [Feature $>$ threshold?
+    [Yes
+      [Class A]
+    ]
+    [No
+      [Feature2 $>$ 0?
+        [Yes [Class B]]
+        [No [Class C]]
+      ]
+    ]
+  ]
+\end{forest}

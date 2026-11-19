@@ -1,0 +1,146 @@
+---
+title: "Page layout"
+description: "Paper size, orientation, and margins with geometry, two-sided documents, and landscape pages."
+summary: "Page layout in LaTeX: paper size, orientation, and margins with the geometry package, one-sided and two-sided documents, and landscape pages."
+keywords: ["geometry","\\usepackage{geometry}","margin","margins","paper size","a4paper","letterpaper","a5paper","landscape","portrait","orientation","twoside","oneside","inner","outer","bindingoffset","showframe","\\newgeometry","\\restoregeometry","pdflscape","lscape","\\textwidth","\\textheight","\\linewidth","\\paperwidth","headheight","includehead","text area","page size"]
+---
+
+# Page layout
+
+Set the paper size, the orientation, and the margins of a document, lay it out for double-sided printing, and turn single pages sideways for wide content.
+
+## Paper size and orientation
+
+The standard classes default to US letter paper. Pass a paper option to the class to change that, and load the `geometry` package so the PDF page and the text area are both set from it.
+
+```latex
+\documentclass[a4paper]{article}
+\usepackage{geometry}
+```
+
+Common paper options are `a4paper`, `a5paper`, `b5paper`, `letterpaper`, and `legalpaper`. Add `landscape` to turn the whole document sideways. You can also give all of this to `geometry` directly, which keeps the layout in one place:
+
+```latex-document
+\documentclass{article}
+\usepackage[a5paper, landscape, margin=2cm]{geometry}
+\usepackage{lipsum}
+\begin{document}
+\section*{A landscape handout}
+\lipsum[1][1-6]
+\end{document}
+```
+
+## Margins with geometry
+
+Without `geometry`, the standard classes leave wide margins that are awkward to change by hand. With it, you state the margins and the package works out the text area.
+
+```latex-document
+\documentclass[a4paper]{article}
+\usepackage[margin=3cm, showframe]{geometry}
+\usepackage{lipsum}
+\begin{document}
+\section*{Equal margins}
+\lipsum[1-2]
+\end{document}
+```
+
+The `showframe` option draws the edges of the text area, the header, the footer, and the margin note column. It is the fastest way to see what a setting did. Remove it before you share the PDF.
+
+Set each side on its own when the margins differ:
+
+```latex-document
+\documentclass[a4paper]{article}
+\usepackage[left=4cm, right=2cm, top=2.5cm, bottom=3.5cm, showframe]{geometry}
+\usepackage{lipsum}
+\begin{document}
+\section*{A wide left margin}
+\lipsum[1-2]
+\end{document}
+```
+
+| Option | Sets | Notes |
+| --- | --- | --- |
+| `margin=2cm` | All four margins | The usual starting point |
+| `hmargin=3cm`, `vmargin=2cm` | Left and right, top and bottom | Give two values, as in `hmargin={3cm,2cm}`, for unequal sides |
+| `left`, `right`, `top`, `bottom` | One margin each | Unset sides are worked out for you |
+| `textwidth=14cm`, `textheight=22cm` | The size of the text area | Margins are split around it |
+| `includehead`, `includefoot` | Whether the header and footer count as part of the text area | By default they sit in the margins |
+| `headheight=15pt` | The height reserved for the header | Raise it when `fancyhdr` asks you to |
+| `paperwidth`, `paperheight` | A custom paper size | For posters and cards |
+
+To change the layout partway through, use `\newgeometry` with the same options and `\restoregeometry` to return. Both start a new page.
+
+## One-sided and two-sided documents
+
+`article` and `report` are one-sided: every page has the same left and right margins. The `twoside` class option lays pages out as spreads, so the margins mirror on left-hand and right-hand pages. `book` is two-sided by default.
+
+In a two-sided document, name the margins `inner` and `outer` instead of left and right. `bindingoffset` adds space on the inner side for the glue or the rings.
+
+```latex-document
+\documentclass[a4paper, twoside]{article}
+\usepackage[inner=3cm, outer=2cm, bindingoffset=8mm, vmargin=2.5cm, showframe]{geometry}
+\usepackage{lipsum}
+\begin{document}
+\section*{A right-hand page}
+\lipsum[1-2]
+\end{document}
+```
+
+Page 1 is a right-hand page, so its inner margin is on the left. On page 2 the wide margin moves to the right.
+
+<Callout type="note" title="Two-sided output is for paper">
+  Use `twoside` only for a document that will be printed on both sides and bound. On screen, margins that shift from page to page look like a mistake, and many submission systems expect one-sided pages.
+</Callout>
+
+## Landscape pages in a portrait document
+
+A wide table or figure sometimes needs one sideways page. The `pdflscape` package provides a `landscape` environment: its content goes on separate pages that are rotated in the PDF, while the header and footer stay where they are on the paper.
+
+```latex
+\documentclass[a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{pdflscape}
+\begin{document}
+A portrait page.
+
+\begin{landscape}
+\begin{table}
+  \centering
+  \caption{A table that needs the long side of the page}
+  \begin{tabular}{lrrrrrrrr}
+    Region & Jan & Feb & Mar & Apr & May & Jun & Jul & Aug \\
+    North  & 412 & 398 & 455 & 470 & 502 & 531 & 560 & 548 \\
+    South  & 365 & 371 & 390 & 402 & 433 & 467 & 489 & 495 \\
+  \end{tabular}
+\end{table}
+\end{landscape}
+
+Portrait again.
+\end{document}
+```
+
+## Lengths that describe the page
+
+Use these lengths instead of fixed measurements, so content keeps fitting when the layout changes.
+
+| Length | Meaning |
+| --- | --- |
+| `\textwidth`, `\textheight` | Width and height of the text area |
+| `\linewidth` | Width of the current line: narrower inside lists, columns, and minipages |
+| `\columnwidth` | Width of one column in a multi-column layout |
+| `\paperwidth`, `\paperheight` | Size of the sheet |
+
+For example, `\includegraphics[width=0.8\linewidth]{plot}` scales an image to 80% of the space it sits in, whatever that is.
+
+## Common mistakes
+
+- Setting `\textwidth` or `\oddsidemargin` by hand. The text area changes but the result is off-centre, because the lengths depend on each other. Let `geometry` do the arithmetic.
+- Loading `geometry` twice with different options. TeX stops with "Option clash for package geometry". Load it once, or change settings later with `\geometry{margin=2cm}`.
+- Using `left` and `right` in a `twoside` document and expecting them to mirror. They do mirror, as inner and outer, which surprises people who meant the physical left. Write `inner` and `outer` to make the intent clear.
+- Leaving `showframe` on. The frame lines print in the final PDF.
+
+## Next
+
+- [Headers and footers](/learn/headers-and-footers)
+- [Spacing](/learn/spacing)
+- [Columns](/learn/columns)

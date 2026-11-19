@@ -1,0 +1,70 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{default}
+\usecolortheme{dove}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+
+\title{Title of the Talk}
+\subtitle{Occasion}
+\author{Your name}
+\institute{Affiliation}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{One-slide summary}
+  \begin{itemize}
+    \item The problem, in one line.
+    \item What you did, in one line.
+    \item The result, with a number.
+  \end{itemize}
+\end{frame}
+
+\section{Problem}
+
+\begin{frame}{Why this is hard}
+  State the obstacle. One idea per slide.
+  \pause
+  \begin{block}{Question}
+    The question the talk answers.
+  \end{block}
+\end{frame}
+
+\section{Method}
+
+\begin{frame}{Approach}
+  \[
+    \hat{\theta} = \arg\min_{\theta} \; \frac{1}{n} \sum_{i=1}^{n} \ell\bigl( f_\theta(x_i), y_i \bigr)
+  \]
+\end{frame}
+
+\section{Results}
+
+\begin{frame}{Main result}
+  \centering
+  \begin{tabular}{lcc}
+    \toprule
+    Model & Metric A & Metric B \\
+    \midrule
+    Baseline & 0.0 & 0.0 \\
+    Ours & \textbf{0.0} & \textbf{0.0} \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+
+\begin{frame}{Takeaways}
+  \begin{enumerate}
+    \item First.
+    \item Second.
+    \item What comes next.
+  \end{enumerate}
+\end{frame}
+
+\end{document}

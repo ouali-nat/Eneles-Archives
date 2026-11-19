@@ -1,0 +1,10 @@
+{
+  "name": "pgfgantt",
+  "description": "Gantt charts: task bars, groups, milestones, links between tasks, and a line for today.",
+  "ctanUrl": "https://ctan.org/pkg/pgfgantt",
+  "tags": [
+    "gantt",
+    "project planning",
+    "schedule"
+  ]
+}

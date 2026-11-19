@@ -1,0 +1,21 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+
+\title{Sketched Spectral Embeddings with Gap-Dependent Guarantees}
+\author{Razz \and Lena Fischer}
+\date{Extended abstract, Workshop on Graph Learning 2025}
+
+\begin{document}
+\maketitle
+
+\section*{Summary}
+
+Spectral embeddings of large graphs are usually computed with iterative eigensolvers whose cost grows quickly with the number of eigenvectors requested. We study a randomized alternative: project the graph Laplacian onto the range of a small Gaussian sketch, refined by a few power iterations, and solve the resulting small eigenproblem exactly.
+
+Our main result bounds the distance between the sketched embedding and the exact one by $C \sqrt{n / p} \, \gamma^{q}$. Here $p$ is the oversampling parameter, $q$ the number of power iterations, and $\gamma < 1$ the ratio of consecutive shifted eigenvalues. The bound shows that the number of iterations needed depends on the spectral gap and only logarithmically on the size of the graph.
+
+On three citation networks the sketched embedding reaches the accuracy of the exact one with four power iterations and a tenfold reduction in memory. A full version of this work, with proofs and experiments on larger graphs, is in preparation.
+
+\end{document}

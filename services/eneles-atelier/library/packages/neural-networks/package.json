@@ -1,0 +1,12 @@
+{
+  "name": "Neural networks",
+  "description": "Machine learning architectures in plain TikZ: dense layers, convolutional pipelines, attention, and transformers.",
+  "ctanUrl": "https://ctan.org/pkg/pgf",
+  "tags": [
+    "neural network",
+    "deep learning",
+    "machine learning",
+    "architecture"
+  ],
+  "custom": true
+}

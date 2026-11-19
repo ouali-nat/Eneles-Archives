@@ -1,0 +1,154 @@
+---
+title: "Fonts and sizes"
+description: "Font families, changing the document font, text sizes, font encoding, and system fonts with fontspec."
+summary: "Fonts in LaTeX: serif, sans-serif, and monospaced families, changing the document font, font sizes, font encoding, and system fonts with fontspec."
+keywords: ["font","typeface","serif","sans serif","monospace","typewriter","\\rmfamily","\\sffamily","\\ttfamily","\\textrm","\\textsf","\\texttt","\\familydefault","\\sfdefault","lmodern","latin modern","computer modern","times","tgtermes","palatino","tgpagella","helvetica","tgheros","libertine","newtxtext","newtxmath","fontenc","T1","font size","\\tiny","\\scriptsize","\\footnotesize","\\small","\\normalsize","\\large","\\Large","\\LARGE","\\huge","\\Huge","\\fontsize","\\selectfont","10pt","11pt","12pt","fontspec","\\setmainfont","\\setsansfont","\\setmonofont","xelatex","lualatex","opentype","truetype","system fonts"]
+---
+
+# Fonts and sizes
+
+Switch between serif, sans-serif, and monospaced type, change the font of a whole document with one package, set text sizes, and use fonts by name under XeLaTeX or LuaLaTeX.
+
+## The three families
+
+Every LaTeX document has three font families ready: a serif family (called roman) for body text, a sans-serif family, and a monospaced (typewriter) family. Each has a command that takes text and a declaration that applies until the current group ends.
+
+```latex-example
+\textrm{Serif, the default for body text.}\par
+\textsf{Sans-serif, common in slides and headings.}\par
+\texttt{Monospaced, for code and file names.}\par
+{\sffamily The declaration form applies up to the closing brace.}
+```
+
+| Family | Command | Declaration |
+| --- | --- | --- |
+| Serif | `\textrm{…}` | `\rmfamily` |
+| Sans-serif | `\textsf{…}` | `\sffamily` |
+| Monospaced | `\texttt{…}` | `\ttfamily` |
+
+To set a whole document in sans-serif, change which family is the default:
+
+```latex
+\renewcommand{\familydefault}{\sfdefault}
+```
+
+## Change the document font
+
+The default typeface is Computer Modern. To use another, load a font package in the preamble. Nothing else in the document changes.
+
+```latex-document
+\documentclass[varwidth=9cm, border=10pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{tgpagella} % serif: a Palatino design
+\usepackage{tgheros}   % sans-serif: a Helvetica design
+\begin{document}
+{\sffamily\bfseries Tide tables}\par\smallskip
+High water at the harbour mouth falls about forty minutes later each day.
+\end{document}
+```
+
+| Package | Typeface | Sets |
+| --- | --- | --- |
+| `lmodern` | Latin Modern, a refined Computer Modern | All three families |
+| `tgtermes` | TeX Gyre Termes, a Times design | Serif |
+| `tgpagella` | TeX Gyre Pagella, a Palatino design | Serif |
+| `tgheros` | TeX Gyre Heros, a Helvetica design | Sans-serif |
+| `libertine` | Linux Libertine and Biolinum | All three families |
+| `newtxtext` with `newtxmath` | A Times design with matching math | Text and math |
+
+Most text font packages leave math alone, so formulas stay in Computer Modern. If your document has much math, choose a pair that covers both, such as `newtxtext` and `newtxmath`.
+
+Here are four of these families side by side:
+
+```latex-example
+{\fontfamily{lmr}\selectfont Latin Modern: quick brown fox, 0123}\par
+{\fontfamily{qtm}\selectfont Termes: quick brown fox, 0123}\par
+{\fontfamily{qpl}\selectfont Pagella: quick brown fox, 0123}\par
+{\fontfamily{qhv}\selectfont Heros: quick brown fox, 0123}
+```
+
+## Font encoding
+
+Put `\usepackage[T1]{fontenc}` in every pdfLaTeX document. The original TeX encoding has no accented letters: it builds "é" by stacking an accent on an "e", which stops TeX from hyphenating the word and makes the text hard to search or copy in the PDF. It also lacks some plain characters. T1 fonts contain all of them as real glyphs.
+
+```latex-document
+\documentclass[varwidth, border=10pt]{standalone}
+\begin{document}
+Old encoding: 3 < 5 | 5 > 3\par
+{\fontencoding{T1}\selectfont T1 encoding: 3 < 5 | 5 > 3}
+\end{document}
+```
+
+## Sizes
+
+Size commands are declarations. Wrap them in braces to limit their reach.
+
+```latex-example
+{\small Small print.}
+Normal text.
+{\large Larger.}
+{\Large Larger still.}
+{\huge Huge.}
+```
+
+| Command | Size in a 10pt document |
+| --- | --- |
+| `\tiny` | 5pt |
+| `\scriptsize` | 7pt |
+| `\footnotesize` | 8pt |
+| `\small` | 9pt |
+| `\normalsize` | 10pt |
+| `\large` | 12pt |
+| `\Large` | 14.4pt |
+| `\LARGE` | 17.28pt |
+| `\huge` | 20.74pt |
+| `\Huge` | 24.88pt |
+
+All of these scale with the base size, which is a class option: `\documentclass[11pt]{article}` or `12pt` in the standard classes. Change the base size instead of adding `\large` everywhere.
+
+For a size the commands do not offer, give the font size and the line spacing yourself, then `\selectfont`:
+
+```latex-document
+\documentclass[varwidth, border=10pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\begin{document}
+{\fontsize{22pt}{26pt}\selectfont A 22pt heading\par}
+\smallskip
+{\fontsize{7.5pt}{9.5pt}\selectfont Fine print at 7.5pt on 9.5pt lines.\par}
+\end{document}
+```
+
+The `\par` inside the braces matters. Line spacing is fixed when a paragraph ends, so a paragraph that ends after the closing brace is set with the spacing of the surrounding size.
+
+The example loads `lmodern` because Computer Modern in the T1 encoding exists only in fixed steps. Ask it for 22pt and you get the nearest step, 20.74pt, with a "Font shape … not available" warning. Latin Modern and most other font packages scale to any size.
+
+## Fonts by name with fontspec
+
+XeLaTeX and LuaLaTeX can use any OpenType or TrueType font installed on the machine that compiles the document. Load `fontspec` and name the fonts. Leave out `fontenc` and `inputenc`: these engines do not need them.
+
+```latex
+\documentclass{article}
+\usepackage{fontspec}
+\setmainfont{TeX Gyre Pagella}
+\setsansfont{TeX Gyre Heros}
+\setmonofont{TeX Gyre Cursor}
+\begin{document}
+Body text in Pagella, \textsf{labels in Heros}, and \texttt{code in Cursor}.
+\end{document}
+```
+
+In Eneles, choose the engine under **Project settings**, on the **Compiler** tab (see [Compiling](/docs/compiling)). The document compiles on Eneles's servers, so the fonts must exist there: the ones that ship with TeX Live, such as the TeX Gyre families above, do.
+
+## Common mistakes
+
+- Forgetting the braces around a size or family declaration. `\large Note:` enlarges everything that follows, to the end of the document or the enclosing environment. Write `{\large Note:}`.
+- Loading `fontspec` under pdfLaTeX. TeX stops with "The fontspec package requires either XeTeX or LuaTeX". Switch the engine, or use a font package instead.
+- Expecting a text font package to change math. Formulas stay in Computer Modern and clash with the new text. Load a matching math package.
+- Naming a font in `\setmainfont` that the compiling machine does not have. The error is "The font … cannot be found". Use a font that ships with TeX Live.
+
+## Next
+
+- [Text formatting](/learn/text-formatting)
+- [Math fonts](/learn/math-fonts)
+- [Languages and Unicode](/learn/languages-and-unicode)

@@ -1,0 +1,138 @@
+---
+title: "Footnotes and margin notes"
+description: "Add footnotes, make them work in tables and headings, and put short notes in the margin."
+summary: "Footnotes in LaTeX: \\footnote, footnotes in tables and headings where they normally fail, \\footnotemark and \\footnotetext, margin notes, and endnotes."
+keywords: ["\\footnote","\\footnotemark","\\footnotetext","\\thefootnote","\\fnsymbol","footmisc","threeparttable","tablenotes","\\tnote","\\marginpar","\\reversemarginpar","marginnote","endnotes","\\endnote","table footnote","side note"]
+---
+
+# Footnotes and margin notes
+
+After this page you can add footnotes, make them work in tables and headings where they normally fail, and put short notes in the margin.
+
+## Footnotes
+
+`\footnote{text}` prints a numbered mark where you write it and the text at the bottom of the page. Numbering is automatic. Put the command directly after the word or the punctuation it belongs to, with no space before it.
+
+```latex-document
+\documentclass{article}
+\usepackage[paperwidth=10cm,paperheight=4.8cm,margin=8mm]{geometry}
+\pagestyle{empty}
+\begin{document}
+We surveyed 412 households.\footnote{Households that
+moved during the study were left out.} A second
+round\footnote{Planned for the following spring.} will
+repeat the same questions a year later.
+\end{document}
+```
+
+The `geometry` line only makes the page small enough to show here. The examples on this page use a real page because footnotes and margin notes are placed relative to it.
+
+A few settings change how footnotes are numbered and placed.
+
+| Write | Effect |
+| --- | --- |
+| `\renewcommand{\thefootnote}{\fnsymbol{footnote}}` | Marks are symbols (asterisk, dagger, and so on) instead of numbers. |
+| `\setcounter{footnote}{0}` | Numbering starts again from 1. |
+| `\usepackage[perpage]{footmisc}` | Numbering starts again on every page. |
+| `\usepackage[bottom]{footmisc}` | Footnotes stay at the very bottom of the page, below any figure placed there. |
+
+## Mark and text separately
+
+`\footnote` does not work everywhere. Inside a `tabular`, a box, or a float, the mark is printed but the text is lost. In those places, split the footnote in two: `\footnotemark` prints the mark, and `\footnotetext`, placed outside, supplies the text.
+
+```latex-document
+\documentclass{article}
+\usepackage[paperwidth=10cm,paperheight=5.2cm,margin=8mm]{geometry}
+\usepackage{booktabs}
+\pagestyle{empty}
+\begin{document}
+\begin{center}
+\begin{tabular}{@{}lr@{}}
+  \toprule
+  City   & Population \\
+  \midrule
+  Bergen & 291\,000\footnotemark \\
+  Oslo   & 717\,000 \\
+  \bottomrule
+\end{tabular}
+\end{center}
+\footnotetext{Estimate for the start of the year.}
+\end{document}
+```
+
+`\footnotemark[3]` prints the mark of footnote 3 again without creating a new note, which is how two places can share one footnote.
+
+## Notes that belong to a table
+
+A table in a `table` float can move to another page, and a footnote at the bottom of the page would not follow it. Notes directly under the table are the better choice. The `threeparttable` package sets them to the width of the table, with marks that you choose.
+
+```latex-document
+\documentclass[border=10pt]{standalone}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\begin{document}
+\begin{threeparttable}
+  \begin{tabular}{@{}lr@{}}
+    \toprule
+    City   & Population \\
+    \midrule
+    Bergen & 291\,000\tnote{a} \\
+    Oslo   & 717\,000\tnote{b} \\
+    \bottomrule
+  \end{tabular}
+  \begin{tablenotes}
+    \item[a] Estimate.
+    \item[b] Register count.
+  \end{tablenotes}
+\end{threeparttable}
+\end{document}
+```
+
+## Footnotes in headings
+
+A heading is reused in the table of contents and in running headers, and a footnote inside it would be copied to both. Give a plain version of the title in the optional argument, which is what those places use.
+
+```latex
+\section[Results]{Results\footnote{Raw data are in the appendix.}}
+```
+
+Captions take the same optional argument, but a footnote in a caption has the float problem described above. Put the remark into the caption text instead.
+
+## Margin notes
+
+`\marginpar{text}` puts a note in the margin, level with the line where you wrote it. Margins are narrow, so keep the text short, and set it small and ragged.
+
+```latex-document
+\documentclass{article}
+\usepackage[paperwidth=12cm,paperheight=4.2cm,margin=8mm,
+  right=3.8cm,marginparwidth=2.4cm]{geometry}
+\pagestyle{empty}
+\begin{document}
+The sample was heated to 340 kelvin and held there
+for an hour.\marginpar{\raggedright\footnotesize
+Check the oven log.} It was then left to cool
+overnight and weighed again the next day.
+\end{document}
+```
+
+The note goes in the right margin of a one-sided document and in the outer margin of a two-sided one. `\reversemarginpar` switches to the other side. Like a footnote, `\marginpar` fails inside floats and footnotes. The `marginnote` package provides `\marginnote`, which works there too.
+
+<Callout type="tip" title="Notes for co-authors">
+  For a remark that should not appear in the PDF at all, use a comment in Eneles's Review panel instead of a margin note. See [Review](/docs/review).
+</Callout>
+
+## Endnotes
+
+To collect notes at the end of a chapter or document instead of at the foot of each page, load the `endnotes` package, write `\endnote{text}` where you would write `\footnote`, and put `\theendnotes` where the list should be printed. To convert an existing document, add `\let\footnote=\endnote` after the line that loads the package.
+
+## Common mistakes
+
+- **A space before `\footnote`.** The mark is separated from its word and can land at the start of the next line. Write `word\footnote{…}`, and end the line with `%` if you break the source there.
+- **`\footnote` in a table or box.** There is no error: the mark appears and the text is missing. Use `\footnotemark` with `\footnotetext`, or `threeparttable`.
+- **Margin notes that collide.** Two notes close together cannot both sit beside their lines, and the log reports `LaTeX Warning: Marginpar on page 1 moved.` Shorten or merge them.
+
+## Next
+
+- [Hyperlinks](/learn/hyperlinks)
+- [Page layout](/learn/page-layout)
+- [Advanced tables](/learn/advanced-tables)

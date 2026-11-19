@@ -1,0 +1,11 @@
+% Name: Quantum Fourier transform, three qubits
+% Description: Hadamards, controlled phase rotations, and the final swap of the first and last qubits.
+% Tags: QFT, fourier transform, three qubit
+
+\usepackage{quantikz}
+
+\begin{quantikz}
+  \lstick{$|x_1\rangle$} & \gate{H} & \gate{R_2} & \gate{R_3} & \qw & \qw & \qw & \swap{2} & \qw \\
+  \lstick{$|x_2\rangle$} & \qw & \ctrl{-1} & \qw & \gate{H} & \gate{R_2} & \qw & \qw & \qw \\
+  \lstick{$|x_3\rangle$} & \qw & \qw & \ctrl{-2} & \qw & \ctrl{-1} & \gate{H} & \targX{} & \qw
+\end{quantikz}

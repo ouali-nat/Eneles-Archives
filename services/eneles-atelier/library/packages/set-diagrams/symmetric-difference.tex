@@ -1,0 +1,13 @@
+% Name: Symmetric difference
+% Description: The elements in exactly one of A and B, shaded with the even-odd fill rule.
+% Tags: venn, symmetric difference, sets
+
+\begin{tikzpicture}[thick]
+  \fill[blue!25, even odd rule] (-0.75,0) circle (1.4) (0.75,0) circle (1.4);
+  \draw (-0.75,0) circle (1.4) (0.75,0) circle (1.4);
+  \draw (-2.8,-1.9) rectangle (2.8,1.9);
+  \node at (-1.95,1.3) {$A$};
+  \node at (1.95,1.3) {$B$};
+  \node[above left] at (2.8,-1.9) {$U$};
+  \node[below] at (0,-1.9) {$A \mathbin{\triangle} B$};
+\end{tikzpicture}

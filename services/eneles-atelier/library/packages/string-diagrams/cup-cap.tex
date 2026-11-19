@@ -1,0 +1,11 @@
+% Name: Cup and cap
+% Description: The evaluation (cap) and coevaluation (cup) maps of a dual pair of objects.
+% Tags: cup, cap, duality, rigid category
+
+\begin{tikzpicture}[thick]
+  \draw (0,0) node[below] {$A^*$} -- (0,0.6) arc[start angle=180, end angle=0, radius=0.6] -- (1.2,0) node[below] {$A$};
+  \node at (0.6,-0.9) {$\mathrm{ev}_A$};
+
+  \draw (3,1.6) node[above] {$A$} -- (3,1) arc[start angle=180, end angle=360, radius=0.6] -- (4.2,1.6) node[above] {$A^*$};
+  \node at (3.6,-0.9) {$\mathrm{coev}_A$};
+\end{tikzpicture}

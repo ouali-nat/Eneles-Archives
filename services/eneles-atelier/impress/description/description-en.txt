@@ -1,0 +1,1 @@
+LaTeX for LibreOffice Impress and Draw. Render equations, TikZ, circuitikz, chemfig, pgfplots and theorem boxes with the TeX installation you already have, and drop them on the slide as crisp vector graphics. Select an inserted object later to edit and replace it. No cloud, no account.

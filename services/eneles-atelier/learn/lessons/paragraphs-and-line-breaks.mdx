@@ -1,0 +1,106 @@
+---
+title: "Paragraphs and line breaks"
+description: "Blank lines, line breaks, indentation, the space between paragraphs, and alignment."
+summary: "Paragraphs and line breaks in LaTeX: blank lines, \\\\ and \\newline, indentation, the space between paragraphs, and left, right, and centered alignment."
+keywords: ["paragraph","new line","newline","line break","\\\\","\\par","\\newline","indent","indentation","\\noindent","\\parindent","\\parskip","parskip","\\smallskip","\\medskip","\\bigskip","\\vspace","center","centering","\\centering","flushleft","flushright","\\raggedright","\\raggedleft","justify","alignment","underfull hbox","no line here to end"]
+---
+
+# Paragraphs and line breaks
+
+Start paragraphs and break lines the way LaTeX expects, then control indentation, the space between paragraphs, and alignment.
+
+## Blank lines make paragraphs
+
+LaTeX ignores how you lay out the source. A single line break counts as a space, and any number of spaces counts as one. A blank line ends the paragraph. The command `\par` does the same thing.
+
+```latex-example
+One sentence
+typed on three     source lines
+is still one paragraph.
+
+A blank line starts the next one.\par
+So does the par command.
+```
+
+This is why you can break source lines wherever you like, or put each sentence on its own line, without changing the output. The previews on this page do not indent paragraphs, so a new paragraph shows as a new line.
+
+## Break a line
+
+`\\` ends the current line without ending the paragraph. An optional length in brackets adds space after the break. Use it where line breaks are part of the content: addresses, verse, the lines of a title.
+
+```latex-example
+Ada Lovelace\\
+12 St James's Square\\[6pt]
+London
+```
+
+<Callout type="warning" title="Do not separate paragraphs with a line break">
+  `\\` does not start a paragraph: the next line gets no indent and no paragraph spacing, and LaTeX logs an `Underfull \hbox` warning for the short line. Leave a blank line instead.
+</Callout>
+
+## Indentation
+
+The standard classes indent the first line of every paragraph, except the one that follows a heading. `\noindent` at the start of a paragraph removes the indent for that paragraph. The width is the length `\parindent`, which you can set in the preamble. The example sets it in its first line to bring the indent back.
+
+```latex-example
+\setlength{\parindent}{1.5em}
+Paragraphs are indented by the length parindent, which this example sets to 1.5em.
+
+A second paragraph, indented the same way.
+
+\noindent This one starts with noindent, so it sits flush left.
+```
+
+## Space between paragraphs
+
+By default, paragraphs are told apart by the indent alone, with no gap. To separate them with space instead, put `\usepackage{parskip}` in the preamble. The package sets the indent to zero, adds a gap, and adjusts lists and headings to match.
+
+The gap is the length `\parskip`. For a one-off gap, use `\smallskip`, `\medskip`, or `\bigskip` between paragraphs, or `\vspace` with any length.
+
+```latex-example
+By default, nothing but the indent separates paragraphs.
+
+\setlength{\parskip}{8pt}
+After this setting, each new paragraph starts with 8pt of space above it.
+
+This is the look the parskip package gives a whole document.
+
+\bigskip
+A bigskip adds a larger, one-off gap.
+```
+
+## Alignment
+
+Text is justified by default: both edges are straight. Three environments change that.
+
+```latex-example
+\begin{center}
+  Centered text
+\end{center}
+\begin{flushright}
+  Pushed to the right
+\end{flushright}
+\begin{flushleft}
+  Flush left: the lines are not stretched to the full width, so the right edge stays uneven.
+\end{flushleft}
+```
+
+Each environment adds vertical space above and below. The declarations `\centering`, `\raggedleft` (text pushed right), and `\raggedright` (text pushed left) change the alignment without adding space, which is why `\centering` is the usual choice inside a figure or a table. In running text, keep a declaration inside braces and end the paragraph before the closing brace, because alignment is applied when the paragraph ends.
+
+```latex-example
+{\centering Centered, with no extra space around it.\par}
+The next paragraph is justified again, and this one is long enough to reach the right margin and wrap onto a second line.
+```
+
+## Common mistakes
+
+- **`\\` at the end of every paragraph.** The paragraphs run together with no indent, and the log fills with `Underfull \hbox (badness 10000)`. Delete the `\\` and leave a blank line.
+- **`\\` on a line of its own after a blank line.** LaTeX stops with `There's no line here to end`. For vertical space, use `\bigskip` or `\vspace`.
+- **`\centering` with no group.** Everything after it is centered, to the end of the document. Put it inside braces or an environment, and end the paragraph with `\par` before the closing brace.
+- **A blank line you did not mean.** A blank line before or after an equation or a list turns the text around it into separate paragraphs, which shows as an unwanted gap or indent. Remove the blank line, or put a `%` on it.
+
+## Next
+
+- [Sections and structure](/learn/sections-and-structure)
+- [Spacing](/learn/spacing)
+- [Page layout](/learn/page-layout)

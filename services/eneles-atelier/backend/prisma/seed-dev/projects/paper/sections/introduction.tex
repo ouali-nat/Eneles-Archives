@@ -1,0 +1,13 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Abstractive summarization has improved rapidly since the introduction of the Transformer~\citep{vaswani2017attention} and of large pretrained sequence-to-sequence models~\citep{lewis2020bart}. Yet the documents people most want summarized, such as scientific articles, legal filings, and reports, are far longer than the 512 or 1{,}024 tokens these models accept. The usual remedy is to truncate the input, which discards most of the document.
+
+The obstacle is self-attention, whose time and memory grow quadratically with the sequence length $n$. Sparse variants reduce this cost by restricting which pairs of tokens may attend to one another~\citep{beltagy2020longformer, zaheer2020bigbird}. Their global connections, however, are fixed in advance: a handful of special tokens, or a random subset.
+
+We argue that for summarization the global pattern should follow the structure of the document. Our contributions are:
+\begin{itemize}
+  \item \model{}, an attention pattern in which each token attends to a local window and to a learned selection of block summaries;
+  \item a differentiable top-$k$ selection that lets the pattern be trained end to end;
+  \item experiments on arXiv, PubMed, and GovReport showing consistent gains over truncation and over fixed sparse patterns.
+\end{itemize}

@@ -1,0 +1,11 @@
+% Name: GHZ state
+% Description: Three-qubit GHZ entangled state.
+% Tags: GHZ, entanglement, three qubit
+
+\usepackage{quantikz}
+
+\begin{quantikz}
+  \lstick{$|0\rangle$} & \gate{H} & \ctrl{1} & \qw \\
+  \lstick{$|0\rangle$} & \qw & \targ{} & \ctrl{1} \\
+  \lstick{$|0\rangle$} & \qw & \qw & \targ{}
+\end{quantikz}

@@ -1,0 +1,111 @@
+---
+title: "Your first document"
+description: "The smallest complete document, the preamble and the body, and a title block."
+summary: "Write your first LaTeX document: the smallest complete file, the preamble and the body, a title block with \\maketitle, and how to compile it to a PDF."
+keywords: ["\\documentclass","\\begin{document}","\\end{document}","preamble","body","\\title","\\author","\\date","\\maketitle","\\today","\\thanks","\\and","abstract","article","hello world","minimal","main.tex","missing \\begin{document}"]
+---
+
+# Your first document
+
+Write the smallest complete LaTeX document, give it a title block, and compile it to a PDF. Every document you write later has this same skeleton.
+
+## The smallest document
+
+A document needs three lines around its text:
+
+```latex
+\documentclass{article}
+\begin{document}
+Hello, world.
+\end{document}
+```
+
+`\documentclass` says what kind of document this is. `article` suits papers, homework, and short reports. Everything between `\begin{document}` and `\end{document}` is printed. Anything after `\end{document}` is ignored.
+
+## Preamble and body
+
+The lines between `\documentclass` and `\begin{document}` are the preamble. Settings go there: packages, the title, your own commands. Nothing in the preamble prints. The body is everything inside the `document` environment, and it is the only place text can go.
+
+```latex
+\documentclass[12pt]{article}   % the kind of document, with one option
+
+\usepackage{graphicx}           % preamble: packages and settings
+\title{A short report}
+
+\begin{document}                % the body starts here
+Text that appears in the PDF.
+\end{document}
+```
+
+Options go in square brackets. Here `12pt` raises the base font size from the default 10pt.
+
+<Callout type="note" title="Text belongs in the body">
+  If LaTeX finds a word, or even a stray character, before `\begin{document}`, it stops with `Missing \begin{document}`. When you see that error, look in the preamble for something that should not be there.
+</Callout>
+
+## Add a title
+
+`\title`, `\author`, and `\date` only store their text. `\maketitle` prints it, so it goes in the body, at the place the title should appear. The `abstract` environment adds a summary under the title.
+
+```latex-document
+\documentclass[12pt]{article}
+
+\title{Tides of the Severn Estuary}
+\author{Mira Okafor}
+\date{March 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We measured the tidal range at four sites over one lunar month.
+\end{abstract}
+
+\section{Introduction}
+The Severn has one of the largest tidal ranges in the world. This report describes how we measured it.
+
+\end{document}
+```
+
+The title block has a few variations:
+
+| Command | What it does |
+| --- | --- |
+| `\title{...}` | Sets the title. Required before `\maketitle`. |
+| `\author{A \and B}` | Sets the authors. `\and` separates them. |
+| `\date{...}` | Sets the date as you type it. Leave the command out and LaTeX prints the day of the compile. |
+| `\date{}` | Prints no date. |
+| `\today` | The day of the compile, written out. |
+| `\thanks{...}` | Inside `\title` or `\author`: adds a footnote, often used for an affiliation. |
+
+`\today` works anywhere in the body, not only in the title block:
+
+```latex-example
+This draft was compiled on \today.
+```
+
+## Compile it
+
+In Eneles, a new project already has a `main.tex` with a short article in it. Replace its contents with the document above, then click **Recompile** or press `Ctrl + Enter`. The PDF appears beside the source. To insert a fuller skeleton into an empty file instead, press `Shift + Space` in the editor and choose **Article** under **Document**.
+
+On your own computer with TeX Live installed, save the file as `main.tex` and run:
+
+```bash
+pdflatex main.tex
+```
+
+This writes `main.pdf` next to the source, along with `main.log` (everything LaTeX reported) and `main.aux` (notes LaTeX keeps for the next pass).
+
+## Common mistakes
+
+- **Text in the preamble.** LaTeX stops with `Missing \begin{document}`. Move the text below `\begin{document}`.
+- **`\maketitle` without `\title`.** LaTeX stops with `No \title given`. Add `\title` to the preamble. Without `\maketitle`, there is no error, and no title either.
+- **A missing `\end{document}`.** The compile ends with `Emergency stop` and `job aborted, no legal \end found`. Check the last line of the file.
+- **An unwanted date.** Leaving out `\date` prints the date of the compile, which changes every day. Use `\date{}` for none, or type a fixed date.
+
+## Next
+
+- [Text formatting](/learn/text-formatting)
+- [Sections and structure](/learn/sections-and-structure)
+- [Packages and the preamble](/learn/packages-and-the-preamble)

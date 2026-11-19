@@ -1,0 +1,124 @@
+---
+title: "Importing a project"
+description: "Start from a ZIP, an arXiv paper, a template, or a GitHub repository, and what is kept or left out."
+summary: "Start a Eneles project from a ZIP file, the LaTeX source of an arXiv paper, a template, or a GitHub repository, and see which files are kept or left out."
+keywords: ["import","zip","arxiv","arxiv id","version","template","github","repository","upload project","main.tex","skipped files"]
+---
+
+# Importing a project
+
+Start a project from files that already exist: a ZIP, the source of a paper on arXiv, a template, or a GitHub repository. Each route creates a new project. None of them adds files to a project you already have.
+
+## From a ZIP
+
+1. On the [Projects](/projects) page, click **New project** and open the **Import ZIP** tab.
+2. Drop a `.zip` file on the box, or click the box to browse for one.
+3. Change the **Project name** if you like. It starts as the name of the ZIP.
+4. Click **Import project**.
+
+Eneles unpacks the ZIP in your browser, creates the project, and saves the files into it. The project opens in the editor when every file is in.
+
+### How the main document is chosen
+
+The main document is the first file found in this order:
+
+1. `main.tex` at the top level, if it contains `\documentclass`.
+2. Another `.tex` file at the top level, if it contains `\documentclass`.
+3. A `.tex` file in a folder, if it contains `\documentclass`.
+4. The first `.tex` file, taking paths in alphabetical order.
+
+The chosen file is saved as `main.tex`, whatever it was called in the ZIP, and becomes the project's main document.
+
+If the chosen file was inside a folder, that folder becomes the top level of the project, so the document's `\input` and `\includegraphics` paths still point at the right files. Files outside that folder are left out.
+
+A ZIP with no `.tex` file is refused with "No .tex files found in the ZIP.", and no project is created.
+
+### What is kept
+
+- **Folders.** Every file keeps its path. If the whole ZIP sits inside one folder, that wrapping folder is removed.
+- **Text files** become project files that you can edit: LaTeX sources, bibliographies, class and style files, and anything else that reads as plain text.
+- **Images, PDFs, fonts, and other files** are stored exactly as they are. These count toward your [upload storage](/docs/projects-and-files#size-limits-and-upload-storage).
+
+### What is left out
+
+| Left out | Why | Are you told? |
+| --- | --- | --- |
+| Files and folders whose name starts with a dot, such as `.git` and `.DS_Store`, and the `__MACOSX` folder | They belong to your computer or your tools, not to the document. | No |
+| Empty folders | Only files are brought in, and each one brings its folders with it. | No |
+| A file with a path longer than 300 characters | The path is too long for a project file. | No |
+| A file named `main.tex` in the same folder as the main document, when the main document was chosen under a different name | The chosen file takes that name. | No |
+| Files outside the main document's folder | That folder became the top level of the project. | Yes |
+| A file larger than 10 MB | 10 MB is the limit for one project file. | Yes |
+| Images and other stored files beyond 60 in one minute | Uploads of these are limited to 60 a minute. | Yes |
+| A stored file that does not fit in your upload storage | Your plan's allowance is full. | Yes |
+
+When files are left out for one of the reasons in the last four rows, a notice says how many, and names the first three with the reason for each. Add them afterwards by [uploading them in the editor](/docs/projects-and-files#upload-images-and-other-files).
+
+<Callout type="tip" title="Before you zip">
+  If your main document is not called `main.tex` and the ZIP also holds a different file with that name, rename one of them first. Otherwise the second one is dropped without notice.
+</Callout>
+
+### After the import
+
+The new project uses the default compiler settings. If the document needs XeLaTeX or LuaLaTeX, change **Compiler** on the **Compiler** tab of **Project settings**, as described in [Compiling](/docs/compiling#engine).
+
+## From arXiv
+
+1. On the [Projects](/projects) page, click **New project** and open the **ArXiv** tab.
+2. Enter the paper's identifier under **ArXiv ID**, for example `2301.01234`. Identifiers in the older style, such as `math.GT/0309136`, work too. Enter the identifier alone, not a link to the paper.
+3. Click **Import from ArXiv**, or press `Enter`.
+
+Eneles downloads the paper's source from arXiv and creates a project named after the paper's title. From there the files are treated exactly as in a ZIP import: the main document is chosen the same way, and the same things are kept and left out.
+
+### Papers with more than one version
+
+If the paper has several versions and you did not say which one you want, nothing is imported. The dialog tells you how many versions there are, for example "This paper has 3 versions. Please specify one, e.g. 2301.01234v3 (latest) or 2301.01234v1."
+
+Add `v` and the version number to the identifier, as in `2301.01234v3`, and import again. A paper with a single version is imported straight away.
+
+### When a paper cannot be imported
+
+| Message | What it means |
+| --- | --- |
+| "Not a valid arXiv identifier. Expected e.g. 2301.12345 or math.GT/0309136." | The text is not an arXiv identifier. Remove any `arXiv:` prefix or link. |
+| "This paper has no LaTeX source on arXiv." | The download has no `.tex` file in it. |
+| "Could not unpack the paper's source." | The download is not an archive Eneles can read. |
+| "An internal error occurred. Please try again later." | Eneles could not get the source from arXiv. That happens when arXiv has no source for the identifier, when the source is larger than 50 MB, and when arXiv cannot be reached. |
+
+Eneles accepts ten arXiv requests a minute from one network address.
+
+<Callout type="tip" title="Only want to read the paper?">
+  To keep a paper's source beside your own project, rather than as a project of its own, attach it as a [reference paper](/docs/reference-papers).
+</Callout>
+
+## From a template
+
+There are two kinds of template.
+
+**Starter templates** are built in:
+
+1. Click **New project** and open the **Templates** tab.
+2. Narrow the list with the category buttons: **All**, **Notes**, **Paper**, **Beamer**, **Book**, **Homework**, **Resume**, **Letter**, and **Other**.
+3. Click a template. The dialog returns to the **New** tab, and a dot on the **Templates** tab shows that one is chosen.
+4. Enter a **Project name** and click **Create project**.
+
+The new project's `main.tex` holds the template. To go back to an empty project, open the **Templates** tab again and click **Scratch**.
+
+**Saved templates** are made from projects, by you or by other people. On the [Templates](/templates) page, click **Use template** to create a project from a copy of the template's files. Saving, sharing, and managing these templates is covered in [Editing](/docs/editing#templates).
+
+## From a GitHub repository
+
+Create a new project, link the repository to it, and take GitHub's files:
+
+1. Create a project on the **New** tab.
+2. In the editor, choose **File**, then **GitHub…**, and link the repository.
+3. When Eneles asks which version to keep, choose **Use GitHub's**.
+
+The steps for creating a token and linking, and what a pull does with each file, are in [GitHub sync](/docs/github-sync#link-a-repository). If the repository's main file is not called `main.tex`, choose it afterwards under [Main document](/docs/compiling#main-document). The project also keeps the `main.tex` it was created with, because that file cannot be deleted.
+
+## Related
+
+- [Projects and files](/docs/projects-and-files): manage files once the project exists.
+- [GitHub sync](/docs/github-sync): link a repository, then push and pull.
+- [Reference papers](/docs/reference-papers): attach an arXiv paper to a project instead of importing it.
+- [Compiling](/docs/compiling): engines and the main document.

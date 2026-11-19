@@ -1,0 +1,84 @@
+---
+title: "AI tools"
+description: "Use Eneles from Claude Code, the Claude apps, Codex, or GitHub Copilot."
+summary: "Connect Claude Code, the Claude apps, Codex, or GitHub Copilot to Eneles over MCP, so they open, edit, and compile your projects on your own plan."
+keywords: ["mcp","claude code","claude","codex","copilot","chatgpt","ai","agent","connector","oauth","plan"]
+---
+
+# AI tools
+
+Eneles works with the AI tools you already use. Connect Claude Code, claude.ai or Claude Desktop, Codex, or GitHub Copilot, and it can open your Eneles projects, read and change their files, and compile them. The tool runs on your own plan with its maker; Eneles does not see or bill for it.
+
+The tools connect through Eneles's MCP server, at:
+
+```
+https://mcp.texer.org/mcp
+```
+
+The first time a tool uses it, your browser opens Eneles and asks you to allow the connection. You approve it signed in as yourself, and the tool can then do what you can do in your projects, nothing more.
+
+For Eneles's own assistant, see [Axya](/docs/assistant).
+
+## Connect a tool
+
+The quickest way is **Settings**, then **AI tools**: pick your tool and copy the line shown.
+
+### Claude Code
+
+```
+claude mcp add --transport http texer https://mcp.texer.org/mcp
+```
+
+Then type `/mcp` in Claude Code and choose **texer** to sign in.
+
+### Claude apps
+
+In claude.ai or Claude Desktop, open **Customize**, then **Connectors**, then **Add custom connector**, and paste the address above. Custom connectors are available on every Claude plan.
+
+### Codex
+
+```
+codex mcp add texer --url https://mcp.texer.org/mcp
+codex mcp login texer
+```
+
+### GitHub Copilot
+
+In VS Code, add Eneles to `.vscode/mcp.json` for one workspace, or to your user `mcp.json` for all of them:
+
+```json
+{
+  "servers": {
+    "texer": { "type": "http", "url": "https://mcp.texer.org/mcp" }
+  }
+}
+```
+
+Copilot asks you to sign in to Eneles the first time. JetBrains IDEs, Visual Studio, Xcode, and Eclipse take the same address. On a Copilot Business or Enterprise plan, your organization must allow MCP servers.
+
+### Any other MCP client
+
+Use the address above. Eneles signs clients in with OAuth: it supports dynamic client registration and client ID metadata documents, with PKCE. A tool that only takes a fixed header can send a Eneles [API key](/docs/account-and-security) instead, as `Authorization: Bearer txr_…`.
+
+## What a connected tool can do
+
+| Tool | What it does |
+| --- | --- |
+| `list_projects` | Lists your projects and the ones shared with you |
+| `create_project` | Creates a new project |
+| `list_files` | Lists a project's files and folders, and its main document |
+| `read_file` | Reads a file as it is now, including what anyone is typing in it |
+| `write_file` | Writes a whole file, or creates it |
+| `edit_file` | Replaces one exact piece of a file |
+| `delete_file` | Deletes a file or a folder |
+| `compile` | Compiles the project and returns the errors with their file and line |
+
+It can open only the projects you can open, and change only the ones you can edit.
+
+Its changes go through the same live document as everyone's typing: anyone with the file open sees them at once. Each change is kept as a version in the file's history, labeled **Changed by an AI tool**, so you can compare it and restore what was there before.
+
+## Disconnect a tool
+
+In **Settings**, under **AI tools**, every connected tool is listed with when it was last used. Remove one and it stops working at once.
+
+A connection lasts while it is used: an unused one ends after 60 days, and the tool asks you to allow it again.

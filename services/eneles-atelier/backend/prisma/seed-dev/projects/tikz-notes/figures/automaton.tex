@@ -1,0 +1,13 @@
+% Deterministic automaton for binary numbers divisible by three.
+\begin{tikzpicture}[->, >=Stealth, shorten >=1pt, node distance=2.6cm, on grid, auto, initial text=]
+  \node[state, initial, accepting] (q0) {$q_0$};
+  \node[state] (q1) [right=of q0] {$q_1$};
+  \node[state] (q2) [right=of q1] {$q_2$};
+  \path
+    (q0) edge [loop above] node {0} ()
+    (q0) edge [bend left] node {1} (q1)
+    (q1) edge [bend left] node {1} (q0)
+    (q1) edge [bend left] node {0} (q2)
+    (q2) edge [bend left] node {0} (q1)
+    (q2) edge [loop above] node {1} ();
+\end{tikzpicture}

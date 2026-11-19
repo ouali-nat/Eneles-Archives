@@ -1,0 +1,15 @@
+% Name: Deep network
+% Description: Multiple hidden layers.
+% Tags: deep, multi-layer
+
+\usepackage{neuralnetwork}
+
+\begin{neuralnetwork}[height=4, nodespacing=7mm, layerspacing=12mm]
+  \inputlayer[count=4]
+  \hiddenlayer[count=5]
+  \linklayers
+  \hiddenlayer[count=4]
+  \linklayers
+  \outputlayer[count=2]
+  \linklayers
+\end{neuralnetwork}

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Where TeXeR shows up: an "Insert > TeXeR LaTeX..." menu entry and a
+  one-button "TeXeR" toolbar, in Impress and Draw only. Both dispatch
+  service:org.texer.imp.Launcher?open (see python/texer_imp_main.py).
+-->
+<oor:component-data xmlns:oor="http://openoffice.org/2001/registry"
+                    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                    oor:name="Addons" oor:package="org.openoffice.Office">
+  <node oor:name="AddonUI">
+
+    <node oor:name="OfficeMenuBarMerging">
+      <node oor:name="org.texer.imp" oor:op="replace">
+        <node oor:name="InsertMenu" oor:op="replace">
+          <prop oor:name="MergePoint"><value>.uno:InsertMenu\.uno:InsertGraphic</value></prop>
+          <prop oor:name="MergeCommand"><value>AddAfter</value></prop>
+          <prop oor:name="MergeFallback"><value>AddPath</value></prop>
+          <prop oor:name="MergeContext">
+            <value>com.sun.star.presentation.PresentationDocument,com.sun.star.drawing.DrawingDocument</value>
+          </prop>
+          <node oor:name="MenuItems">
+            <node oor:name="m1" oor:op="replace">
+              <prop oor:name="URL"><value>service:org.texer.imp.Launcher?open</value></prop>
+              <prop oor:name="Title"><value xml:lang="en-US">TeXeR LaTeX...</value></prop>
+              <prop oor:name="Target"><value>_self</value></prop>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+
+    <node oor:name="OfficeToolBar">
+      <node oor:name="org.texer.imp" oor:op="replace">
+        <prop oor:name="Title"><value xml:lang="en-US">TeXeR</value></prop>
+        <node oor:name="b1" oor:op="replace">
+          <prop oor:name="URL"><value>service:org.texer.imp.Launcher?open</value></prop>
+          <prop oor:name="Title"><value xml:lang="en-US">TeXeR LaTeX</value></prop>
+          <prop oor:name="Target"><value>_self</value></prop>
+          <prop oor:name="Context">
+            <value>com.sun.star.presentation.PresentationDocument,com.sun.star.drawing.DrawingDocument</value>
+          </prop>
+        </node>
+      </node>
+    </node>
+
+    <node oor:name="Images">
+      <node oor:name="org.texer.imp.launcher" oor:op="replace">
+        <prop oor:name="URL"><value>service:org.texer.imp.Launcher?open</value></prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL"><value>%origin%/../assets/icons/texer-dark-16.png</value></prop>
+          <prop oor:name="ImageBigURL"><value>%origin%/../assets/icons/texer-dark-32.png</value></prop>
+        </node>
+      </node>
+    </node>
+
+  </node>
+</oor:component-data>

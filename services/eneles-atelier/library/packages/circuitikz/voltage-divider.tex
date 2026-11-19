@@ -1,0 +1,13 @@
+% Name: Voltage divider
+% Description: A simple resistive voltage divider circuit.
+% Tags: voltage divider, resistor
+
+\usepackage{circuitikz}
+
+\begin{circuitikz}
+  \draw (0,0) to[V=$V_{in}$] (0,3)
+    to[R=$R_1$] (3,3)
+    to[R=$R_2$] (3,0) -- (0,0);
+  \draw (3,3) to[short, -o] (4,3) node[right]{$V_{out}$};
+  \draw (3,0) to[short, -o] (4,0) node[right]{GND};
+\end{circuitikz}

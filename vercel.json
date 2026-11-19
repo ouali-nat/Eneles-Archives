@@ -123,6 +123,10 @@
     {
       "src": "api/aurora-assisted-pdf-finalize.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "atelier/**",
+      "use": "@vercel/static"
     }
   ],
   "env": {
@@ -136,6 +140,10 @@
     {
       "src": "^/api/aurora-assisted-pdf-finalize\\.js$",
       "dest": "/api/aurora-assisted-pdf-finalize.js"
+    },
+    {
+      "src": "^/atelier/?$",
+      "dest": "/atelier/index.html"
     },
     {
       "src": "^/(.*)$",

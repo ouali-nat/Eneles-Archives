@@ -1,0 +1,10 @@
+{
+  "name": "circuitikz",
+  "description": "Draw electrical and electronic circuits. Supports resistors, capacitors, transistors, op-amps, and more.",
+  "ctanUrl": "https://ctan.org/pkg/circuitikz",
+  "tags": [
+    "circuits",
+    "electronics",
+    "electrical engineering"
+  ]
+}

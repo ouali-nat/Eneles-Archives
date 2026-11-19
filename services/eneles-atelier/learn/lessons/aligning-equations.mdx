@@ -1,0 +1,121 @@
+---
+title: "Aligning equations"
+description: "Line up equations at a relation, break a long equation across lines, and write piecewise definitions."
+summary: "Align equations in LaTeX with amsmath: align at the equals sign, split a long equation over lines, gather and multline, and piecewise functions with cases."
+keywords: ["align","align*","aligned","split","gather","gather*","multline","multline*","cases","piecewise","\\intertext","&","alignment point","multi-line equation","system of equations","eqnarray","\\notag"]
+---
+
+# Aligning equations
+
+Line up several equations at their equals signs, break one long equation over several lines, and typeset piecewise definitions. Every environment here comes from the `amsmath` package.
+
+## Align equations at a point
+
+The `align` environment sets one equation per line. `\\` ends a line and `&` marks the point where the lines meet. Put the `&` directly before the relation, as in `&=`, so that the spacing around the sign stays correct.
+
+```latex-example
+\begin{align}
+  2x + y &= 7 \\
+  x - 3y &= -7
+\end{align}
+```
+
+Each line gets its own number. `align*` numbers none of them, and `\notag` before a `\\` removes the number from one line. `align` starts and ends math mode itself, so never wrap it in `\[…\]` or `$…$`.
+
+## Several columns and text between lines
+
+More `&` characters make more columns. They alternate in meaning: the first, third, and fifth are alignment points, and the second and fourth separate one column of equations from the next.
+
+`\intertext` puts a line of ordinary text between two rows without losing the alignment. It goes right after a `\\`.
+
+```latex-example
+\begin{align*}
+  x &= r\cos\theta & y &= r\sin\theta \\
+\intertext{so squaring and adding gives}
+  x^2 + y^2 &= r^2 & \frac{y}{x} &= \tan\theta
+\end{align*}
+```
+
+## One equation on several lines
+
+A derivation is one equation, so it should have one number. Put `split` inside `equation`: it aligns at `&` like `align`, and the number is centered on the whole block.
+
+```latex-example
+\begin{equation}
+\begin{split}
+  (a + b)^3 &= (a + b)(a^2 + 2ab + b^2) \\
+            &= a^3 + 3a^2 b + 3ab^2 + b^3
+\end{split}
+\end{equation}
+```
+
+## Aligned blocks inside a formula
+
+`aligned` also lives inside another math environment, but unlike `split` it is a building block: it makes a box that other symbols can stand next to. That is how you put a brace beside a system of equations. `\left\{` opens a brace as tall as the block, and `\right.` closes it with nothing, as explained in [Brackets and delimiters](/learn/brackets-and-delimiters).
+
+```latex-example
+\begin{equation}
+  \left\{
+  \begin{aligned}
+    \dot{x} &= \sigma (y - x) \\
+    \dot{y} &= x (\rho - z) - y \\
+    \dot{z} &= xy - \beta z
+  \end{aligned}
+  \right.
+\end{equation}
+```
+
+## Without alignment: gather and multline
+
+`gather` centers each line separately. Use it for equations that have no natural point in common. `multline` is for one equation too long for the line: the first line is set flush left, the last flush right, and any lines between are centered. Both have starred, unnumbered forms.
+
+```latex-example
+\begin{gather*}
+  \sin^2\theta + \cos^2\theta = 1 \\
+  e^{i\theta} = \cos\theta + i\sin\theta
+\end{gather*}
+\begin{multline*}
+  (x + y)^5 = x^5 + 5x^4 y + 10x^3 y^2 \\
+  + 10x^2 y^3 + 5x y^4 + y^5
+\end{multline*}
+```
+
+## Piecewise definitions
+
+`cases` draws a left brace around rows of two columns: a value, then `&`, then its condition. Like `aligned`, it goes inside a math environment. The condition is in math mode, so wrap its words in `\text`.
+
+```latex-example
+\[
+  |x| =
+  \begin{cases}
+    x  & \text{if } x \geq 0, \\
+    -x & \text{otherwise.}
+  \end{cases}
+\]
+```
+
+## Which one to use
+
+| You have | Use |
+| --- | --- |
+| Several equations aligned at a relation | `align` |
+| One derivation with a single number | `split` inside `equation` |
+| An aligned block next to a brace or other symbols | `aligned` |
+| Several equations, each centered | `gather` |
+| One equation too long for the line | `multline` |
+| A definition by cases | `cases` |
+
+In Eneles, press `Shift + Space` and open the Math group to insert a filled-in `align`, `split`, `gather`, `multline`, or `cases` template.
+
+## Common mistakes
+
+- **A blank line inside the environment.** TeX stops with `Paragraph ended before \align was complete`. Remove the blank line.
+- **`\\` after the last line.** It starts one more, empty line, and in `align` that line gets a number. End the last line without `\\`.
+- **Nesting it wrong.** `align` inside `\[…\]` gives `Erroneous nesting of equation structures`. `split` or `aligned` outside math gives `\begin{split} won't work here` or `\begin{aligned} allowed only in math mode`. `align`, `gather`, and `multline` stand alone. `split`, `aligned`, and `cases` go inside math.
+- **Using `eqnarray`.** It is an old LaTeX environment that puts too much space around the relation. Replace it with `align`.
+
+## Next
+
+- [Numbering and referencing equations](/learn/numbering-and-referencing-equations)
+- [Matrices](/learn/matrices)
+- [Brackets and delimiters](/learn/brackets-and-delimiters)

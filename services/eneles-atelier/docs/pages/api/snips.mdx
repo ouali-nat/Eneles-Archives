@@ -1,0 +1,149 @@
+---
+title: "Snips"
+description: "Upload an image and convert it to LaTeX."
+summary: "The Eneles REST API for snips: upload an image, then run recognition as a separate call to convert it to LaTeX, and list or manage your snips."
+keywords: ["image","ocr","convert","upload","snip"]
+method: POST
+---
+
+# Snips
+
+A snip is an image plus the LaTeX recognised from it. Upload first, then run
+recognition as a separate call, so a failed conversion never loses the upload.
+
+## Conventions
+
+Accepted formats are PNG, JPG, and WebP, up to 10 MB. Ids are integers. List
+responses are paginated and include a signed `imageUrl` inline, so you never
+need a second request per row to display results.
+
+<Callout type="warning" title="The form field is named file">
+  `POST /snips` reads a multipart field called `file`. Sending `image` returns
+  400 with "No file uploaded", which is the most common mistake against this
+  endpoint.
+</Callout>
+
+<Endpoint
+  method="POST"
+  path="/snips"
+  description="Upload an image. This stores it and returns the record. It does not run recognition."
+  auth="Bearer token or x-api-key"
+  request={`curl -X POST https://api.texer.org/snips \\
+  -H "Authorization: Bearer YOUR_TOKEN" \\
+  -F "file=@equation.png" \\
+  -F "title=Gaussian integral"`}
+  response={`{
+  "id": 412,
+  "title": "Gaussian integral",
+  "fileName": "equation.png",
+  "fileSize": 84213,
+  "status": "uploaded",
+  "latex": null,
+  "imageUrl": "https://assets.texer.org/snips/412.png?X-Amz-Signature=...",
+  "createdAt": "2026-04-02T09:05:00.000Z"
+}`}
+/>
+
+---
+
+<Endpoint
+  method="POST"
+  path="/snips/:id/process"
+  description="Run recognition on an uploaded snip and store the resulting LaTeX. Rate limited to 10 per minute, and each successful call consumes one snip from your monthly quota."
+  auth="Bearer token or x-api-key"
+  request={`curl -X POST https://api.texer.org/snips/412/process \\
+  -H "Authorization: Bearer YOUR_TOKEN"`}
+  response={`{
+  "id": 412,
+  "status": "processed",
+  "latex": "\\\\int_{0}^{\\\\infty} e^{-x^2}\\\\,dx = \\\\frac{\\\\sqrt{\\\\pi}}{2}"
+}`}
+/>
+
+---
+
+<Endpoint
+  method="GET"
+  path="/snips"
+  description="List your snips, newest first. Paginated, with imageUrl signed and included on every row."
+  auth="Bearer token or x-api-key"
+  request={`curl "https://api.texer.org/snips?page=1&limit=20" \\
+  -H "Authorization: Bearer YOUR_TOKEN"`}
+  response={`{
+  "data": [
+    {
+      "id": 412,
+      "title": "Gaussian integral",
+      "fileName": "equation.png",
+      "status": "processed",
+      "latex": "\\\\int_{0}^{\\\\infty} e^{-x^2}\\\\,dx",
+      "imageUrl": "https://assets.texer.org/snips/412.png?X-Amz-Signature=...",
+      "createdAt": "2026-04-02T09:05:00.000Z"
+    }
+  ],
+  "meta": {
+    "page": 1, "limit": 20, "total": 1,
+    "totalPages": 1, "hasNext": false, "hasPrev": false
+  }
+}`}
+/>
+
+---
+
+<Endpoint
+  method="GET"
+  path="/snips/:id"
+  description="Fetch a single snip."
+  auth="Bearer token or x-api-key"
+  request={`curl https://api.texer.org/snips/412 \\
+  -H "Authorization: Bearer YOUR_TOKEN"`}
+/>
+
+---
+
+<Endpoint
+  method="GET"
+  path="/snips/:id/image"
+  description="Redirect to a freshly signed URL for the original image. Use this when a URL from an earlier list response has expired."
+  auth="Bearer token or x-api-key"
+  request={`curl -L https://api.texer.org/snips/412/image \\
+  -H "Authorization: Bearer YOUR_TOKEN" \\
+  --output equation.png`}
+/>
+
+---
+
+<Endpoint
+  method="PUT"
+  path="/snips/:id/latex"
+  description="Overwrite the stored LaTeX. Use this to save a correction after reviewing what recognition returned."
+  auth="Bearer token or x-api-key"
+  request={`curl -X PUT https://api.texer.org/snips/412/latex \\
+  -H "Authorization: Bearer YOUR_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{"latex": "\\\\int_0^\\\\infty e^{-x^2}\\\\,dx = \\\\tfrac{\\\\sqrt\\\\pi}{2}"}'`}
+/>
+
+---
+
+<Endpoint
+  method="PUT"
+  path="/snips/:id"
+  description="Update metadata such as the title or tags."
+  auth="Bearer token or x-api-key"
+  request={`curl -X PUT https://api.texer.org/snips/412 \\
+  -H "Authorization: Bearer YOUR_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{"title": "Gaussian integral, corrected"}'`}
+/>
+
+---
+
+<Endpoint
+  method="DELETE"
+  path="/snips/:id"
+  description="Delete a snip and its stored image. This cannot be undone and does not refund quota."
+  auth="Bearer token or x-api-key"
+  request={`curl -X DELETE https://api.texer.org/snips/412 \\
+  -H "Authorization: Bearer YOUR_TOKEN"`}
+/>

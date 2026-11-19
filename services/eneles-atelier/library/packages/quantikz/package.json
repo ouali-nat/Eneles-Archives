@@ -1,0 +1,10 @@
+{
+  "name": "quantikz",
+  "description": "Draw quantum circuit diagrams. Used in quantum computing and quantum information theory.",
+  "ctanUrl": "https://ctan.org/pkg/quantikz",
+  "tags": [
+    "quantum circuits",
+    "quantum computing",
+    "physics"
+  ]
+}

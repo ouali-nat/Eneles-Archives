@@ -1,0 +1,79 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+% A comment line in the preamble.
+\newcommand{\product}[1]{The product \textbf{#1} ships today.}
+\title{SyncTeX fixture}
+\author{Eneles}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\begin{abstract}
+This abstract checks that jumps land on the right line of the source.
+\end{abstract}
+
+\section{Introduction}
+Plain paragraphs come first. This sentence sits on one source line.
+A second line of the same paragraph follows here,
+and a third one closes it with the word zebra at the end.
+
+% A comment between paragraphs produces no output.
+
+One very long source line holds a whole paragraph so that it wraps over several lines in the PDF: alpha beta gamma delta alpha epsilon zeta eta theta iota kappa lambda alpha mu nu xi omicron pi rho sigma tau upsilon phi chi psi omega, and then the same words again, alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu nu xi omicron pi rho sigma tau upsilon phi chi psi omega.
+
+\section{Mathematics}
+Inline math such as $e^{i\pi} + 1 = 0$ sits in the text.
+A displayed equation follows:
+\begin{equation}
+  \int_0^1 x^2 \, dx = \frac{1}{3}
+\end{equation}
+and an aligned system:
+\begin{align}
+  a &= b + c \\
+  d &= e + f + g \\
+  h &= i
+\end{align}
+
+\section{Structures}
+\begin{itemize}
+  \item First item about apples.
+  \item Second item about bananas.
+  \item Third item about cherries.
+\end{itemize}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{lcr}
+    Name & Count & Price \\
+    \hline
+    Widget & 12 & 3.50 \\
+    Gadget & 7 & 12.00 \\
+    Sprocket & 30 & 0.75 \\
+  \end{tabular}
+  \caption{A small table of parts.}
+\end{table}
+
+Text with a footnote\footnote{The footnote text lives here.} continues after it.
+\marginpar{Margin note}
+A margin note hangs beside this line.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=3cm]{example-image}
+  \rule{4cm}{2cm}
+  \caption{A black rectangle standing in for a picture.}
+\end{figure}
+
+\product{Quasar}
+
+\newpage
+\section{Second page}
+The second page starts here with fresh text.
+Another line follows on the second page.
+
+\subsection{A subsection}
+Closing words of the fixture document.
+\end{document}
+% Trailing comment after the end.

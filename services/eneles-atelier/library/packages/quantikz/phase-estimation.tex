@@ -1,0 +1,11 @@
+% Name: Phase estimation
+% Description: Two counting qubits control U and U² on the eigenstate, then an inverse Fourier transform reads out the phase.
+% Tags: phase estimation, QPE, algorithm
+
+\usepackage{quantikz}
+
+\begin{quantikz}
+  \lstick{$|0\rangle$} & \gate{H} & \qw & \ctrl{2} & \gate[2]{\mathrm{QFT}^\dagger} & \meter{} \\
+  \lstick{$|0\rangle$} & \gate{H} & \ctrl{1} & \qw & \qw & \meter{} \\
+  \lstick{$|u\rangle$} & \qw & \gate{U} & \gate{U^2} & \qw & \qw
+\end{quantikz}

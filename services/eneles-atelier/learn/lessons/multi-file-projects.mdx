@@ -1,0 +1,131 @@
+---
+title: "Multi-file projects"
+description: "Splitting a document with \\input and \\include, compiling selected chapters, paths, and a folder layout for a thesis."
+summary: "Split a long LaTeX document into files with \\input and \\include, compile only selected chapters with \\includeonly, and lay out a thesis folder."
+keywords: ["\\input","\\include","\\includeonly","multiple files","split","chapters","main document","main.tex","folder","directory","structure","path","paths","\\graphicspath","subfiles","\\subfile","thesis","large document","cannot be nested","aux"]
+---
+
+# Multi-file projects
+
+Split a long document into several files with `\input` and `\include`, compile only the chapters you are working on, and lay out a thesis folder in which every path resolves.
+
+## One main document, many parts
+
+One file is the main document. It holds `\documentclass`, the preamble, and `\begin{document}`, and it is the file you compile. Every other file holds content only, and the main document pulls it in.
+
+```latex
+% main.tex
+\documentclass[12pt]{report}
+\input{preamble}
+
+\title{River sediment and the spring flood}
+\author{Mira Okafor}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\include{chapters/introduction}
+\include{chapters/methods}
+\include{chapters/results}
+
+\appendix
+\include{appendices/derivations}
+\end{document}
+```
+
+A chapter file starts straight away with its content. It has no `\documentclass` and no `\begin{document}`.
+
+```latex
+% chapters/methods.tex
+\chapter{Methods}
+\label{ch:methods}
+We sampled the river at three sites.
+```
+
+In Eneles, every compile starts from the project's **Main document**, which is `main.tex` unless you change it under **Project settings**, in the **Compiler** tab.
+
+## Input and include
+
+`\input{file}` behaves as if you had pasted the file's contents at that spot. It works anywhere, including the preamble and the middle of a paragraph, and an input file can input others.
+
+`\include{file}` is made for chapters. It starts a new page before and after the file, and it keeps a separate record of each file's numbering, which is what makes `\includeonly` possible.
+
+Both add `.tex` when you leave the extension out.
+
+| | `\input` | `\include` |
+| --- | --- | --- |
+| Page break | None | Before and after |
+| In the preamble | Yes | No |
+| Inside an included file | Yes | No: nesting is an error |
+| Works with `\includeonly` | No | Yes |
+| If the file is missing | Error | Only a warning in the log |
+| Use it for | The preamble, big tables, figures, and sections of a chapter | Chapters |
+
+## Compile only some chapters
+
+Put `\includeonly` in the preamble and list the files to keep, separated by commas, exactly as they appear in the `\include` lines.
+
+```latex
+\includeonly{chapters/methods,chapters/results}
+```
+
+LaTeX then skips the other included chapters. On your own computer, it still reads the notes those chapters left in their `.aux` files during the last full compile, so chapter numbers, page numbers, and cross-references stay correct. Delete the line to compile everything again.
+
+Eneles compiles from a clean copy of the project each time, with no `.aux` files left from earlier compiles. `\includeonly` still shortens the compile there, but numbering starts from the first chapter you kept, and references into the skipped chapters print as ?? until you remove the line. [Draft mode](/docs/compiling#draft-mode) is another way to speed up a long document.
+
+## A folder layout for a thesis
+
+```text
+thesis/
+  main.tex              the main document
+  preamble.tex          packages and settings
+  references.bib        the bibliography database
+  chapters/
+    introduction.tex
+    methods.tex
+    results.tex
+  appendices/
+    derivations.tex
+  figures/
+    setup.pdf
+    spectrum.png
+```
+
+Use one file per chapter, and let a long chapter input its own sections or tables. Keep file names lower case, with no spaces. They then work on every system and in every command.
+
+## Paths
+
+<Callout type="note" title="Paths start at the main document">
+  LaTeX resolves every path from the folder of the main document, not from the file that contains the command. A chapter in `chapters/` still writes `figures/setup.pdf`, never `../figures/setup.pdf`.
+</Callout>
+
+```latex
+% chapters/methods.tex
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.6\textwidth]{figures/setup.pdf}
+  \caption{The sampling rig.}
+\end{figure}
+
+\input{chapters/methods-table}  % also from the main folder, not "methods-table"
+```
+
+Use forward slashes on every operating system. To avoid repeating the folder for each image, put `\graphicspath{{figures/}}` in the preamble, with the double braces and the trailing slash. After that, `\includegraphics{setup}` is enough.
+
+## Subfiles
+
+With `\input` and `\include`, only the main document compiles. The `subfiles` package lets each chapter compile on its own too, using the main document's preamble. The main document loads `\usepackage{subfiles}` and brings chapters in with `\subfile{chapters/methods}`. Each chapter starts with `\documentclass[../main]{subfiles}` and wraps its content in `\begin{document}` and `\end{document}`. It suits people who compile on their own computer and want a quick PDF of a single chapter.
+
+## Common mistakes
+
+- **A path written from the chapter's folder.** `\input{methods-table}` inside `chapters/methods.tex` stops with ``File `methods-table.tex' not found``. Write the path from the main document: `\input{chapters/methods-table}`.
+- **`\include` inside an included file.** LaTeX stops with `\include cannot be nested`. Use `\input` there.
+- **A preamble in a chapter file.** A `\documentclass` or `\usepackage` in a chapter stops with `Can be used only in preamble`. Move package lines to the main preamble.
+- **A chapter that silently disappears.** A misspelled name in `\include` is not an error. The log says `No file chapters/reslts.tex.` and the PDF has no such chapter. Check the log when a chapter is missing.
+
+## Next
+
+- [Thesis structure](/learn/thesis-structure)
+- [Cross-references](/learn/cross-references)
+- [Compiling in Eneles](/docs/compiling)

@@ -1,0 +1,18 @@
+% Name: Traffic light controller
+% Description: A Moore machine with three colored states and timed transitions, plus a button that shortens the green.
+% Tags: state machine, Moore machine, controller
+
+\usetikzlibrary{automata, arrows.meta}
+
+\begin{tikzpicture}[
+  shorten >=1pt, auto, >={Stealth}, every state/.style={minimum size=15mm, font=\small, thick},
+]
+  \node[state, initial, fill=green!25] (g) at (0,0) {Green};
+  \node[state, fill=yellow!40] (y) at (4,0) {Yellow};
+  \node[state, fill=red!25] (r) at (2,-3.2) {Red};
+
+  \path[->]
+    (g) edge node {30 s or button} (y)
+    (y) edge node {5 s} (r)
+    (r) edge node {25 s} (g);
+\end{tikzpicture}
