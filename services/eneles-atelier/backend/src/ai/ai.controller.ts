@@ -35,6 +35,8 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { AiChatDto } from '../projects/dto/ai-chat.dto';
 import { chatInput, streamChat } from './ai-chat-http';
 
+type UploadedAudioFile = { buffer: Buffer; originalname?: string; mimetype?: string; size: number };
+
 const AUDIO_MIMES = [
   'audio/webm',
   'audio/mp3',
@@ -191,7 +193,7 @@ export class AiController {
   )
   async transcribeSpeech(
     @CurrentUser() userId: number,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: UploadedAudioFile,
   ) {
     if (!file)
       throw new HttpException(
