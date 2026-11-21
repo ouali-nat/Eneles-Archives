@@ -15,7 +15,7 @@
    aurore-covers (couvertures), aurore-pdf-ouverts (PDF).
 */
 
-const SW_VERSION = 'v27-assisted-editor-save-guard-20261031';
+const SW_VERSION = 'v28-hesed-brand-ui-20261121';
 
 const PAGE_CACHE = 'aurore-shell';
 const STATIC_CACHE = 'aurore-static';
@@ -46,12 +46,12 @@ const BLOC_DESACTIVATION = /<script[^>]*id=["']aurore-temporary-disable-site-cac
 
 const PAGE_HORS_LIGNE = '<!doctype html><html lang="fr"><head><meta charset="utf-8">' +
   '<meta name="viewport" content="width=device-width,initial-scale=1">' +
-  '<title>Aurore — hors ligne</title>' +
+  '<title>Hesed — hors ligne</title>' +
   '<style>body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:system-ui,sans-serif;' +
   'background:#0f0e17;color:#f3f1ff;text-align:center;padding:24px}' +
   'main{max-width:420px}h1{font-size:1.25rem;margin:0 0 10px}p{opacity:.8;line-height:1.5;margin:0 0 18px}' +
   'button{border:0;border-radius:12px;padding:12px 20px;font-size:1rem;font-weight:700;background:#f59e0b;color:#1a1200}</style>' +
-  '</head><body><main><h1>Aurore est hors ligne</h1>' +
+  '</head><body><main><h1>Hesed est hors ligne</h1>' +
   '<p>Aucune copie de cette page n\'est encore enregistrée sur cet appareil. ' +
   'Reconnectez-vous une première fois : le site sera ensuite disponible sans connexion.</p>' +
   '<button onclick="location.reload()">Réessayer</button></main></body></html>';
