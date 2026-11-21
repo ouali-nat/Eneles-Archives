@@ -781,3 +781,19 @@ html[data-theme="light"] .ad-slot-dots span.is-active{background:#6d28d9}
   text-align:center!important;justify-content:center!important;
   font-size:clamp(.58rem,2.55vw,.74rem)!important;
 }
+
+
+/* Correctif définitif : les trois actions sont une rangée flex, jamais des blocs empilés. */
+.ad-slot-actions{
+  display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+  align-items:stretch!important;justify-content:space-between!important;
+  gap:6px!important;width:100%!important;box-sizing:border-box!important;
+}
+.ad-slot-actions>.ad-slot-action{
+  display:flex!important;flex:1 1 0!important;flex-basis:0!important;
+  width:0!important;min-width:0!important;max-width:none!important;
+  box-sizing:border-box!important;white-space:nowrap!important;
+  justify-content:center!important;text-align:center!important;
+  padding-inline:2px!important;font-size:clamp(.58rem,2.55vw,.74rem)!important;
+}
+@media(max-width:420px){.ad-slot-actions{gap:4px!important}.ad-slot-actions>.ad-slot-action{min-height:36px!important;font-size:clamp(.56rem,2.45vw,.68rem)!important}}

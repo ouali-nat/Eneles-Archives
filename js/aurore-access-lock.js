@@ -140,6 +140,7 @@
       if(r.ok){const data=await r.json().catch(()=>null);visiteAnonymeId=typeof data==='number'?data:(Array.isArray(data)?data[0]:data);try{sessionStorage.setItem('aurore_visite_anonyme_id',String(visiteAnonymeId||''));}catch(_){}}
     }catch(e){console.warn('[Visiteurs] enregistrement de visite indisponible',e);}
   }
+  window.auroreDemarrerSuiviVisiteur=demarrerSuiviVisiteur;
   function enregistrerSortieVisiteur(){
     try{const visitorId=getVisitorId();if(!visitorId)return;fetch(`${SUPABASE_URL}/rest/v1/rpc/enregistrer_sortie_visite_anonyme_par_visitor`,{method:'POST',headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json'},body:JSON.stringify({p_visitor_id:visitorId}),keepalive:true}).catch(()=>{});}catch(_){ }
   }

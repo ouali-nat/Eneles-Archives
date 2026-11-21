@@ -1342,7 +1342,7 @@
         <div class="ad-slot-label">Publicité</div>
         <div class="ad-slot-actions" role="group" aria-label="Actions publicitaires">
           ${interesse}
-          <button class="ad-slot-action ad-slot-skip" type="button" data-ad-action="skip">Ignorer (passer)</button>
+          <button class="ad-slot-action ad-slot-skip" type="button" data-ad-action="skip" title="Passer cette publicité">Ignorer</button>
           <button class="ad-slot-action ad-slot-hide" type="button" data-ad-action="hide">Masquer</button>
         </div>
         <div class="ad-slot-card">
@@ -1353,6 +1353,29 @@
           ${titre?`<div class="ad-slot-title">${echapperHtmlPub(titre)}</div>`:''}
           ${diapo.description?`<div class="ad-slot-desc">${echapperHtmlPub(diapo.description)}</div>`:''}
         </div>`;
+      // Appliquer la rangée directement sur les éléments nouvellement injectés :
+      // cela neutralise aussi les anciennes règles globales qui forçaient les boutons à 100%.
+      const rangeeActions=container.querySelector('.ad-slot-actions');
+      if(rangeeActions){
+        rangeeActions.style.setProperty('display','flex','important');
+        rangeeActions.style.setProperty('flex-direction','row','important');
+        rangeeActions.style.setProperty('flex-wrap','nowrap','important');
+        rangeeActions.style.setProperty('align-items','stretch','important');
+        rangeeActions.style.setProperty('width','100%','important');
+        rangeeActions.style.setProperty('gap','6px','important');
+        rangeeActions.style.setProperty('box-sizing','border-box','important');
+        rangeeActions.querySelectorAll('.ad-slot-action').forEach(action=>{
+          action.style.setProperty('display','flex','important');
+          action.style.setProperty('flex','1 1 0','important');
+          action.style.setProperty('width','0','important');
+          action.style.setProperty('min-width','0','important');
+          action.style.setProperty('max-width','none','important');
+          action.style.setProperty('white-space','nowrap','important');
+          action.style.setProperty('padding-inline','2px','important');
+          action.style.setProperty('font-size','clamp(.58rem,2.55vw,.74rem)','important');
+          action.style.setProperty('box-sizing','border-box','important');
+        });
+      }
       const allerAImage=(index)=>{
         if(campagne.slides.length<2)return;
         diapoIndex=(index+campagne.slides.length)%campagne.slides.length;

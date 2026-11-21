@@ -3,7 +3,7 @@
      est chargé ICI, en tête, avant le premier affichage. Avant, il n'arrivait qu'en fin de page :
      la porte apparaissait d'abord avec l'ancien style puis changeait d'aspect (deux versions successives).
      Le lien de fin de page reste en place pour garder l'ordre de priorité des autres feuilles. */
-  body.site-locked > *:not(#accessLock):not(#signupModal):not(#auroreAuthWait):not(#logoutConfirmModal):not(#auroreNetworkStatus):not(#auroreDebugErr):not(#auroreBuildBadge):not(#screen-shared-section):not(#aurore-zoom-fab):not(#aurore-zoom-panel){display:none!important;}
+  body.site-locked > *:not(#accessLock):not(#signupModal):not(#auroreAuthWait):not(#logoutConfirmModal):not(#logoutFinalChoiceModal):not(#auroreNetworkStatus):not(#auroreDebugErr):not(#auroreBuildBadge):not(#screen-shared-section):not(#aurore-zoom-fab):not(#aurore-zoom-panel){display:none!important;}
   /* Une URL ?sectionShare=... est publique : elle ne doit jamais être recouverte par le portail d'inscription. */
   html.aurore-shared-route #accessLock,
   html.aurore-shared-route #signupModal{display:none!important;}
@@ -248,3 +248,15 @@
 
 /* Après saisie réussie, le formulaire est remplacé par les informations du profil. */
 #screen-profil .profile-profile-launcher[hidden]{display:none!important}
+
+
+/* Choix du compte et destination après déconnexion. */
+.aurore-logout-actions--choices{grid-template-columns:1fr!important;gap:8px!important;margin-top:18px!important}
+.aurore-logout-actions--choices>button{width:100%;min-height:46px}
+.aurore-logout-switch{background:var(--theme-soft,var(--fond))!important;color:var(--theme-primary,var(--violet))!important;border:1px solid var(--theme-border,var(--bordure))!important;box-shadow:none!important}
+.aurore-logout-danger{background:var(--fond)!important;color:var(--encre)!important;border:1px solid var(--bordure)!important;box-shadow:none!important}
+.aurore-logout-actions--choices .aurore-logout-cancel{background:transparent!important}
+.aurore-logout-copy strong{color:var(--encre);overflow-wrap:anywhere}
+
+.aurore-logout-flow-error{margin-top:10px;padding:10px 12px;border:1px solid #f2b8b5;border-radius:11px;background:#fff4f2;color:#9f241d!important;font-weight:650}
+.aurore-logout-flow-error[hidden]{display:none!important}
