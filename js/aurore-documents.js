@@ -1144,7 +1144,7 @@
     const niveauLabel = (etat.classe?.dbNiveaux?.[0]) || (etat.feuilleArbre?.dbNiveaux?.[0]) || (etat.sousNiveau?.dbNiveaux?.[0]) || '';
     const serieLabel = etat.filiere ? ' — Série ' + etat.filiere : '';
     document.getElementById('docsTitle').textContent =
-      [etat.categorie?.nom, etat.serieChoisie?.nom || etat.feuilleArbre?.nom || etat.sousNiveau?.nom || niveauLabel, matiereNom, 'Aurore — ' + titre]
+      [etat.categorie?.nom, etat.serieChoisie?.nom || etat.feuilleArbre?.nom || etat.sousNiveau?.nom || niveauLabel, matiereNom, 'Hesed — ' + titre]
         .filter(Boolean).join(' — ');
     const back = document.querySelector('#screen-docs .back-btn');
     if (back) back.setAttribute('data-back', 'matieres');
