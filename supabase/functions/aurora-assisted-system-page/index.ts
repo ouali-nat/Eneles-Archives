@@ -30,7 +30,7 @@ async function logo(pdf:any){
   const b=await LOGO_CACHE;
   if(b[0]===137&&b[1]===80)return pdf.embedPng(b);
   if(b[0]===255&&b[1]===216)return pdf.embedJpg(b);
-  throw new Error("La version PDF du logo Eneles n’est pas une image PNG/JPEG valide.");
+  throw new Error("La version PDF du logo Hesed n’est pas une image PNG/JPEG valide.");
 }
 function wrap(s:string,font:any,size:number,max:number){
   const words=clean(s).split(" ").filter(Boolean),lines:string[]=[];

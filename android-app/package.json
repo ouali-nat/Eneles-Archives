@@ -1,8 +1,8 @@
 {
-  "name": "aurore-android",
+  "name": "hesed-android",
   "version": "1.0.0",
   "private": true,
-  "description": "Application Android Eneles (Capacitor) : WebView qui charge le site Eneles",
+  "description": "Application Android Hesed (Capacitor) : WebView qui charge le site Hesed",
   "dependencies": {
     "@capacitor/android": "^6.2.0",
     "@capacitor/app": "^6.0.0",

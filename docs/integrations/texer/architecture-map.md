@@ -1,6 +1,6 @@
 # TeXeR — cartographie de l’architecture source
 
-État au 18 novembre 2026. Cette note décrit les dépôts publics étudiés avant raccordement à Eneles.
+État au 18 novembre 2026. Cette note décrit les dépôts publics étudiés avant raccordement à Hesed.
 
 ## Dépôts principaux
 
@@ -43,11 +43,11 @@ Les contrôles HTTP exécutés depuis Termux ont obtenu les résultats suivants 
 
 Le contrôle est ponctuel et ne remplace pas une supervision durable. Aucun identifiant, secret ou jeton de production n’a été lu ni modifié.
 
-## Frontière d’intégration avec Eneles
+## Frontière d’intégration avec Hesed
 
-Eneles Archives est une application web statique organisée autour de index.html, CSS et JavaScript. TeXeR reste une application Next.js distincte, avec une API et un compilateur séparés. Pour conserver son architecture et éviter de réécrire l’éditeur dans Archives, un point d’accès dédié est placé dans la dernière section de l’accueil, après l’espace personnel. Il ouvre l’instance TeXeR de développement, et non le site officiel.
+Hesed Archives est une application web statique organisée autour de index.html, CSS et JavaScript. TeXeR reste une application Next.js distincte, avec une API et un compilateur séparés. Pour conserver son architecture et éviter de réécrire l’éditeur dans Archives, un point d’accès dédié est placé dans la dernière section de l’accueil, après l’espace personnel. Il ouvre l’instance TeXeR de développement, et non le site officiel.
 
-La politique CSP observée sur la production de `texer.org` annonce `frame-ancestors 'self' https://t.texer.org`; le domaine Eneles n’y figure pas. L’intégration ne doit donc pas reposer sur un iframe sans modification explicite et auditée de cette politique. L’authentification TeXeR (code e-mail, JWT et cookie HttpOnly) est distincte de l’authentification Supabase d’Eneles; aucun partage de session ne doit être supposé.
+La politique CSP observée sur la production de `texer.org` annonce `frame-ancestors 'self' https://t.texer.org`; le domaine Hesed n’y figure pas. L’intégration ne doit donc pas reposer sur un iframe sans modification explicite et auditée de cette politique. L’authentification TeXeR (code e-mail, JWT et cookie HttpOnly) est distincte de l’authentification Supabase d’Hesed; aucun partage de session ne doit être supposé.
 
 ## État de la récupération
 
@@ -57,16 +57,16 @@ La politique CSP observée sur la production de `texer.org` annonce `frame-ances
 
 ## Décision d’intégration provisoire
 
-Ne pas fusionner le backend TeXeR avec Supabase ni faire pointer le compilateur vers le navigateur. Préserver les trois services et leurs limites tant que l’inventaire n’est pas terminé. Les raccordements Eneles (identité, comptes, stockage, documents et droits) feront l’objet d’une phase distincte, avec tests isolés.
+Ne pas fusionner le backend TeXeR avec Supabase ni faire pointer le compilateur vers le navigateur. Préserver les trois services et leurs limites tant que l’inventaire n’est pas terminé. Les raccordements Hesed (identité, comptes, stockage, documents et droits) feront l’objet d’une phase distincte, avec tests isolés.
 
 
-## Instance de développement Eneles
+## Instance de développement Hesed
 
-L’instance de test actuelle est démarrée dans un Vercel Sandbox temporaire, avec une base PostgreSQL dédiée, Redis, un émulateur S3 de développement et le compilateur TeX Live. Les comptes et projets de démonstration proviennent du seed backend/prisma/seed-dev.ts. Elle ne réutilise ni la base ni le stockage d’Eneles et n’est pas une instance de production. Le plan Hobby limite la durée d’une session Sandbox active ; le lien d’essai de l’accueil n’est donc pas une adresse permanente.
+L’instance de test actuelle est démarrée dans un Vercel Sandbox temporaire, avec une base PostgreSQL dédiée, Redis, un émulateur S3 de développement et le compilateur TeX Live. Les comptes et projets de démonstration proviennent du seed backend/prisma/seed-dev.ts. Elle ne réutilise ni la base ni le stockage d’Hesed et n’est pas une instance de production. Le plan Hobby limite la durée d’une session Sandbox active ; le lien d’essai de l’accueil n’est donc pas une adresse permanente.
 
-Pour une mise en service durable, il reste à provisionner des services persistants, configurer l’envoi des codes e-mail et valider le comportement de compilation longue durée. Aucun raccordement d’identité, de documents, de droits ou de stockage Eneles n’est activé.
+Pour une mise en service durable, il reste à provisionner des services persistants, configurer l’envoi des codes e-mail et valider le comportement de compilation longue durée. Aucun raccordement d’identité, de documents, de droits ou de stockage Hesed n’est activé.
 
 
-## Accès depuis l’accueil Eneles
+## Accès depuis l’accueil Hesed
 
 Le lien d’accueil ouvre directement /dashboard. TeXeR redirige automatiquement les visiteurs non connectés vers /login?redirect=/dashboard, puis revient au tableau de bord après authentification. La page marketing publique de TeXeR reste disponible à la racine /.

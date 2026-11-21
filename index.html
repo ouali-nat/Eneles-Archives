@@ -5,7 +5,7 @@
 <html lang="fr">
 <head>
 <style id="aurore-boot-overlay-critical-css">
-/* Indicateur Eneles : quatre points animés, teintés par la palette du site. */
+/* Indicateur Hesed : quatre points animés, teintés par la palette du site. */
 :root{
   --aurore-spinner-accent:var(--theme-primary,#8b5cf6);
   --aurore-spinner-accent-light:var(--theme-secondary,#c084fc);
@@ -33,19 +33,19 @@ html.aurore-boot-pending:not(.aurore-boot-overlay-ready)::after{
   animation:aurore-spinner-rotation .9s linear infinite
 }
 
-/* Rafraîchissement Eneles : un tracé lunaire se dessine progressivement. */
-#enelesPullRefresh{position:fixed;left:50%;top:clamp(70px,15vh,130px);transform:translate(-50%,-12px) scale(.82);z-index:2147483647;width:62px;height:62px;display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .24s cubic-bezier(.2,.8,.2,1);color:var(--theme-primary,#8b5cf6);filter:drop-shadow(0 5px 14px color-mix(in srgb,var(--theme-primary,#8b5cf6) 35%,transparent))}
-#enelesPullRefresh svg{width:100%;height:100%;overflow:visible}
-#enelesPullRefresh .eneles-pull-ring{fill:none;stroke:currentColor;stroke-width:1.6;stroke-dasharray:150;stroke-dashoffset:150;stroke-linecap:round}
-#enelesPullRefresh .eneles-pull-moon{fill:none;stroke:var(--theme-secondary,#c084fc);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:90;stroke-dashoffset:90}
-#enelesPullRefresh .eneles-pull-star{fill:currentColor;transform-origin:center;opacity:.15}
-@keyframes enelesMoonDraw{to{stroke-dashoffset:0}}
-@keyframes enelesStarPulse{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
-html.aurore-pull-refreshing #enelesPullRefresh{opacity:1;transform:translate(-50%,0) scale(1)}
-html.aurore-pull-refreshing #enelesPullRefresh .eneles-pull-ring{animation:enelesMoonDraw .8s ease-out forwards}
-html.aurore-pull-refreshing #enelesPullRefresh .eneles-pull-moon{animation:enelesMoonDraw .65s .12s ease-out forwards}
-html.aurore-pull-refreshing #enelesPullRefresh .eneles-pull-star{animation:enelesStarPulse .8s .2s ease-in-out infinite}
-@media(prefers-reduced-motion:reduce){#enelesPullRefresh{transition:none}html.aurore-pull-refreshing #enelesPullRefresh .eneles-pull-ring,html.aurore-pull-refreshing #enelesPullRefresh .eneles-pull-moon{animation-duration:.01ms}}
+/* Rafraîchissement Hesed : un tracé lunaire se dessine progressivement. */
+#hesedPullRefresh{position:fixed;left:50%;top:clamp(70px,15vh,130px);transform:translate(-50%,-12px) scale(.82);z-index:2147483647;width:62px;height:62px;display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .24s cubic-bezier(.2,.8,.2,1);color:var(--theme-primary,#8b5cf6);filter:drop-shadow(0 5px 14px color-mix(in srgb,var(--theme-primary,#8b5cf6) 35%,transparent))}
+#hesedPullRefresh svg{width:100%;height:100%;overflow:visible}
+#hesedPullRefresh .hesed-pull-ring{fill:none;stroke:currentColor;stroke-width:1.6;stroke-dasharray:150;stroke-dashoffset:150;stroke-linecap:round}
+#hesedPullRefresh .hesed-pull-moon{fill:none;stroke:var(--theme-secondary,#c084fc);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:90;stroke-dashoffset:90}
+#hesedPullRefresh .hesed-pull-star{fill:currentColor;transform-origin:center;opacity:.15}
+@keyframes hesedMoonDraw{to{stroke-dashoffset:0}}
+@keyframes hesedStarPulse{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
+html.aurore-pull-refreshing #hesedPullRefresh{opacity:1;transform:translate(-50%,0) scale(1)}
+html.aurore-pull-refreshing #hesedPullRefresh .hesed-pull-ring{animation:hesedMoonDraw .8s ease-out forwards}
+html.aurore-pull-refreshing #hesedPullRefresh .hesed-pull-moon{animation:hesedMoonDraw .65s .12s ease-out forwards}
+html.aurore-pull-refreshing #hesedPullRefresh .hesed-pull-star{animation:hesedStarPulse .8s .2s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){#hesedPullRefresh{transition:none}html.aurore-pull-refreshing #hesedPullRefresh .hesed-pull-ring,html.aurore-pull-refreshing #hesedPullRefresh .hesed-pull-moon{animation-duration:.01ms}}
 
 /* Écran de démarrage : fond uni pour cacher le CSS en cours, seule la boule reste visible. */
 #auroreBootOverlay{
@@ -99,20 +99,20 @@ html.aurore-boot-pending #auroreBootOverlay{display:flex!important}
   'use strict';
   var root=document.documentElement;
   function installerIndicateurPull(){
-    if(document.getElementById('enelesPullRefresh'))return;
+    if(document.getElementById('hesedPullRefresh'))return;
     var el=document.createElement('div');
-    el.id='enelesPullRefresh';el.setAttribute('aria-hidden','true');
-    el.innerHTML='<svg viewBox="0 0 64 64" role="presentation"><circle class="eneles-pull-ring" cx="32" cy="32" r="24" transform="rotate(-90 32 32)"/><path class="eneles-pull-moon" d="M39 14c-10 2-16 12-13 22 2 7 9 12 17 11-7 5-17 3-22-4-7-9-4-22 6-28 4-2 8-2 12-1Z"/><path class="eneles-pull-moon" d="M44 12v5M41.5 14.5h5"/><circle class="eneles-pull-star" cx="47" cy="39" r="2.5"/><circle class="eneles-pull-star" cx="17" cy="20" r="1.8"/></svg>';
+    el.id='hesedPullRefresh';el.setAttribute('aria-hidden','true');
+    el.innerHTML='<svg viewBox="0 0 64 64" role="presentation"><circle class="hesed-pull-ring" cx="32" cy="32" r="24" transform="rotate(-90 32 32)"/><path class="hesed-pull-moon" d="M39 14c-10 2-16 12-13 22 2 7 9 12 17 11-7 5-17 3-22-4-7-9-4-22 6-28 4-2 8-2 12-1Z"/><path class="hesed-pull-moon" d="M44 12v5M41.5 14.5h5"/><circle class="hesed-pull-star" cx="47" cy="39" r="2.5"/><circle class="hesed-pull-star" cx="17" cy="20" r="1.8"/></svg>';
     (document.body||document.documentElement).appendChild(el);
   }
   function configurerMasquageHero(){
-    var hero=document.getElementById('enelesHomeHero'),btn=document.getElementById('enelesHeroToggle');
-    if(!hero||!btn||btn.dataset.enelesBound)return;
-    btn.dataset.enelesBound='1';
+    var hero=document.getElementById('hesedHomeHero'),btn=document.getElementById('hesedHeroToggle');
+    if(!hero||!btn||btn.dataset.hesedBound)return;
+    btn.dataset.hesedBound='1';
     var hidden=false;
     try{hidden=localStorage.getItem('eneles:home-hero-hidden')==='1';}catch(_){}
     function apply(){
-      hero.classList.toggle('eneles-hero-hidden',hidden);
+      hero.classList.toggle('hesed-hero-hidden',hidden);
       hero.hidden=hidden;
       if(hidden){hero.style.setProperty('display','none','important');}
       else{hero.style.removeProperty('display');}
@@ -128,7 +128,7 @@ html.aurore-boot-pending #auroreBootOverlay{display:flex!important}
     apply();
   }
   installerIndicateurPull();
-  // Visibility and resizing are handled by the shared Eneles hero controls.
+  // Visibility and resizing are handled by the shared Hesed hero controls.
   root.classList.add('aurore-boot-pending');
   var dismissed=false;
   var overlay=null,pollHandle=null,slowHandle=null,hardHandle=null,buttonBound=false;
@@ -200,7 +200,7 @@ html.aurore-boot-pending #auroreBootOverlay{display:flex!important}
     var message=document.getElementById('auroreBootMessage');
     var btn=document.getElementById('auroreBootContinue');
     if(status)status.textContent='La préparation prend plus de temps que prévu.';
-    if(message)message.textContent='La connexion semble lente. Eneles terminera de charger les éléments restants en arrière-plan.';
+    if(message)message.textContent='La connexion semble lente. Hesed terminera de charger les éléments restants en arrière-plan.';
     if(btn)btn.hidden=false;
   },5000);
   // Aucun masquage automatique avant document.readyState === 'complete'.
@@ -297,10 +297,10 @@ html.aurore-boot-pending #auroreBootOverlay{display:flex!important}
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
 <meta content="yzWmwzt0gZoJZKSVp8G7iVle-gUt-PgFSDeAi3K_Vvs" name="google-site-verification">
-<meta content="Eneles Archives, une bibliothèque numérique pour consulter et découvrir des documents scolaires et éducatifs en ligne." name="description"/>
+<meta content="Hesed Archives, une bibliothèque numérique pour consulter et découvrir des documents scolaires et éducatifs en ligne." name="description"/>
 <meta content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" name="robots"/>
 <meta content="index, follow" name="googlebot"/>
-<link href="https://eneles-archives-ouali1.vercel.app/" rel="canonical"/>
+<link href="https://hesed-archives.vercel.app/" rel="canonical"/>
 <link crossorigin="" href="https://tdeotqfsbvouresfhkab.supabase.co" rel="preconnect"/>
 <link crossorigin="" href="https://cdn.jsdelivr.net" rel="preconnect"/>
 <link crossorigin="" href="https://unpkg.com" rel="preconnect"/>
@@ -323,31 +323,31 @@ html.aurore-boot-pending #auroreBootOverlay{display:flex!important}
 <meta content="yes" name="mobile-web-app-capable"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
-<meta content="Eneles" name="apple-mobile-web-app-title"/>
+<meta content="Hesed" name="apple-mobile-web-app-title"/>
 <!-- iOS n'utilise jamais l'icône 512 pour l'écran d'accueil/l'onglet Safari :
      il veut une taille proche de 180x180, sinon il génère lui-même une
      icône par défaut (souvent une simple capture de la page). -->
 <link href="https://pub-0433751d08eb49fcafb7355ef0bf42ab.r2.dev/site-logo-auraster" rel="apple-touch-icon" sizes="180x180"/>
 <link href="https://pub-0433751d08eb49fcafb7355ef0bf42ab.r2.dev/site-logo-auraster" rel="apple-touch-icon" sizes="512x512"/>
 <meta content="website" property="og:type"/>
-<meta content="Eneles Archives" property="og:site_name"/>
-<meta content="https://eneles-archives-ouali1.vercel.app/" property="og:url"/>
+<meta content="Hesed Archives" property="og:site_name"/>
+<meta content="https://hesed-archives.vercel.app/" property="og:url"/>
 <meta content="fr_FR" property="og:locale"/>
-<meta content="Eneles Archives" property="og:title"/>
-<meta content="Bibliothèque numérique d'Eneles" property="og:description"/>
+<meta content="Hesed Archives" property="og:title"/>
+<meta content="Bibliothèque numérique d'Hesed" property="og:description"/>
 <meta content="https://pub-0433751d08eb49fcafb7355ef0bf42ab.r2.dev/site-logo-auraster" property="og:image"/>
 <meta content="https://pub-0433751d08eb49fcafb7355ef0bf42ab.r2.dev/site-logo-auraster" property="og:image:secure_url"/>
 <meta content="https://pub-0433751d08eb49fcafb7355ef0bf42ab.r2.dev/site-logo-auraster" property="og:image:url"/>
-<meta content="Logo Eneles Archives" property="og:image:alt"/>
+<meta content="Logo Hesed Archives" property="og:image:alt"/>
 <meta content="image/png" property="og:image:type"/>
 <meta content="512" property="og:image:width"/>
 <meta content="512" property="og:image:height"/>
 <meta content="summary" name="twitter:card"/>
-<meta content="Eneles Archives" name="twitter:title"/>
-<meta content="Bibliothèque numérique d'Eneles" name="twitter:description"/>
+<meta content="Hesed Archives" name="twitter:title"/>
+<meta content="Bibliothèque numérique d'Hesed" name="twitter:description"/>
 <meta content="https://pub-0433751d08eb49fcafb7355ef0bf42ab.r2.dev/site-logo-auraster" name="twitter:image"/>
-<title>Eneles Archives | Bibliothèque numérique</title>
-<!-- Rendu mathématique natif dans Eneles : DeepSeek produit du LaTeX,
+<title>Hesed Archives | Bibliothèque numérique</title>
+<!-- Rendu mathématique natif dans Hesed : DeepSeek produit du LaTeX,
      KaTeX le transforme en vraies formules typographiques dans l’interface. -->
 <!-- Chargement NON bloquant : sur les réseaux où cdn.jsdelivr.net est lent
      ou filtré, un <link rel="stylesheet"> classique bloquerait l'affichage
@@ -356,7 +356,7 @@ html.aurore-boot-pending #auroreBootOverlay{display:flex!important}
      chargement. Astuce media="print" : le navigateur télécharge le fichier
      en tâche de fond sans qu'il s'applique (donc sans bloquer le rendu),
      puis onload bascule sur media="all" une fois prêt. -->
-  <link rel="stylesheet" href="css/eneles-palette-dodecagon.css?v=20261107-dodecagon-v2">
+  <link rel="stylesheet" href="css/hesed-palette-dodecagon.css?v=20261107-dodecagon-v2">
 <!-- CDN de secours : sur ce réseau, cdn.jsdelivr.net s'est révélé bloqué,
      donc onerror ne suffit pas ici — il faut un vrai second fournisseur.
      Si jsdelivr échoue, on rebascule sur unpkg (voir script juste après). -->
@@ -390,9 +390,9 @@ html.aurore-boot-pending #auroreBootOverlay{display:flex!important}
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "Eneles Archives",
-  "alternateName": "Eneles Section Archives",
-  "url": "https://eneles-archives-ouali1.vercel.app/",
+  "name": "Hesed Archives",
+  "alternateName": "Hesed Section Archives",
+  "url": "https://hesed-archives.vercel.app/",
   "inLanguage": "fr-FR",
   "description": "Bibliothèque numérique de documents scolaires et éducatifs."
 }
@@ -401,8 +401,8 @@ html.aurore-boot-pending #auroreBootOverlay{display:flex!important}
 {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "Eneles Archives",
-  "url": "https://eneles-archives-ouali1.vercel.app/",
+  "name": "Hesed Archives",
+  "url": "https://hesed-archives.vercel.app/",
   "logo": "https://pub-0433751d08eb49fcafb7355ef0bf42ab.r2.dev/site-logo-auraster",
   "description": "Bibliothèque numérique de documents scolaires et éducatifs."
 }
@@ -565,7 +565,7 @@ html.aurore-boot-pending #auroreBootOverlay{display:flex!important}
 
 <!-- AURORE_AURORA_VIEWPORT_FIX_20260930 -->
 <style id="aurore-aurora-viewport-fix">
-/* Eneles reste indépendante du zoom global du site : son écran et son composeur
+/* Hesed reste indépendante du zoom global du site : son écran et son composeur
    gardent une géométrie de viewport stable, notamment sur mobile. */
 html.aurore-dans-ia #screen-aurore-ia.aurore-ia-screen{
   zoom:var(--aurore-ia-counter-zoom,1)!important;
@@ -590,7 +590,7 @@ html.aurore-dans-ia #screen-aurore-ia.aurore-ia-screen{
     document.documentElement.classList.toggle('aurore-dans-ia',active);
     document.documentElement.style.setProperty('--aurore-ia-counter-zoom',active?String(1/zoomGlobal()):'1');
 
-    /* Fermeture uniquement lors de l'entrée dans Eneles, jamais lors d'un
+    /* Fermeture uniquement lors de l'entrée dans Hesed, jamais lors d'un
        simple changement de zoom : le panneau reste ouvrable manuellement. */
     if(active!==derniereActivation){
       var panel=document.getElementById('aurore-zoom-panel');
@@ -712,15 +712,15 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <link rel="stylesheet" href="./css/aurore-theme-auth-pdf.css?v=20261016-aurore-id-login1&aurore_release=20261016-aurore-id-login1" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="./css/aurore-pdf-grids.css?v=20260923-unifiedcards2&aurore_release=20261010-temporary-no-cache1" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="./css/aurore-final-polish.css?aurore_release=20261010-temporary-no-cache1">
-<style id="eneles-hero-and-brand-polish">
+<style id="hesed-hero-and-brand-polish">
 #screen-home .hero{position:relative;padding:46px 34px 34px!important}
 #screen-home .hero .hero-rule{margin-bottom:12px}
 #screen-home .hero p.sub{margin-top:9px}
 #screen-home .hero .auraster-home-search{margin-top:18px}
-#screen-home .eneles-hero-toggle{position:relative;display:block;margin:0 0 8px auto;right:auto;top:auto;z-index:5;border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 11px;background:rgba(12,9,20,.38);color:#f8f7ff;font-family:inherit;font-size:.72rem;font-weight:600;line-height:1.2;cursor:pointer;backdrop-filter:blur(10px)}
-#screen-home .eneles-hero-toggle:focus-visible{outline:2px solid var(--theme-secondary,#c084fc);outline-offset:3px}
-#screen-home .hero.eneles-hero-hidden,#screen-home .hero[hidden],#screen-home .hero.aurore-hero-morph[hidden],#screen-home .hero.aurore-hero-morph.eneles-hero-hidden{display:none!important;visibility:hidden!important}
-@media(max-width:640px){#screen-home .hero{padding:48px 18px 24px!important;border-radius:23px!important}#screen-home .hero h1{font-size:clamp(1.75rem,8vw,2.35rem)!important}#screen-home .hero .auraster-home-search{margin-top:15px}#screen-home .eneles-hero-toggle{padding:6px 9px;font-size:.68rem}}
+#screen-home .hesed-hero-toggle{position:relative;display:block;margin:0 0 8px auto;right:auto;top:auto;z-index:5;border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 11px;background:rgba(12,9,20,.38);color:#f8f7ff;font-family:inherit;font-size:.72rem;font-weight:600;line-height:1.2;cursor:pointer;backdrop-filter:blur(10px)}
+#screen-home .hesed-hero-toggle:focus-visible{outline:2px solid var(--theme-secondary,#c084fc);outline-offset:3px}
+#screen-home .hero.hesed-hero-hidden,#screen-home .hero[hidden],#screen-home .hero.aurore-hero-morph[hidden],#screen-home .hero.aurore-hero-morph.hesed-hero-hidden{display:none!important;visibility:hidden!important}
+@media(max-width:640px){#screen-home .hero{padding:48px 18px 24px!important;border-radius:23px!important}#screen-home .hero h1{font-size:clamp(1.75rem,8vw,2.35rem)!important}#screen-home .hero .auraster-home-search{margin-top:15px}#screen-home .hesed-hero-toggle{padding:6px 9px;font-size:.68rem}}
 </style>
 
 <link rel="stylesheet" href="./css/aurore-hero-morph.css?aurore_release=20261010-temporary-no-cache1">
@@ -728,7 +728,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <link rel="stylesheet" href="./css/aurore-shared-route-guard.css?aurore_release=20261010-temporary-no-cache1" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="./css/aurore-shared-route.css?aurore_release=20261010-temporary-no-cache1" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="./css/aurore-admin-category.css?aurore_release=20261010-temporary-no-cache1" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="./css/eneles-texer-home.css?v=20261118-texer-home1">
+<link rel="stylesheet" href="./css/hesed-texer-home.css?v=20261118-texer-home1">
 <link rel="stylesheet" href="./css/aurore-admin-pending-v2.css?aurore_release=20261010-temporary-no-cache1">
 <link rel="stylesheet" href="./css/aurore-compactage.css?aurore_release=20261010-temporary-no-cache1" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="./css/aurore-resource-overview.css?v=20260922-design1&aurore_release=20261010-temporary-no-cache1">
@@ -747,16 +747,16 @@ body:not(.site-locked) #accessLock{display:none!important;}
   /* L’écran de chargement reste visible au démarrage et pendant un rechargement complet. */
 </style>
 
-<link rel="stylesheet" href="./css/eneles-header-finish.css?v=20261103-pill-header-reference-mobile-v6"/>
-  <link rel="stylesheet" href="./css/eneles-organic-header-20261104-final2.css?v=20261106-ui-cleanup-v1">
-  <link rel="stylesheet" href="./css/eneles-logo-unified.css?v=20261110-header-logo-fill1">
+<link rel="stylesheet" href="./css/hesed-header-finish.css?v=20261103-pill-header-reference-mobile-v6"/>
+  <link rel="stylesheet" href="./css/hesed-organic-header-20261104-final2.css?v=20261106-ui-cleanup-v1">
+  <link rel="stylesheet" href="./css/hesed-logo-unified.css?v=20261110-header-logo-fill1">
 </head>
 <body class="site-locked">
-<div class="aurore-boot-overlay" id="auroreBootOverlay" role="status" aria-live="polite" aria-label="Chargement d’Eneles" aria-hidden="false">
+<div class="aurore-boot-overlay" id="auroreBootOverlay" role="status" aria-live="polite" aria-label="Chargement d’Hesed" aria-hidden="false">
   <div class="aurore-boot-orb" aria-hidden="true"></div>
   <div class="aurore-boot-card">
     <div class="aurore-boot-mark-stage" aria-hidden="true"><span class="aurore-boot-four-hole-ball"><i></i><i></i><i></i><i></i></span></div>
-    <p class="aurore-boot-brand">ENELES<span>ARCHIVES</span></p>
+    <p class="aurore-boot-brand">HESED<span>ARCHIVES</span></p>
     <h1 class="aurore-boot-title">Préparation de votre espace</h1>
     <p class="aurore-boot-message" id="auroreBootMessage">Nous ouvrons l’interface. Votre session et les données se chargent ensuite.</p>
     <div class="aurore-boot-progress-track" aria-hidden="true"><span></span></div>
@@ -781,15 +781,15 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <div class="access-institution">
 <div aria-hidden="true" class="access-logo" id="accessBrandLogo"></div>
 <div class="access-brand-wrap">
-<div class="access-brand">Eneles Archives</div>
-<div class="access-tagline">Bibliothèque numérique d'Eneles</div>
+<div class="access-brand">Hesed Archives</div>
+<div class="access-tagline">Bibliothèque numérique d'Hesed</div>
 </div>
 </div>
 <div class="access-panels">
 <section class="access-panel access-panel-main">
 <div class="access-tabs"><div class="access-tab active">Accès à la plateforme</div></div>
 <div class="access-heading">
-<h1>Bienvenue sur Eneles</h1>
+<h1>Bienvenue sur Hesed</h1>
 <p>Retrouvez, consultez et partagez les ressources scolaires dans un espace pensé pour les élèves.</p>
 </div>
 <div class="access-actions">
@@ -797,28 +797,28 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <span aria-hidden="true" class="google-mark">G</span><span aria-hidden="true" class="google-spinner"></span>
 <span><strong>Continuer avec Google</strong><small>Accès recommandé à votre espace personnel</small></span>
 </button>
-<button aria-label="Continuer avec Eneles ID" class="access-google-btn" id="accessAuroreIdBtn" type="button">
+<button aria-label="Continuer avec Hesed ID" class="access-google-btn" id="accessAuroreIdBtn" type="button">
 <span aria-hidden="true" class="google-mark">ID</span><span aria-hidden="true" class="google-spinner"></span>
-<span><strong>Continuer avec Eneles ID</strong><small>Un accès unique pour les services Eneles</small></span>
+<span><strong>Continuer avec Hesed ID</strong><small>Un accès unique pour les services Hesed</small></span>
 </button>
 </div>
 </section>
-<section aria-label="Autres façons d'accéder à Eneles" class="access-panel access-panel-alt">
+<section aria-label="Autres façons d'accéder à Hesed" class="access-panel access-panel-alt">
 <div class="access-alt-head"><span>Autres possibilités</span></div>
 <div class="access-alt-scroll">
 <button class="access-secondary-btn" id="accessSignupBtn" type="button">
 <strong>Créer un compte</strong><small>Pour disposer de votre espace personnel</small>
 </button>
 <button class="access-visitor-btn" id="accessVisitorBtn" type="button">
-<strong>Visiter Eneles sans compte</strong><small>Découvrir la bibliothèque en mode visiteur</small>
+<strong>Visiter Hesed sans compte</strong><small>Découvrir la bibliothèque en mode visiteur</small>
 </button>
 </div>
 </section>
 </div>
 <p class="access-message" id="accessMessage" style="display:none;"></p>
-<div class="access-note">Connexion sécurisée · Eneles Archives</div>
+<div class="access-note">Connexion sécurisée · Hesed Archives</div>
 </div>
-<div class="access-footer">© 2026 Eneles Archives</div>
+<div class="access-footer">© 2026 Hesed Archives</div>
 </div>
 </div>
 <!-- ===== INSCRIPTION ===== -->
@@ -826,7 +826,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <div aria-labelledby="signupTitle" aria-modal="true" class="signup-card" role="dialog">
 <button aria-label="Fermer" class="signup-close" id="signupClose" type="button">×</button>
 <p class="eyebrow">Créer votre espace</p>
-<h2 id="signupTitle">Bienvenue sur Eneles</h2>
+<h2 id="signupTitle">Bienvenue sur Hesed</h2>
 <p class="signup-intro">Créez votre compte avec votre adresse e-mail. Nous vous demanderons ensuite uniquement les informations scolaires utiles à votre espace personnel.</p>
 <form autocomplete="on" class="signup-form" id="signupForm">
 <label for="signupName">Nom complet</label>
@@ -856,7 +856,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <button class="modal-secondary-link" id="backSignupBtn" type="button">Créer un compte</button>
 <p class="access-message" id="loginMessage" style="display:none;"></p>
 </form>
-<p class="signup-footnote">Vous préférez ne pas créer de compte ? Vous pouvez toujours visiter Eneles sans vous inscrire.</p>
+<p class="signup-footnote">Vous préférez ne pas créer de compte ? Vous pouvez toujours visiter Hesed sans vous inscrire.</p>
 </div>
 </div>
 
@@ -864,7 +864,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <div aria-live="polite" class="aurore-auth-wait-card" role="status">
 <div aria-hidden="true" class="aurore-auth-wait-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" opacity=".28" r="8"></circle><path d="M20 12a8 8 0 0 1-8 8"></path></svg></div>
 <strong>Veuillez patienter</strong>
-<span id="auroreAuthWaitText">Eneles prépare votre espace…</span>
+<span id="auroreAuthWaitText">Hesed prépare votre espace…</span>
 </div>
 </div>
 <div aria-hidden="true" class="aurore-logout-modal" id="logoutConfirmModal" style="display:none;">
@@ -874,11 +874,11 @@ body:not(.site-locked) #accessLock{display:none!important;}
       <svg fill="none" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5"/><path d="M15 12H3"/></svg>
     </div>
     <div class="aurore-logout-kicker">À bientôt</div>
-    <h2 id="logoutConfirmTitle">Quitter votre espace Eneles&nbsp;?</h2>
-    <p class="aurore-logout-copy">Merci d’avoir passé un moment avec Eneles. Votre session sera fermée sur cet appareil, mais vos préférences et vos données personnelles restent associées à votre compte.</p>
-    <p class="aurore-logout-goodbye">Vous pourrez revenir quand vous le souhaitez. Eneles vous attendra.</p>
+    <h2 id="logoutConfirmTitle">Quitter votre espace Hesed&nbsp;?</h2>
+    <p class="aurore-logout-copy">Merci d’avoir passé un moment avec Hesed. Votre session sera fermée sur cet appareil, mais vos préférences et vos données personnelles restent associées à votre compte.</p>
+    <p class="aurore-logout-goodbye">Vous pourrez revenir quand vous le souhaitez. Hesed vous attendra.</p>
     <div class="aurore-logout-actions">
-      <button class="aurore-logout-cancel" id="logoutConfirmCancel" type="button">Rester sur Eneles</button>
+      <button class="aurore-logout-cancel" id="logoutConfirmCancel" type="button">Rester sur Hesed</button>
       <button class="aurore-logout-confirm" id="logoutConfirmButton" type="button"><span>Me déconnecter</span></button>
     </div>
   </section>
@@ -892,20 +892,20 @@ body:not(.site-locked) #accessLock{display:none!important;}
   <button aria-label="Fermer" class="aurore-network-status-close" id="auroreNetworkStatusClose" type="button">×</button>
 </div>
 <script src="js/aurore-access-lock.js?v=20261102-auth-recovery1&aurore_fresh=20261102-auth-recovery1"></script>
-<header class="eneles-organic-site-header">
+<header class="hesed-organic-site-header">
 <div class="wrap header-inner">
 <div class="brand">
 <div aria-hidden="true" class="brand-logo" id="brandLogo">
 </div>
 <div class="brand-text">
-<div class="site-name">Eneles Archives</div>
-<div class="site-tag">Bibliothèque numérique d'Eneles</div>
+<div class="site-name">Hesed Archives</div>
+<div class="site-tag">Bibliothèque numérique d'Hesed</div>
 </div>
 </div>
 <div class="search-box" id="searchIconHost">
 <input id="headerSearchInput" placeholder="Rechercher une matière, un niveau…" type="text"/>
 </div>
-<button aria-label="Ouvrir Eneles" class="aurore-ia-header-btn" id="auroreIAHeaderBtn" title="Eneles" type="button"><span aria-hidden="true">✦</span><span>Eneles</span></button>
+<button aria-label="Ouvrir Hesed" class="aurore-ia-header-btn" id="auroreIAHeaderBtn" title="Hesed" type="button"><span aria-hidden="true">✦</span><span>Hesed</span></button>
 <div aria-label="Choix du thème" class="theme-switch" id="themeSwitch" role="group">
 <button aria-pressed="false" class="theme-switch-btn" data-theme-choice="sombre" title="Thème sombre" type="button"><span class="theme-icon-host" data-icon="moon"></span></button>
 <button aria-pressed="false" class="theme-switch-btn" data-theme-choice="clair" title="Thème clair" type="button"><span class="theme-icon-host" data-icon="sun"></span></button>
@@ -966,7 +966,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <button aria-label="Se déconnecter" class="user-chip-logout" id="btnDeconnexion" title="Se déconnecter" type="button"><span aria-hidden="true" class="user-chip-logout-icon">↪</span><span class="user-chip-logout-label">Déconnexion</span></button>
 </div>
 </div>
-<button aria-label="Installer Eneles" class="pwa-install-btn" id="pwaInstallBtn" type="button"><span aria-hidden="true">⇩</span> Installer</button>
+<button aria-label="Installer Hesed" class="pwa-install-btn" id="pwaInstallBtn" type="button"><span aria-hidden="true">⇩</span> Installer</button>
 <button class="deposer-btn" id="btnDeposer"><span id="uploadIconHost"></span> Déposer un document</button>
 </div>
 </header>
@@ -974,16 +974,16 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <div class="breadcrumb" id="breadcrumb"></div>
 <!-- ===== ACCUEIL ===== -->
 <section class="screen active" id="screen-home">
-<div class="eneles-hero-controls"><button type="button" class="eneles-hero-toggle eneles-hero-menu-trigger" id="enelesHeroMenuTrigger" aria-haspopup="dialog" aria-expanded="false" aria-label="Réglages de l’accueil">⋯</button></div>
-<div class="hero" id="enelesHomeHero">
+<div class="hesed-hero-controls"><button type="button" class="hesed-hero-toggle hesed-hero-menu-trigger" id="hesedHeroMenuTrigger" aria-haspopup="dialog" aria-expanded="false" aria-label="Réglages de l’accueil">⋯</button></div>
+<div class="hero" id="hesedHomeHero">
 <div class="hero-motif"></div>
 <div class="hero-glow g1"></div>
 <div class="hero-glow g2"></div>
 <div class="hero-inner">
 <div class="hero-rule"></div>
-<p class="eyebrow">Eneles Archives</p>
+<p class="eyebrow">Hesed Archives</p>
 <h1>Le savoir, <span class="accentword">tout simplement.</span></h1>
-<p class="sub">Bienvenue dans la section Archives d'Eneles.</p>
+<p class="sub">Bienvenue dans la section Archives d'Hesed.</p>
 <form class="auraster-home-search" id="homeSearchForm" role="search">
 <span id="homeSearchIcon" class="home-search-icon" aria-hidden="true"></span>
 <input autocomplete="off" id="homeSearchInput" placeholder="Rechercher une matière, un niveau ou un document…" type="search"/>
@@ -1011,7 +1011,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <div class="home-recents-cta-text">
 <span class="home-recents-kicker">Nouveautés</span>
 <h2 class="section-title">Explorer les documents récemment publiés</h2>
-<p>Découvrez une sélection des derniers documents mis en ligne sur Eneles Archives.</p>
+<p>Découvrez une sélection des derniers documents mis en ligne sur Hesed Archives.</p>
 </div>
 
 </div>
@@ -1051,23 +1051,23 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <div class="aurora-personal-end-copy home-recents-cta-text">
 <span class="aurora-personal-end-kicker home-recents-kicker">Votre espace</span>
 <h2 class="section-title" id="auroraPersonalEndTitle">Retrouvez votre espace personnel</h2>
-<p>Accédez à vos documents, favoris, téléchargements et informations personnelles depuis votre espace Eneles.</p>
+<p>Accédez à vos documents, favoris, téléchargements et informations personnelles depuis votre espace Hesed.</p>
 </div>
 <button aria-label="Accéder à mon espace personnel" class="aurora-personal-end-btn" id="auroraPersonalEndBtn" type="button">Ouvrir</button>
 </div>
 </section>
 <!-- ===== ATELIER TEXER — ACCÈS DÉDIÉ EN FIN D’ACCUEIL ===== -->
-<section aria-labelledby="enelesTexerHomeTitle" class="eneles-texer-home" id="enelesTexerHome">
-  <div class="eneles-texer-home-card">
-    <div class="eneles-texer-home-copy">
-      <span class="eneles-texer-home-kicker">Atelier de rédaction scientifique</span>
-      <h2 class="eneles-texer-home-title" id="enelesTexerHomeTitle">TeXeR — Éditeur LaTeX et PDF</h2>
-      <p>Rédigez vos documents scientifiques, organisez vos projets LaTeX et compilez vos fichiers en PDF dans l’environnement TeXeR d’Eneles.</p>
-      <span class="eneles-texer-home-status">Environnement de test temporaire · connexion e-mail à finaliser</span>
+<section aria-labelledby="hesedTexerHomeTitle" class="hesed-texer-home" id="hesedTexerHome">
+  <div class="hesed-texer-home-card">
+    <div class="hesed-texer-home-copy">
+      <span class="hesed-texer-home-kicker">Atelier de rédaction scientifique</span>
+      <h2 class="hesed-texer-home-title" id="hesedTexerHomeTitle">TeXeR — Éditeur LaTeX et PDF</h2>
+      <p>Rédigez vos documents scientifiques, organisez vos projets LaTeX et compilez vos fichiers en PDF dans l’environnement TeXeR d’Hesed.</p>
+      <span class="hesed-texer-home-status">Environnement de test temporaire · connexion e-mail à finaliser</span>
     </div>
-    <a class="eneles-texer-home-link" href="https://sb-1u79yx2d2977.vercel.run/dashboard" target="_blank" rel="noopener noreferrer">Ouvrir l’atelier TeXeR</a>
+    <a class="hesed-texer-home-link" href="https://sb-1u79yx2d2977.vercel.run/dashboard" target="_blank" rel="noopener noreferrer">Ouvrir l’atelier TeXeR</a>
   </div>
-  <p class="eneles-texer-home-note">Instance isolée : les projets et fichiers de test sont séparés d’Eneles. L’envoi des codes de connexion par e-mail reste à configurer.</p>
+  <p class="hesed-texer-home-note">Instance isolée : les projets et fichiers de test sont séparés d’Hesed. L’envoi des codes de connexion par e-mail reste à configurer.</p>
 </section>
 </section>
 <!-- ===== LIVRES : choix du genre ===== -->
@@ -1137,7 +1137,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <section class="screen" id="screen-docs">
 <h2 class="section-title" id="docsTitle"></h2>
 <div aria-live="polite" class="wiki-results-section" id="wikiResultsSection" style="display:none;"></div>
-<h3 class="wiki-docs-subheading" id="docsSubheading" style="display:none;">Documents Eneles</h3>
+<h3 class="wiki-docs-subheading" id="docsSubheading" style="display:none;">Documents Hesed</h3>
 <div class="ad-slot" id="ad-docs-1"></div>
 <div class="site-data-toolbar doc-toolbar" id="docsToolbar">
 <div class="site-search-control"><span aria-hidden="true">⌕</span><input autocomplete="off" id="docsSearch" placeholder="Rechercher dans les documents…" type="search"/></div>
@@ -1157,7 +1157,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <section class="screen" id="screen-deposer">
 <h2 class="section-title">Déposer un document</h2>
 <p style="color:var(--gris); font-size:0.9rem; max-width:520px;">
-      Partagez un devoir ou un document avec la communauté d'Eneles Archives. Votre dépôt sera visible sur le site après validation.
+      Partagez un devoir ou un document avec la communauté d'Hesed Archives. Votre dépôt sera visible sur le site après validation.
     </p>
 <div class="form-card" id="depotConnexionRequise" style="display:none; text-align:center;">
 <p style="color:var(--encre); font-size:0.95rem; max-width:440px; margin:0 auto 16px;">
@@ -1213,7 +1213,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <div class="form-row" id="f_certif_wrap">
 <label style="display:flex; align-items:flex-start; gap:8px; font-weight:400; font-size:0.83rem; line-height:1.4; cursor:pointer;">
 <input id="f_certif_droits" style="margin-top:3px; flex-shrink:0; width:auto;" type="checkbox"/>
-<span>Je certifie disposer des droits nécessaires pour partager ce document, ou être autorisé à le mettre à disposition sur Eneles Archives. Je comprends que le dépôt d'un document protégé sans autorisation peut entraîner son retrait.</span>
+<span>Je certifie disposer des droits nécessaires pour partager ce document, ou être autorisé à le mettre à disposition sur Hesed Archives. Je comprends que le dépôt d'un document protégé sans autorisation peut entraîner son retrait.</span>
 </label>
 </div>
 <button class="form-submit" id="f_submit" type="submit">Envoyer le document</button>
@@ -1369,7 +1369,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 </button>
 <button class="admin-tab admin-category-card" data-accent="rouge" data-tab="diagnostic-aurora" role="tab" type="button">
 <span aria-hidden="true" class="admin-category-icon"><svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><path d="M12 2v4"></path><path d="M12 18v4"></path><path d="M4.9 4.9l2.8 2.8"></path><path d="M16.3 16.3l2.8 2.8"></path><path d="M2 12h4"></path><path d="M18 12h4"></path><path d="M4.9 19.1l2.8-2.8"></path><path d="M16.3 7.7l2.8-2.8"></path><circle cx="12" cy="12" r="3"></circle></svg></span>
-<span class="admin-category-title">Diagnostic Eneles</span>
+<span class="admin-category-title">Diagnostic Hesed</span>
 <span class="admin-category-desc">État réel du circuit IA</span>
 </button>
 <button class="admin-tab admin-category-card" data-accent="rouge" data-tab="diagnostic-pdf" role="tab" type="button">
@@ -1385,7 +1385,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <button class="admin-tab admin-category-card" data-accent="violet" data-tab="content-factory" role="tab" type="button">
 <span aria-hidden="true" class="admin-category-icon"><svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><path d="M12 3l1.9 5.8H20l-4.9 3.6 1.9 5.8-5-3.6-5 3.6 1.9-5.8L4 8.8h6.1z"></path><path d="M19 3v3"></path><path d="M20.5 4.5h-3"></path></svg></span>
 <span class="admin-category-title">Content Factory</span>
-<span class="admin-category-desc">Documents générés par Eneles</span>
+<span class="admin-category-desc">Documents générés par Hesed</span>
 <span class="tab-count" id="tabCountContentFactory">0</span>
 </button>
 <button class="admin-tab admin-category-card" data-accent="violet" data-tab="edition-assistee" role="tab" type="button">
@@ -1611,7 +1611,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
     </div>
     <div>
       <label for="adminHomePresentationText">Texte de présentation</label>
-      <textarea id="adminHomePresentationText" maxlength="1200" placeholder="Présentez Eneles Archives aux visiteurs…"></textarea>
+      <textarea id="adminHomePresentationText" maxlength="1200" placeholder="Présentez Hesed Archives aux visiteurs…"></textarea>
     </div>
   </div>
   <div class="admin-home-presentation-preview">
@@ -1628,7 +1628,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <div class="admin-service-editor">
 <div class="form-row">
 <label for="adminAnnonceInput">Message à afficher</label>
-<textarea id="adminAnnonceInput" maxlength="2000" placeholder="Écrivez une annonce détaillée pour les visiteurs d’Eneles…" rows="8"></textarea>
+<textarea id="adminAnnonceInput" maxlength="2000" placeholder="Écrivez une annonce détaillée pour les visiteurs d’Hesed…" rows="8"></textarea>
 </div>
 <div class="form-row" style="display:flex; align-items:center; gap:10px;">
 <input id="adminAnnonceActive" style="width:18px; height:18px;" type="checkbox"/>
@@ -1704,9 +1704,9 @@ body:not(.site-locked) #accessLock{display:none!important;}
 </div>
 </div>
 <div class="admin-tab-panel" data-panel="content-factory">
-<section aria-label="Content Factory Eneles" class="admin-pending-overview">
+<section aria-label="Content Factory Hesed" class="admin-pending-overview">
 <div class="admin-pending-overview-head">
-<div><span class="admin-overview-kicker">Eneles IA</span><h3>Content Factory</h3><p>Contrôlez les documents pédagogiques générés par Eneles avant leur publication dans la bibliothèque.</p></div>
+<div><span class="admin-overview-kicker">Hesed IA</span><h3>Content Factory</h3><p>Contrôlez les documents pédagogiques générés par Hesed avant leur publication dans la bibliothèque.</p></div>
 <button class="admin-btn ghost admin-pending-refresh" id="adminRefreshContentFactory" type="button">↻ Actualiser</button>
 </div>
 <div class="admin-pending-stats">
@@ -1714,12 +1714,12 @@ body:not(.site-locked) #accessLock{display:none!important;}
 </div>
 </section>
 
-<section aria-label="Créer une ressource Eneles" class="cf-create-box cf-rebuild">
+<section aria-label="Créer une ressource Hesed" class="cf-create-box cf-rebuild">
   <header class="cf-rebuild-head">
     <div class="cf-rebuild-brand">
       <div class="cf-rebuild-mark" aria-hidden="true">A</div>
       <div>
-        <span class="cf-rebuild-kicker">Eneles · Content Factory</span>
+        <span class="cf-rebuild-kicker">Hesed · Content Factory</span>
         <h3>Réception des productions IA</h3>
         <p>Les contenus produits par l’IA arrivent directement dans la file de contrôle. L’administration vérifie les informations enregistrées, choisit la couleur du document et pilote ensuite la génération, la régénération, l’annulation, la validation et la publication.</p>
       </div>
@@ -1729,10 +1729,10 @@ body:not(.site-locked) #accessLock{display:none!important;}
 
   <div class="cf-create-moved-note" role="note"><strong>Création éditoriale centralisée dans Éditorial GPT · Section A.</strong><span>La création des tâches est désormais effectuée dans le parcours A, avec classement, consigne et identité du PDF réunis au même endroit.</span></div>
 
-  <div class="cf-queue" hidden id="cfGenerationQueue"><strong>File Eneles</strong><span id="cfGenerationQueueText"></span></div>
-  <div class="cf-progress" hidden id="cfProgress"><div class="cf-progress-top"><strong id="cfProgressTitle">Progression Eneles</strong><span id="cfProgressPercent">0%</span></div><div class="cf-progress-track"><div class="cf-progress-bar" id="cfProgressBar"></div></div><div class="cf-progress-stage" id="cfProgressStage">En attente…</div></div>
+  <div class="cf-queue" hidden id="cfGenerationQueue"><strong>File Hesed</strong><span id="cfGenerationQueueText"></span></div>
+  <div class="cf-progress" hidden id="cfProgress"><div class="cf-progress-top"><strong id="cfProgressTitle">Progression Hesed</strong><span id="cfProgressPercent">0%</span></div><div class="cf-progress-track"><div class="cf-progress-bar" id="cfProgressBar"></div></div><div class="cf-progress-stage" id="cfProgressStage">En attente…</div></div>
 </section>
-<section id="aurorePdfProductionCenter" class="aurore-pdf-production-center" aria-label="Production et validation PDF"><div class="aurore-pdf-prod-head"><div><span class="aurore-pdf-prod-kicker">Production Eneles</span><h3>Production & validation PDF</h3><p id="aurorePdfProdSummary">Synchronisation…</p></div><span class="aurore-pdf-prod-live"><i></i> En direct</span></div><div id="aurorePdfProdList" class="aurore-pdf-prod-list"><div class="aurore-pdf-prod-empty">Chargement de la production…</div></div></section>
+<section id="aurorePdfProductionCenter" class="aurore-pdf-production-center" aria-label="Production et validation PDF"><div class="aurore-pdf-prod-head"><div><span class="aurore-pdf-prod-kicker">Production Hesed</span><h3>Production & validation PDF</h3><p id="aurorePdfProdSummary">Synchronisation…</p></div><span class="aurore-pdf-prod-live"><i></i> En direct</span></div><div id="aurorePdfProdList" class="aurore-pdf-prod-list"><div class="aurore-pdf-prod-empty">Chargement de la production…</div></div></section>
 </section>
 <div hidden id="adminToolbarContentFactory" aria-hidden="true"></div>
 <div hidden id="adminContentFactoryList" aria-hidden="true"></div>
@@ -1753,7 +1753,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <div class="admin-tab-panel" data-panel="parcours">
 <div class="aurore-parcours-shell" id="auroreParcoursAdmin">
 <header class="aurore-parcours-head">
-<div><span class="aurore-parcours-kicker">Référentiel pédagogique Eneles</span><h3>Gestion de parcours</h3><p>Administre ici la structure réelle du site : parcours, niveaux, séries, classes, formations et matières. La structure peut rester ramifiée à profondeur variable.</p></div>
+<div><span class="aurore-parcours-kicker">Référentiel pédagogique Hesed</span><h3>Gestion de parcours</h3><p>Administre ici la structure réelle du site : parcours, niveaux, séries, classes, formations et matières. La structure peut rester ramifiée à profondeur variable.</p></div>
 <div class="aurore-parcours-actions"><button class="admin-btn ghost" id="parcoursRefresh" type="button">↻ Actualiser</button><button class="admin-btn primary" id="parcoursAddRoot" type="button">＋ Ajouter un parcours</button></div>
 </header>
 <div class="parcours-stats">
@@ -1789,14 +1789,14 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <div id="auroraRequestFormHost"></div>
 </div>
 <div class="admin-tab-panel" data-panel="diagnostic-aurora">
-<p class="admin-panel-desc">Diagnostic technique réel de la chaîne Eneles : navigateur, session Supabase, Edge Function, moteurs IA (Gemini, Llama, DeepSeek), puis navigateur. Aucun résultat n'est simulé. Réservé à l'administration, sans effet sur l'expérience des élèves/utilisateurs.</p>
+<p class="admin-panel-desc">Diagnostic technique réel de la chaîne Hesed : navigateur, session Supabase, Edge Function, moteurs IA (Gemini, Llama, DeepSeek), puis navigateur. Aucun résultat n'est simulé. Réservé à l'administration, sans effet sur l'expérience des élèves/utilisateurs.</p>
 <div class="diag-meta" id="diagMeta">
 <span class="diag-id" id="diagId">Identifiant : — (pas encore lancé)</span>
 <span class="diag-global-badge" data-state="pending" id="diagGlobalBadge">⚪ Non testé</span>
 </div>
 <div class="diag-actions">
 <button class="admin-btn primary" id="diagRunFull" type="button">Lancer un diagnostic complet</button>
-<button class="admin-btn ghost" id="diagRunBonjour" type="button">Test Eneles réel</button>
+<button class="admin-btn ghost" id="diagRunBonjour" type="button">Test Hesed réel</button>
 <button class="admin-btn ghost" id="diagRunDeepseek" type="button">Tester DeepSeek</button>
 <button class="admin-btn ghost" id="diagToggleLog" type="button">Voir le journal technique</button>
 </div>
@@ -1874,9 +1874,9 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <div class="admin-pending-v2-shell">
 <header class="admin-pending-v2-top">
 <div>
-<span class="admin-pending-v2-kicker">Administration · sas de production Eneles</span>
+<span class="admin-pending-v2-kicker">Administration · sas de production Hesed</span>
 <h2 id="adminPendingV2Title">Documents en attente</h2>
-<p>Seuls les documents Eneles nouvellement injectés qui attendent encore leur production PDF apparaissent ici. Dès qu’un document PDF est créé, il quitte ce sas et rejoint l’espace de contrôle des documents générés.</p>
+<p>Seuls les documents Hesed nouvellement injectés qui attendent encore leur production PDF apparaissent ici. Dès qu’un document PDF est créé, il quitte ce sas et rejoint l’espace de contrôle des documents générés.</p>
 </div>
 <button class="admin-btn ghost admin-pending-v2-back" id="adminPendingV2Back" type="button">Retour au tableau de bord</button>
 </header>
@@ -2065,8 +2065,8 @@ body:not(.site-locked) #accessLock{display:none!important;}
 </main>
 <footer>
 <div class="wrap">
-<div>Eneles Archives · Bibliothèque des élèves</div>
-<div>Bibliothèque numérique d'Eneles</div>
+<div>Hesed Archives · Bibliothèque des élèves</div>
+<div>Bibliothèque numérique d'Hesed</div>
 </div>
 <div class="wrap" style="margin-top:18px; align-items:stretch;">
 <div aria-label="Service client" class="service-client-card">
@@ -2207,7 +2207,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 </div>
 <!-- Sphère de progression compacte : prend le relais de la barre pleine
        largeur dès que la première page est affichée, pour libérer l'espace
-       de lecture. Casée en bas à gauche, à l'opposé du coin où Eneles
+       de lecture. Casée en bas à gauche, à l'opposé du coin où Hesed
        réduite se place par défaut (bas-droite), pour ne jamais se superposer. -->
 <div aria-hidden="true" aria-live="polite" class="pdf-load-progress-sphere" id="pdfViewerProgressSphere" role="status" title="Préparation du document en cours">
 <svg class="pdf-progress-sphere-ring" viewbox="0 0 40 40">
@@ -2221,7 +2221,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <div aria-labelledby="wikiViewerTitreLive" aria-modal="true" id="wikiViewerOverlay" role="dialog" style="display:none; position:fixed; inset:0; z-index:9990;">
 <div class="wiki-shell" id="wikiShell">
 <div class="wiki-topbar">
-<button aria-label="Retour à Eneles" class="wiki-back-btn" id="wikiViewerFermer" type="button">Retour</button>
+<button aria-label="Retour à Hesed" class="wiki-back-btn" id="wikiViewerFermer" type="button">Retour</button>
 <span class="wiki-topbar-badge"><span aria-hidden="true" class="wiki-globe-icon">🌐</span> Wikipédia</span>
 </div>
 <div class="wiki-body" id="wikiViewerBody">
@@ -2236,7 +2236,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <div class="aurora-geogebra-head">
 <div>
 <div class="aurora-geogebra-title" id="auroraGeoGebraTitle">Visualiser dans GeoGebra</div>
-<div class="aurora-geogebra-sub">Eneles a déjà préparé les mêmes expressions. Elles sont prêtes à être copiées dans la calculatrice graphique GeoGebra.</div>
+<div class="aurora-geogebra-sub">Hesed a déjà préparé les mêmes expressions. Elles sont prêtes à être copiées dans la calculatrice graphique GeoGebra.</div>
 </div>
 <button aria-label="Fermer" class="aurora-geogebra-close" id="auroraGeoGebraClose" type="button">×</button>
 </div>
@@ -2250,7 +2250,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 </div>
 <div aria-labelledby="auroraGraphOverlayTitle" aria-modal="true" id="auroraGraphOverlay" role="dialog" style="display:none;">
 <div class="aurora-graph-overlay-header">
-<span class="aurora-graph-overlay-title" id="auroraGraphOverlayTitle">Graphique Eneles</span>
+<span class="aurora-graph-overlay-title" id="auroraGraphOverlayTitle">Graphique Hesed</span>
 <button aria-label="Fermer le graphique" class="aurora-graph-overlay-close" id="auroraGraphOverlayClose" type="button">✕</button>
 </div>
 <div class="aurora-graph-overlay-sub" id="auroraGraphOverlaySub"></div>
@@ -2398,7 +2398,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
   // Nom actuel du site, utilisé dans les messages générés dynamiquement
   // (notifications, confirmations, textes de présentation) pour n'avoir
   // qu'un seul endroit à modifier en cas de nouveau changement de nom.
-  const SITE_NOM = "Eneles Archives";
+  const SITE_NOM = "Hesed Archives";
 
   // ---- Stockage des PDF : Cloudflare R2 via le Worker "lsnb-pdf-worker-v2" ----
   // R2_WORKER_URL : URL du Worker Cloudflare déployé (reçoit les PDF en PUT).
@@ -2437,7 +2437,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
     try {
       const retour = window.location.origin + window.location.pathname;
       // Nettoyage ciblé d'un ancien verifier PKCE avant une nouvelle tentative.
-      // La session et les autres données Eneles restent intactes.
+      // La session et les autres données Hesed restent intactes.
       try { window.localStorage.removeItem('sb-tdeotqfsbvouresfhkab-auth-token-code-verifier'); } catch (_) {}
       // Important : on passe obligatoirement par le client Supabase (signInWithOAuth)
       // et non par une redirection manuelle vers /auth/v1/authorize. C'est ce client
@@ -2456,9 +2456,9 @@ body:not(.site-locked) #accessLock{display:none!important;}
       if (error) throw error;
       // signInWithOAuth déclenche lui-même la redirection du navigateur vers Google.
       // auroreConnexionGoogleEnCours reste "true" à dessein : la page va quitter
-      // Eneles, donc pas besoin de réarmer la garde ici.
+      // Hesed, donc pas besoin de réarmer la garde ici.
     } catch (error) {
-      console.error('[Eneles] Erreur connexion Google:', error);
+      console.error('[Hesed] Erreur connexion Google:', error);
       window.auroreAfficherErreurDebug?.('[Connexion Google] ' + (error?.message || error));
       const msg = document.getElementById('accessMessage');
       if (msg) {
@@ -2479,7 +2479,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
       auroreConnexionGoogleEnCours = false;
     }
   }
-  // Connexion centralisée Eneles ID via le fournisseur OIDC personnalisé.
+  // Connexion centralisée Hesed ID via le fournisseur OIDC personnalisé.
   // Le client Supabase et le retour PKCE restent identiques au parcours Google.
   async function demarrerConnexionAuroreID() {
     if (auroreConnexionGoogleEnCours) return;
@@ -2495,11 +2495,11 @@ body:not(.site-locked) #accessLock{display:none!important;}
       });
       if (error) throw error;
     } catch (error) {
-      console.error('[Eneles ID OAuth]', error);
-      window.auroreAfficherErreurDebug?.('[Connexion Eneles ID] ' + (error?.message || error));
+      console.error('[Hesed ID OAuth]', error);
+      window.auroreAfficherErreurDebug?.('[Connexion Hesed ID] ' + (error?.message || error));
       const msg = document.getElementById('accessMessage');
       if (msg) {
-        msg.textContent = 'Impossible de démarrer la connexion Eneles ID. Vérifiez votre connexion puis réessayez.';
+        msg.textContent = 'Impossible de démarrer la connexion Hesed ID. Vérifiez votre connexion puis réessayez.';
         msg.className = 'access-message err';
         msg.style.display = 'block';
       }
@@ -2688,7 +2688,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
   });
   window.addEventListener('pageshow',()=>{ if(session) enregistrerConnexion(session).catch(()=>{}); });
 
-  // La session Eneles doit survivre à la fermeture/réouverture du site.
+  // La session Hesed doit survivre à la fermeture/réouverture du site.
   // Elle reste locale à cet appareil/navigateur et est supprimée uniquement
   // lors d'une déconnexion volontaire ou lorsque le refresh token n'est plus valide.
   function sauvegarderSession() {
@@ -2766,7 +2766,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
             provider:infos?infos.provider:(sessionAvant.provider||'E-mail'),role
           };
         }catch(profilError){
-          console.warn('[Eneles Auth] Jeton renouvelé, profil temporairement indisponible.',profilError);
+          console.warn('[Hesed Auth] Jeton renouvelé, profil temporairement indisponible.',profilError);
         }
 
         sauvegarderSession();
@@ -2888,7 +2888,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
       document.documentElement.classList.remove('aurore-offline');
       programmerSonde();
       if(precedent==='offline'){
-        afficher('online','Connexion rétablie','Internet est de nouveau disponible. Eneles peut reprendre la synchronisation de votre espace.',true);
+        afficher('online','Connexion rétablie','Internet est de nouveau disponible. Hesed peut reprendre la synchronisation de votre espace.',true);
       }else if(precedent==='unknown'){
         // Vérification silencieuse au premier affichage : pas de faux message « rétablie ».
         masquer();
@@ -3078,7 +3078,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
     if (!session) return;
     document.getElementById('profilNom').textContent = session.nom || '';
     document.getElementById('profilEmail').textContent = session.email || '';
-    const providerEl = document.getElementById('profilProvider'); if (providerEl) providerEl.textContent = session.provider || 'Compte Eneles';
+    const providerEl = document.getElementById('profilProvider'); if (providerEl) providerEl.textContent = session.provider || 'Compte Hesed';
     const badge = document.getElementById('profilRoleBadge'); const roleSession=String(session.role||'eleve').toLowerCase();
     badge.textContent = libelleRole(session.role); badge.className = 'role-badge ' + (['admin','admin_limite'].includes(roleSession) ? 'admin' : 'eleve');
     const img = document.getElementById('profilAvatar'), fallback = document.getElementById('profilAvatarFallback'); appliquerAvatar(img, session.avatar);
@@ -3301,7 +3301,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
     const btn=e.currentTarget;
     verrouillerBoutonGooglePreparation();
 
-    // Afficher immédiatement le bloc avant de quitter Eneles pour Google.
+    // Afficher immédiatement le bloc avant de quitter Hesed pour Google.
     if (typeof window.auroreAfficherVeuillezPatienter === 'function') {
       window.auroreAfficherVeuillezPatienter('Connexion sécurisée avec Google…');
     }
@@ -3329,7 +3329,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
     }
   });
 
-  // Eneles ID : relier explicitement le bouton visible au parcours OAuth centralisé.
+  // Hesed ID : relier explicitement le bouton visible au parcours OAuth centralisé.
   const btnAuroreIdConnexion=document.getElementById('accessAuroreIdBtn');
   btnAuroreIdConnexion?.addEventListener('click', async (e) => {
     const btn=e.currentTarget;
@@ -3337,18 +3337,18 @@ body:not(.site-locked) #accessLock{display:none!important;}
     btn.disabled=true;
     btn.setAttribute('aria-busy','true');
     if(typeof window.auroreAfficherVeuillezPatienter==='function'){
-      window.auroreAfficherVeuillezPatienter('Connexion sécurisée avec Eneles ID…');
+      window.auroreAfficherVeuillezPatienter('Connexion sécurisée avec Hesed ID…');
     }
     const accessMsg=document.getElementById('accessMessage');
     if(accessMsg){
-      accessMsg.textContent='Veuillez patienter — connexion sécurisée avec Eneles ID en cours…';
+      accessMsg.textContent='Veuillez patienter — connexion sécurisée avec Hesed ID en cours…';
       accessMsg.className='access-message ok';
       accessMsg.style.display='block';
     }
     try {
       await demarrerConnexionAuroreID();
     } catch(err) {
-      console.error('[Eneles ID OAuth]',err);
+      console.error('[Hesed ID OAuth]',err);
     } finally {
       if(!auroreConnexionGoogleEnCours){
         btn.disabled=false;
@@ -3393,7 +3393,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
     const authWaitStrong=authWait?.querySelector('.aurore-auth-wait-card strong');
     const authWaitText=document.getElementById('auroreAuthWaitText');
     const ancienStrong=authWaitStrong?.textContent||'Veuillez patienter';
-    const ancienText=authWaitText?.textContent||'Eneles prépare votre espace…';
+    const ancienText=authWaitText?.textContent||'Hesed prépare votre espace…';
 
     try{
       if(typeof window.auroreAfficherVeuillezPatienter==='function'){
@@ -3401,7 +3401,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
       }
       authWait?.classList.add('logout-transition');
       if(authWaitStrong)authWaitStrong.textContent='À bientôt';
-      if(authWaitText)authWaitText.textContent='Merci d’avoir utilisé Eneles. Votre session est en train d’être fermée sur cet appareil…';
+      if(authWaitText)authWaitText.textContent='Merci d’avoir utilisé Hesed. Votre session est en train d’être fermée sur cet appareil…';
       await new Promise(resolve=>setTimeout(resolve,520));
 
       if(String(session?.provider||'').toLowerCase()==='google'&&typeof window.auroreDeconnecterGoogle==='function'){
@@ -3419,7 +3419,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
       window.auroreLockAccess?.();
       try{afficherEcran('screen-home');}catch(_){}
     }catch(error){
-      console.error('[Eneles] Déconnexion impossible :',error);
+      console.error('[Hesed] Déconnexion impossible :',error);
       const msg=document.getElementById('accessMessage');
       if(msg){
         msg.textContent='La déconnexion n’a pas pu être terminée. Vérifiez votre connexion puis réessayez.';
@@ -3477,7 +3477,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
     remplirProfil();
     const screen=document.getElementById('screen-profil');
     if(screen && !screen.querySelector('.profile-completion-banner')) {
-      const banner=document.createElement('div'); banner.className='profile-completion-banner'; banner.textContent='Bienvenue dans votre espace personnel. Avant de commencer, renseignez au minimum votre établissement, votre niveau et votre classe. Ces informations permettent à Eneles de personnaliser et organiser votre expérience.'; screen.insertBefore(banner,screen.querySelector('.profile-card'));
+      const banner=document.createElement('div'); banner.className='profile-completion-banner'; banner.textContent='Bienvenue dans votre espace personnel. Avant de commencer, renseignez au minimum votre établissement, votre niveau et votre classe. Ces informations permettent à Hesed de personnaliser et organiser votre expérience.'; screen.insertBefore(banner,screen.querySelector('.profile-card'));
     }
     afficherEcran('screen-profil');
   }
@@ -3485,12 +3485,12 @@ body:not(.site-locked) #accessLock{display:none!important;}
 
   // Finalisation commune après un retour OAuth natif Android.
   // Le navigateur externe peut avoir validé Google alors que la WebView
-  // n'a pas encore reconstruit la session applicative Eneles. Cette fonction
+  // n'a pas encore reconstruit la session applicative Hesed. Cette fonction
   // reprend exactement le circuit de finalisation déjà utilisé par le retour
   // OAuth web : profil, session locale, déverrouillage et ouverture de l'accueil.
   window.auroreFinaliserConnexionGoogleNative = async function(authSession) {
     try {
-      // Attendre que tous les scripts différés d'Eneles aient terminé avant
+      // Attendre que tous les scripts différés d'Hesed aient terminé avant
       // de poursuivre le retour Google natif. Le lien profond Android peut
       // réveiller la WebView pendant son démarrage.
       if (document.readyState === 'loading') {
@@ -3564,10 +3564,10 @@ body:not(.site-locked) #accessLock{display:none!important;}
       if (typeof window.auroreCacherVeuillezPatienter === 'function') window.auroreCacherVeuillezPatienter();
       return true;
     } catch (e) {
-      console.error('[Eneles OAuth Android] finalisation applicative impossible :', e);
+      console.error('[Hesed OAuth Android] finalisation applicative impossible :', e);
       const accessMsg = document.getElementById('accessMessage');
       if (accessMsg) {
-        accessMsg.textContent = 'La connexion Google a été validée, mais Eneles n’a pas pu ouvrir votre espace. Réessayez.';
+        accessMsg.textContent = 'La connexion Google a été validée, mais Hesed n’a pas pu ouvrir votre espace. Réessayez.';
         accessMsg.className = 'access-message err';
         accessMsg.style.display = 'block';
       }
@@ -3600,7 +3600,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
       auroreAccesDejaConnu=!deconnexionExplicite&&(sessionPersistante||visiteurPersistant);
     }catch(_){}
     if(!auroreAccesDejaConnu&&typeof window.auroreAfficherVeuillezPatienter==='function'){
-      window.auroreAfficherVeuillezPatienter('Eneles prépare votre accès…');
+      window.auroreAfficherVeuillezPatienter('Hesed prépare votre accès…');
       await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
     }
     // 1. Confirmation d'inscription par e-mail.
@@ -5241,8 +5241,8 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <span class="welcome-fusion-glow"></span>
 </div>
 <div class="welcome-modal-content">
-<p class="welcome-modal-eyebrow">Eneles Archives</p>
-<h2 id="welcomeModalTitle">Bienvenue sur Eneles</h2>
+<p class="welcome-modal-eyebrow">Hesed Archives</p>
+<h2 id="welcomeModalTitle">Bienvenue sur Hesed</h2>
 <p id="welcomeModalText"></p>
 <button class="admin-btn primary welcome-modal-ok" id="welcomeModalOk" type="button">Continuer vers les documents récemment publiés</button>
 </div>
@@ -5262,7 +5262,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <div aria-hidden="true" class="access-code-modal" id="accessCodeModal">
 <section aria-labelledby="accessCodeTitle" aria-modal="true" class="access-code-card" role="dialog">
 <h3 id="accessCodeTitle">Protégez votre espace personnel</h3>
-<p id="accessCodeIntro">Créez un code d’accès personnel pour ouvrir votre espace Eneles. Vous pourrez le modifier à tout moment depuis votre profil.</p>
+<p id="accessCodeIntro">Créez un code d’accès personnel pour ouvrir votre espace Hesed. Vous pourrez le modifier à tout moment depuis votre profil.</p>
 <label for="accessCodeInput">Code d’accès</label>
 <input aria-describedby="accessCodeMessage" autocomplete="off" id="accessCodeInput" inputmode="numeric" maxlength="8" placeholder="••••••" type="password"/>
 <div class="access-code-actions">
@@ -5274,10 +5274,10 @@ body:not(.site-locked) #accessLock{display:none!important;}
 </section>
 </div>
 <script defer src="js/aurore-personal-actions.js?v=20261113-biometric-auto1"></script>
-<div aria-label="Installer Eneles" class="pwa-install-hint" id="pwaInstallHint" role="dialog">
-<strong>Installer Eneles sur cet appareil</strong>
-<span>Ajoutez Eneles à votre écran d’accueil pour l’ouvrir comme une application, sans l’interface habituelle du navigateur.</span>
-<button id="pwaInstallHintBtn" type="button">Installer Eneles</button>
+<div aria-label="Installer Hesed" class="pwa-install-hint" id="pwaInstallHint" role="dialog">
+<strong>Installer Hesed sur cet appareil</strong>
+<span>Ajoutez Hesed à votre écran d’accueil pour l’ouvrir comme une application, sans l’interface habituelle du navigateur.</span>
+<button id="pwaInstallHintBtn" type="button">Installer Hesed</button>
 </div>
 <script defer src="./js/aurore-pwa-install.js?v=20261015-offline-network-refresh1&aurore_fresh=20261015-navigation-reload-network-fix1"></script>
 <div aria-labelledby="aurore-history-confirm-title" aria-modal="true" id="aurore-history-confirm-modal" role="dialog">
@@ -5294,8 +5294,8 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <script defer src="./js/aurore-download-navigation-guard.js?aurore_fresh=20261010-temporary-no-cache1"></script>
 <script defer src="./js/aurore-pdf-navigation-guard.js?aurore_fresh=20261010-temporary-no-cache1"></script>
 <script defer src="js/aurore-personal-folders.js?v=20261113-storage-quota-works1"></script>
-<!-- Menu principal style ChatGPT : accès rapide à l'historique Eneles et à sa réduction. -->
-<button aria-expanded="false" aria-haspopup="menu" aria-label="Ouvrir le menu Eneles" class="aurore-home-menu-btn" id="auroreHomeMenuBtn" title="Menu Eneles" type="button">
+<!-- Menu principal style ChatGPT : accès rapide à l'historique Hesed et à sa réduction. -->
+<button aria-expanded="false" aria-haspopup="menu" aria-label="Ouvrir le menu Hesed" class="aurore-home-menu-btn" id="auroreHomeMenuBtn" title="Menu Hesed" type="button">
   <span aria-hidden="true"><i></i><i></i><i></i></span>
 </button>
 <div aria-hidden="true" class="aurore-home-menu" id="auroreHomeMenu" role="menu">
@@ -5303,7 +5303,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
     <span class="aurore-home-menu-item-icon" aria-hidden="true">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"></path><path d="M3.05 13a9 9 0 1 0 2.02-6.36L3 8"></path><path d="M12 7v5l3.2 2"></path></svg>
     </span>
-    <span><strong>Historique des discussions</strong><small>Retrouver vos conversations Eneles</small></span>
+    <span><strong>Historique des discussions</strong><small>Retrouver vos conversations Hesed</small></span>
   </button>
 </div>
 <script defer src="js/aurore-home-menu.js?aurore_fresh=20261010-temporary-no-cache1"></script>
@@ -5314,17 +5314,17 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <path d="M3 10.8 12 3l9 7.8"></path><path d="M5.5 9.8V21h13V9.8"></path><path d="M9.5 21v-6.2h5V21"></path>
 </svg>
 </span>
-<span class="afh-copy"><strong>Accueil</strong><small>Retour à Eneles</small></span>
+<span class="afh-copy"><strong>Accueil</strong><small>Retour à Hesed</small></span>
 <span aria-hidden="true" class="afh-drag"></span>
 </button>
-<!-- Eneles flottant et déplaçable : depuis l'accueil il ouvre l'IA, depuis
+<!-- Hesed flottant et déplaçable : depuis l'accueil il ouvre l'IA, depuis
      l'IA il ouvre un petit panneau d'options (historique + réduire). -->
-<button aria-expanded="false" aria-haspopup="true" aria-label="Ouvrir Eneles" class="aurore-floating-home aurore-floating-ai" id="auroreFloatingAI" title="Eneles" type="button">
+<button aria-expanded="false" aria-haspopup="true" aria-label="Ouvrir Hesed" class="aurore-floating-home aurore-floating-ai" id="auroreFloatingAI" title="Hesed" type="button">
 <span aria-hidden="true" class="afh-icon" id="auroreFloatingAIIcon"><span>A</span></span>
-<span class="afh-copy"><strong>Eneles</strong><small id="auroreFloatingAISub">Poser une question</small></span>
+<span class="afh-copy"><strong>Hesed</strong><small id="auroreFloatingAISub">Poser une question</small></span>
 </button>
 <div aria-hidden="true" class="aurore-floating-ai-menu" id="auroreFloatingAIMenu" role="menu">
-<div class="afam-title">Eneles</div>
+<div class="afam-title">Hesed</div>
 <button class="afam-item" id="auroreFAIHistory" role="menuitem" type="button">
 <span aria-hidden="true" class="afam-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M3 3v5h5"></path><path d="M3.05 13a9 9 0 1 0 2.02-6.36L3 8"></path><path d="M12 7v5l3.2 2"></path></svg></span>
 <span>Historique des discussions</span>
@@ -5360,7 +5360,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
      Module autonome : n'utilise que des fonctions déjà globales (afficherEcran,
      ICONS, echapperHtmlPub, creerSnapshotNavigation, navigationParPopState,
      history) et ses propres écouteurs "input" sur les champs de recherche
-     existants, sans modifier la recherche interne aux documents Eneles. -->
+     existants, sans modifier la recherche interne aux documents Hesed. -->
 <script defer src="js/aurore-wikipedia-feature.js?aurore_fresh=20261010-temporary-no-cache1"></script>
 <!-- =============================================================
      AURORE IA — ÉTAPE 2 : connexion sécurisée au modèle IA
@@ -5368,7 +5368,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
      ============================================================= -->
 <!-- =============================================================
      AURORE IA — ÉCRAN NATIF
-     Intégré au système de navigation Eneles.
+     Intégré au système de navigation Hesed.
      ============================================================= -->
 <section aria-labelledby="auroreIATitle" class="screen aurore-ia-screen" id="screen-aurore-ia">
 <div class="aurore-ia-app">
@@ -5380,7 +5380,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <div class="aurore-ia-brand">
 <div aria-hidden="true" class="aurore-ia-mark" id="auroreIAMark"><span>A</span></div>
 <div class="aurore-ia-brand-copy">
-<strong id="auroreIATitle">Eneles</strong>
+<strong id="auroreIATitle">Hesed</strong>
 <span>Votre assistant intelligent dans les Archives</span>
 </div>
 </div>
@@ -5390,7 +5390,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <button aria-label="Nouvelle conversation" class="aurore-ia-new" id="auroreIANew" type="button">
 <span aria-hidden="true">＋</span><span>Nouvelle conversation</span>
 </button>
-<button aria-label="Réduire Eneles en fenêtre flottante" class="aurore-ia-minimize" id="auroreIAMinimize" title="Réduire Eneles" type="button">
+<button aria-label="Réduire Hesed en fenêtre flottante" class="aurore-ia-minimize" id="auroreIAMinimize" title="Réduire Hesed" type="button">
 <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M9 3H3v6M15 21h6v-6M21 3l-7 7M3 21l7-7"></path></svg>
 </button>
 <button aria-label="Retour" class="aurore-ia-back" id="auroreIABack" type="button">
@@ -5399,14 +5399,14 @@ body:not(.site-locked) #accessLock{display:none!important;}
 </div>
 </header>
 <div class="aurore-ia-history-overlay" hidden="" id="auroreIAHistoryOverlay"></div>
-<aside aria-hidden="true" aria-label="Historique des discussions Eneles" class="aurore-ia-history-panel" id="auroreIAHistoryPanel">
+<aside aria-hidden="true" aria-label="Historique des discussions Hesed" class="aurore-ia-history-panel" id="auroreIAHistoryPanel">
 <div class="aurore-ia-history-head">
 <div class="aurore-ia-history-head-left">
 <button aria-label="Fermer l'historique" class="aurore-ia-history-close aurore-ia-history-hamburger" id="auroreIAHistoryMenuBtn" title="Historique des discussions" type="button">
 <span aria-hidden="true" class="aurore-ia-menu-btn-icon"><span></span><span></span><span></span></span>
 </button>
 <div>
-<p class="aurore-ia-kicker">Eneles</p>
+<p class="aurore-ia-kicker">Hesed</p>
 <h2>Historique des discussions</h2>
 </div>
 </div>
@@ -5418,11 +5418,11 @@ body:not(.site-locked) #accessLock{display:none!important;}
 </div>
 </aside>
 <div class="aurore-ia-main">
-<section aria-label="Conversation avec Eneles" class="aurore-ia-chat">
+<section aria-label="Conversation avec Hesed" class="aurore-ia-chat">
 <div aria-live="polite" class="aurore-ia-conversation" id="auroreIAConversation">
 <div class="aurore-ia-welcome">
 <div aria-hidden="true" class="aurore-ia-welcome-orbit"><div class="aurore-ia-welcome-mark">A</div></div>
-<p class="aurore-ia-kicker">Eneles</p>
+<p class="aurore-ia-kicker">Hesed</p>
 <h1>Le savoir, <span>simplement.</span></h1>
 </div>
 </div>
@@ -5442,15 +5442,15 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <input accept="application/pdf,.pdf" hidden="" id="auroreIAPdfInput" type="file"/>
 </div>
 <div aria-live="polite" class="aurore-ia-attachments" id="auroreIAAttachments"></div>
-<textarea aria-label="Question à Eneles" id="auroreIAInput" maxlength="12000" placeholder="Écrivez votre question…" rows="1"></textarea>
+<textarea aria-label="Question à Hesed" id="auroreIAInput" maxlength="12000" placeholder="Écrivez votre question…" rows="1"></textarea>
 <button aria-label="Envoyer" class="aurore-ia-send" disabled="" type="submit">
 <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M21 3 10.2 13.8"></path><path d="m21 3-6.2 18-4.6-7.2L3 9.2 21 3Z"></path></svg>
 </button>
-<button aria-label="Arrêter Eneles" class="aurore-ia-stop" hidden="" id="auroreIAStop" title="Arrêter Eneles" type="button">
+<button aria-label="Arrêter Hesed" class="aurore-ia-stop" hidden="" id="auroreIAStop" title="Arrêter Hesed" type="button">
 <svg aria-hidden="true" viewbox="0 0 24 24"><rect height="10" rx="2" width="10" x="7" y="7"></rect></svg>
 </button>
 </div>
-<div class="aurore-ia-composer-bottom"><span>Entrée pour envoyer · Maj + Entrée pour une nouvelle ligne</span><span>Eneles</span></div>
+<div class="aurore-ia-composer-bottom"><span>Entrée pour envoyer · Maj + Entrée pour une nouvelle ligne</span><span>Hesed</span></div>
 </form>
 <p class="aurore-ia-disclaimer">Les réponses peuvent contenir des erreurs. Vérifiez les informations importantes.</p>
 </div>
@@ -5459,15 +5459,15 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <div aria-hidden="true" class="aurore-ia-resize-edge aurore-ia-resize-e" data-edge="e"></div>
 <div aria-hidden="true" class="aurore-ia-resize-edge aurore-ia-resize-w" data-edge="w"></div>
 <div aria-hidden="true" class="aurore-ia-resize-edge aurore-ia-resize-s" data-edge="s"></div>
-<div aria-hidden="true" class="aurore-ia-resize-handle" id="auroreIAResizeHandle" title="Redimensionner Eneles"></div>
+<div aria-hidden="true" class="aurore-ia-resize-handle" id="auroreIAResizeHandle" title="Redimensionner Hesed"></div>
 </div>
 </section>
 <script defer src="js/aurore-ia-core.js?v=20261106-ui-cleanup-v1"></script>
 <script defer src="js/aurore-ia-input.js?aurore_fresh=20261010-temporary-no-cache1"></script>
 <!-- ===== AURORA — CENTRE DE DIAGNOSTIC (admin uniquement) =====
      Ajout ciblé et réversible : ne modifie aucune fonction existante,
-     ne change pas le comportement normal d'Eneles. Visible uniquement dans
-     l'onglet "Diagnostic Eneles" du tableau de bord admin (lui-même déjà
+     ne change pas le comportement normal d'Hesed. Visible uniquement dans
+     l'onglet "Diagnostic Hesed" du tableau de bord admin (lui-même déjà
      réservé aux comptes dont session.role === 'admin'). -->
 
 <script defer src="js/aurora-pdf-diagnostic.js?aurore_fresh=20261010-temporary-no-cache1"></script>
@@ -5481,7 +5481,7 @@ body:not(.site-locked) #accessLock{display:none!important;}
 <script defer src="js/aurore-admin-pending-v2.js?v=20261010-admin-auth-guard2&aurore_fresh=20261010-temporary-no-cache1"></script>
 <script defer src="js/aurore-editorial-task-admin.js?v=20261005-b-selection-cachefix1&aurore_fresh=20261010-temporary-no-cache1"></script>
 <script defer src="js/aurore-hero-morph.js?v=20261110-admin-sidebar-dropdown1"></script>
-<script defer src="js/eneles-hero-controls.js?v=20261113-bottom-sheet-v1"></script>
+<script defer src="js/hesed-hero-controls.js?v=20261113-bottom-sheet-v1"></script>
 <script defer src="js/aurore-zoom-control.js?aurore_fresh=20261010-temporary-no-cache1"></script>
 <script defer src="js/aurore-custom-selects.js?aurore_fresh=20261010-temporary-no-cache1"></script>
 

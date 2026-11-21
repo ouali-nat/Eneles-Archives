@@ -26,7 +26,7 @@
 @media(max-width:600px){.etw-topbar{min-height:58px;padding:8px 12px}.etw-content{width:calc(100% - 24px);padding-top:22px}.etw-work-card{padding:14px}.etw-work-card-head{flex-direction:column;gap:8px}.etw-composer{inset:64px 8px 8px;padding:14px}.etw-section-head{align-items:flex-start}.etw-tool-grid{grid-template-columns:1fr 1fr}}
 
 
-/* Refonte Material — espace Travaux Eneles, clair/sombre et mobile-first. */
+/* Refonte Material — espace Travaux Hesed, clair/sombre et mobile-first. */
 .etw-root{
   --etw-bg:var(--fond,#f5f5fa);
   --etw-panel:var(--papier,#fff);
@@ -128,7 +128,7 @@
 
 
 /* ============================================================
-   Refonte visuelle 2026-11 — Espace Travaux Eneles Archives
+   Refonte visuelle 2026-11 — Espace Travaux Hesed Archives
    Héro dégradé, avatars, animations, dark mode renforcé.
    ============================================================ */
 .etw-root{

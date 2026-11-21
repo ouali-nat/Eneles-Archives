@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
     inputs:
       logo_png_url:
-        description: 'URL publique du PNG carré du logo Eneles à utiliser comme icône APK'
+        description: 'URL publique du PNG carré du logo Hesed à utiliser comme icône APK'
         required: false
         type: string
 
@@ -76,7 +76,7 @@ jobs:
           PY
           grep -n "app.vercel.aurore-section-archivescom.twa" android/app/src/main/AndroidManifest.xml
 
-      - name: Synchroniser le logo choisi dans Eneles vers l'icône Android
+      - name: Synchroniser le logo choisi dans Hesed vers l'icône Android
         env:
           LOGO_PNG_URL: ${{ inputs.logo_png_url || '' }}
         run: |
@@ -90,8 +90,8 @@ jobs:
           if not re.fullmatch(r"/site-logo-[0-9]+-[a-z0-9]+-pdf\.png", u.path):
               raise SystemExit("URL du logo refusée : chemin PNG de logo inattendu.")
           PYURL
-            curl --fail --location --silent --show-error --retry 3 "$LOGO_PNG_URL" -o "$RUNNER_TEMP/eneles-logo.png"
-            python3 - "$RUNNER_TEMP/eneles-logo.png" "$GITHUB_WORKSPACE/android-app/icon.png" <<'PYPNG'
+            curl --fail --location --silent --show-error --retry 3 "$LOGO_PNG_URL" -o "$RUNNER_TEMP/hesed-logo.png"
+            python3 - "$RUNNER_TEMP/hesed-logo.png" "$GITHUB_WORKSPACE/android-app/icon.png" <<'PYPNG'
           import struct, sys
           from pathlib import Path
           source, target = map(Path, sys.argv[1:3])
@@ -117,11 +117,11 @@ jobs:
           if git diff --cached --quiet; then
             echo "L'icône du dépôt correspond déjà au logo sélectionné."
           else
-            git commit -m "chore(android): sync app icon with Eneles logo"
+            git commit -m "chore(android): sync app icon with Hesed logo"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
 
-      - name: Icone et ecran de demarrage aux couleurs d'Aurore
+      - name: Icône et écran de démarrage aux couleurs de Hesed
         working-directory: android-app
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick
@@ -131,7 +131,7 @@ jobs:
           if [ ! -f "$ICON" ]; then
             ICON="$GITHUB_WORKSPACE/icon-512-1.png"
           fi
-          test -f "$ICON" || { echo "Icône Eneles introuvable : $ICON"; exit 1; }
+          test -f "$ICON" || { echo "Icône Hesed introuvable : $ICON"; exit 1; }
           echo "Icône source : $ICON"
           rm -rf "$RES/mipmap-anydpi-v26"
           for entry in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do
@@ -183,39 +183,39 @@ jobs:
             ALIAS=aurore; PASS="$(openssl rand -hex 16)"; KEYPASS="$PASS"
             keytool -genkeypair -keystore "$RUNNER_TEMP/ks.jks" -storetype PKCS12 -alias "$ALIAS" \
               -keyalg RSA -keysize 2048 -validity 10000 -storepass "$PASS" -keypass "$PASS" \
-              -dname "CN=Aurore, O=Aurore Section Archives, C=BF"
+              -dname "CN=Hesed, O=Hesed, C=BF"
             echo "CLE=temporaire" >> "$GITHUB_ENV"
           fi
           "$BT/zipalign" -p -f 4 "$UNSIGNED" "$RUNNER_TEMP/aligned.apk"
           "$BT/apksigner" sign --ks "$RUNNER_TEMP/ks.jks" --ks-key-alias "$ALIAS" \
             --ks-pass "pass:$PASS" --key-pass "pass:$KEYPASS" \
-            --out Aurore.apk "$RUNNER_TEMP/aligned.apk"
-          "$BT/apksigner" verify --print-certs Aurore.apk | head -3
+            --out Hesed.apk "$RUNNER_TEMP/aligned.apk"
+          "$BT/apksigner" verify --print-certs Hesed.apk | head -3
           rm -f "$RUNNER_TEMP/ks.jks"
 
       - name: Resume
         run: |
           {
-            echo "## APK Aurore (Capacitor)"
+            echo "## APK Hesed (Capacitor)"
             echo ""
             echo "- Signature : **$CLE**"
             if [ "$CLE" = "temporaire" ]; then
               echo "- Cle generee pour cette compilation uniquement : cet APK ne pourra PAS etre mis a jour par un APK suivant (il faudra le desinstaller avant). Pour une cle stable, ajouter les secrets ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS."
             fi
-            echo "- Telechargement direct : Releases > apk-latest > Aurore.apk"
+            echo "- Telechargement direct : Releases > apk-latest > Hesed.apk"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Aurore-APK
-          path: Aurore.apk
+          name: Hesed-APK
+          path: Hesed.apk
           retention-days: 14
 
       - name: Publication (lien de telechargement direct)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: apk-latest
-          name: Aurore - APK (derniere version)
-          body: "APK Android d'Aurore (Capacitor). Signature : ${{ env.CLE }}. Compilation n°${{ github.run_number }}."
-          files: Aurore.apk
+          name: Hesed - APK (dernière version)
+          body: "APK Android de Hesed (Capacitor). Signature : ${{ env.CLE }}. Compilation n°${{ github.run_number }}."
+          files: Hesed.apk
           prerelease: true

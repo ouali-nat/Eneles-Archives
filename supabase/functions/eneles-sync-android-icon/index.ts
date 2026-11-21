@@ -62,11 +62,11 @@ Deno.serve(async (req: Request) => {
       logoUrl.hostname !== "pub-0433751d08eb49fcafb7355ef0bf42ab.r2.dev" ||
       !/^\/site-logo-[0-9]+-[a-z0-9]+-pdf\.png$/.test(logoUrl.pathname) ||
       logoUrl.search || logoUrl.hash) {
-    return json({ ok: false, error: "Seule la version PNG préparée par le stockage public Eneles est autorisée." }, 400);
+    return json({ ok: false, error: "Seule la version PNG préparée par le stockage public Hesed est autorisée." }, 400);
   }
 
   try {
-    const endpoint = "https://api.github.com/repos/ouali-nat/Eneles-Archives/actions/workflows/android-apk.yml/dispatches";
+    const endpoint = "https://api.github.com/repos/ouali-nat/Hesed-Archives/actions/workflows/android-apk.yml/dispatches";
     const response = await fetch(endpoint, {
       method: "POST",
       headers: {
@@ -83,7 +83,7 @@ Deno.serve(async (req: Request) => {
 
     if (!response.ok) {
       const detail = (await response.text()).slice(0, 1200);
-      console.error("[Eneles APK] GitHub workflow_dispatch refused:", response.status, detail);
+      console.error("[Hesed APK] GitHub workflow_dispatch refused:", response.status, detail);
       return json({
         ok: false,
         error: "GitHub n'a pas accepté le lancement du workflow (HTTP " + response.status + ")."
@@ -97,7 +97,7 @@ Deno.serve(async (req: Request) => {
       status: "dispatch_requested"
     }, 202);
   } catch (error) {
-    console.error("[Eneles APK] GitHub dispatch request failed:", error);
+    console.error("[Hesed APK] GitHub dispatch request failed:", error);
     return json({ ok: false, error: "Connexion à GitHub impossible pour lancer la compilation." }, 502);
   }
 });

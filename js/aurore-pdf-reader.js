@@ -643,7 +643,7 @@
       percent.textContent='100%';
       bar.style.width='100%';
       box.classList.add('is-success');
-      detailEl.textContent=detail || 'Votre document a été enregistré avec succès dans les téléchargements de votre téléphone. Vous pouvez continuer à utiliser Eneles.';
+      detailEl.textContent=detail || 'Votre document a été enregistré avec succès dans les téléchargements de votre téléphone. Vous pouvez continuer à utiliser Hesed.';
       TELECHARGEMENT_TOAST_TIMER=setTimeout(()=>{box.style.display='none';},5000);
     } else if(etat==='annule') {
       title.textContent='Téléchargement annulé';
@@ -787,10 +787,10 @@
     if (!donnees) throw new Error('Le PDF à enregistrer est vide.');
 
     let fichier;
-    let emplacement = 'Documents/Eneles';
+    let emplacement = 'Documents/Hesed';
     try {
       fichier = await P.Filesystem.writeFile({
-        path: 'Eneles/' + nomSecurise,
+        path: 'Hesed/' + nomSecurise,
         data: donnees,
         directory: 'DOCUMENTS',
         recursive: true
@@ -811,7 +811,7 @@
       try {
         await P.Share.share({
           title: nomSecurise,
-          text: 'PDF téléchargé depuis Eneles.',
+          text: 'PDF téléchargé depuis Hesed.',
           dialogTitle: 'Enregistrer ou partager le PDF',
           files: [fichier.uri]
         });

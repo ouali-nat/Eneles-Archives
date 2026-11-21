@@ -213,12 +213,12 @@
         failures = 0;
         try { window.sessionStorage.removeItem(storageKey); } catch (_) {}
         clearPairFromUrl();
-        notice("Eneles Archives est connectée. Tu peux revenir à la conversation pour continuer.", false);
+        notice("Hesed Archives est connectée. Tu peux revenir à la conversation pour continuer.", false);
         if (timer) clearInterval(timer);
         return;
       }
 
-      notice(result.error || "Connexion impossible. Reviens à la conversation et vérifie la session Eneles ID.", true);
+      notice(result.error || "Connexion impossible. Reviens à la conversation et vérifie la session Hesed ID.", true);
       if (response.status === 410) {
         finished = true;
         try { window.sessionStorage.removeItem(storageKey); } catch (_) {}

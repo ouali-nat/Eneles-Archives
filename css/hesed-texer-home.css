@@ -1,0 +1,15 @@
+/* TeXeR — accès dédié en toute fin de l'accueil Hesed. */
+#screen-home .hesed-texer-home{width:100%;margin:24px 0 10px;padding:0;}
+#screen-home .hesed-texer-home-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:18px;padding:22px 24px;border:1px solid var(--theme-border,var(--bordure));border-radius:20px;background:linear-gradient(135deg,var(--theme-soft,rgba(37,99,235,.08)),var(--theme-card,var(--papier)));color:var(--encre);box-shadow:0 12px 32px var(--theme-shadow,rgba(55,36,82,.09));}
+#screen-home .hesed-texer-home-kicker{display:block;margin:0 0 6px;color:var(--theme-primary,var(--violet));font-size:.65rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase;}
+#screen-home .hesed-texer-home-title{margin:0 0 7px!important;color:var(--encre);font-size:clamp(1.08rem,2.1vw,1.35rem)!important;line-height:1.2;}
+#screen-home .hesed-texer-home-copy p{max-width:720px;margin:0;color:var(--gris);font-size:.8rem;line-height:1.55;}
+#screen-home .hesed-texer-home-status{display:inline-flex;align-items:center;gap:7px;margin-top:12px;color:var(--gris);font-size:.68rem;line-height:1.35;}
+#screen-home .hesed-texer-home-status::before{content:"";width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#d97706;box-shadow:0 0 0 3px color-mix(in srgb,#d97706 13%,transparent);}
+#screen-home .hesed-texer-home-link{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 17px;border:1px solid var(--theme-primary,var(--violet));border-radius:12px;background:var(--theme-primary,var(--violet));color:#fff!important;font-size:.76rem;font-weight:800;text-decoration:none!important;white-space:nowrap;box-shadow:0 7px 18px var(--theme-shadow,rgba(55,36,82,.12));transition:transform .18s ease,filter .18s ease;}
+#screen-home .hesed-texer-home-link:hover{filter:brightness(1.06);transform:translateY(-1px);}
+#screen-home .hesed-texer-home-link:focus-visible{outline:3px solid color-mix(in srgb,var(--theme-primary,var(--violet)) 30%,transparent);outline-offset:3px;}
+#screen-home .hesed-texer-home-note{margin:8px 4px 0;color:var(--gris);font-size:.66rem;line-height:1.45;}
+[data-theme="dark"] #screen-home .hesed-texer-home-card{background:linear-gradient(135deg,var(--theme-soft,rgba(37,99,235,.13)),var(--dark-surface,var(--papier)));color:var(--dark-ink,var(--encre));}
+[data-theme="dark"] #screen-home .hesed-texer-home-title{color:var(--dark-ink,var(--encre));}
+@media(max-width:700px){#screen-home .hesed-texer-home-card{grid-template-columns:1fr;gap:14px;padding:18px;border-radius:17px;}#screen-home .hesed-texer-home-link{width:100%;box-sizing:border-box;}}

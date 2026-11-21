@@ -116,7 +116,7 @@
       '<header class="etw-topbar">' +
         '<button type="button" class="etw-icon" id="etw-menu-trigger" aria-label="Options">···</button>' +
         '<button type="button" class="etw-icon" id="etw-back" aria-label="Retour">←</button>' +
-        '<div class="etw-top-title"><strong>Travaux collaboratifs</strong><span id="etw-doc-mini">Eneles Archives</span></div>' +
+        '<div class="etw-top-title"><strong>Travaux collaboratifs</strong><span id="etw-doc-mini">Hesed Archives</span></div>' +
       '</header>' +
       '<div class="etw-menu" id="etw-menu" hidden>' +
         '<button type="button" id="etw-start-edit">Passer en édition</button>' +

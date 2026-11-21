@@ -532,7 +532,7 @@
   // ---------- PRÉSENTATION ADMINISTRABLE ----------
   const PRESENTATION_ADMIN_DEFAULT = {
     title: PRESENTATION_UNIFIEE?.titre || 'Une bibliothèque pensée pour tous',
-    text: PRESENTATION_UNIFIEE?.texte || 'Eneles rassemble les ressources éducatives dans un espace clair, collaboratif et accessible.'
+    text: PRESENTATION_UNIFIEE?.texte || 'Hesed rassemble les ressources éducatives dans un espace clair, collaboratif et accessible.'
   };
   function echapperPresentationTexte(value){
     const div=document.createElement('div');div.textContent=String(value||'');return div.innerHTML;

@@ -196,9 +196,9 @@ async function fetchLogoBytes(){
   if(!logoUrl)throw new Error("La version PNG du logo pour les documents PDF n’est pas disponible. Réenregistrez le logo depuis Apparence.");
   if(LOGO_BYTES_URL!==logoUrl){LOGO_BYTES_URL=logoUrl;LOGO_BYTES_PROMISE=null;}
   if(!LOGO_BYTES_PROMISE)LOGO_BYTES_PROMISE=fetch(logoUrl,{cache:"no-store"}).then(async r=>{
-    if(!r.ok)throw new Error("Logo Eneles indisponible (HTTP "+r.status+").");
+    if(!r.ok)throw new Error("Logo Hesed indisponible (HTTP "+r.status+").");
     const bytes=new Uint8Array(await r.arrayBuffer());
-    if(bytes.length<8)throw new Error("La version PDF du logo Eneles est vide.");
+    if(bytes.length<8)throw new Error("La version PDF du logo Hesed est vide.");
     return bytes;
   });
   return LOGO_BYTES_PROMISE;

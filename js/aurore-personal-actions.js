@@ -241,7 +241,7 @@
         100,
         null,
         null,
-        'Votre document a bien été téléchargé sur votre appareil. Vous pouvez continuer à utiliser Eneles.'
+        'Votre document a bien été téléchargé sur votre appareil. Vous pouvez continuer à utiliser Hesed.'
       );
     }
     return true;
@@ -485,7 +485,7 @@
         if(!plugin)throw new Error('Le module biométrique natif n’est pas installé dans cet APK. Une nouvelle version de l’application est nécessaire.');
         const info=await plugin.checkBiometry();
         if(!info?.isAvailable)throw new Error('Aucune empreinte ou biométrie compatible n’est activée sur cet appareil.');
-        await plugin.authenticate({reason:'Déverrouiller votre espace personnel Eneles',androidTitle:'Déverrouillage Eneles',androidSubtitle:'Confirmez votre identité',cancelTitle:'Annuler',allowDeviceCredential:true});
+        await plugin.authenticate({reason:'Déverrouiller votre espace personnel Hesed',androidTitle:'Déverrouillage Hesed',androidSubtitle:'Confirmez votre identité',cancelTitle:'Annuler',allowDeviceCredential:true});
         localStorage.setItem(CLE_BIOMETRIE_NATIVE+userKey(),'1');
         actualiserBoutonsBiometrie();actualiserGestionBiometrieProfil();
         alert('Déverrouillage biométrique natif activé sur cette application. Votre code reste disponible en secours.');
@@ -496,14 +496,14 @@
       return;
     }
     if(!biometrieDisponible()){
-      const message='Cette version de l’application Eneles ne donne pas accès à la biométrie du système. Le code reste actif. Ouvrez Eneles dans Chrome pour configurer l’empreinte ; l’application installée devra ensuite être mise à jour pour prendre en charge cette fonction.';
+      const message='Cette version de l’application Hesed ne donne pas accès à la biométrie du système. Le code reste actif. Ouvrez Hesed dans Chrome pour configurer l’empreinte ; l’application installée devra ensuite être mise à jour pour prendre en charge cette fonction.';
       if(codeModal&&codeModal.style.display==='flex')afficherMessageCode(message,'err');else alert(message);
       return;
     }
     try{
       const cred=await navigator.credentials.create({publicKey:{
-        challenge:nouveauChallenge(),rp:{name:'Eneles — Archives',id:location.hostname},
-        user:{id:await identifiantUtilisateurBiometrie(),name:String(session.email||session.id),displayName:String(session.nom||session.email||'Utilisateur Eneles')},
+        challenge:nouveauChallenge(),rp:{name:'Hesed — Archives',id:location.hostname},
+        user:{id:await identifiantUtilisateurBiometrie(),name:String(session.email||session.id),displayName:String(session.nom||session.email||'Utilisateur Hesed')},
         pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],
         timeout:60000,attestation:'none',
         authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'preferred'}
@@ -522,7 +522,7 @@
       try{
         const plugin=await obtenirPluginBiometrieNative();
         if(!plugin)throw new Error('Le module biométrique natif n’est pas installé dans cet APK.');
-        await plugin.authenticate({reason:'Déverrouiller votre espace personnel Eneles',androidTitle:'Déverrouillage Eneles',androidSubtitle:'Confirmez votre identité',cancelTitle:'Annuler',allowDeviceCredential:true});
+        await plugin.authenticate({reason:'Déverrouiller votre espace personnel Hesed',androidTitle:'Déverrouillage Hesed',androidSubtitle:'Confirmez votre identité',cancelTitle:'Annuler',allowDeviceCredential:true});
         const options={...espaceOptions};closeCode();ouvrirEspaceInterne(options);
       }catch(e){
         console.warn('[Espace personnel] déverrouillage biométrique natif:',e);
@@ -531,7 +531,7 @@
       return;
     }
     if(!biometrieDisponible()){
-      afficherMessageCode('La biométrie n’est pas accessible dans cette fenêtre Eneles. Votre code d’accès reste disponible.','err');
+      afficherMessageCode('La biométrie n’est pas accessible dans cette fenêtre Hesed. Votre code d’accès reste disponible.','err');
       return;
     }
     if(!credentialBiometrique()){afficherMessageCode('Aucune biométrie configurée sur cette installation. Utilisez votre code pour activer cette option.','err');return;}
@@ -581,12 +581,12 @@
     if(mode==='setup'){
       codeTitle.textContent='Créer votre code d’accès';
       codeIntro.textContent=espaceOptions.afterSetupBiometric
-        ? 'Créez votre code de 4 à 8 chiffres. Eneles proposera ensuite d’activer l’empreinte sur cette installation.'
+        ? 'Créez votre code de 4 à 8 chiffres. Hesed proposera ensuite d’activer l’empreinte sur cette installation.'
         : 'Choisissez un code personnel de 4 à 8 chiffres. Il sera demandé avant l’ouverture de votre espace sur cet appareil.';
       if(confirmBtn)confirmBtn.textContent='Enregistrer le code';
     } else if(espaceOptions.biometricEnroll){
       codeTitle.textContent='Activer l’empreinte digitale';
-      codeIntro.textContent='Saisissez votre code actuel, puis appuyez sur « Activer l’empreinte ». Eneles lancera directement la configuration biométrique sur cet appareil.';
+      codeIntro.textContent='Saisissez votre code actuel, puis appuyez sur « Activer l’empreinte ». Hesed lancera directement la configuration biométrique sur cet appareil.';
       if(confirmBtn)confirmBtn.textContent='Activer l’empreinte';
     } else if(espaceOptions.biometricDisable){
       codeTitle.textContent='Désactiver l’empreinte digitale';
@@ -594,7 +594,7 @@
       if(confirmBtn)confirmBtn.textContent='Désactiver l’empreinte';
     } else {
       codeTitle.textContent='Code d’accès à votre espace';
-      codeIntro.textContent='Saisissez votre code personnel pour ouvrir votre espace Eneles.';
+      codeIntro.textContent='Saisissez votre code personnel pour ouvrir votre espace Hesed.';
       if(confirmBtn)confirmBtn.textContent='Continuer';
     }
     actualiserBoutonsBiometrie();
@@ -666,7 +666,7 @@
   async function actionBoutonBiometrie(){
     if(credentialBiometrique()){await deverrouillerBiometrie();return;}
     if(!biometrieDisponible()){
-      afficherMessageCode('Cette fenêtre ne prend pas en charge la biométrie. Ouvrez Eneles directement dans Chrome avec l’adresse Vercel de l’application : https://eneles-archives-ouali1.vercel.app, puis revenez dans « Code et empreinte ». La biométrie est liée au domaine utilisé.','err');
+      afficherMessageCode('Cette fenêtre ne prend pas en charge la biométrie. Ouvrez Hesed directement dans Chrome avec l’adresse Vercel de l’application : https://hesed-archives.vercel.app, puis revenez dans « Code et empreinte ». La biométrie est liée au domaine utilisé.','err');
       return;
     }
     espaceOptions={...espaceOptions,biometricEnroll:true};
@@ -691,7 +691,7 @@
   function ouvrirEspaceInterne(options={}){
     if(!session)return;if(typeof window.auroreUnlockAccess==='function')window.auroreUnlockAccess();document.getElementById('breadcrumb').innerHTML='';remplirProfil();
     const screen=document.getElementById('screen-profil');
-    if(screen && options.forceComplete && !screen.querySelector('.profile-completion-banner')){const banner=document.createElement('div');banner.className='profile-completion-banner';banner.textContent='Bienvenue dans votre espace personnel. Avant de commencer, renseignez au minimum votre établissement, votre niveau et votre classe. Ces informations permettent à Eneles de personnaliser et organiser votre expérience.';screen.insertBefore(banner,screen.querySelector('.profile-card'));}
+    if(screen && options.forceComplete && !screen.querySelector('.profile-completion-banner')){const banner=document.createElement('div');banner.className='profile-completion-banner';banner.textContent='Bienvenue dans votre espace personnel. Avant de commencer, renseignez au minimum votre établissement, votre niveau et votre classe. Ces informations permettent à Hesed de personnaliser et organiser votre expérience.';screen.insertBefore(banner,screen.querySelector('.profile-card'));}
     auroreMasquerInvitationEspacePersonnel(false);
      afficherEcran('screen-profil');setTimeout(()=>chargerDonneesEspacePersonnel?.(),0);
   }
@@ -736,7 +736,7 @@
     actualiserGestionBiometrieProfil();
     if(plateformeNative()){
       clearInterval(attentePontBiometrie);
-      obtenirPluginBiometrieNative().catch(e=>console.warn('[Eneles] préchargement biométrique natif:',e));
+      obtenirPluginBiometrieNative().catch(e=>console.warn('[Hesed] préchargement biométrique natif:',e));
     }else if(++tentativesPontBiometrie>=40){
       clearInterval(attentePontBiometrie);
     }

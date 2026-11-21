@@ -1,17 +1,20 @@
 {
   "appId": "app.vercel.aurore_section_archivescom.twa",
-  "appName": "Eneles",
+  "appName": "Hesed",
   "webDir": "www",
   "server": {
-    "url": "https://eneles-archives-ouali1.vercel.app",
+    "url": "https://hesed-archives.vercel.app",
     "cleartext": false,
     "allowNavigation": [
-      "eneles-archives-ouali1.vercel.app",
       "*.supabase.co",
       "lsnb-upload.oualikevin9.workers.dev",
       "pub-0433751d08eb49fcafb7355ef0bf42ab.r2.dev",
       "cdnjs.cloudflare.com",
-      "esm.sh"
+      "esm.sh",
+      "hesed-archives.vercel.app",
+      "eneles-archives-ouali1.vercel.app",
+      "aurore-section-archives.com",
+      "aurore-section-archivescom.vercel.app"
     ]
   },
   "android": {
