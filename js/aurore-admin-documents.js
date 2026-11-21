@@ -1342,7 +1342,7 @@
         <div class="ad-slot-label">Publicité</div>
         <div class="ad-slot-actions" role="group" aria-label="Actions publicitaires">
           ${interesse}
-          <button class="ad-slot-action ad-slot-skip" type="button" data-ad-action="skip">Ignorer</button>
+          <button class="ad-slot-action ad-slot-skip" type="button" data-ad-action="skip">Ignorer (passer)</button>
           <button class="ad-slot-action ad-slot-hide" type="button" data-ad-action="hide">Masquer</button>
         </div>
         <div class="ad-slot-card">

@@ -762,3 +762,22 @@ html[data-theme="light"] .ad-slot-dots span.is-active{background:#6d28d9}
 .ad-slot-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;align-items:stretch!important;gap:7px!important;width:100%!important}
 .ad-slot-actions .ad-slot-action{min-width:0!important;width:100%!important;white-space:nowrap!important;justify-content:center!important}
 @media(max-width:420px){.ad-slot-actions{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important}.ad-slot-actions .ad-slot-action{font-size:clamp(.64rem,2.8vw,.72rem)!important;padding:7px 2px!important}}
+
+
+/* Ordre fixe des actions Hesed : intérêt / passer / masquer. */
+.ad-slot-actions{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-areas:"interest skip hide"!important;
+  align-items:stretch!important;
+  gap:6px!important;
+}
+.ad-slot-actions .ad-slot-interest{grid-area:interest!important}
+.ad-slot-actions .ad-slot-skip{grid-area:skip!important}
+.ad-slot-actions .ad-slot-hide{grid-area:hide!important}
+.ad-slot-actions .ad-slot-action{
+  min-width:0!important;width:100%!important;
+  padding-inline:2px!important;white-space:nowrap!important;
+  text-align:center!important;justify-content:center!important;
+  font-size:clamp(.58rem,2.55vw,.74rem)!important;
+}
