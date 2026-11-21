@@ -301,7 +301,8 @@
       const cibles = Array.from(document.querySelectorAll(
         '#brandLogo, #adminLogoPreview, #accessBrandLogo, #auroreIAMark, ' +
         '.aurore-ia-mark, .aurore-ia-welcome-mark, .aurore-ia-history-item-avatar, ' +
-        '.aurore-ia-msg-avatar, .aurore-verify-logo'
+        '.aurore-ia-msg-avatar, .aurore-verify-logo, ' +
+        '#hesedPullRefresh .hesed-pull-mascot, #auroreBootOverlay .aurore-boot-brand'
       ));
       cibles.forEach(conteneur => {
         if (!conteneur) return;
@@ -317,7 +318,12 @@
           img.style.objectPosition = 'center';
           img.style.transform = 'none';
           img.style.padding = '0';
-          conteneur.replaceChildren(img);
+          if (conteneur.tagName === 'IMG') {
+            conteneur.src = urlVersionnee;
+            conteneur.alt = 'Hesed — Archives';
+          } else {
+            conteneur.replaceChildren(img);
+          }
           conteneur.dataset.hesedLogoUrl = urlVersionnee;
         };
         img.onerror = () => console.warn('[Logo] Image inaccessible :', url);
@@ -621,6 +627,11 @@
 
     // Restaure immédiatement le dernier logo administré, puis synchronise la
     // configuration partagée. La reprise de page ne doit jamais revenir au logo codé en dur.
+    try {
+      const logoLocal = localStorage.getItem('aurore_logo_url');
+      const mimeLocal = localStorage.getItem('aurore_logo_mime') || LOGO_MIME_DEFAULT;
+      if (logoLocal && /^https:\/\//i.test(logoLocal)) appliquerLogo(logoLocal, mimeLocal);
+    } catch (_) {}
     chargerLogoPartage();
     window.addEventListener('pageshow',()=>{ chargerLogoPartage(); });
     window.addEventListener('storage',event=>{
