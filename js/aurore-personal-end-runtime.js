@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function(){
         if(expiryInfo) expiryInfo.textContent=formatExpiryInfo(currentShare.expires_at);
         body.querySelector('[data-open]')?.addEventListener('change',update);body.querySelector('[data-download]')?.addEventListener('change',update);body.querySelector('[data-expiry]')?.addEventListener('change',update);
         const copy=async()=>{try{await navigator.clipboard.writeText(url.href);body.querySelector('[data-copy]').textContent='Copié ✓';setTimeout(()=>body.querySelector('[data-copy]').textContent='Copier',1600)}catch(_){prompt('Copiez le lien :',url.href)}};
-        body.querySelector('[data-copy]')?.addEventListener('click',copy);actions.querySelector('[data-copy]').onclick=copy;actions.querySelector('[data-wa]').onclick=()=>window.open('https://wa.me/?text='+encodeURIComponent(`Découvrez ma section « ${f.name} » sur Aurore :
+        body.querySelector('[data-copy]')?.addEventListener('click',copy);actions.querySelector('[data-copy]').onclick=copy;actions.querySelector('[data-wa]').onclick=()=>window.open('https://wa.me/?text='+encodeURIComponent(`Découvrez ma section « ${f.name} » sur Hesed :
 ${url.href}`),'_blank','noopener,noreferrer');actions.querySelector('[data-revoke]').onclick=async()=>{if(!confirm('Révoquer le lien de cette section ?'))return;try{await rpc('revoke_section_share',{p_share_id:currentShare.id});m.classList.remove('show');alert('Le partage de la section a été révoqué.')}catch(e){alert('Impossible de révoquer le partage pour le moment.')}};
         async function update(){
           try{
