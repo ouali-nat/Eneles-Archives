@@ -245,3 +245,6 @@
     .aurore-logout-card,.aurore-network-status{animation:none;}
     .user-chip .user-chip-logout,.aurore-logout-cancel,.aurore-logout-confirm{transition:none;}
   }
+
+/* Après saisie réussie, le formulaire est remplacé par les informations du profil. */
+#screen-profil .profile-profile-launcher[hidden]{display:none!important}

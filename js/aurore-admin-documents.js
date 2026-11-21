@@ -1262,9 +1262,35 @@
     }).filter(g=>g.slides.length);
   }
 
+  function stockagePreferencesPublicites(){
+    try{
+      // Une préférence de compte ne doit jamais être partagée avec les autres
+      // utilisateurs du même navigateur. Les visiteurs non connectés disposent
+      // d'une préférence limitée à leur onglet/visite.
+      return session&&session.id?localStorage:sessionStorage;
+    }catch(_){return null;}
+  }
+
+  function cleMasquagePublicite(campagne){
+    if(session&&session.id){
+      return 'hesed_publicite_masquee_user_'+String(session.id)+'_'+String(campagne.id);
+    }
+    let visiteur='';
+    try{
+      visiteur=sessionStorage.getItem('hesed_publicite_visiteur_id')||'';
+      if(!visiteur){
+        visiteur=globalThis.crypto?.randomUUID?.()||('v'+Date.now().toString(36)+Math.random().toString(36).slice(2));
+        sessionStorage.setItem('hesed_publicite_visiteur_id',visiteur);
+      }
+    }catch(_){visiteur='visite-locale';}
+    return 'hesed_publicite_masquee_visiteur_'+visiteur+'_'+String(campagne.id);
+  }
+
   function campagnePubliciteMasquee(campagne){
-    try{return localStorage.getItem('hesed_publicite_masquee_'+campagne.id)===campagne.version;}
-    catch(_){return false;}
+    try{
+      const store=stockagePreferencesPublicites();
+      return !!store&&store.getItem(cleMasquagePublicite(campagne))===campagne.version;
+    }catch(_){return false;}
   }
 
   function campagnesPublicitesVisibles(){
@@ -1304,8 +1330,13 @@
       const interesse=url
         ? `<a class="ad-slot-action ad-slot-interest" href="${echapperHtmlPub(url)}" target="_blank" rel="noopener noreferrer">Intéressé</a>`
         : '<button class="ad-slot-action ad-slot-interest" type="button" disabled aria-disabled="true" title="Aucun lien de destination disponible">Intéressé</button>';
-      const dots=campagne.slides.length>1
-        ? `<div class="ad-slot-dots" aria-label="Diapositive ${diapoIndex+1} sur ${campagne.slides.length}">${campagne.slides.map((_,i)=>`<span class="${i===diapoIndex?'is-active':''}"></span>`).join('')}</div>`
+      const controlesCarrousel=campagne.slides.length>1
+        ? `<div class="ad-slot-carousel-controls" role="group" aria-label="Navigation du carrousel">
+            <button type="button" data-ad-carousel-prev aria-label="Image précédente">‹</button>
+            <span aria-live="polite">${diapoIndex+1} / ${campagne.slides.length}</span>
+            <button type="button" data-ad-carousel-next aria-label="Image suivante">›</button>
+          </div>
+          <div class="ad-slot-dots" role="group" aria-label="Choisir une image">${campagne.slides.map((_,i)=>`<button type="button" data-ad-carousel-index="${i}" class="${i===diapoIndex?'is-active':''}" aria-label="Afficher l’image ${i+1}" aria-current="${i===diapoIndex?'true':'false'}"></button>`).join('')}</div>`
         : '';
       container.innerHTML=`
         <div class="ad-slot-label">Publicité</div>
@@ -1316,12 +1347,35 @@
         </div>
         <div class="ad-slot-card">
           <img class="ad-slot-img" src="${echapperHtmlPub(diapo.image_url)}" alt="${echapperHtmlPub(titre||'Publicité Hesed')}" loading="lazy" decoding="async">
-          ${dots}
+          ${controlesCarrousel}
         </div>
         <div class="ad-slot-body">
           ${titre?`<div class="ad-slot-title">${echapperHtmlPub(titre)}</div>`:''}
           ${diapo.description?`<div class="ad-slot-desc">${echapperHtmlPub(diapo.description)}</div>`:''}
         </div>`;
+      const allerAImage=(index)=>{
+        if(campagne.slides.length<2)return;
+        diapoIndex=(index+campagne.slides.length)%campagne.slides.length;
+        afficherDiapo();
+      };
+      container.querySelector('[data-ad-carousel-prev]')?.addEventListener('click',()=>allerAImage(diapoIndex-1));
+      container.querySelector('[data-ad-carousel-next]')?.addEventListener('click',()=>allerAImage(diapoIndex+1));
+      container.querySelectorAll('[data-ad-carousel-index]').forEach(button=>{
+        button.addEventListener('click',()=>allerAImage(Number(button.dataset.adCarouselIndex)||0));
+      });
+      const media=container.querySelector('.ad-slot-card');
+      let swipeStartX=null;
+      media?.addEventListener('pointerdown',event=>{
+        if(event.pointerType==='mouse'&&event.button!==0)return;
+        swipeStartX=event.clientX;
+      },{passive:true});
+      media?.addEventListener('pointerup',event=>{
+        if(swipeStartX===null)return;
+        const dx=event.clientX-swipeStartX;
+        swipeStartX=null;
+        if(Math.abs(dx)>=38)allerAImage(dx<0?diapoIndex+1:diapoIndex-1);
+      },{passive:true});
+      media?.addEventListener('pointercancel',()=>{swipeStartX=null;},{passive:true});
       container.querySelector('[data-ad-action="skip"]')?.addEventListener('click',()=>{
         if(diapoIndex<campagne.slides.length-1){diapoIndex++;afficherDiapo();return;}
         campagnesIgnorees.add(campagne.id);
@@ -1332,8 +1386,11 @@
         afficherDiapo();
       });
       container.querySelector('[data-ad-action="hide"]')?.addEventListener('click',()=>{
-        try{localStorage.setItem('hesed_publicite_masquee_'+campagne.id,campagne.version);}catch(_){}
-        // La campagne masquée disparaît de tous les emplacements de cette visite.
+        try{
+          const store=stockagePreferencesPublicites();
+          store?.setItem(cleMasquagePublicite(campagne),campagne.version);
+        }catch(_){}
+        // Le masquage est limité au compte connecté (ou à cette visite anonyme).
         peuplerEmplacementsPublicitaires();
       });
       container.removeAttribute('hidden');
@@ -1347,6 +1404,13 @@
   }
 
   let AD_SLOTS_TROUVES = 0, AD_SLOTS_REMPLIS = 0;
+
+  // Les annonces peuvent être chargées avant la restauration de la session.
+  // À chaque connexion/changement de compte, réappliquer les masquages propres
+  // à l'utilisateur courant sans refaire la requête publicitaire.
+  window.addEventListener('aurore:user-connected',()=>{
+    if(Array.isArray(PUBS_ACTIVES)&&PUBS_ACTIVES.length) peuplerEmplacementsPublicitaires();
+  });
 
   function peuplerEmplacementsPublicitaires(){
     console.log('%c[Publicité][PUBLIC] Étape 3/4 — recherche des 12 emplacements dans le DOM…', 'color:#c084fc');

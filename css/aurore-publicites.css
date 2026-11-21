@@ -694,5 +694,65 @@ html[data-theme="light"] .ad-slot-dots span.is-active{background:#6d28d9}
 @media(max-width:620px){.pub-admin-carousel-item{flex-wrap:wrap}.pub-admin-carousel-preview{flex-basis:100%;max-width:100%}.pub-admin-carousel-thumb{width:54px;height:64px;flex-basis:54px}}
 .pub-admin-slide-remove{display:block;margin:5px auto 0;min-height:25px;padding:3px 7px;border:1px solid var(--bordure);border-radius:8px;background:var(--papier);color:var(--gris);font:inherit;font-size:.68rem;font-weight:700;cursor:pointer}
 .pub-admin-slide-remove:active{transform:scale(.97)}
-.pub-admin-slide-remove{display:block;margin:5px auto 0;min-height:25px;padding:3px 7px;border:1px solid var(--bordure);border-radius:8px;background:var(--papier);color:var(--gris);font:inherit;font-size:.68rem;font-weight:700;cursor:pointer}
-.pub-admin-slide-remove:active{transform:scale(.97)}
+
+/* Hesed carousel controls: all user actions remain on one row. */
+.ad-slot-actions{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  align-items:stretch!important;
+  gap:8px!important;
+  width:100%!important;
+  margin:0 0 12px!important;
+}
+.ad-slot-actions .ad-slot-action{
+  width:100%!important;
+  min-width:0!important;
+  min-height:40px!important;
+  padding:8px 5px!important;
+  border-radius:12px!important;
+  white-space:nowrap!important;
+  font-size:clamp(.68rem,2.4vw,.78rem)!important;
+}
+.ad-slot-card{position:relative!important;touch-action:pan-y!important}
+.ad-slot-carousel-controls{
+  position:absolute!important;
+  inset:50% 9px auto!important;
+  z-index:5!important;
+  transform:translateY(-50%)!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  pointer-events:none!important;
+}
+.ad-slot-carousel-controls button{
+  pointer-events:auto!important;display:grid!important;place-items:center!important;
+  width:38px!important;height:38px!important;padding:0 0 3px!important;
+  border:1px solid rgba(255,255,255,.62)!important;border-radius:50%!important;
+  background:rgba(20,13,34,.62)!important;color:#fff!important;
+  font-size:1.65rem!important;font-weight:500!important;line-height:1!important;
+  box-shadow:0 3px 12px rgba(0,0,0,.24)!important;
+  backdrop-filter:blur(7px)!important;-webkit-backdrop-filter:blur(7px)!important;
+  cursor:pointer!important;
+}
+.ad-slot-carousel-controls button:active{transform:scale(.94)}
+.ad-slot-carousel-controls span{
+  position:absolute!important;left:50%!important;bottom:-92px!important;
+  transform:translateX(-50%)!important;padding:4px 8px!important;
+  border-radius:999px!important;background:rgba(20,13,34,.58)!important;
+  color:#fff!important;font-size:.65rem!important;font-weight:800!important;
+  pointer-events:none!important;
+}
+.ad-slot-dots{display:flex!important;justify-content:center!important;align-items:center!important;gap:7px!important;margin:11px 0 0!important}
+.ad-slot-dots button{
+  display:block!important;width:7px!important;height:7px!important;
+  min-width:7px!important;min-height:7px!important;padding:0!important;
+  border:0!important;border-radius:99px!important;background:var(--bordure)!important;
+  cursor:pointer!important;transition:width .18s ease,background .18s ease!important;
+}
+.ad-slot-dots button.is-active{width:19px!important;background:var(--theme-primary,#7c3aed)!important}
+@media(max-width:420px){
+  .ad-slot-actions{gap:5px!important}
+  .ad-slot-actions .ad-slot-action{min-height:37px!important;padding:7px 3px!important;font-size:.66rem!important}
+  .ad-slot-carousel-controls{inset:50% 7px auto!important}
+  .ad-slot-carousel-controls button{width:34px!important;height:34px!important}
+}

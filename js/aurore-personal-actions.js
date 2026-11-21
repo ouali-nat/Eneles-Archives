@@ -693,7 +693,14 @@
     const screen=document.getElementById('screen-profil');
     if(screen && options.forceComplete && !screen.querySelector('.profile-completion-banner')){const banner=document.createElement('div');banner.className='profile-completion-banner';banner.textContent='Bienvenue dans votre espace personnel. Avant de commencer, renseignez au minimum votre établissement, votre niveau et votre classe. Ces informations permettent à Hesed de personnaliser et organiser votre expérience.';screen.insertBefore(banner,screen.querySelector('.profile-card'));}
     auroreMasquerInvitationEspacePersonnel(false);
-     afficherEcran('screen-profil');setTimeout(()=>chargerDonneesEspacePersonnel?.(),0);
+    afficherEcran('screen-profil');
+    setTimeout(()=>chargerDonneesEspacePersonnel?.(),0);
+    if(options.forceComplete){
+      const candidats=['eleve','enseignant','professeur','parent','personnel'];
+      const role=String(session.situation_role||session.user_metadata?.situation_role||session.user_metadata?.role||session.role||'eleve').toLowerCase();
+      const roleProfil=candidats.includes(role)?role:'eleve';
+      setTimeout(()=>window.ouvrirProfilRole?.(roleProfil),140);
+    }
   }
   function ouvrirEspaceAvecCode(options={}){
     if(!session)return;
