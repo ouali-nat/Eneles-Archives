@@ -289,7 +289,7 @@
       // l'ouverture du site : il est volontairement lancé en arrière-plan.
       enregistrerConnexion(session).catch(()=>{});
       afficherUtilisateurConnecte(); unlock(); fermer();
-      if(profilEstComplet(session)) afficherBienvenueApresConnexion(session); else ouvrirEspacePersonnelObligatoire();
+      afficherEcran('screen-home'); afficherBienvenueApresConnexion(session);
     }catch(err){loginMsg.textContent=err.message||'Impossible de vous connecter.';loginMsg.className='access-message err';loginMsg.style.display='block';}
     finally{cacherVeuillezPatienter();btn.disabled=false;btn.textContent='SE CONNECTER';}
   });
@@ -304,7 +304,7 @@
       const r=await fetch(`${SUPABASE_URL}/auth/v1/signup`,{method:'POST',headers:{'apikey':SUPABASE_ANON_KEY,'Content-Type':'application/json'},body:JSON.stringify({email,password:p,data:{full_name:name,name},options:{emailRedirectTo:redirectConfirmation()}})}); const d=await r.json().catch(()=>({}));
       if(!r.ok) throw new Error(d.msg||d.error_description||d.message||('HTTP '+r.status));
       if(d.access_token){
-        const infos=await recupererUtilisateur(d.access_token); if(infos){const role=await assurerProfilEtObtenirRole(d.access_token,infos);session={access_token:d.access_token,refresh_token:d.refresh_token||null,expires_at:Date.now()+((d.expires_in||3600)*1000),id:infos.id,email:infos.email,nom:infos.nom,avatar:infos.avatar,prenom:infos.prenom||'',lycee:infos.lycee||'',niveau:infos.niveau||'',classe:infos.classe||'',filiere:infos.filiere||'',discipline:infos.discipline||'',fonction:infos.fonction||'',enfant_informations:infos.enfant_informations||'',provider:infos.provider||'E-mail',role};sauvegarderSession();enregistrerConnexion(session);afficherUtilisateurConnecte();unlock();fermer();ouvrirEspacePersonnelObligatoire();}
+        const infos=await recupererUtilisateur(d.access_token); if(infos){const role=await assurerProfilEtObtenirRole(d.access_token,infos);session={access_token:d.access_token,refresh_token:d.refresh_token||null,expires_at:Date.now()+((d.expires_in||3600)*1000),id:infos.id,email:infos.email,nom:infos.nom,avatar:infos.avatar,prenom:infos.prenom||'',lycee:infos.lycee||'',niveau:infos.niveau||'',classe:infos.classe||'',filiere:infos.filiere||'',discipline:infos.discipline||'',fonction:infos.fonction||'',enfant_informations:infos.enfant_informations||'',provider:infos.provider||'E-mail',role};sauvegarderSession();enregistrerConnexion(session).catch(()=>{});afficherUtilisateurConnecte();unlock();fermer();afficherEcran('screen-home');afficherBienvenueApresConnexion(session);}
       } else {dernierEmailInscription=email;if(resendWrap) resendWrap.style.display='grid';msg.textContent='Compte créé. Consultez votre e-mail pour confirmer votre adresse avant de vous connecter. Vérifiez aussi les courriers indésirables.';msg.className='access-message ok';msg.style.display='block';}
     }catch(err){msg.textContent='Impossible de créer le compte : '+(err.message||'vérifiez les informations saisies.');msg.className='access-message err';msg.style.display='block';}
     finally{cacherVeuillezPatienter();btn.disabled=false;btn.textContent='CRÉER MON COMPTE';}

@@ -939,6 +939,7 @@
   const AD_PAGES = ['home','livres','niveaux','series','matieres','docs'];
 
   let PUBS_ACTIVES = [];
+  let PUBLIC_CAROUSELS = [];
   // Décalage aléatoire tiré une fois par visite : fait varier la sélection d'une session
   // à l'autre sans jamais faire apparaître deux annonces identiques sur un même secteur.
   const PUB_OFFSET = Math.floor(Math.random()*97);
@@ -1155,10 +1156,11 @@
     console.log('%c[Publicité][PUBLIC] Étape 1/4 — requête Supabase (clé anon)…', 'color:#c084fc');
     console.log(`[Publicité][PUBLIC] URL : ${SUPABASE_URL}/rest/v1/${PUB_TABLE}?select=*&active=eq.true&order=updated_at.desc`);
     try{
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/${PUB_TABLE}?select=*&active=eq.true&order=updated_at.desc`, {headers:HEADERS});
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${PUB_TABLE}?select=*&active=eq.true&order=updated_at.desc,slide_order.asc`, {headers:HEADERS});
       if(res.ok){
         PUBS_ACTIVES = await res.json();
-        console.log(`[Publicité][PUBLIC] Étape 2/4 — ${PUBS_ACTIVES.length} ligne(s) reçue(s) de Supabase (active=true).`);
+        PUBLIC_CAROUSELS = construireCarrouselsPublics(PUBS_ACTIVES);
+        console.log(`[Publicité][PUBLIC] Étape 2/4 — ${PUBS_ACTIVES.length} diapositive(s) reçue(s), répartie(s) en ${PUBLIC_CAROUSELS.length} série(s) active(s).`);
         if(PUBS_ACTIVES.length){
           const p = PUBS_ACTIVES[0];
           console.log('[Publicité][PUBLIC] Première publicité reçue :', {
@@ -1172,10 +1174,12 @@
         const detail = await res.text().catch(()=> '');
         console.error(`[Publicité][PUBLIC] Échec de la requête — HTTP ${res.status} ${res.statusText}. Réponse Supabase : ${detail}`);
         PUBS_ACTIVES = [];
+        PUBLIC_CAROUSELS = [];
       }
     }catch(e){
       console.error('[Publicité][PUBLIC] Erreur réseau/fetch avant même la réponse Supabase :', e);
       PUBS_ACTIVES = [];
+      PUBLIC_CAROUSELS = [];
       await diagnostiquerReseauPublicites();
     }
     peuplerEmplacementsPublicitaires();
@@ -1241,37 +1245,104 @@
 
     if(btn){ btn.disabled = false; btn.textContent = 'Relancer la vérification'; }
   }
-  // les deux emplacements d'un même secteur reçoivent systématiquement des index
-  // consécutifs (donc différents) ; avec une seule annonce active, les deux
-  // emplacements affichent forcément la même (il n'y a rien d'autre à montrer).
-  function choisirAnnoncePour(pageIndex, slotIndex){
-    if(!PUBS_ACTIVES.length) return null;
-    if(PUBS_ACTIVES.length===1) return PUBS_ACTIVES[0];
-    const idx = (PUB_OFFSET + pageIndex*2 + slotIndex) % PUBS_ACTIVES.length;
-    return PUBS_ACTIVES[idx];
+  // Regroupe les diapositives dans des campagnes indépendantes. Une publicité
+  // historique devient automatiquement un carrousel à une seule diapositive.
+  function construireCarrouselsPublics(rows){
+    const groupes=new Map();
+    (Array.isArray(rows)?rows:[]).forEach(ad=>{
+      if(!ad || !ad.image_url)return;
+      const id=String(ad.carousel_id||('solo-'+ad.id));
+      if(!groupes.has(id)) groupes.set(id,{id,slides:[],version:''});
+      groupes.get(id).slides.push(ad);
+    });
+    return Array.from(groupes.values()).map(g=>{
+      g.slides.sort((a,b)=>(Number(a.slide_order)||0)-(Number(b.slide_order)||0)||Number(a.id)-Number(b.id));
+      g.version=g.slides.reduce((v,ad)=>String(ad.updated_at||'')>v?String(ad.updated_at||''):v,'')||'initial';
+      return g;
+    }).filter(g=>g.slides.length);
   }
 
-  function remplirEmplacementPub(container, ad){
-    if(!container) return false;
-    if(!ad || !ad.image_url){ container.style.display='none'; container.innerHTML=''; return false; }
-    const titre = ad.alt_text || '';
-    const cta = ad.link_url ? `<a class="ad-slot-cta" href="${echapperHtmlPub(ad.link_url)}" rel="noopener">En savoir plus</a>` : '';
-    container.innerHTML = `
-      <div class="ad-slot-label">Publicité</div>
-      <div class="ad-slot-card">
-        <img class="ad-slot-img" src="${echapperHtmlPub(ad.image_url)}" alt="${echapperHtmlPub(titre||'Publicité')}" loading="eager" decoding="async" fetchpriority="high">
-      </div>
-      <div class="ad-slot-body">
-        ${titre ? `<div class="ad-slot-title">${echapperHtmlPub(titre)}</div>` : ''}
-        ${ad.description ? `<div class="ad-slot-desc">${echapperHtmlPub(ad.description)}</div>` : ''}
-        ${cta}
-      </div>`;
-    // Un emplacement rempli doit être visible, même si un ancien état HTML/CSS
-    // (display:none ou hidden) subsiste. On ne modifie jamais la donnée de publicité.
-    container.removeAttribute('hidden');
-    container.style.removeProperty('visibility');
-    container.style.removeProperty('opacity');
-    container.style.setProperty('display','block','important');
+  function campagnePubliciteMasquee(campagne){
+    try{return localStorage.getItem('hesed_publicite_masquee_'+campagne.id)===campagne.version;}
+    catch(_){return false;}
+  }
+
+  function campagnesPublicitesVisibles(){
+    return PUBLIC_CAROUSELS.filter(c=>!campagnePubliciteMasquee(c));
+  }
+
+  function choisirAnnoncePour(pageIndex, slotIndex){
+    const campagnes=campagnesPublicitesVisibles();
+    if(!campagnes.length)return null;
+    const idx=(PUB_OFFSET+pageIndex*2+slotIndex)%campagnes.length;
+    return campagnes[idx];
+  }
+
+  function urlPubliciteSecurisee(value){
+    try{
+      const url=new URL(String(value||''),window.location.href);
+      return ['http:','https:'].includes(url.protocol)?url.href:'';
+    }catch(_){return '';}
+  }
+
+  function remplirEmplacementPub(container, campagne){
+    if(!container)return false;
+    if(!campagne || !Array.isArray(campagne.slides) || !campagne.slides.length){
+      container.style.display='none';container.innerHTML='';return false;
+    }
+
+    let diapoIndex=0;
+    const campagnesIgnorees=new Set();
+    const pageIndex=Math.max(0,AD_PAGES.indexOf(String(container.id||'').replace(/^ad-/,'').replace(/-\d+$/,'')));
+    const slotIndex=Math.max(0,Number(String(container.id||'').match(/-(\d+)$/)?.[1]||1)-1);
+
+    function afficherDiapo(){
+      const diapo=campagne.slides[diapoIndex];
+      if(!diapo || !diapo.image_url){container.style.display='none';container.innerHTML='';return;}
+      const titre=diapo.alt_text||'';
+      const url=urlPubliciteSecurisee(diapo.link_url);
+      const interesse=url
+        ? `<a class="ad-slot-action ad-slot-interest" href="${echapperHtmlPub(url)}" target="_blank" rel="noopener noreferrer">Intéressé</a>`
+        : '<button class="ad-slot-action ad-slot-interest" type="button" disabled aria-disabled="true" title="Aucun lien de destination disponible">Intéressé</button>';
+      const dots=campagne.slides.length>1
+        ? `<div class="ad-slot-dots" aria-label="Diapositive ${diapoIndex+1} sur ${campagne.slides.length}">${campagne.slides.map((_,i)=>`<span class="${i===diapoIndex?'is-active':''}"></span>`).join('')}</div>`
+        : '';
+      container.innerHTML=`
+        <div class="ad-slot-label">Publicité</div>
+        <div class="ad-slot-actions" role="group" aria-label="Actions publicitaires">
+          ${interesse}
+          <button class="ad-slot-action ad-slot-skip" type="button" data-ad-action="skip">Ignorer</button>
+          <button class="ad-slot-action ad-slot-hide" type="button" data-ad-action="hide">Masquer</button>
+        </div>
+        <div class="ad-slot-card">
+          <img class="ad-slot-img" src="${echapperHtmlPub(diapo.image_url)}" alt="${echapperHtmlPub(titre||'Publicité Hesed')}" loading="lazy" decoding="async">
+          ${dots}
+        </div>
+        <div class="ad-slot-body">
+          ${titre?`<div class="ad-slot-title">${echapperHtmlPub(titre)}</div>`:''}
+          ${diapo.description?`<div class="ad-slot-desc">${echapperHtmlPub(diapo.description)}</div>`:''}
+        </div>`;
+      container.querySelector('[data-ad-action="skip"]')?.addEventListener('click',()=>{
+        if(diapoIndex<campagne.slides.length-1){diapoIndex++;afficherDiapo();return;}
+        campagnesIgnorees.add(campagne.id);
+        const suivantes=campagnesPublicitesVisibles().filter(c=>!campagnesIgnorees.has(c.id));
+        if(!suivantes.length){container.style.display='none';container.innerHTML='';return;}
+        campagne=suivantes[(PUB_OFFSET+pageIndex*2+slotIndex+campagnesIgnorees.size)%suivantes.length];
+        diapoIndex=0;
+        afficherDiapo();
+      });
+      container.querySelector('[data-ad-action="hide"]')?.addEventListener('click',()=>{
+        try{localStorage.setItem('hesed_publicite_masquee_'+campagne.id,campagne.version);}catch(_){}
+        // La campagne masquée disparaît de tous les emplacements de cette visite.
+        peuplerEmplacementsPublicitaires();
+      });
+      container.removeAttribute('hidden');
+      container.style.removeProperty('visibility');
+      container.style.removeProperty('opacity');
+      container.style.setProperty('display','block','important');
+    }
+
+    afficherDiapo();
     return true;
   }
 

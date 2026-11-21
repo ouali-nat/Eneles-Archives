@@ -644,10 +644,36 @@
 
   const WELCOME_TABLE='message_bienvenue';
   async function chargerMessageBienvenue(){try{const r=await fetch(`${SUPABASE_URL}/rest/v1/${WELCOME_TABLE}?select=id,title,message,active&id=eq.1`,{headers:HEADERS});if(!r.ok)throw new Error('HTTP '+r.status);return (await r.json())[0]||null;}catch(e){console.warn('[Bienvenue] configuration indisponible.',e);return null;}}
+  let derniereSessionBienvenue=null;
+  let rappelProfilTimer=null;
+  function fermerRappelProfil(){
+    const modal=document.getElementById('profileReminderModal');
+    if(modal){modal.hidden=true;modal.setAttribute('aria-hidden','true');}
+  }
+  function afficherRappelProfil(sess){
+    if(!sess || typeof profilEstComplet==='function' && profilEstComplet(sess)) return;
+    const modal=document.getElementById('profileReminderModal');
+    if(!modal)return;
+    const key='hesed_profile_reminder_seen_'+String(sess.id||sess.email||'guest');
+    try{if(localStorage.getItem(key)==='1')return;}catch(_){}
+    clearTimeout(rappelProfilTimer);
+    rappelProfilTimer=window.setTimeout(()=>{
+      if(typeof profilEstComplet==='function' && profilEstComplet(sess))return;
+      modal.hidden=false;
+      modal.setAttribute('aria-hidden','false');
+      const card=modal.querySelector('.profile-reminder-card');
+      if(card){card.classList.remove('is-opening');void card.offsetWidth;card.classList.add('is-opening');}
+      try{localStorage.setItem(key,'1');}catch(_){}
+    },420);
+  }
   async function afficherBienvenueApresConnexion(sess){
     if(!sess)return;
+    derniereSessionBienvenue=sess;
     const cfg=await chargerMessageBienvenue(),modal=document.getElementById('welcomeModal');
-    if(!cfg||cfg.active!==true||!cfg.message||!modal)return;
+    if(!cfg||cfg.active!==true||!cfg.message||!modal){
+      afficherRappelProfil(sess);
+      return;
+    }
     const key='aurore_welcome_seen_'+(sess.id||sess.email||''),first=localStorage.getItem(key)!=='1';
     const title=document.getElementById('welcomeModalTitle'),textNode=document.getElementById('welcomeModalText');
     if(title)title.textContent=first?(cfg.title||'Bienvenue sur Hesed'):(cfg.title||'Content de vous revoir sur Hesed');
@@ -660,11 +686,25 @@
       void card.offsetWidth;
       card.classList.add('is-opening');
     }
-    localStorage.setItem(key,'1');
+    try{localStorage.setItem(key,'1');}catch(_){}
   }
-  function fermerBienvenue(){const m=document.getElementById('welcomeModal');if(m){m.querySelector('.welcome-modal-card')?.classList.remove('is-opening');m.hidden=true;m.setAttribute('aria-hidden','true');}}
-  function continuerDepuisBienvenue(){fermerBienvenue();const card=document.getElementById('homeRecentsCta');if(card){card.click();}else{afficherEcran('screen-recents');chargerDocumentsRecents();}}
-  document.addEventListener('click',e=>{const target=e.target.closest?.('[data-welcome-close],#welcomeModalClose,#welcomeModalOk');if(!target)return;if(target.id==='welcomeModalOk')continuerDepuisBienvenue();else fermerBienvenue();});
+  function fermerBienvenue(){
+    const m=document.getElementById('welcomeModal');
+    if(m){m.querySelector('.welcome-modal-card')?.classList.remove('is-opening');m.hidden=true;m.setAttribute('aria-hidden','true');}
+    if(derniereSessionBienvenue) afficherRappelProfil(derniereSessionBienvenue);
+  }
+  function continuerDepuisBienvenue(){fermerBienvenue();}
+  document.addEventListener('click',e=>{
+    const target=e.target.closest?.('[data-welcome-close],#welcomeModalClose,#welcomeModalOk');
+    if(target){continuerDepuisBienvenue();return;}
+    const closeReminder=e.target.closest?.('[data-profile-reminder-close],#profileReminderClose,#profileReminderLater');
+    if(closeReminder){fermerRappelProfil();return;}
+    if(e.target.closest?.('#profileReminderOpen')){
+      fermerRappelProfil();
+      if(typeof window.ouvrirEspaceAvecCode==='function') window.ouvrirEspaceAvecCode({forceComplete:true});
+      else document.getElementById('btnOuvrirProfil')?.click();
+    }
+  });
   function initialiserEditeurBienvenueAdmin(){const panel=document.querySelector('.admin-tab-panel[data-panel="annonce"]');if(!panel||document.getElementById('adminWelcomeEditor'))return;const box=document.createElement('div');box.className='admin-service-editor';box.id='adminWelcomeEditor';box.innerHTML=`<div class="form-row"><label for="adminWelcomeTitle">Titre du message de bienvenue</label><input id="adminWelcomeTitle" type="text" maxlength="180" placeholder="Bienvenue sur Hesed"></div><div class="form-row"><label for="adminWelcomeMessage">Message</label><textarea id="adminWelcomeMessage" rows="7" maxlength="1200" placeholder="Bienvenue {nom} ! Nous sommes heureux de vous accueillir sur Hesed — Archives."></textarea><small>Variables disponibles : {nom} et {email}.</small></div><div class="form-row" style="display:flex;align-items:center;gap:10px;"><input type="checkbox" id="adminWelcomeActive" style="width:18px;height:18px;"><label for="adminWelcomeActive" style="margin:0;">Afficher après une connexion</label></div><div class="admin-promo-actions"><button type="button" class="admin-btn primary" id="adminWelcomeSave">Enregistrer le message de bienvenue</button></div><div class="form-msg" id="adminWelcomeMsg"></div>`;panel.appendChild(box);document.getElementById('adminWelcomeSave').onclick=saveWelcome;chargerMessageBienvenue().then(c=>{if(c){document.getElementById('adminWelcomeTitle').value=c.title||'';document.getElementById('adminWelcomeMessage').value=c.message||'';document.getElementById('adminWelcomeActive').checked=c.active===true;}});}
   async function saveWelcome(){const msg=document.getElementById('adminWelcomeMsg'),btn=document.getElementById('adminWelcomeSave');if(!session||session.role!=='admin'){msg.textContent='Cette action est réservée aux administrateurs.';msg.className='form-msg err';return;}const title=document.getElementById('adminWelcomeTitle').value.trim()||'Bienvenue sur Hesed',message=document.getElementById('adminWelcomeMessage').value.trim(),active=document.getElementById('adminWelcomeActive').checked;if(!message){msg.textContent='Veuillez renseigner le message de bienvenue avant de continuer.';msg.className='form-msg err';return;}btn.disabled=true;try{const payload={id:1,title,message,active,updated_at:new Date().toISOString()};let r=await fetch(`${SUPABASE_URL}/rest/v1/${WELCOME_TABLE}?id=eq.1`,{method:'PATCH',headers:{...headersAdmin(),'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(payload)});if(!r.ok)throw new Error('HTTP '+r.status+' — '+await r.text());let body=await r.text().catch(()=> '');if(body===''||body==='[]'){const q=await fetch(`${SUPABASE_URL}/rest/v1/${WELCOME_TABLE}`,{method:'POST',headers:{...headersAdmin(),'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(payload)});if(!q.ok)throw new Error('HTTP '+q.status+' — '+await q.text());}msg.textContent='Le message de bienvenue a été enregistré avec succès.';msg.className='form-msg ok';}catch(e){msg.textContent='Impossible d’enregistrer le message pour le moment. Veuillez réessayer.';msg.className='form-msg err';}finally{btn.disabled=false;}}
   initialiserEditeurBienvenueAdmin();document.querySelectorAll('.admin-tab').forEach(t=>t.addEventListener('click',()=>{if(t.dataset.tab==='videos')chargerVideosAdmin();if(t.dataset.tab==='annonce')initialiserEditeurBienvenueAdmin();}));chargerVideosAccueil();

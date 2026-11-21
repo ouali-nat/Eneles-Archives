@@ -664,3 +664,35 @@ html[data-theme="light"] .ad-slot[id^="ad-"] [class*="info"]{
   backdrop-filter:none!important;
   -webkit-backdrop-filter:none!important;
 }
+
+/* === Hesed Ads Carousel: actions discrètes, rapides et tactiles === */
+.ad-slot-actions{display:grid!important;grid-template-columns:1.12fr .88fr .88fr;gap:7px!important;width:100%;margin:0 0 10px!important}
+.ad-slot-action{appearance:none;display:flex;align-items:center;justify-content:center;min-width:0;min-height:38px;padding:8px 9px;border:1px solid var(--bordure);border-radius:12px;background:var(--papier);color:var(--encre);font-family:inherit;font-size:.77rem;font-weight:700;line-height:1.2;text-decoration:none;text-align:center;cursor:pointer;box-shadow:0 3px 10px rgba(45,30,70,.045);transition:transform .16s ease,background .16s ease,border-color .16s ease}
+.ad-slot-action:active{transform:scale(.97)}
+.ad-slot-interest{background:color-mix(in srgb,var(--theme-primary,#7c3aed) 10%,var(--papier));border-color:color-mix(in srgb,var(--theme-primary,#7c3aed) 34%,var(--bordure));color:var(--theme-primary,#6d28d9)}
+.ad-slot-skip{color:var(--encre)}
+.ad-slot-hide{color:var(--gris)}
+.ad-slot-action:disabled{opacity:.52;cursor:not-allowed}
+.ad-slot-dots{display:flex;justify-content:center;align-items:center;gap:5px;margin:10px 0 0}
+.ad-slot-dots span{display:block;width:6px;height:6px;border-radius:50%;background:var(--bordure);transition:width .2s ease,background .2s ease}
+.ad-slot-dots span.is-active{width:18px;border-radius:8px;background:var(--theme-primary,#7c3aed)}
+.ad-slot-card{gap:0!important}
+html[data-theme="light"] .ad-slot-action{background:#fff;border-color:#d8cde3;color:#332843}
+html[data-theme="light"] .ad-slot-interest{background:#f3edff;border-color:#d7c3fb;color:#6426b8}
+html[data-theme="light"] .ad-slot-dots span.is-active{background:#6d28d9}
+@media(max-width:420px){.ad-slot-actions{gap:5px!important}.ad-slot-action{min-height:36px;padding:7px 5px;font-size:.72rem}}
+/* Gestion admin par campagne, avec aperçu des diapositives. */
+.pub-admin-carousel-item{align-items:flex-start}
+.pub-admin-carousel-preview{display:flex;align-items:center;gap:5px;flex:0 0 112px;max-width:112px;overflow:hidden}
+.pub-admin-carousel-thumb{display:block;width:50px;height:66px;object-fit:cover;border-radius:9px;border:1px solid var(--bordure);background:var(--fond);flex:0 0 50px}
+.pub-admin-carousel-more{display:grid;place-items:center;width:30px;height:30px;flex:0 0 30px;border-radius:9px;background:var(--fond);color:var(--gris);font-weight:800;font-size:.75rem}
+.pub-admin-preview-grid{display:flex;flex-wrap:wrap;gap:8px;width:100%;padding:10px}
+.pub-admin-preview-grid figure{margin:0;width:calc(25% - 6px);min-width:64px;max-width:110px;position:relative}
+.pub-admin-preview-grid img{display:block;width:100%;height:84px;object-fit:cover;border-radius:10px;border:1px solid var(--bordure)}
+.pub-admin-preview-grid figcaption{position:absolute;right:5px;bottom:5px;min-width:19px;padding:2px 5px;border-radius:7px;background:rgba(20,15,28,.72);color:#fff;text-align:center;font-size:.68rem}
+.admin-promo-hint{display:block;margin-top:7px;color:var(--gris);line-height:1.5}
+@media(max-width:620px){.pub-admin-carousel-item{flex-wrap:wrap}.pub-admin-carousel-preview{flex-basis:100%;max-width:100%}.pub-admin-carousel-thumb{width:54px;height:64px;flex-basis:54px}}
+.pub-admin-slide-remove{display:block;margin:5px auto 0;min-height:25px;padding:3px 7px;border:1px solid var(--bordure);border-radius:8px;background:var(--papier);color:var(--gris);font:inherit;font-size:.68rem;font-weight:700;cursor:pointer}
+.pub-admin-slide-remove:active{transform:scale(.97)}
+.pub-admin-slide-remove{display:block;margin:5px auto 0;min-height:25px;padding:3px 7px;border:1px solid var(--bordure);border-radius:8px;background:var(--papier);color:var(--gris);font:inherit;font-size:.68rem;font-weight:700;cursor:pointer}
+.pub-admin-slide-remove:active{transform:scale(.97)}
