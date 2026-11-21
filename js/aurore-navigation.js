@@ -78,7 +78,7 @@
     } catch (_) {}
     // Un nouvel utilisateur connecté doit terminer son profil essentiel avant
     // de naviguer dans la plateforme. Les administrateurs ne sont pas bloqués.
-    if (session && session.role !== 'admin' && !profilEstComplet(session) && id !== 'screen-profil') {
+    if (session && session.role !== 'admin' && !profilEstComplet(session) && id !== 'screen-profil' && options.allowIncompleteProfile !== true) {
       remplirProfil();
       id = 'screen-profil';
     }

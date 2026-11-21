@@ -3,7 +3,7 @@
 
   // Palette finale : 13 couleurs d'origine conservées (différence nette entre elles)
   // + 5 nuances nouvelles, toutes à plus de ~28 de distance perceptuelle (ΔE Lab) des autres.
-  const VALID_COLOR_THEMES=["violet","rouge","vert","bleu","orange","rose","lime","bordeaux","azur","jaune","olive","chocolat","sauge","magenta","petrole-cuivre","prune-rouge","rose-sable","sarcelle-creme"];
+  const VALID_COLOR_THEMES=["violet","rouge","vert","bleu","orange","rose","lime","bordeaux","azur","jaune","olive","chocolat","sauge","magenta","petrole-cuivre","prune-rouge","rose-sable","sarcelle-creme","gris-pur"];
 
   // Couleurs retirées car trop proches d'une autre (ΔE < 18) → équivalent conservé.
   // Un ancien choix enregistré est converti automatiquement.
@@ -15,13 +15,14 @@
     olive:['#6B7A2A','#A7B85F','#4A5520'],
     chocolat:['#8A4A1C','#D49A6A','#5C300F'],
     sauge:['#6E9A7E','#B5D3BF','#4A7A5C'],
-    magenta:['#D946EF','#F0ABFC','#A21CAF']
+    magenta:['#D946EF','#F0ABFC','#A21CAF'],
+    'gris-pur':['#808080','#D1D5DB','#4B5563']
   };
 
   // Noms courts : une seule couleur dominante par choix (celle de la pastille).
-  const NOMS={"violet":"Violet","rouge":"Rouge","vert":"Vert","bleu":"Bleu","orange":"Orange","rose":"Rose","lime":"Citron vert","bordeaux":"Bordeaux","azur":"Azur","jaune":"Jaune","olive":"Olive","chocolat":"Chocolat","sauge":"Sauge","magenta":"Magenta","petrole-cuivre":"Pétrole","prune-rouge":"Prune","rose-sable":"Rose poudré","sarcelle-creme":"Sarcelle"};
+  const NOMS={"violet":"Violet","rouge":"Rouge","vert":"Vert","bleu":"Bleu","orange":"Orange","rose":"Rose","lime":"Citron vert","bordeaux":"Bordeaux","azur":"Azur","jaune":"Jaune","olive":"Olive","chocolat":"Chocolat","sauge":"Sauge","magenta":"Magenta","petrole-cuivre":"Pétrole","prune-rouge":"Prune","rose-sable":"Rose poudré","sarcelle-creme":"Sarcelle","gris-pur":"Gris pur"};
 
-  const META={"violet":"#6D28D9","rouge":"#B91C1C","vert":"#15803D","bleu":"#1D4ED8","orange":"#C85C0D","rose":"#BE185D","lime":"#65A30D","bordeaux":"#8B1E3F","azur":"#0369A1","jaune":"#A87B05","olive":"#4A5520","chocolat":"#5C300F","sauge":"#4A7A5C","magenta":"#A21CAF","petrole-cuivre":"#104C64","prune-rouge":"#341A2C","rose-sable":"#EFC1B5","sarcelle-creme":"#0D6B70"};
+  const META={"violet":"#6D28D9","rouge":"#B91C1C","vert":"#15803D","bleu":"#1D4ED8","orange":"#C85C0D","rose":"#BE185D","lime":"#65A30D","bordeaux":"#8B1E3F","azur":"#0369A1","jaune":"#A87B05","olive":"#4A5520","chocolat":"#5C300F","sauge":"#4A7A5C","magenta":"#A21CAF","petrole-cuivre":"#104C64","prune-rouge":"#341A2C","rose-sable":"#EFC1B5","sarcelle-creme":"#0D6B70","gris-pur":"#808080"};
 
   function fermerFlyoutCouleur(){
     const flyout=document.getElementById('colorThemeFlyout');

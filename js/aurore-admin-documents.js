@@ -1330,14 +1330,9 @@
       const interesse=url
         ? `<a class="ad-slot-action ad-slot-interest" href="${echapperHtmlPub(url)}" target="_blank" rel="noopener noreferrer">Intéressé</a>`
         : '<button class="ad-slot-action ad-slot-interest" type="button" disabled aria-disabled="true" title="Aucun lien de destination disponible">Intéressé</button>';
-      const controlesCarrousel=campagne.slides.length>1
-        ? `<div class="ad-slot-carousel-controls" role="group" aria-label="Navigation du carrousel">
-            <button type="button" data-ad-carousel-prev aria-label="Image précédente">‹</button>
-            <span aria-live="polite">${diapoIndex+1} / ${campagne.slides.length}</span>
-            <button type="button" data-ad-carousel-next aria-label="Image suivante">›</button>
-          </div>
-          <div class="ad-slot-dots" role="group" aria-label="Choisir une image">${campagne.slides.map((_,i)=>`<button type="button" data-ad-carousel-index="${i}" class="${i===diapoIndex?'is-active':''}" aria-label="Afficher l’image ${i+1}" aria-current="${i===diapoIndex?'true':'false'}"></button>`).join('')}</div>`
-        : '';
+      const slidesHtml=campagne.slides.map((slide,index)=>
+        `<div class="ad-slot-slide" data-ad-slide="${index}"><img class="ad-slot-img" src="${echapperHtmlPub(slide.image_url)}" alt="${echapperHtmlPub(slide.alt_text||'Publicité Hesed')}" loading="lazy" decoding="async"></div>`
+      ).join('');
       container.innerHTML=`
         <div class="ad-slot-label">Publicité</div>
         <div class="ad-slot-actions" role="group" aria-label="Actions publicitaires">
@@ -1345,39 +1340,44 @@
           <button class="ad-slot-action ad-slot-skip" type="button" data-ad-action="skip">Ignorer</button>
           <button class="ad-slot-action ad-slot-hide" type="button" data-ad-action="hide">Masquer</button>
         </div>
-        <div class="ad-slot-card">
-          <img class="ad-slot-img" src="${echapperHtmlPub(diapo.image_url)}" alt="${echapperHtmlPub(titre||'Publicité Hesed')}" loading="lazy" decoding="async">
-          ${controlesCarrousel}
-        </div>
+        <div class="ad-slot-card" data-ad-carousel-track aria-label="Faire défiler les publicités horizontalement">${slidesHtml}</div>
         <div class="ad-slot-body">
           ${titre?`<div class="ad-slot-title">${echapperHtmlPub(titre)}</div>`:''}
           ${diapo.description?`<div class="ad-slot-desc">${echapperHtmlPub(diapo.description)}</div>`:''}
         </div>`;
+      const media=container.querySelector('[data-ad-carousel-track]');
       const allerAImage=(index)=>{
         if(campagne.slides.length<2)return;
-        diapoIndex=(index+campagne.slides.length)%campagne.slides.length;
-        afficherDiapo();
+        diapoIndex=Math.max(0,Math.min(campagne.slides.length-1,index));
+        const slide=media?.querySelector(`[data-ad-slide="${diapoIndex}"]`);
+        slide?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'start'});
+        actualiserTexteDiapo();
       };
-      container.querySelector('[data-ad-carousel-prev]')?.addEventListener('click',()=>allerAImage(diapoIndex-1));
-      container.querySelector('[data-ad-carousel-next]')?.addEventListener('click',()=>allerAImage(diapoIndex+1));
-      container.querySelectorAll('[data-ad-carousel-index]').forEach(button=>{
-        button.addEventListener('click',()=>allerAImage(Number(button.dataset.adCarouselIndex)||0));
-      });
-      const media=container.querySelector('.ad-slot-card');
-      let swipeStartX=null;
-      media?.addEventListener('pointerdown',event=>{
-        if(event.pointerType==='mouse'&&event.button!==0)return;
-        swipeStartX=event.clientX;
+      const actualiserTexteDiapo=()=>{
+        const titreActuel=campagne.slides[diapoIndex]?.alt_text||'';
+        const description=campagne.slides[diapoIndex]?.description||'';
+        const body=container.querySelector('.ad-slot-body');
+        if(body)body.innerHTML=`${titreActuel?`<div class="ad-slot-title">${echapperHtmlPub(titreActuel)}</div>`:''}${description?`<div class="ad-slot-desc">${echapperHtmlPub(description)}</div>`:''}`;
+        const href=urlPubliciteSecurisee(campagne.slides[diapoIndex]?.link_url);
+        const action=container.querySelector('.ad-slot-interest');
+        if(action){
+          if(href){const a=document.createElement('a');a.className=action.className;a.href=href;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Intéressé';action.replaceWith(a);}
+          else if(action.tagName==='A'){const b=document.createElement('button');b.className=action.className;b.type='button';b.disabled=true;b.textContent='Intéressé';action.replaceWith(b);}
+        }
+      };
+      let scrollFrame=0;
+      media?.addEventListener('scroll',()=>{
+        if(scrollFrame)return;
+        scrollFrame=requestAnimationFrame(()=>{
+          scrollFrame=0;
+          const width=media.clientWidth||1;
+          const next=Math.max(0,Math.min(campagne.slides.length-1,Math.round(media.scrollLeft/width)));
+          if(next!==diapoIndex){diapoIndex=next;actualiserTexteDiapo();}
+        });
       },{passive:true});
-      media?.addEventListener('pointerup',event=>{
-        if(swipeStartX===null)return;
-        const dx=event.clientX-swipeStartX;
-        swipeStartX=null;
-        if(Math.abs(dx)>=38)allerAImage(dx<0?diapoIndex+1:diapoIndex-1);
-      },{passive:true});
-      media?.addEventListener('pointercancel',()=>{swipeStartX=null;},{passive:true});
+
       container.querySelector('[data-ad-action="skip"]')?.addEventListener('click',()=>{
-        if(diapoIndex<campagne.slides.length-1){diapoIndex++;afficherDiapo();return;}
+        if(diapoIndex<campagne.slides.length-1){allerAImage(diapoIndex+1);return;}
         campagnesIgnorees.add(campagne.id);
         const suivantes=campagnesPublicitesVisibles().filter(c=>!campagnesIgnorees.has(c.id));
         if(!suivantes.length){container.style.display='none';container.innerHTML='';return;}

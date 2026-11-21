@@ -619,7 +619,13 @@
       }
     });
 
+    // Restaure immédiatement le dernier logo administré, puis synchronise la
+    // configuration partagée. La reprise de page ne doit jamais revenir au logo codé en dur.
     chargerLogoPartage();
+    window.addEventListener('pageshow',()=>{ chargerLogoPartage(); });
+    window.addEventListener('storage',event=>{
+      if(event.key==='aurore_logo_url' || event.key==='aurore_logo_mime') chargerLogoPartage();
+    });
   })();
 
   // ---------- INITIALISATION ----------
@@ -652,7 +658,7 @@
       modal.hidden=true;
       modal.setAttribute('aria-hidden','true');
     }
-    if(allerAccueil && typeof afficherEcran==='function') afficherEcran('screen-home');
+    if(allerAccueil && typeof afficherEcran==='function') afficherEcran('screen-home',{allowIncompleteProfile:true});
   }
 
   async function afficherBienvenueApresConnexion(sess){
